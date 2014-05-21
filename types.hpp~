@@ -1,0 +1,21 @@
+#pragma once
+
+
+struct Segment{
+  Segment() : uuid(0){
+
+  }
+
+  Segment(unsigned uuid) : uuid(uuid){
+
+  }
+
+  unsigned uuid;
+
+};
+
+struct SubSegment{
+  unsigned uuid;
+
+};
+

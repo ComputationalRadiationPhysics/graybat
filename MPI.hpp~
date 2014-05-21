@@ -1,0 +1,56 @@
+#pragma once
+#include <types.hpp>    /* CommNode */
+
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
+#include <iostream>     /* cout */
+#include <string>       /* string */
+
+namespace CommunicationPolicy {
+
+    class MPI{
+
+    private:
+	typedef unsigned Rank;
+	typedef unsigned Context;
+	typedef unsigned Description;
+
+    protected:
+	typedef Rank URI;
+
+	MPI(){
+	    std::cout << "Init MPI" << std::endl;
+	    /*
+	    // Get URI, which is rank in the MPI world
+	    MPI_Init();
+	    MPI_Comm_rank(MPI_COMM_WORLD, &URI);
+	    */
+	    uri = rand() % 100;
+	}
+
+	void sendData(const char* data, const size_t count, const URI dest, const Context context, const Description descr){
+
+
+	    std::cout << "MPI::Send \"" << data << "\" to URI " << dest << " with descr: " << descr << "("<< count << " Bytes)" <<std::endl;
+	    /*
+	      MPI_Send(data, count, MPI_CHAR, dest, descr, MPI_COMM_WORLD);
+	    */
+	}
+
+	//static void recvData(const char* data, const size_t count, const Rank src){
+	/*
+	  MPI_Probe(ROOT, MPI_ANY_TAG, comm, &status);
+
+	  Rank src = status.MPI_SOURCE;
+	  unsigned descr = status.MPI_TAG;
+
+	  MPI_Recv(data, count, MPI_CHAR, src, descr, MPI_COMM_WORLD, status);
+	*/
+    
+	//}
+
+	URI uri;
+
+    };
+
+} // namespace CommunicationPolicy
