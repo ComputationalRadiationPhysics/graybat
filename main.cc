@@ -4,9 +4,10 @@
 #include <Communicator.hpp>
 #include <MPI.hpp>
 
-#include <iostream>
-#include <tuple>
-#include <vector>
+#include <iostream> /* cout */
+#include <tuple>    /* pair */
+#include <vector>   /* vector   */
+#include <mpi.h>    /* MPI_INIT */
 
 
 /*******************************************************************************
@@ -14,17 +15,23 @@
  * CONFIGURATION
  *
  ******************************************************************************/
-// Graph and topologie
-typedef GraphPolicy::BGL<GridProperty, GridConnection> BGL;
-typedef Graph<BGL> GridTopologie;
-typedef typename GridTopologie::Vertex   Vertex;
-typedef typename GridTopologie::Edge     Edge;
-typedef std::tuple<Vertex, Vertex, Edge> EdgeDescriptor;
+// Graph
+// Property is struct with at least UUID uuid and typename UUDI
+typedef GraphPolicy::NoProperty NoProperty; 
+typedef GraphPolicy::BGL<NoProperty, NoProperty> BGL;
+typedef Graph<BGL>                                     BGLGraph;
+typedef typename BGLGraph::Vertex                      Vertex;
+typedef typename BGLGraph::Edge                        Edge;
+typedef std::tuple<Vertex, Vertex, Edge>               EdgeDescriptor;
 
 // Communicator
-typedef Communicator<CommunicationPolicy::MPI, Vertex> MPICommunicator;
-typedef MPICommunicator::Channel<char> CharChannel;
-typedef typename MPICommunicator::Context Context;
+// Vertex ist struct with at least UUID uuid member
+typedef CommunicationPolicy::MPI                   Mpi;
+typedef Communicator<Mpi, Vertex>                  MPICommunicator;
+typedef MPICommunicator::Channel<char>             CharChannel;
+typedef MPICommunicator::CollectiveChannel<char>   CharCollectiveChannel;
+typedef typename MPICommunicator::Context          Context;
+typedef typename MPICommunicator::BinaryOperations BinaryOperations;
 
 
 /*******************************************************************************
@@ -40,7 +47,7 @@ std::vector<Vertex> generateVertices(const size_t numVertices){
     return vertices;
 }
 
-std::vector<EdgeDescriptor> generateEdges(const std::vector<Vertex> vertices){
+std::vector<EdgeDescriptor> generateFullyConnected(const std::vector<Vertex> vertices){
     std::cout << "Create grid with " << vertices.size() << " cells" << std::endl;
 
     unsigned edgeCount = 0;    
@@ -61,6 +68,24 @@ std::vector<EdgeDescriptor> generateEdges(const std::vector<Vertex> vertices){
     return edges;
 }
 
+std::vector<EdgeDescriptor> generateStarTopology(const std::vector<Vertex> vertices){
+    std::cout << "Create star with " << vertices.size() << " cells" << std::endl;
+
+    unsigned edgeCount = 0;    
+    std::vector<EdgeDescriptor> edges;
+
+    for(unsigned i = 0; i < vertices.size(); ++i){
+	if(i != 0){
+	    edges.push_back(std::make_tuple(vertices[0], vertices[i], Edge(edgeCount++)));
+	}
+		
+    }
+
+    return edges;
+}
+
+
+
 void printVertices(std::vector<Vertex> vertices){
     std::cout << "vertices = ";
     for(Vertex v: vertices){
@@ -79,52 +104,60 @@ void handle(){
  * MAIN
  *
  *******************************************************************************/
-int main(){
-
+int main(int argc, char **argv){
+    // Init MPI
+    MPI_Init(&argc, &argv);
 
     // Create graph
-    const unsigned numVertices = 2;
-    auto vertices = generateVertices(numVertices);
-    auto edges    = generateEdges(vertices);
-    GridTopologie topologie (edges, vertices);
+    const unsigned numVertices = 4;
+    std::vector<Vertex> vertices = generateVertices(numVertices);
+    std::vector<EdgeDescriptor> edges    = generateStarTopology(vertices);
+    BGLGraph myGraph (edges, vertices);
 
     // // Print all vertices
     // std::cout << "All vertices properties :" << std::endl;
-    // printVertices(topologie.getVertices());
-
+    // printVertices(myGraph.getVertices());
 
     // MPI 
     MPICommunicator mpiCommunicator;
-    Context fullContext = mpiCommunicator.getContext();
-    int cid = mpiCommunicator.getCommunicatorID(fullContext);
+    Context initialContext = mpiCommunicator.getInitialContext();
+    int cid = mpiCommunicator.getCommunicatorID(initialContext);
 
-    // Get grid to work on
-    Vertex myVertex = topologie.getVertices().at(cid);
-    mpiCommunicator.announce(myVertex, fullContext);
+    // Get vertex to work on
+    Vertex myVertex = myGraph.getVertices().at(cid);
+
+    // Announce own vertices
+    std::vector<Vertex> myVertices;
+    myVertices.push_back(myVertex);
+    mpiCommunicator.announce(myVertices, initialContext);
 
     // Simple send / recv example
     const size_t size = 512;
-    char data[size] = "Hello World";
     if(cid == 0){
-	for(std::pair<Vertex, Edge> outEdge : topologie.getOutEdges(myVertex)){
-	    Vertex adjVertex = outEdge.first;
-	    CharChannel sendChannel(myVertex, adjVertex, size, data, fullContext);
-	    mpiCommunicator.send(sendChannel, handle);
-	}
+	char data[size] = "Hello World";
+
+    	for(std::pair<Vertex, Edge> outEdge : myGraph.getOutEdges(myVertex)){
+    	    Vertex adjVertex = outEdge.first;
+    	    CharChannel sendChannel(myVertex, adjVertex, data, size, 0, initialContext);
+    	    mpiCommunicator.send(sendChannel);
+    	}
     }
     else {
-	 for(std::pair<Vertex, Edge> outEdge : topologie.getInEdges(myVertex)){
-	    Vertex adjVertex = outEdge.first;
-	    CharChannel recvChannel(adjVertex, myVertex, size, data, fullContext);
-	    mpiCommunicator.recv(recvChannel, handle);
-	 }
+	char data[size];
+
+	for(std::pair<Vertex, Edge> inEdge : myGraph.getInEdges(myVertex)){
+	    Vertex adjVertex = inEdge.first;
+	    CharChannel recvChannel(adjVertex, myVertex, data, size, 0, initialContext);
+	    mpiCommunicator.recv(recvChannel);
+	    std::cout << recvChannel.data << std::endl;
+	}
     
     }
 
     //Get adjacent Segments
     // Vertex targetGrid;
     // Edge edge;
-    // for(std::pair<Vertex, Edge> outEdge : topologie.getOutEdges(myVertex)){
+    // for(std::pair<Vertex, Edge> outEdge : myGraph.getOutEdges(myVertex)){
     // 	const size_t size = 512;
     // 	char data[size] = "Hello World";
     // 	std::tie(targetGrid, edge) = outEdge;

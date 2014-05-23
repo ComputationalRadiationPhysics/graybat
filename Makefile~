@@ -1,2 +1,0 @@
-all:
-	g++ main.cc -I. -Wall -Wextra -std=c++11

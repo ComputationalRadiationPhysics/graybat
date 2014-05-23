@@ -45,10 +45,10 @@ public:
     	return adjacentVertices;
     }
 
-    std::vector<std::pair<Vertex, Edge> > getOutEdges(const Vertex vertex){
+    std::vector<std::pair<Vertex, Edge> > getOutEdges(const Vertex srcVertex){
 
     	std::vector<std::pair<Vertex, Edge> > outEdges;
-    	for(GraphPolicyEdge e : GraphPolicy::getOutEdges(vertex.uuid)){
+    	for(GraphPolicyEdge e : GraphPolicy::getOutEdges(srcVertex.uuid)){
     	    GraphPolicyVertex target = GraphPolicy::getEdgeTarget(e);
 	    Vertex vertex = GraphPolicy::getVertexProperty(target);
     	    Edge   edge   = GraphPolicy::getEdgeProperty(e);
@@ -57,9 +57,9 @@ public:
     	return outEdges;
     }
 
-    std::vector<std::pair<Vertex, Edge> > getInEdges(const Vertex vertex){
+    std::vector<std::pair<Vertex, Edge> > getInEdges(const Vertex targetVertex){
     	std::vector<std::pair<Vertex, Edge> > inEdges;
-    	for(GraphPolicyEdge e : GraphPolicy::getInEdges(vertex.uuid)){
+    	for(GraphPolicyEdge e : GraphPolicy::getInEdges(targetVertex.uuid)){
     	     GraphPolicyVertex source = GraphPolicy::getEdgeSource(e);
 	     Vertex vertex            = GraphPolicy::getVertexProperty(source);
 	     Edge edge = GraphPolicy::getEdgeProperty(e);
