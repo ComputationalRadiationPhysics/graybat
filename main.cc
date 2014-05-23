@@ -136,21 +136,27 @@ int main(int argc, char **argv){
     if(cid == 0){
 	char data[size] = "Hello World";
 
-    	for(std::pair<Vertex, Edge> outEdge : myGraph.getOutEdges(myVertex)){
-    	    Vertex adjVertex = outEdge.first;
-    	    CharChannel sendChannel(myVertex, adjVertex, data, size, 0, initialContext);
-    	    mpiCommunicator.send(sendChannel);
-    	}
+    	// for(std::pair<Vertex, Edge> outEdge : myGraph.getOutEdges(myVertex)){
+    	//     Vertex adjVertex = outEdge.first;
+    	//     CharChannel sendChannel(myVertex, adjVertex, data, size, 0, initialContext);
+    	//     mpiCommunicator.send(sendChannel);
+    	// }
+	CharCollectiveChannel broadcastChannel(data, data, size, myGraph.getVertices().at(0), initialContext);
+	mpiCommunicator.broadcast(broadcastChannel);
+
     }
     else {
 	char data[size];
 
-	for(std::pair<Vertex, Edge> inEdge : myGraph.getInEdges(myVertex)){
-	    Vertex adjVertex = inEdge.first;
-	    CharChannel recvChannel(adjVertex, myVertex, data, size, 0, initialContext);
-	    mpiCommunicator.recv(recvChannel);
-	    std::cout << recvChannel.data << std::endl;
-	}
+	// for(std::pair<Vertex, Edge> inEdge : myGraph.getInEdges(myVertex)){
+	//     Vertex adjVertex = inEdge.first;
+	//     CharChannel recvChannel(adjVertex, myVertex, data, size, 0, initialContext);
+	//     mpiCommunicator.recv(recvChannel);
+	//     std::cout << recvChannel.data << std::endl;
+	// }
+	CharCollectiveChannel broadcastChannel(data, data, size, myGraph.getVertices().at(0), initialContext);
+	mpiCommunicator.broadcast(broadcastChannel);
+	std::cout << broadcastChannel.sendData << std::endl;
     
     }
 

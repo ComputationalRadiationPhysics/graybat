@@ -156,6 +156,11 @@ namespace CommunicationPolicy {
 			recvData, recvCount, MPIDatatypes<T_Recv>::type, 
 			context);
 	}
+	
+	template <typename T>
+	void broadcast(T* data, const size_t count, const URI root, const Context context){
+	    MPI_Bcast(data, count, MPIDatatypes<T>::type, root, context);
+	}
 
 	template <typename T_Send, typename T_Recv>
 	void allToAll(T_Send* sendData, const size_t sendCount, T_Recv* recvData, const size_t recvCount, const Context context){
@@ -164,12 +169,9 @@ namespace CommunicationPolicy {
 			 context);
 	}
 
-	// TODO missing collective Operations :
-	// barrier
-	// broadcast
-	// scan
-	// allScan
-	// Asyncron collcetives
+	void syncronize(Context context){
+	    MPI_Barrier(context);
+	}
 
 	/***************************************************************************
 	 *

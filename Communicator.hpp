@@ -108,8 +108,9 @@ public:
 
     }
 
-    void broadcast(const CollectiveChannel<char> channel, const Node rootNode){
-	
+    void broadcast(const CollectiveChannel<char> channel){
+     	URI rootURI = contextMap[channel.context][channel.root.uuid];
+	CommunicationPolicy::broadcast(channel.sendData, channel.size, rootURI, channel.context);
     }
 
     void scan(){
