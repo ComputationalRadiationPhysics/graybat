@@ -1,6 +1,4 @@
 #pragma once
-#include <types.hpp>    /* CommNode */
-
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 #include <iostream>     /* cout */
@@ -30,12 +28,13 @@ namespace CommunicationPolicy {
 
     private:
 	typedef unsigned MsgType;
+	typedef int URI;
 
     protected:
 	// TODO URI should be unsigned 
 	// and then mapped to policy specific
 	// URI !
-	typedef int URI;
+
 	typedef MPI_Comm Context;
 	typedef MPI_Op BinaryOperation;
 
@@ -47,7 +46,7 @@ namespace CommunicationPolicy {
 	};
 
 	// Member
-	std::map<Context, URI> uri;
+	std::map<Context, unsigned> uri;
 	Context initialContext;
 
 	MPI(){
@@ -157,9 +156,10 @@ namespace CommunicationPolicy {
 			context);
 	}
 	
-	template <typename T>
-	void broadcast(T* data, const size_t count, const URI root, const Context context){
-	    MPI_Bcast(data, count, MPIDatatypes<T>::type, root, context);
+	template <typename T_Send, typename T_Recv>
+	void broadcast(T_Send* sendData, const size_t sendCount, T_Recv* recvData, const size_t recvCount, const URI root, const Context context){
+	    MPI_Bcast(sendData, sendCount, MPIDatatypes<T_Send>::type, root, context);
+	    recvData = sendData;
 	}
 
 	template <typename T_Send, typename T_Recv>
@@ -169,7 +169,7 @@ namespace CommunicationPolicy {
 			 context);
 	}
 
-	void syncronize(Context context){
+	void synchronize(Context context){
 	    MPI_Barrier(context);
 	}
 

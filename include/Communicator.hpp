@@ -13,7 +13,8 @@ class Communicator : public T_CommunicationPolicy {
 private:
     typedef T_Node                                         Node;
     typedef T_CommunicationPolicy                          CommunicationPolicy;
-    typedef typename CommunicationPolicy::URI              URI;
+    //typedef typename CommunicationPolicy::URI              URI;
+    typedef unsigned                                       URI;
     typedef typename Node::UUID                            UUID;
     typedef typename CommunicationPolicy::BinaryOperation  BinaryOperation;
 
@@ -97,6 +98,11 @@ public:
     }
 
     template <typename T>
+    void allToAll(const CollectiveChannel<T> channel){
+	CommunicationPolicy::allToAll(channel.sendData, channel.size, channel.recvData, channel.size, channel.context);
+    }
+
+    template <typename T>
     void reduce(const CollectiveChannel<T> channel, const BinaryOperation op){
      	URI rootURI = contextMap[channel.context][channel.root.uuid];
      	CommunicationPolicy::reduce(channel.sendData, channel.recvData, channel.size, op, rootURI, channel.context);
@@ -108,18 +114,17 @@ public:
 
     }
 
-    void broadcast(const CollectiveChannel<char> channel){
+    template <typename T>
+    void broadcast(const CollectiveChannel<T> channel){
      	URI rootURI = contextMap[channel.context][channel.root.uuid];
-	CommunicationPolicy::broadcast(channel.sendData, channel.size, rootURI, channel.context);
+	CommunicationPolicy::broadcast(channel.sendData, channel.size, channel.recvData, channel.size, rootURI, channel.context);
     }
 
-    void scan(){
-
+    template <typename T>
+    void synchronize(const Context context){
+	CommunicationPolicy::synchronize(context);
     }
 
-    void AllToAll(){
-
-    }
 
 
 
@@ -177,7 +182,7 @@ public:
 	return CommunicationPolicy::initialContext;
     }
 
-    int getCommunicatorID(Context context){
+    URI getCommunicatorID(Context context){
 	return CommunicationPolicy::uri.at(context);
     }
 

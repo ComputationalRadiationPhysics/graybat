@@ -156,7 +156,7 @@ int main(int argc, char **argv){
 	// }
 	CharCollectiveChannel broadcastChannel(data, data, size, myGraph.getVertices().at(0), initialContext);
 	mpiCommunicator.broadcast(broadcastChannel);
-	std::cout << broadcastChannel.sendData << std::endl;
+	std::cout << broadcastChannel.recvData << std::endl;
     
     }
 
