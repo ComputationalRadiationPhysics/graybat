@@ -109,14 +109,10 @@ int main(int argc, char **argv){
     MPI_Init(&argc, &argv);
 
     // Create graph
-    const unsigned numVertices = 4;
-    std::vector<Vertex> vertices = generateVertices(numVertices);
-    std::vector<EdgeDescriptor> edges    = generateStarTopology(vertices);
+    const unsigned numVertices        = 4;
+    std::vector<Vertex> vertices      = generateVertices(numVertices);
+    std::vector<EdgeDescriptor> edges = generateStarTopology(vertices);
     BGLGraph myGraph (edges, vertices);
-
-    // // Print all vertices
-    // std::cout << "All vertices properties :" << std::endl;
-    // printVertices(myGraph.getVertices());
 
     // MPI 
     MPICommunicator mpiCommunicator;
@@ -131,49 +127,20 @@ int main(int argc, char **argv){
     myVertices.push_back(myVertex);
     mpiCommunicator.announce(myVertices, initialContext);
 
-    // Simple send / recv example
+    // Simple broadcast example
     const size_t size = 512;
     if(cid == 0){
 	char data[size] = "Hello World";
-
-    	// for(std::pair<Vertex, Edge> outEdge : myGraph.getOutEdges(myVertex)){
-    	//     Vertex adjVertex = outEdge.first;
-    	//     CharChannel sendChannel(myVertex, adjVertex, data, size, 0, initialContext);
-    	//     mpiCommunicator.send(sendChannel);
-    	// }
 	CharCollectiveChannel broadcastChannel(data, data, size, myGraph.getVertices().at(0), initialContext);
 	mpiCommunicator.broadcast(broadcastChannel);
 
     }
     else {
 	char data[size];
-
-	// for(std::pair<Vertex, Edge> inEdge : myGraph.getInEdges(myVertex)){
-	//     Vertex adjVertex = inEdge.first;
-	//     CharChannel recvChannel(adjVertex, myVertex, data, size, 0, initialContext);
-	//     mpiCommunicator.recv(recvChannel);
-	//     std::cout << recvChannel.data << std::endl;
-	// }
 	CharCollectiveChannel broadcastChannel(data, data, size, myGraph.getVertices().at(0), initialContext);
 	mpiCommunicator.broadcast(broadcastChannel);
 	std::cout << broadcastChannel.recvData << std::endl;
     
     }
-
-    //Get adjacent Segments
-    // Vertex targetGrid;
-    // Edge edge;
-    // for(std::pair<Vertex, Edge> outEdge : myGraph.getOutEdges(myVertex)){
-    // 	const size_t size = 512;
-    // 	char data[size] = "Hello World";
-    // 	std::tie(targetGrid, edge) = outEdge;
-    // 	std::cout << "Connected to vertex " << targetGrid.uuid << " by edge " << edge.uuid << std::endl;
-
-    // 	CharChannel sendChannel(myVertex, targetGrid, size, data, allNodes);
-    // 	CharChannel recvChannel(myVertex, targetGrid, size, data, allNodes);
-    // 	mpiCommunicator.send(sendChannel, handle);
-    // 	mpiCommunicator.recv(recvChannel, handle);
-
-    // }
 
 }
