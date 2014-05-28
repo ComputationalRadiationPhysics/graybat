@@ -117,7 +117,7 @@ int main(int argc, char **argv){
     // MPI 
     MPICommunicator mpiCommunicator;
     Context initialContext = mpiCommunicator.getInitialContext();
-    int cid = mpiCommunicator.getCommunicatorID(initialContext);
+    int cid = initialContext.uuid();
 
     // Get vertex to work on
     Vertex myVertex = myGraph.getVertices().at(cid);
@@ -125,22 +125,35 @@ int main(int argc, char **argv){
     // Announce own vertices
     std::vector<Vertex> myVertices;
     myVertices.push_back(myVertex);
+
     mpiCommunicator.announce(myVertices, initialContext);
 
-    // Simple broadcast example
-    const size_t size = 512;
-    if(cid == 0){
-	char data[size] = "Hello World";
-	CharCollectiveChannel broadcastChannel(data, data, size, myGraph.getVertices().at(0), initialContext);
-	mpiCommunicator.broadcast(broadcastChannel);
+    // Create Context
+    std::vector<Vertex> contextVertices;
+    contextVertices.push_back(myGraph.getVertices().at(2));
+    contextVertices.push_back(myGraph.getVertices().at(3));
+    Context newContext = mpiCommunicator.getContext(contextVertices, initialContext);
 
+    if(newContext.valid()){
+	std::cout << "old context uuid: " << initialContext.uuid() << " new context uuid:  " << newContext.uuid() << std::endl;
     }
-    else {
-	char data[size];
-	CharCollectiveChannel broadcastChannel(data, data, size, myGraph.getVertices().at(0), initialContext);
-	mpiCommunicator.broadcast(broadcastChannel);
-	std::cout << broadcastChannel.recvData << std::endl;
+
+
+    // Simple broadcast example
+    // const size_t size = 512;
+    // if(cid == 0){
+    // 	char data[size] = "Hello World";
+    // 	CharCollectiveChannel broadcastChannel(data, data, size, myGraph.getVertices().at(0), initialContext);
+    // 	mpiCommunicator.broadcast(broadcastChannel);
+
+    // }
+    // else {
+    // 	char data[size];
+    // 	CharCollectiveChannel broadcastChannel(data, data, size, myGraph.getVertices().at(0), initialContext);
+    // 	mpiCommunicator.broadcast(broadcastChannel);
+    // 	std::cout << broadcastChannel.recvData << std::endl;
     
-    }
+    // }
 
 }
+

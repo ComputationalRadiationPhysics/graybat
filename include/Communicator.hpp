@@ -4,32 +4,40 @@
 #include <map>
 #include <utility>
 #include <functional>
-#include <memory> /* unique_ptr */
-#include <assert.h> /* assert */
-
+#include <memory>     /* unique_ptr */
+#include <assert.h>   /* assert */
 
 template <class T_CommunicationPolicy, typename T_Node>
 class Communicator : public T_CommunicationPolicy {
 private:
     typedef T_Node                                         Node;
     typedef T_CommunicationPolicy                          CommunicationPolicy;
-    //typedef typename CommunicationPolicy::URI              URI;
-    typedef unsigned                                       URI;
-    typedef typename Node::UUID                            UUID;
+    typedef typename Node::UUID                            NodeUUID;
+    typedef typename CommunicationPolicy::ContextUUID      ContextUUID;
+    typedef typename CommunicationPolicy::CommUUID         CommUUID;
     typedef typename CommunicationPolicy::BinaryOperation  BinaryOperation;
+    //typedef typename CommunicationPolicy::Context          CommunicationPolicyContext;
 
 public:
     typedef typename CommunicationPolicy::BinaryOperations  BinaryOperations;
     typedef typename CommunicationPolicy::Context           Context;
 
 private:
-    std::map<Context, std::map<UUID, URI>> contextMap;
+    std::map<ContextUUID, std::map<NodeUUID, CommUUID>> contextMap;
 
 public:
     template <typename T = char>
     struct Channel {
-	Channel(const Node src, const Node dest, T* data, const size_t size, const unsigned channelType, const Context context) :
-	    src(src), dest(dest), data(data), size(size), channelType(channelType), context(context){}
+	Channel(const Node src, 
+		const Node dest, 
+		T* data, 
+		const size_t size, 
+		const unsigned channelType, 
+		const Context context
+		) :
+	    src(src), dest(dest), data(data), size(size), channelType(channelType), context(context){
+	
+	}
 
 
 	const Node src;
@@ -43,8 +51,14 @@ public:
 
     template <typename T = char>
     struct CollectiveChannel {
-	CollectiveChannel( T* sendData, T* recvData, const size_t size, const Node root, const Context context) :
-	    sendData(sendData), recvData(recvData), size(size),  root(root), context(context){}
+	CollectiveChannel( T* sendData, 
+			   T* recvData, 
+			   const size_t size, 
+			   const Node root, 
+			   const Context context) :
+	    sendData(sendData), recvData(recvData), size(size),  root(root), context(context){
+
+	}
 
 	T* sendData;
 	T* recvData;
@@ -54,10 +68,13 @@ public:
 
     };
 
+
     Communicator() : CommunicationPolicy(){
-	contextMap.insert(std::make_pair(getInitialContext(), std::map<UUID, URI>()));
+	contextMap.insert(std::make_pair(getInitialContext().contextUUID, std::map<NodeUUID, CommUUID>()));
 
     }
+
+
 
     /***************************************************************************
      *
@@ -65,14 +82,16 @@ public:
      *
      ***************************************************************************/
     void send(Channel<char> channel){
-	URI destURI = contextMap.at(channel.context).at(channel.dest.uuid);
+	CommUUID destURI = contextMap.at(channel.context).at(channel.dest.uuid);
 	CommunicationPolicy::asyncSendData(channel.data, channel.size, destURI, channel.context, channel.channelType);
     }
 
     void recv(Channel<char> channel){
-	URI srcURI = contextMap.at(channel.context).at(channel.src.uuid);
+	CommUUID srcURI = contextMap.at(channel.context).at(channel.src.uuid);
 	CommunicationPolicy::recvData(channel.data, channel.size, srcURI, channel.context, channel.channelType);
     }
+
+
 
     /**************************************************************************
      *
@@ -81,7 +100,7 @@ public:
      **************************************************************************/ 
     template <typename T>
     void gather(const CollectiveChannel<T> channel){
-     	URI rootURI = contextMap[channel.context][channel.root.uuid];
+     	CommUUID rootURI = contextMap[channel.context][channel.root.uuid];
 	CommunicationPolicy::gather(channel.sendData, channel.size, channel.recvData, channel.size, rootURI, channel.dest);
     }
 
@@ -93,7 +112,7 @@ public:
 
     template <typename T>
     void scatter(const CollectiveChannel<T> channel){
-     	URI rootURI = contextMap[channel.context][channel.root.uuid];
+     	CommUUID rootURI = contextMap[channel.context][channel.root.uuid];
 	CommunicationPolicy::gather(channel.sendData, channel.size, channel.recvData, channel.size, rootURI, channel.dest);
     }
 
@@ -104,9 +123,9 @@ public:
 
     template <typename T>
     void reduce(const CollectiveChannel<T> channel, const BinaryOperation op){
-     	URI rootURI = contextMap[channel.context][channel.root.uuid];
+     	CommUUID rootURI = contextMap[channel.context][channel.root.uuid];
      	CommunicationPolicy::reduce(channel.sendData, channel.recvData, channel.size, op, rootURI, channel.context);
-     }
+    }
 
     template <typename T>
     void allReduce(const CollectiveChannel<T> channel, const BinaryOperation op){
@@ -116,15 +135,20 @@ public:
 
     template <typename T>
     void broadcast(const CollectiveChannel<T> channel){
-     	URI rootURI = contextMap[channel.context][channel.root.uuid];
-	CommunicationPolicy::broadcast(channel.sendData, channel.size, channel.recvData, channel.size, rootURI, channel.context);
+     	CommUUID rootURI = contextMap[channel.context][channel.root.uuid];
+	CommUUID ownURI  = getCommUUID(channel.context);
+	if(rootURI == ownURI){
+	    CommunicationPolicy::broadcast(channel.sendData, channel.size, rootURI, channel.context);
+	}
+	else {
+	    CommunicationPolicy::broadcast(channel.recvData, channel.size, rootURI, channel.context);
+	}
     }
 
     template <typename T>
     void synchronize(const Context context){
 	CommunicationPolicy::synchronize(context);
     }
-
 
 
 
@@ -141,7 +165,7 @@ public:
 	allReduce(reduceChannel, BinaryOperations::MAX);
 
 	for(unsigned i = 0; i < maxNodes; ++i){
-	    const size_t contextSize = CommunicationPolicy::getContextSize(context);
+	    const size_t contextSize = context.size();
 	    const size_t sendCount = 1;
 	    int sendData;
 	    int recvData[contextSize];
@@ -158,7 +182,7 @@ public:
 
 	    for(unsigned j = 0; j < contextSize; ++j){
 		if(gatherChannel.recvData[j] != -1){
-		    contextMap.at(context).insert(std::make_pair(j, gatherChannel.recvData[j]));
+		    contextMap.at(context.contextUUID).insert(std::make_pair(j, gatherChannel.recvData[j]));
 		}
 	    }
 
@@ -167,23 +191,19 @@ public:
     }
 
     Context getContext(std::vector<Node> nodes, Context oldContext){
-	std::map<UUID, URI> uriMap = contextMap.at(oldContext);
-	std::vector<URI> uris;
+	std::vector<CommUUID> uuids;
 	for(Node node : nodes){
-	    uris.push_back(uriMap[node.uuid]);
+	    uuids.push_back(contextMap.at(oldContext.contextUUID).at(node.uuid));
 	}
 
-	Context newContext = CommunicationPolicy::createContext(uris, oldContext);
-	contextMap.insert(std::make_pair(newContext, std::map<UUID, URI>()));
+	Context newContext = CommunicationPolicy::createContext(uuids, oldContext);
+
+	contextMap.insert(std::make_pair(newContext.contextUUID, std::map<NodeUUID, CommUUID>()));
 	return newContext;
     }
 
     Context getInitialContext(){
 	return CommunicationPolicy::initialContext;
-    }
-
-    URI getCommunicatorID(Context context){
-	return CommunicationPolicy::uri.at(context);
     }
 
 
