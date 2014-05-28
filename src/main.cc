@@ -129,31 +129,51 @@ int main(int argc, char **argv){
     mpiCommunicator.announce(myVertices, initialContext);
 
     // Create Context
-    std::vector<Vertex> contextVertices;
-    contextVertices.push_back(myGraph.getVertices().at(2));
-    contextVertices.push_back(myGraph.getVertices().at(3));
-    Context newContext = mpiCommunicator.getContext(contextVertices, initialContext);
+    // std::vector<Vertex> contextVertices;
+    // contextVertices.push_back(myGraph.getVertices().at(2));
+    // contextVertices.push_back(myGraph.getVertices().at(3));
+    // Context newContext = mpiCommunicator.getContext(contextVertices, initialContext);
 
-    if(newContext.valid()){
-	std::cout << "old context uuid: " << initialContext.uuid() << " new context uuid:  " << newContext.uuid() << std::endl;
-    }
+    // if(newContext.valid()){
+    // 	std::cout << "old context uuid: " << initialContext.uuid() << " new context uuid:  " << newContext.uuid() << std::endl;
+    // }
 
 
     // Simple broadcast example
-    // const size_t size = 512;
-    // if(cid == 0){
-    // 	char data[size] = "Hello World";
-    // 	CharCollectiveChannel broadcastChannel(data, data, size, myGraph.getVertices().at(0), initialContext);
-    // 	mpiCommunicator.broadcast(broadcastChannel);
+    const size_t size = 512;
+    if(cid == 0){
+    	char data[size] = "Hello World";
+    	CharCollectiveChannel broadcastChannel(data, data, size, myGraph.getVertices().at(0), initialContext);
+    	mpiCommunicator.broadcast(broadcastChannel);
 
-    // }
-    // else {
-    // 	char data[size];
-    // 	CharCollectiveChannel broadcastChannel(data, data, size, myGraph.getVertices().at(0), initialContext);
-    // 	mpiCommunicator.broadcast(broadcastChannel);
-    // 	std::cout << broadcastChannel.recvData << std::endl;
+	CharChannel testChannel(myGraph.getVertices().at(0),
+				myGraph.getVertices().at(1),
+				data, 
+				size,
+				0,
+				initialContext);
+
+	mpiCommunicator.send(testChannel);
+
+
+    }
+    else {
+    	char data[size];
+    	CharCollectiveChannel broadcastChannel(data, data, size, myGraph.getVertices().at(0), initialContext);
+    	mpiCommunicator.broadcast(broadcastChannel);
+    	std::cout << broadcastChannel.recvData << std::endl;
+
+	CharChannel testChannel(myGraph.getVertices().at(0),
+				myGraph.getVertices().at(1),
+				data, 
+				size,
+				0,
+				initialContext);
+
+	mpiCommunicator.recv(testChannel);
+
     
-    // }
+    }
 
 }
 

@@ -1,8 +1,5 @@
 #pragma once
-#include <stdlib.h>     /* srand, rand */
-#include <time.h>       /* time */
 #include <iostream>     /* cout */
-#include <string>       /* string */
 #include <map>          /* map */
 #include <mpi.h>        /* MPI_* */
 
@@ -30,6 +27,9 @@ namespace CommunicationPolicy {
 	typedef unsigned CommUUID;
 	typedef MPI_Op   BinaryOperation;
 
+	/**************************
+	 * Inner Context class
+	 **************************/
 	class Context {
 	public:
 	    Context(ContextUUID contextUUID) : 
@@ -57,6 +57,32 @@ namespace CommunicationPolicy {
 	    const ContextUUID contextUUID;
 	private:
 	    const CommUUID commUUID;
+	};
+
+	/**************************
+	 * Inner Event class
+	 **************************/
+	class Event {
+	public:
+	    Event(MPI_Request request) : request(request){
+
+	    }
+
+	    void wait(){
+		MPI_Status status;
+		MPI_Wait(&request, &status);
+	    }
+
+	    bool ready(){
+		int flag = 0;
+		MPI_Status status;
+		MPI_Test(&request, &flag, &status);
+
+		return bool(flag);
+	    }
+
+	private:
+	    MPI_Request request;
 	};
 
     private:
@@ -111,9 +137,8 @@ namespace CommunicationPolicy {
 	}
 
 	template <typename T>
-	void asyncSendData(T* data, const size_t count, const CommUUID dest, const Context context, const MsgType msgType){
+	Event asyncSendData(T* data, const size_t count, const CommUUID dest, const Context context, const MsgType msgType){
 	    MPI_Request   request;
-	    MPI_Status    status;
 	    URI destURI = uriMap.at(context.contextUUID).at(dest);
 	    MPI_Isend(data, count, MPIDatatypes<T>::type, destURI, msgType, context.contextUUID, &request);
 
@@ -121,7 +146,7 @@ namespace CommunicationPolicy {
 	    // So request should be returned and
 	    // then queried for status (like std::future style)
 
-	    MPI_Wait(&request, &status);
+	    return Event(request);
 
 	}
 
@@ -135,9 +160,8 @@ namespace CommunicationPolicy {
 	}
 
 	template <typename T>
-	void asyncRecvData(T* data, const size_t count, const URI src, const Context context, const MsgType msgType){
+	Event asyncRecvData(T* data, const size_t count, const URI src, const Context context, const MsgType msgType){
 	    MPI_Request   request;
-	    MPI_Status    status;
 	    URI srcURI = uriMap.at(context.contextUUID).at(src);
 	    MPI_Irecv(data, count, MPIDatatypes<T>::type, srcURI, msgType, context.contextUUID, &request);
 
@@ -145,7 +169,7 @@ namespace CommunicationPolicy {
 	    // So request should be returned and
 	    // then queried for status (like std::future)
 
-	    MPI_Wait(&request, &status);
+	    return Event(request);
 
 	}
 

@@ -16,7 +16,7 @@ private:
     typedef typename CommunicationPolicy::ContextUUID      ContextUUID;
     typedef typename CommunicationPolicy::CommUUID         CommUUID;
     typedef typename CommunicationPolicy::BinaryOperation  BinaryOperation;
-    //typedef typename CommunicationPolicy::Context          CommunicationPolicyContext;
+    typedef typename CommunicationPolicy::Event            Event;
 
 public:
     typedef typename CommunicationPolicy::BinaryOperations  BinaryOperations;
@@ -82,13 +82,15 @@ public:
      *
      ***************************************************************************/
     void send(Channel<char> channel){
-	CommUUID destURI = contextMap.at(channel.context).at(channel.dest.uuid);
-	CommunicationPolicy::asyncSendData(channel.data, channel.size, destURI, channel.context, channel.channelType);
+	CommUUID destURI = contextMap.at(channel.context.contextUUID).at(channel.dest.uuid);
+	Event e = CommunicationPolicy::asyncSendData(channel.data, channel.size, destURI, channel.context, channel.channelType);
+	e.wait();
     }
 
     void recv(Channel<char> channel){
-	CommUUID srcURI = contextMap.at(channel.context).at(channel.src.uuid);
-	CommunicationPolicy::recvData(channel.data, channel.size, srcURI, channel.context, channel.channelType);
+	CommUUID srcURI = contextMap.at(channel.context.contextUUID).at(channel.src.uuid);
+	Event e = CommunicationPolicy::asyncRecvData(channel.data, channel.size, srcURI, channel.context, channel.channelType);
+	e.wait();
     }
 
 
@@ -100,7 +102,7 @@ public:
      **************************************************************************/ 
     template <typename T>
     void gather(const CollectiveChannel<T> channel){
-     	CommUUID rootURI = contextMap[channel.context][channel.root.uuid];
+     	CommUUID rootURI = contextMap[channel.context.contextUUID][channel.root.uuid];
 	CommunicationPolicy::gather(channel.sendData, channel.size, channel.recvData, channel.size, rootURI, channel.dest);
     }
 
@@ -112,7 +114,7 @@ public:
 
     template <typename T>
     void scatter(const CollectiveChannel<T> channel){
-     	CommUUID rootURI = contextMap[channel.context][channel.root.uuid];
+     	CommUUID rootURI = contextMap[channel.context.contextUUID][channel.root.uuid];
 	CommunicationPolicy::gather(channel.sendData, channel.size, channel.recvData, channel.size, rootURI, channel.dest);
     }
 
@@ -123,7 +125,7 @@ public:
 
     template <typename T>
     void reduce(const CollectiveChannel<T> channel, const BinaryOperation op){
-     	CommUUID rootURI = contextMap[channel.context][channel.root.uuid];
+     	CommUUID rootURI = contextMap[channel.context.contextUUID][channel.root.uuid];
      	CommunicationPolicy::reduce(channel.sendData, channel.recvData, channel.size, op, rootURI, channel.context);
     }
 
@@ -135,13 +137,13 @@ public:
 
     template <typename T>
     void broadcast(const CollectiveChannel<T> channel){
-     	CommUUID rootURI = contextMap[channel.context][channel.root.uuid];
-	CommUUID ownURI  = getCommUUID(channel.context);
-	if(rootURI == ownURI){
-	    CommunicationPolicy::broadcast(channel.sendData, channel.size, rootURI, channel.context);
+     	CommUUID rootUUID = contextMap[channel.context.contextUUID][channel.root.uuid];
+	CommUUID ownUUID  = channel.context.uuid();
+	if(rootUUID == ownUUID){
+	    CommunicationPolicy::broadcast(channel.sendData, channel.size, rootUUID, channel.context);
 	}
 	else {
-	    CommunicationPolicy::broadcast(channel.recvData, channel.size, rootURI, channel.context);
+	    CommunicationPolicy::broadcast(channel.recvData, channel.size, rootUUID, channel.context);
 	}
     }
 
