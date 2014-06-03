@@ -116,7 +116,7 @@ int main(){
     // MPI 
     MPICommunicator mpiCommunicator;
     Context initialContext = mpiCommunicator.getInitialContext();
-    int cid = initialContext.uuid();
+    int cid = initialContext.getCommUUID();
 
     // Get vertex to work on
     Vertex myVertex = myGraph.getVertices().at(cid);
@@ -126,20 +126,24 @@ int main(){
     myVertices.push_back(myVertex);
     mpiCommunicator.announce(myVertices, initialContext);
 
-    // Create Context example
-    // std::vector<Vertex> contextVertices;
-    // contextVertices.push_back(myGraph.getVertices().at(2));
-    // contextVertices.push_back(myGraph.getVertices().at(3));
-    // Context newContext = mpiCommunicator.getContext(contextVertices, initialContext);
-    // if(newContext.valid()){
-    // 	std::cout << "old context uuid: " << initialContext.uuid() << " new context uuid:  " << newContext.uuid() << std::endl;
-    // }
+    /***************************************************************************
+     * Create Context example
+     ****************************************************************************/
+    std::vector<Vertex> contextVertices;
+    contextVertices.push_back(myGraph.getVertices().at(2));
+    contextVertices.push_back(myGraph.getVertices().at(3));
+    Context newContext = mpiCommunicator.getContext(contextVertices, initialContext);
+    if(newContext.valid()){
+	mpiCommunicator.announce(myVertices, newContext);
+    	std::cout << "old context uuid: " << initialContext.getCommUUID() << " new context uuid:  " << newContext.getCommUUID() << std::endl;
+    }
 
-
-    // Broadcast example
+    /***************************************************************************
+     * Broadcast example
+     ****************************************************************************/
+    mpiCommunicator.synchronize(initialContext);
     {
-	if(cid == 0) std::cout << "C Broadcast example" << std::endl;
-	mpiCommunicator.synchronize(initialContext);
+	if(cid == 0) std::cerr << "C Broadcast example" << std::endl;
 	std::string send;
 	std::string recv;
 	Vertex rootVertex = myGraph.getVertices().at(0);
@@ -152,16 +156,17 @@ int main(){
 	else {
 	    recv = "00000000000000000000000";
 	    mpiCommunicator.broadcast(broadcastChannel);
-	    std::cout << recv << std::endl;
+	    std::cerr << recv << std::endl;
     
 	}
-	mpiCommunicator.synchronize(initialContext);
     }
 
-    // Broadcast by point2point communication
+    /***************************************************************************
+     * Broadcast by point2point communication 
+     ****************************************************************************/
+    mpiCommunicator.synchronize(initialContext);
     {
-	if(cid == 0) std::cout << "C Broadcast example p2p" << std::endl;
-	mpiCommunicator.synchronize(initialContext);
+	if(cid == 0) std::cerr << "C Broadcast example p2p" << std::endl;
 	Vertex rootVertex = myGraph.getVertices().at(0);
 
 	if(cid == 0){
@@ -177,7 +182,7 @@ int main(){
 	    std::string recv = "00000000000000000000";
 	    MPICommunicator::Channel<std::string>  directChannel(rootVertex, myVertex, recv, 0, initialContext);
 	    mpiCommunicator.recv(directChannel);
-	    std::cout << recv << std::endl;
+	    std::cerr << recv << std::endl;
 	}
     }
 

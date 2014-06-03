@@ -39,7 +39,7 @@ public:
 
 	Channel(const Node src, 
 		const Node dest, 
-		T_Container container, 
+		T_Container &container, 
 		const unsigned channelType, 
 		const Context context
 		) :
@@ -59,14 +59,15 @@ public:
 	const Node dest;
 	const unsigned channelType;
 	const Context context;
-	T_Container container;
+    private:
+	T_Container &container;
 
 
     };
 
-    /**************************
+    /*********************************
      * Inner CollectiveChannel Class
-     **************************/
+     *********************************/
     template <typename T_ContainerSend, typename T_ContainerRecv>
     class CollectiveChannel {
     public:
@@ -107,7 +108,7 @@ public:
 
 
     Communicator() : CommunicationPolicy(){
-	contextMap.insert(std::make_pair(getInitialContext().contextUUID, std::map<NodeUUID, CommUUID>()));
+	contextMap.insert(std::make_pair(getInitialContext().getContextUUID(), std::map<NodeUUID, CommUUID>()));
 
     }
 
@@ -120,7 +121,7 @@ public:
      ***************************************************************************/
     template <typename T>
     void send(Channel<T> channel){
-	CommUUID destURI = contextMap.at(channel.context.contextUUID).at(channel.dest.uuid);
+	CommUUID destURI = contextMap.at(channel.context.getContextUUID()).at(channel.dest.uuid);
 	Event e = CommunicationPolicy::asyncSendData(channel.data(), channel.size(), destURI, channel.context, channel.channelType);
 	e.wait();
     }
@@ -128,7 +129,7 @@ public:
     template <typename T>
     void recv(Channel<T> channel){
 	typedef typename T::value_type value_type;
-	CommUUID srcURI = contextMap.at(channel.context.contextUUID).at(channel.src.uuid);
+	CommUUID srcURI = contextMap.at(channel.context.getContextUUID()).at(channel.src.uuid);
 	Event e = CommunicationPolicy::asyncRecvData(const_cast<value_type*>(channel.data()), channel.size(), srcURI, channel.context, channel.channelType);
 	e.wait();
     }
@@ -140,7 +141,7 @@ public:
      **************************************************************************/ 
     // template <typename T>
     // void gather(const CollectiveChannel<T> channel){
-    //  	CommUUID rootURI = contextMap[channel.context.contextUUID][channel.root.uuid];
+    //  	CommUUID rootURI = contextMap[channel.context.getContextUUID()][channel.root.uuid];
     // 	CommunicationPolicy::gather(channel.sendData, channel.size, channel.recvData, channel.size, rootURI, channel.dest);
     // }
 
@@ -153,7 +154,7 @@ public:
 
     // template <typename T>
     // void scatter(const CollectiveChannel<T> channel){
-    //  	CommUUID rootURI = contextMap[channel.context.contextUUID][channel.root.uuid];
+    //  	CommUUID rootURI = contextMap[channel.context.getContextUUID()][channel.root.uuid];
     // 	CommunicationPolicy::gather(channel.sendData, channel.size, channel.recvData, channel.size, rootURI, channel.dest);
     // }
 
@@ -165,7 +166,7 @@ public:
     template <typename T_Send, typename T_Recv>
     void reduce(const CollectiveChannel<T_Send, T_Recv> channel, const BinaryOperation op){
 	typedef typename T_Recv::value_type recv_value_type;
-     	CommUUID rootURI = contextMap.at(channel.context.contextUUID).at(channel.root.uuid);
+     	CommUUID rootURI = contextMap.at(channel.context.getContextUUID()).at(channel.root.uuid);
      	CommunicationPolicy::reduce(channel.sendData(), const_cast<recv_value_type*>(channel.recvData()), channel.sendSize(), op, rootURI, channel.context);
     }
 
@@ -179,8 +180,8 @@ public:
     void broadcast(const CollectiveChannel<T_Send, T_Recv> channel){
     	typedef typename T_Send::value_type send_value_type;
     	typedef typename T_Recv::value_type recv_value_type;
-     	CommUUID rootUUID = contextMap.at(channel.context.contextUUID).at(channel.root.uuid);
-    	CommUUID ownUUID  = channel.context.uuid();
+     	CommUUID rootUUID = contextMap.at(channel.context.getContextUUID()).at(channel.root.uuid);
+    	CommUUID ownUUID  = channel.context.getCommUUID();
     	if(rootUUID == ownUUID){
     	    CommunicationPolicy::broadcast(const_cast<send_value_type*>(channel.sendData()), channel.sendSize(), rootUUID, channel.context);
     	}
@@ -192,7 +193,6 @@ public:
      void synchronize(const Context context){
      	CommunicationPolicy::synchronize(context);
      }
-
 
 
     /***************************************************************************
@@ -230,7 +230,7 @@ public:
 
     	    for(unsigned j = 0; j < contextSize; ++j){
     		if(recvData[j] != -1){
-    		    contextMap.at(context.contextUUID).insert(std::make_pair(j, recvData[j]));
+    		    contextMap.at(context.getContextUUID()).insert(std::make_pair(j, recvData[j]));
     		}
     	    }
 
@@ -241,12 +241,12 @@ public:
     Context getContext(std::vector<Node> nodes, Context oldContext){
 	std::vector<CommUUID> uuids;
 	for(Node node : nodes){
-	    uuids.push_back(contextMap.at(oldContext.contextUUID).at(node.uuid));
+	    uuids.push_back(contextMap.at(oldContext.getContextUUID()).at(node.uuid));
 	}
 
 	Context newContext = CommunicationPolicy::createContext(uuids, oldContext);
 
-	contextMap.insert(std::make_pair(newContext.contextUUID, std::map<NodeUUID, CommUUID>()));
+	contextMap.insert(std::make_pair(newContext.getContextUUID(), std::map<NodeUUID, CommUUID>()));
 	return newContext;
     }
 
