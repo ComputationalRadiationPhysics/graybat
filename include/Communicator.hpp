@@ -4,8 +4,10 @@
 #include <map>
 #include <utility>
 #include <functional>
+#include <array>      /* array */
 #include <memory>     /* unique_ptr */
 #include <assert.h>   /* assert */
+
 
 template <class T_CommunicationPolicy, typename T_Node>
 class Communicator : public T_CommunicationPolicy {
@@ -26,45 +28,80 @@ private:
     std::map<ContextUUID, std::map<NodeUUID, CommUUID>> contextMap;
 
 public:
-    template <typename T = char>
-    struct Channel {
+
+    /**************************
+     * Inner Channel Class
+     **************************/
+    template <typename T_Container>
+    class Channel {
+    public:
+	typedef typename T_Container::value_type value_type;
+
 	Channel(const Node src, 
 		const Node dest, 
-		T* data, 
-		const size_t size, 
+		T_Container container, 
 		const unsigned channelType, 
 		const Context context
 		) :
-	    src(src), dest(dest), data(data), size(size), channelType(channelType), context(context){
+	    src(src), dest(dest), channelType(channelType), context(context), container(container){
 	
 	}
 
+	size_t size() const {
+	    return container.size();
+	}
+
+	const value_type*  data() const {
+	    return container.data();
+	}
 
 	const Node src;
 	const Node dest;
-	T* data;
-	const size_t size;
 	const unsigned channelType;
 	const Context context;
+	T_Container container;
+
 
     };
 
-    template <typename T = char>
-    struct CollectiveChannel {
-	CollectiveChannel( T* sendData, 
-			   T* recvData, 
-			   const size_t size, 
+    /**************************
+     * Inner CollectiveChannel Class
+     **************************/
+    template <typename T_ContainerSend, typename T_ContainerRecv>
+    class CollectiveChannel {
+    public:
+	typedef typename T_ContainerSend::value_type value_type_send;
+	typedef typename T_ContainerRecv::value_type value_type_recv;
+
+	CollectiveChannel( T_ContainerSend &sendContainer, 
+			   T_ContainerRecv &recvContainer, 
 			   const Node root, 
 			   const Context context) :
-	    sendData(sendData), recvData(recvData), size(size),  root(root), context(context){
-
+	    root(root), context(context), sendContainer(sendContainer), recvContainer(recvContainer) {
 	}
 
-	T* sendData;
-	T* recvData;
-	const size_t size;
+	size_t sendSize() const {
+	    return sendContainer.size();
+	}
+
+	size_t recvSize() const {
+	    return recvContainer.size();
+	}
+
+	const value_type_send*  sendData() const {
+	    return sendContainer.data();
+	}
+
+	const value_type_recv*  recvData() const {
+	    return recvContainer.data();
+	}
+
 	const Node root;
 	const Context context;
+
+    private:
+	T_ContainerSend &sendContainer;
+	T_ContainerRecv &recvContainer;
 
     };
 
@@ -81,76 +118,80 @@ public:
      * POINT TO POINT COMMUNICATION
      *
      ***************************************************************************/
-    void send(Channel<char> channel){
+    template <typename T>
+    void send(Channel<T> channel){
 	CommUUID destURI = contextMap.at(channel.context.contextUUID).at(channel.dest.uuid);
-	Event e = CommunicationPolicy::asyncSendData(channel.data, channel.size, destURI, channel.context, channel.channelType);
+	Event e = CommunicationPolicy::asyncSendData(channel.data(), channel.size(), destURI, channel.context, channel.channelType);
 	e.wait();
     }
 
-    void recv(Channel<char> channel){
+    template <typename T>
+    void recv(Channel<T> channel){
+	typedef typename T::value_type value_type;
 	CommUUID srcURI = contextMap.at(channel.context.contextUUID).at(channel.src.uuid);
-	Event e = CommunicationPolicy::asyncRecvData(channel.data, channel.size, srcURI, channel.context, channel.channelType);
+	Event e = CommunicationPolicy::asyncRecvData(const_cast<value_type*>(channel.data()), channel.size(), srcURI, channel.context, channel.channelType);
 	e.wait();
     }
-
-
 
     /**************************************************************************
      *
      * COLLECTIVE OPERATIONS
      *
      **************************************************************************/ 
-    template <typename T>
-    void gather(const CollectiveChannel<T> channel){
-     	CommUUID rootURI = contextMap[channel.context.contextUUID][channel.root.uuid];
-	CommunicationPolicy::gather(channel.sendData, channel.size, channel.recvData, channel.size, rootURI, channel.dest);
-    }
+    // template <typename T>
+    // void gather(const CollectiveChannel<T> channel){
+    //  	CommUUID rootURI = contextMap[channel.context.contextUUID][channel.root.uuid];
+    // 	CommunicationPolicy::gather(channel.sendData, channel.size, channel.recvData, channel.size, rootURI, channel.dest);
+    // }
 
-    template <typename T>
-    void allGather(const CollectiveChannel<T> channel){
-	CommunicationPolicy::allGather(channel.sendData, channel.size, channel.recvData, channel.size, channel.context);
-
-    }
-
-    template <typename T>
-    void scatter(const CollectiveChannel<T> channel){
-     	CommUUID rootURI = contextMap[channel.context.contextUUID][channel.root.uuid];
-	CommunicationPolicy::gather(channel.sendData, channel.size, channel.recvData, channel.size, rootURI, channel.dest);
-    }
-
-    template <typename T>
-    void allToAll(const CollectiveChannel<T> channel){
-	CommunicationPolicy::allToAll(channel.sendData, channel.size, channel.recvData, channel.size, channel.context);
-    }
-
-    template <typename T>
-    void reduce(const CollectiveChannel<T> channel, const BinaryOperation op){
-     	CommUUID rootURI = contextMap[channel.context.contextUUID][channel.root.uuid];
-     	CommunicationPolicy::reduce(channel.sendData, channel.recvData, channel.size, op, rootURI, channel.context);
-    }
-
-    template <typename T>
-    void allReduce(const CollectiveChannel<T> channel, const BinaryOperation op){
-	CommunicationPolicy::allReduce(channel.sendData, channel.recvData, channel.size, op, channel.context);
+    template <typename T, typename R>
+    void allGather(const CollectiveChannel<T, R> channel){
+	typedef typename R::value_type recv_value_type;
+    	CommunicationPolicy::allGather(channel.sendData(), channel.sendSize(), const_cast<recv_value_type*> (channel.recvData()), channel.sendSize(), channel.context);
 
     }
 
-    template <typename T>
-    void broadcast(const CollectiveChannel<T> channel){
-     	CommUUID rootUUID = contextMap[channel.context.contextUUID][channel.root.uuid];
-	CommUUID ownUUID  = channel.context.uuid();
-	if(rootUUID == ownUUID){
-	    CommunicationPolicy::broadcast(channel.sendData, channel.size, rootUUID, channel.context);
-	}
-	else {
-	    CommunicationPolicy::broadcast(channel.recvData, channel.size, rootUUID, channel.context);
-	}
+    // template <typename T>
+    // void scatter(const CollectiveChannel<T> channel){
+    //  	CommUUID rootURI = contextMap[channel.context.contextUUID][channel.root.uuid];
+    // 	CommunicationPolicy::gather(channel.sendData, channel.size, channel.recvData, channel.size, rootURI, channel.dest);
+    // }
+
+    // template <typename T>
+    // void allToAll(const CollectiveChannel<T> channel){
+    // 	CommunicationPolicy::allToAll(channel.sendData, channel.size, channel.recvData, channel.size, channel.context);
+    // }
+
+    template <typename T_Send, typename T_Recv>
+    void reduce(const CollectiveChannel<T_Send, T_Recv> channel, const BinaryOperation op){
+	typedef typename T_Recv::value_type recv_value_type;
+     	CommUUID rootURI = contextMap.at(channel.context.contextUUID).at(channel.root.uuid);
+     	CommunicationPolicy::reduce(channel.sendData(), const_cast<recv_value_type*>(channel.recvData()), channel.sendSize(), op, rootURI, channel.context);
     }
 
-    template <typename T>
-    void synchronize(const Context context){
-	CommunicationPolicy::synchronize(context);
+    template <typename T_Send, typename T_Recv>
+    void allReduce(const CollectiveChannel<T_Send, T_Recv> &channel, const BinaryOperation op){
+	typedef typename T_Recv::value_type recv_value_type;
+	CommunicationPolicy::allReduce(channel.sendData(), const_cast<recv_value_type*>(channel.recvData()), channel.sendSize(), op, channel.context);
     }
+
+    template <typename T_Send, typename T_Recv>
+    void broadcast(const CollectiveChannel<T_Send, T_Recv> channel){
+    	typedef typename T_Send::value_type send_value_type;
+    	typedef typename T_Recv::value_type recv_value_type;
+     	CommUUID rootUUID = contextMap.at(channel.context.contextUUID).at(channel.root.uuid);
+    	CommUUID ownUUID  = channel.context.uuid();
+    	if(rootUUID == ownUUID){
+    	    CommunicationPolicy::broadcast(const_cast<send_value_type*>(channel.sendData()), channel.sendSize(), rootUUID, channel.context);
+    	}
+    	else {
+    	    CommunicationPolicy::broadcast(const_cast<recv_value_type*>(channel.recvData()), channel.recvSize(), rootUUID, channel.context);
+    	}
+    }
+
+     void synchronize(const Context context){
+     	CommunicationPolicy::synchronize(context);
+     }
 
 
 
@@ -160,35 +201,40 @@ public:
      *
      ***************************************************************************/
     void announce(const std::vector<Node> nodes, const Context context){
-	assert(nodes.size() > 0);
-	unsigned count = nodes.size();
-	unsigned maxNodes = 0;
-	CollectiveChannel<unsigned> reduceChannel(&count, &maxNodes, 1, nodes.at(0), context);
-	allReduce(reduceChannel, BinaryOperations::MAX);
+    	assert(nodes.size() > 0);
 
-	for(unsigned i = 0; i < maxNodes; ++i){
-	    const size_t contextSize = context.size();
-	    const size_t sendCount = 1;
-	    int sendData;
-	    int recvData[contextSize];
+	// Each announces how many nodes it manageges
+	typedef std::array<unsigned, 1> reduceType;
+	reduceType nodeCount {{(unsigned) nodes.size()}};
+	reduceType maxNodes  {{0}};
+    	CollectiveChannel<reduceType, reduceType> reduceChannel(nodeCount, maxNodes, nodes.at(0), context);
+    	allReduce(reduceChannel, BinaryOperations::MAX);
 
-	    CollectiveChannel<int> gatherChannel(&sendData, recvData, sendCount, nodes.at(0), context);
-	    if(i < nodes.size()){
-		gatherChannel.sendData[0] = nodes.at(i).uuid;
-	    }
-	    else{
-		gatherChannel.sendData[0] = -1;
-	    }
+	
+    	for(unsigned i = 0; i < maxNodes[0]; ++i){
+    	    const size_t contextSize = context.size();
+    	    const size_t sendCount = 1;
+	    typedef std::vector<int> channelType;
+	    channelType sendData(sendCount);
+	    channelType recvData(contextSize);
 
-	    allGather(gatherChannel);
+    	    CollectiveChannel<channelType, channelType> gatherChannel(sendData, recvData, nodes.at(0), context);
+    	    if(i < nodes.size()){
+    		sendData[0] = nodes.at(i).uuid;
+    	    }
+    	    else{
+    		sendData[0] = -1;
+    	    }
 
-	    for(unsigned j = 0; j < contextSize; ++j){
-		if(gatherChannel.recvData[j] != -1){
-		    contextMap.at(context.contextUUID).insert(std::make_pair(j, gatherChannel.recvData[j]));
-		}
-	    }
+    	    allGather(gatherChannel);
 
-	}
+    	    for(unsigned j = 0; j < contextSize; ++j){
+    		if(recvData[j] != -1){
+    		    contextMap.at(context.contextUUID).insert(std::make_pair(j, recvData[j]));
+    		}
+    	    }
+
+    	}
 
     }
 

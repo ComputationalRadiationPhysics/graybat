@@ -7,7 +7,9 @@
 #include <iostream> /* cout */
 #include <tuple>    /* pair */
 #include <vector>   /* vector   */
+#include <array>    /* array */
 #include <mpi.h>    /* MPI_INIT */
+
 
 
 /*******************************************************************************
@@ -28,8 +30,8 @@ typedef std::tuple<Vertex, Vertex, Edge>               EdgeDescriptor;
 // Vertex ist struct with at least UUID uuid member
 typedef CommunicationPolicy::MPI                   Mpi;
 typedef Communicator<Mpi, Vertex>                  MPICommunicator;
+typedef MPICommunicator::Channel<std::string>      StringChannel;
 typedef MPICommunicator::Channel<char>             CharChannel;
-typedef MPICommunicator::CollectiveChannel<char>   CharCollectiveChannel;
 typedef typename MPICommunicator::Context          Context;
 typedef typename MPICommunicator::BinaryOperations BinaryOperations;
 
@@ -104,10 +106,7 @@ void handle(){
  * MAIN
  *
  *******************************************************************************/
-int main(int argc, char **argv){
-    // Init MPI
-    MPI_Init(&argc, &argv);
-
+int main(){
     // Create graph
     const unsigned numVertices        = 4;
     std::vector<Vertex> vertices      = generateVertices(numVertices);
@@ -125,55 +124,64 @@ int main(int argc, char **argv){
     // Announce own vertices
     std::vector<Vertex> myVertices;
     myVertices.push_back(myVertex);
-
     mpiCommunicator.announce(myVertices, initialContext);
 
-    // Create Context
+    // Create Context example
     // std::vector<Vertex> contextVertices;
     // contextVertices.push_back(myGraph.getVertices().at(2));
     // contextVertices.push_back(myGraph.getVertices().at(3));
     // Context newContext = mpiCommunicator.getContext(contextVertices, initialContext);
-
     // if(newContext.valid()){
     // 	std::cout << "old context uuid: " << initialContext.uuid() << " new context uuid:  " << newContext.uuid() << std::endl;
     // }
 
 
-    // Simple broadcast example
-    const size_t size = 512;
-    if(cid == 0){
-    	char data[size] = "Hello World";
-    	CharCollectiveChannel broadcastChannel(data, data, size, myGraph.getVertices().at(0), initialContext);
-    	mpiCommunicator.broadcast(broadcastChannel);
+    // Broadcast example
+    {
+	if(cid == 0) std::cout << "C Broadcast example" << std::endl;
+	mpiCommunicator.synchronize(initialContext);
+	std::string send;
+	std::string recv;
+	Vertex rootVertex = myGraph.getVertices().at(0);
+	MPICommunicator::CollectiveChannel<std::string, std::string> broadcastChannel(send, recv, rootVertex, initialContext);
+	if(cid == 0){
+	    send = "Hello World (Broadcast)";
+	    mpiCommunicator.broadcast(broadcastChannel);
 
-	CharChannel testChannel(myGraph.getVertices().at(0),
-				myGraph.getVertices().at(1),
-				data, 
-				size,
-				0,
-				initialContext);
-
-	mpiCommunicator.send(testChannel);
-
-
-    }
-    else {
-    	char data[size];
-    	CharCollectiveChannel broadcastChannel(data, data, size, myGraph.getVertices().at(0), initialContext);
-    	mpiCommunicator.broadcast(broadcastChannel);
-    	std::cout << broadcastChannel.recvData << std::endl;
-
-	CharChannel testChannel(myGraph.getVertices().at(0),
-				myGraph.getVertices().at(1),
-				data, 
-				size,
-				0,
-				initialContext);
-
-	mpiCommunicator.recv(testChannel);
-
+	}
+	else {
+	    recv = "00000000000000000000000";
+	    mpiCommunicator.broadcast(broadcastChannel);
+	    std::cout << recv << std::endl;
     
+	}
+	mpiCommunicator.synchronize(initialContext);
     }
+
+    // Broadcast by point2point communication
+    {
+	if(cid == 0) std::cout << "C Broadcast example p2p" << std::endl;
+	mpiCommunicator.synchronize(initialContext);
+	Vertex rootVertex = myGraph.getVertices().at(0);
+
+	if(cid == 0){
+	    int verticesCount = myGraph.getVertices().size();
+	    for(int i = 1; i < verticesCount; ++i){
+		std::string send = "Hello World (Direct)";
+		MPICommunicator::Channel<std::string>  directChannel(rootVertex, myGraph.getVertices().at(i), send, 0, initialContext);
+		mpiCommunicator.send(directChannel);
+	    }
+
+	}
+	else {
+	    std::string recv = "00000000000000000000";
+	    MPICommunicator::Channel<std::string>  directChannel(rootVertex, myVertex, recv, 0, initialContext);
+	    mpiCommunicator.recv(directChannel);
+	    std::cout << recv << std::endl;
+	}
+    }
+
+
 
 }
 
