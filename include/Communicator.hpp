@@ -18,9 +18,10 @@ private:
     typedef typename CommunicationPolicy::ContextUUID      ContextUUID;
     typedef typename CommunicationPolicy::CommUUID         CommUUID;
     typedef typename CommunicationPolicy::BinaryOperation  BinaryOperation;
-    typedef typename CommunicationPolicy::Event            Event;
+
 
 public:
+    typedef typename CommunicationPolicy::Event            Event;
     typedef typename CommunicationPolicy::BinaryOperations  BinaryOperations;
     typedef typename CommunicationPolicy::Context           Context;
 
@@ -121,17 +122,49 @@ public:
      ***************************************************************************/
     template <typename T>
     void send(Channel<T> channel){
-	CommUUID destURI = contextMap.at(channel.context.getContextUUID()).at(channel.dest.uuid);
-	Event e = CommunicationPolicy::asyncSendData(channel.data(), channel.size(), destURI, channel.context, channel.channelType);
+	Event e = asyncSend(channel);
 	e.wait();
     }
 
     template <typename T>
+    Event asyncSend(Channel<T> channel){
+	CommUUID destURI = contextMap.at(channel.context.getContextUUID()).at(channel.dest.uuid);
+	return CommunicationPolicy::asyncSendData(channel.data(), channel.size(), destURI, channel.context, channel.channelType);
+    }
+
+    template <typename T>
     void recv(Channel<T> channel){
+    	Event e = asyncRecv(channel);
+    	e.wait();
+    }
+
+    // TODO
+    // Is an interface without channels better ?
+    template <typename T>
+    void recv(const Node srcNode, const unsigned tag, const Context context, T& data){
+	CommUUID srcURI = contextMap.at(context.getContextUUID()).at(srcNode.uuid);
+	Event e =  CommunicationPolicy::asyncRecvData(data.data(), data.size(), srcURI, context, tag);
+	e.wait();
+
+    }
+    
+    // TODO
+    // Can there be a default context ?
+    template <typename T>
+    void recv(const Node srcNode, const unsigned tag, T& data){
+	CommUUID srcURI = contextMap.at(getInitialContext().getContextUUID()).at(srcNode.uuid);
+	Event e =  CommunicationPolicy::asyncRecvData(data.data(), data.size(), srcURI, getInitialContext(), tag);
+	e.wait();
+
+    }
+
+
+    template <typename T>
+    Event asyncRecv(Channel<T> channel){
 	typedef typename T::value_type value_type;
 	CommUUID srcURI = contextMap.at(channel.context.getContextUUID()).at(channel.src.uuid);
-	Event e = CommunicationPolicy::asyncRecvData(const_cast<value_type*>(channel.data()), channel.size(), srcURI, channel.context, channel.channelType);
-	e.wait();
+	return CommunicationPolicy::asyncRecvData(const_cast<value_type*>(channel.data()), channel.size(), srcURI, channel.context, channel.channelType);
+
     }
 
     /**************************************************************************
@@ -139,29 +172,36 @@ public:
      * COLLECTIVE OPERATIONS
      *
      **************************************************************************/ 
-    // template <typename T>
-    // void gather(const CollectiveChannel<T> channel){
-    //  	CommUUID rootURI = contextMap[channel.context.getContextUUID()][channel.root.uuid];
-    // 	CommunicationPolicy::gather(channel.sendData, channel.size, channel.recvData, channel.size, rootURI, channel.dest);
-    // }
+    // TODO 
+    // Make collective interfaces more slim
+    // ==> because some sizes, data not needed
 
-    template <typename T, typename R>
-    void allGather(const CollectiveChannel<T, R> channel){
-	typedef typename R::value_type recv_value_type;
-    	CommunicationPolicy::allGather(channel.sendData(), channel.sendSize(), const_cast<recv_value_type*> (channel.recvData()), channel.sendSize(), channel.context);
+    template <typename T_Send, typename T_Recv>
+    void gather(const CollectiveChannel<T_Send, T_Recv> channel){
+	typedef typename T_Recv::value_type recv_value_type;
+     	CommUUID rootURI = contextMap.at(channel.context.getContextUUID()).at(channel.root.uuid);
+    	CommunicationPolicy::gather(channel.sendData(), channel.sendSize(), const_cast<recv_value_type*>(channel.recvData()), channel.recvSize(), rootURI, channel.dest);
+    }
+
+    template <typename T_Send, typename T_Recv>
+    void allGather(const CollectiveChannel<T_Send, T_Recv> channel){
+	typedef typename T_Recv::value_type recv_value_type;
+    	CommunicationPolicy::allGather(channel.sendData(), channel.sendSize(), const_cast<recv_value_type*>(channel.recvData()), channel.sendSize(), channel.context);
 
     }
 
-    // template <typename T>
-    // void scatter(const CollectiveChannel<T> channel){
-    //  	CommUUID rootURI = contextMap[channel.context.getContextUUID()][channel.root.uuid];
-    // 	CommunicationPolicy::gather(channel.sendData, channel.size, channel.recvData, channel.size, rootURI, channel.dest);
-    // }
+    template <typename T_Send, typename T_Recv>
+    void scatter(const CollectiveChannel<T_Send, T_Recv> channel){
+	typedef typename T_Recv::value_type recv_value_type;
+     	CommUUID rootURI = contextMap.at(channel.context.getContextUUID()).at(channel.root.uuid);
+    	CommunicationPolicy::gather(channel.sendData(), channel.sendSize(), const_cast<recv_value_type*>(channel.recvData()), channel.recvSize(), rootURI, channel.dest);
+    }
 
-    // template <typename T>
-    // void allToAll(const CollectiveChannel<T> channel){
-    // 	CommunicationPolicy::allToAll(channel.sendData, channel.size, channel.recvData, channel.size, channel.context);
-    // }
+    template <typename T_Send, typename T_Recv>
+    void allToAll(const CollectiveChannel<T_Send, T_Recv> channel){
+	typedef typename T_Recv::value_type recv_value_type;
+    	CommunicationPolicy::allToAll(channel.sendData(), channel.sendSize(), const_cast<recv_value_type*>(channel.recvData()), channel.recvSize(), channel.context);
+    }
 
     template <typename T_Send, typename T_Recv>
     void reduce(const CollectiveChannel<T_Send, T_Recv> channel, const BinaryOperation op){
@@ -203,7 +243,7 @@ public:
     void announce(const std::vector<Node> nodes, const Context context){
     	assert(nodes.size() > 0);
 
-	// Each announces how many nodes it manageges
+	// Each announces how many nodes it manages
 	typedef std::array<unsigned, 1> reduceType;
 	reduceType nodeCount {{(unsigned) nodes.size()}};
 	reduceType maxNodes  {{0}};

@@ -184,10 +184,10 @@ namespace CommunicationPolicy {
 	}
 
 	template <typename T_Send, typename T_Recv>
-	void gather(T_Send* sendData, const size_t sendCount, T_Recv* recvData, const size_t recvCount, const CommUUID root, const Context context){
+	void gather(const T_Send* sendData, const size_t sendCount, T_Recv* recvData, const size_t recvCount, const CommUUID root, const Context context){
 	    URI rootURI = uriMap.at(context.getContextUUID()).at(root);
-	    MPI_Gather(sendData, sendCount, MPIDatatypes<T_Send>::type, 
-		       recvData, recvCount, MPIDatatypes<T_Recv>::type, 
+	    MPI_Gather(const_cast<T_Send*>(sendData), sendCount, MPIDatatypes<T_Send>::type, 
+		       const_cast<T_Recv*>(recvData), recvCount, MPIDatatypes<T_Recv>::type, 
 		       rootURI, context.getContextUUID());
 	}
 
@@ -199,17 +199,17 @@ namespace CommunicationPolicy {
 	}
 
 	template <typename T_Send, typename T_Recv>
-	void scatter(T_Send* sendData, const size_t sendCount, T_Recv* recvData, const size_t recvCount, const CommUUID root, const Context context){
+	void scatter(const T_Send* sendData, const size_t sendCount, T_Recv* recvData, const size_t recvCount, const CommUUID root, const Context context){
 	    URI rootURI = uriMap.at(context.getContextUUID()).at(root);
-	    MPI_Scatter(sendData, sendCount, MPIDatatypes<T_Send>::type, 
-			recvData, recvCount, MPIDatatypes<T_Recv>::type, 
+	    MPI_Scatter(const_cast<T_Send*>(sendData), sendCount, MPIDatatypes<T_Send>::type, 
+			const_cast<T_Recv*>(recvData), recvCount, MPIDatatypes<T_Recv>::type, 
 			rootURI, context.getContextUUID());
 	}
 
 	template <typename T_Send, typename T_Recv>
-	void allToAll(T_Send* sendData, const size_t sendCount, T_Recv* recvData, const size_t recvCount, const Context context){
-	    MPI_Alltoall(sendData, sendCount, MPIDatatypes<T_Send>::type, 
-			 recvData, recvCount, MPIDatatypes<T_Recv>::type, 
+	void allToAll(const T_Send* sendData, const size_t sendCount, T_Recv* recvData, const size_t recvCount, const Context context){
+	    MPI_Alltoall(const_cast<T_Send*>(sendData), sendCount, MPIDatatypes<T_Send>::type, 
+			 const_cast<T_Recv*>(recvData), recvCount, MPIDatatypes<T_Recv>::type, 
 			 context.getContextUUID());
 	}
 	
@@ -229,7 +229,7 @@ namespace CommunicationPolicy {
 	 * ORGANISATION
 	 *
 	 ***************************************************************************/
-	Context createContext(std::vector<CommUUID> uuids, const Context oldContext){
+	Context createContext(const std::vector<CommUUID> uuids, const Context oldContext){
 	    assert(uuids.size() > 1);
 	    ContextUUID  newContextUUID;
 	    MPI_Group oldGroup, newGroup;

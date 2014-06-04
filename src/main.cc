@@ -30,10 +30,9 @@ typedef std::tuple<Vertex, Vertex, Edge>               EdgeDescriptor;
 // Vertex ist struct with at least UUID uuid member
 typedef CommunicationPolicy::MPI                   Mpi;
 typedef Communicator<Mpi, Vertex>                  MPICommunicator;
-typedef MPICommunicator::Channel<std::string>      StringChannel;
-typedef MPICommunicator::Channel<char>             CharChannel;
 typedef typename MPICommunicator::Context          Context;
 typedef typename MPICommunicator::BinaryOperations BinaryOperations;
+typedef typename MPICommunicator::Event            Event;
 
 
 /*******************************************************************************
@@ -159,7 +158,6 @@ std::vector<EdgeDescriptor> generate2DMeshTopology(const unsigned height, const 
  * COMMUNICATION AUXILARY
  *
  *******************************************************************************/
-
 void broadcast(MPICommunicator &mpiCommunicator, BGLGraph &myGraph){
     Context initialContext = mpiCommunicator.getInitialContext();
     unsigned cid = initialContext.getCommUUID();
@@ -241,6 +239,49 @@ void sumP2P(MPICommunicator &mpiCommunicator, BGLGraph &graph){
 
 }
 
+void nearestNeighborExchange(MPICommunicator &mpiCommunicator, BGLGraph &graph){
+    Context initialContext = mpiCommunicator.getInitialContext();
+    unsigned cid           = initialContext.getCommUUID();
+    Vertex myVertex        = graph.getVertices().at(cid);
+    
+    mpiCommunicator.announce(myVertex, initialContext);
+
+    std::vector<std::pair<Vertex, Edge> > inEdges  = graph.getInEdges(myVertex);
+    std::vector<std::pair<Vertex, Edge> > outEdges = graph.getOutEdges(myVertex);
+
+    typedef std::array<unsigned, 1> Buffer;
+    typedef MPICommunicator::Channel<Buffer> Channel;
+    
+    // Create data buffer
+    std::vector<Buffer> inBuffers(inEdges.size(), Buffer{{0}});
+    Buffer outBuffer{{myVertex.uuid}};
+
+    // Send data to out edges
+    for(unsigned i = 0; i < outEdges.size(); ++i){
+	Vertex v = outEdges.at(i).first;
+	mpiCommunicator.asyncSend(Channel(myVertex, v, outBuffer, 0, initialContext));
+    }
+
+    // Recv data from in edges
+    unsigned inVertexSum = 0;
+    for(unsigned i = 0; i < inEdges.size(); ++i){
+	Vertex v = inEdges.at(i).first;
+	inVertexSum += v.uuid;
+	mpiCommunicator.recv(v, 0, inBuffers[i]);
+    }
+
+    // Sum up collected data
+    unsigned recvSum = 0;
+    for(Buffer b : inBuffers){
+	recvSum += b[0];
+    }
+    
+    std::cout << " recvSum: " << recvSum << " inVertexSum: " << inVertexSum<< std::endl;
+    assert(recvSum == inVertexSum);
+
+}
+	
+
 
 /*******************************************************************************
  *
@@ -256,23 +297,15 @@ int main(){
     //std::vector<EdgeDescriptor> edges = generateFullyConnected(10, vertices);
     //std::vector<EdgeDescriptor> edges = generateStarTopology(10, vertices);
     //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(8, vertices);
-    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(1, 2, vertices);
+    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(3, 3, vertices);
     BGLGraph myGraph (edges, vertices);
 
-    myGraph.print();
+    //myGraph.print();
 
     /***************************************************************************
      * Create communicator
      ****************************************************************************/
     MPICommunicator mpiCommunicator;
-    Context initialContext = mpiCommunicator.getInitialContext();
-    int cid = initialContext.getCommUUID();
-
-    // Get vertex to work on
-    Vertex myVertex = myGraph.getVertices().at(cid);
-
-    // Announce own vertices
-    mpiCommunicator.announce(myVertex, initialContext);
 
     /***************************************************************************
      * Example create new context
@@ -292,6 +325,8 @@ int main(){
     // broadcast(mpiCommunicator, myGraph);
     // broadcastP2P(mpiCommunicator, myGraph);
     // sumP2P(mpiCommunicator, myGraph);
+    nearestNeighborExchange(mpiCommunicator, myGraph);
+    
 
 }
 
