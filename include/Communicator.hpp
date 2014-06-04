@@ -238,6 +238,12 @@ public:
 
     }
 
+    void announce(const Node node, const Context context){
+	std::vector<Node> nodes;
+	nodes.push_back(node);
+	announce(nodes, context);
+    }
+
     Context getContext(std::vector<Node> nodes, Context oldContext){
 	std::vector<CommUUID> uuids;
 	for(Node node : nodes){

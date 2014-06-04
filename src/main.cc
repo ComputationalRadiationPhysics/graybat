@@ -49,8 +49,9 @@ std::vector<Vertex> generateVertices(const size_t numVertices){
     return vertices;
 }
 
-std::vector<EdgeDescriptor> generateFullyConnected(const std::vector<Vertex> vertices){
-    std::cout << "Create grid with " << vertices.size() << " cells" << std::endl;
+std::vector<EdgeDescriptor> generateFullyConnected(const unsigned verticesCount, std::vector<Vertex> &vertices){
+    vertices = generateVertices(verticesCount);
+    std::cout << "Create fully connected with " << vertices.size() << " cells" << std::endl;
 
     unsigned edgeCount = 0;    
     std::vector<EdgeDescriptor> edges;
@@ -70,9 +71,10 @@ std::vector<EdgeDescriptor> generateFullyConnected(const std::vector<Vertex> ver
     return edges;
 }
 
-std::vector<EdgeDescriptor> generateStarTopology(const std::vector<Vertex> vertices){
+std::vector<EdgeDescriptor> generateStarTopology(const unsigned verticesCount, std::vector<Vertex> &vertices){
+    vertices = generateVertices(verticesCount);
     std::cout << "Create star with " << vertices.size() << " cells" << std::endl;
-
+    
     unsigned edgeCount = 0;    
     std::vector<EdgeDescriptor> edges;
 
@@ -112,20 +114,46 @@ std::vector<EdgeDescriptor> generateHyperCubeTopology(const unsigned dimension, 
     return edges;
 }
 
+// TODO
+// Make n-dimensional
+// Make connected borders
+std::vector<EdgeDescriptor> generate2DMeshTopology(const unsigned height, const unsigned width, std::vector<Vertex> &vertices){
+    const unsigned verticesCount = height * width;
+    vertices = generateVertices(verticesCount);
+    std::vector<EdgeDescriptor> edges;
 
+    unsigned edgeCount = 0;
 
-void printVertices(std::vector<Vertex> vertices){
-    std::cout << "vertices = ";
     for(Vertex v: vertices){
-	std::cout << v.uuid << " ";
+	unsigned i    = v.uuid;
+
+	if(i >= width){
+	    unsigned up   = i - width;
+	    edges.push_back(std::make_tuple(vertices[i], vertices[up], Edge(edgeCount++)));
+	}
+
+	if(i < (verticesCount - width)){
+	    unsigned down = i + width;
+	    edges.push_back(std::make_tuple(vertices[i], vertices[down], Edge(edgeCount++)));
+	}
+
+
+	if((i % width) != (width - 1)){
+	    int right = i + 1;
+	    edges.push_back(std::make_tuple(vertices[i], vertices[right], Edge(edgeCount++)));
+	}
+
+	if((i % width) != 0){
+	    int left = i - 1;
+	    edges.push_back(std::make_tuple(vertices[i], vertices[left], Edge(edgeCount++)));
+	}
+	
+
     }
-    std::cout << std::endl;
+
+    return edges;
 }
 
-void handle(){
-    std::cout << "handle called" << std::endl;
-
-}
 /*******************************************************************************
  *
  * COMMUNICATION AUXILARY
@@ -180,6 +208,38 @@ void broadcastP2P(MPICommunicator &mpiCommunicator, BGLGraph &myGraph){
     }
 }
 
+void sumP2P(MPICommunicator &mpiCommunicator, BGLGraph &graph){
+    Context initialContext = mpiCommunicator.getInitialContext();
+    size_t contextSize = initialContext.size();
+    unsigned cid = initialContext.getCommUUID();
+    Vertex myVertex = graph.getVertices().at(cid);
+    Vertex rootVertex = graph.getVertices().at(0);
+
+    mpiCommunicator.announce(myVertex, initialContext);
+
+    std::array<int, 1> data{{0}};
+
+    int sum = 0;
+
+    if(cid == 0){
+	for(unsigned i = 1; i < contextSize; ++i){
+	    MPICommunicator::Channel<std::array<int,1> > c (graph.getVertices().at(i), rootVertex, data, 0, initialContext);
+	    mpiCommunicator.recv(c);
+	    sum += data[0];
+	    std::cout << data[0];
+	    if(i != (contextSize - 1))
+	       std::cout << " + ";
+	}
+	std::cout << " = " << sum << std::endl;
+
+    }
+    else {
+	MPICommunicator::Channel<std::array<int,1> > c (myVertex, rootVertex, data, 0, initialContext);
+	data[0] = myVertex.uuid;
+	mpiCommunicator.send(c);
+    }
+
+}
 
 
 /*******************************************************************************
@@ -192,11 +252,11 @@ int main(){
     /***************************************************************************
      * Create graph
      ****************************************************************************/
-    //const unsigned numVertices        = 4;
-    //std::vector<Vertex> vertices      = generateVertices(numVertices);
     std::vector<Vertex> vertices;
-    //std::vector<EdgeDescriptor> edges = generateStarTopology(vertices);
-    std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(2, vertices);
+    //std::vector<EdgeDescriptor> edges = generateFullyConnected(10, vertices);
+    //std::vector<EdgeDescriptor> edges = generateStarTopology(10, vertices);
+    //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(8, vertices);
+    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(1, 2, vertices);
     BGLGraph myGraph (edges, vertices);
 
     myGraph.print();
@@ -208,14 +268,11 @@ int main(){
     Context initialContext = mpiCommunicator.getInitialContext();
     int cid = initialContext.getCommUUID();
 
-
     // Get vertex to work on
     Vertex myVertex = myGraph.getVertices().at(cid);
 
     // Announce own vertices
-    std::vector<Vertex> myVertices;
-    myVertices.push_back(myVertex);
-    mpiCommunicator.announce(myVertices, initialContext);
+    mpiCommunicator.announce(myVertex, initialContext);
 
     /***************************************************************************
      * Example create new context
@@ -234,7 +291,7 @@ int main(){
      ****************************************************************************/
     // broadcast(mpiCommunicator, myGraph);
     // broadcastP2P(mpiCommunicator, myGraph);
-
+    // sumP2P(mpiCommunicator, myGraph);
 
 }
 
