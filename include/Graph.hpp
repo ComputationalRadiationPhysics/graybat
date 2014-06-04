@@ -68,6 +68,18 @@ public:
     	return inEdges;
     }
 
+    void print(){
+	std::vector<Vertex> vertices = getVertices();
+
+	for(Vertex v : vertices){
+	    std::vector<std::pair<Vertex, Edge> > outEdges = getOutEdges(v);
+	    for(std::pair<Vertex, Edge> e : outEdges){
+		std::cout << "Edge [" << e.second.uuid << "] : (" << v.uuid << ") ==> (" << e.first.uuid << ")" << std::endl; 
+	    }
+
+	}
+
+    }
 	      
 private:
     std::vector<Vertex> getVerticesProperties(Container<GraphPolicyVertex> v){

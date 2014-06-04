@@ -38,7 +38,7 @@ typedef typename MPICommunicator::BinaryOperations BinaryOperations;
 
 /*******************************************************************************
  *
- * AUXILARY
+ * GRAPH AUXILARY
  *
  *******************************************************************************/
 std::vector<Vertex> generateVertices(const size_t numVertices){
@@ -86,6 +86,32 @@ std::vector<EdgeDescriptor> generateStarTopology(const std::vector<Vertex> verti
     return edges;
 }
 
+unsigned hammingDistance(unsigned a, unsigned b){
+    unsigned abXor = a xor b;
+    return (unsigned) __builtin_popcount(abXor);
+}
+
+
+std::vector<EdgeDescriptor> generateHyperCubeTopology(const unsigned dimension, std::vector<Vertex> &vertices){
+    assert(dimension >= 1);
+    std::vector<EdgeDescriptor> edges;
+
+    unsigned verticesCount = pow(2, dimension);
+    unsigned edgeCount = 0;
+    vertices  = generateVertices(verticesCount);
+
+    for(Vertex v1 : vertices){
+	for(Vertex v2 : vertices){
+	    if(hammingDistance(v1.uuid, v2.uuid) == 1){
+		edges.push_back(std::make_tuple(v1, v2, Edge(edgeCount++)));
+	    }
+
+	}
+    }
+    
+    return edges;
+}
+
 
 
 void printVertices(std::vector<Vertex> vertices){
@@ -100,6 +126,61 @@ void handle(){
     std::cout << "handle called" << std::endl;
 
 }
+/*******************************************************************************
+ *
+ * COMMUNICATION AUXILARY
+ *
+ *******************************************************************************/
+
+void broadcast(MPICommunicator &mpiCommunicator, BGLGraph &myGraph){
+    Context initialContext = mpiCommunicator.getInitialContext();
+    unsigned cid = initialContext.getCommUUID();
+    mpiCommunicator.synchronize(initialContext);
+    if(cid == 0) std::cerr << "C Broadcast example" << std::endl;
+    std::string send;
+    std::string recv;
+    Vertex rootVertex = myGraph.getVertices().at(0);
+    MPICommunicator::CollectiveChannel<std::string, std::string> broadcastChannel(send, recv, rootVertex, initialContext);
+    if(cid == 0){
+	send = "Hello World (Broadcast)";
+	mpiCommunicator.broadcast(broadcastChannel);
+
+    }
+    else {
+	recv = "00000000000000000000000";
+	mpiCommunicator.broadcast(broadcastChannel);
+	std::cerr << recv << std::endl;
+    
+    }
+
+}
+
+void broadcastP2P(MPICommunicator &mpiCommunicator, BGLGraph &myGraph){
+    Context initialContext = mpiCommunicator.getInitialContext();
+    unsigned cid = initialContext.getCommUUID();
+    Vertex myVertex = myGraph.getVertices().at(cid);
+    mpiCommunicator.synchronize(initialContext);
+    if(cid == 0) std::cerr << "C Broadcast example p2p" << std::endl;
+    Vertex rootVertex = myGraph.getVertices().at(0);
+
+    if(cid == 0){
+	int verticesCount = myGraph.getVertices().size();
+	for(int i = 1; i < verticesCount; ++i){
+	    std::string send = "Hello World (Direct)";
+	    MPICommunicator::Channel<std::string>  directChannel(rootVertex, myGraph.getVertices().at(i), send, 0, initialContext);
+	    mpiCommunicator.send(directChannel);
+	}
+
+    }
+    else {
+	std::string recv = "00000000000000000000";
+	MPICommunicator::Channel<std::string>  directChannel(rootVertex, myVertex, recv, 0, initialContext);
+	mpiCommunicator.recv(directChannel);
+	std::cerr << recv << std::endl;
+    }
+}
+
+
 
 /*******************************************************************************
  *
@@ -107,16 +188,26 @@ void handle(){
  *
  *******************************************************************************/
 int main(){
-    // Create graph
-    const unsigned numVertices        = 4;
-    std::vector<Vertex> vertices      = generateVertices(numVertices);
-    std::vector<EdgeDescriptor> edges = generateStarTopology(vertices);
+
+    /***************************************************************************
+     * Create graph
+     ****************************************************************************/
+    //const unsigned numVertices        = 4;
+    //std::vector<Vertex> vertices      = generateVertices(numVertices);
+    std::vector<Vertex> vertices;
+    //std::vector<EdgeDescriptor> edges = generateStarTopology(vertices);
+    std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(2, vertices);
     BGLGraph myGraph (edges, vertices);
 
-    // MPI 
+    myGraph.print();
+
+    /***************************************************************************
+     * Create communicator
+     ****************************************************************************/
     MPICommunicator mpiCommunicator;
     Context initialContext = mpiCommunicator.getInitialContext();
     int cid = initialContext.getCommUUID();
+
 
     // Get vertex to work on
     Vertex myVertex = myGraph.getVertices().at(cid);
@@ -127,65 +218,22 @@ int main(){
     mpiCommunicator.announce(myVertices, initialContext);
 
     /***************************************************************************
-     * Create Context example
+     * Example create new context
      ****************************************************************************/
-    std::vector<Vertex> contextVertices;
-    contextVertices.push_back(myGraph.getVertices().at(2));
-    contextVertices.push_back(myGraph.getVertices().at(3));
-    Context newContext = mpiCommunicator.getContext(contextVertices, initialContext);
-    if(newContext.valid()){
-	mpiCommunicator.announce(myVertices, newContext);
-    	std::cout << "old context uuid: " << initialContext.getCommUUID() << " new context uuid:  " << newContext.getCommUUID() << std::endl;
-    }
+    // std::vector<Vertex> contextVertices;
+    // contextVertices.push_back(myGraph.getVertices().at(2));
+    // contextVertices.push_back(myGraph.getVertices().at(3));
+    // Context newContext = mpiCommunicator.getContext(contextVertices, initialContext);
+    // if(newContext.valid()){
+    // 	mpiCommunicator.announce(myVertices, newContext);
+    // 	std::cout << "old context uuid: " << initialContext.getCommUUID() << " new context uuid:  " << newContext.getCommUUID() << std::endl;
+    // }
 
     /***************************************************************************
-     * Broadcast example
+     * Examples communication 
      ****************************************************************************/
-    mpiCommunicator.synchronize(initialContext);
-    {
-	if(cid == 0) std::cerr << "C Broadcast example" << std::endl;
-	std::string send;
-	std::string recv;
-	Vertex rootVertex = myGraph.getVertices().at(0);
-	MPICommunicator::CollectiveChannel<std::string, std::string> broadcastChannel(send, recv, rootVertex, initialContext);
-	if(cid == 0){
-	    send = "Hello World (Broadcast)";
-	    mpiCommunicator.broadcast(broadcastChannel);
-
-	}
-	else {
-	    recv = "00000000000000000000000";
-	    mpiCommunicator.broadcast(broadcastChannel);
-	    std::cerr << recv << std::endl;
-    
-	}
-    }
-
-    /***************************************************************************
-     * Broadcast by point2point communication 
-     ****************************************************************************/
-    mpiCommunicator.synchronize(initialContext);
-    {
-	if(cid == 0) std::cerr << "C Broadcast example p2p" << std::endl;
-	Vertex rootVertex = myGraph.getVertices().at(0);
-
-	if(cid == 0){
-	    int verticesCount = myGraph.getVertices().size();
-	    for(int i = 1; i < verticesCount; ++i){
-		std::string send = "Hello World (Direct)";
-		MPICommunicator::Channel<std::string>  directChannel(rootVertex, myGraph.getVertices().at(i), send, 0, initialContext);
-		mpiCommunicator.send(directChannel);
-	    }
-
-	}
-	else {
-	    std::string recv = "00000000000000000000";
-	    MPICommunicator::Channel<std::string>  directChannel(rootVertex, myVertex, recv, 0, initialContext);
-	    mpiCommunicator.recv(directChannel);
-	    std::cerr << recv << std::endl;
-	}
-    }
-
+    // broadcast(mpiCommunicator, myGraph);
+    // broadcastP2P(mpiCommunicator, myGraph);
 
 
 }
