@@ -35,16 +35,17 @@ public:
      **************************/
     template <typename T_Container>
     class Channel {
+
+
     public:
 	typedef typename T_Container::value_type value_type;
 
-	Channel(const Node src, 
-		const Node dest, 
-		T_Container &container, 
+	Channel(const Node contact, 
 		const unsigned channelType, 
-		const Context context
+		const Context context,
+		T_Container &container
 		) :
-	    src(src), dest(dest), channelType(channelType), context(context), container(container){
+	    contact(contact), channelType(channelType), context(context), container(container){
 	
 	}
 
@@ -56,8 +57,7 @@ public:
 	    return container.data();
 	}
 
-	const Node src;
-	const Node dest;
+	const Node contact;
 	const unsigned channelType;
 	const Context context;
     private:
@@ -120,6 +120,9 @@ public:
      * POINT TO POINT COMMUNICATION
      *
      ***************************************************************************/
+    // TODO
+    // Remove channels ?
+
     template <typename T>
     void send(Channel<T> channel){
 	Event e = asyncSend(channel);
@@ -127,10 +130,22 @@ public:
     }
 
     template <typename T>
-    Event asyncSend(Channel<T> channel){
-	CommUUID destURI = contextMap.at(channel.context.getContextUUID()).at(channel.dest.uuid);
-	return CommunicationPolicy::asyncSendData(channel.data(), channel.size(), destURI, channel.context, channel.channelType);
+    void send(const Node destNode, const unsigned tag, const Context context, T& sendData){
+	Event e = asyncSend(Channel<T>(destNode, tag, context, sendData));
+	e.wait();
     }
+
+    template <typename T>
+    Event asyncSend(Channel<T> channel){
+	CommUUID destCommUUID = contextMap.at(channel.context.getContextUUID()).at(channel.contact.uuid);
+	return CommunicationPolicy::asyncSendData(channel.data(), channel.size(), destCommUUID, channel.context, channel.channelType);
+    }
+
+    template <typename T>
+    Event asyncSend(const Node destNode, const unsigned tag, const Context context, T& sendData){
+	return asyncSend(Channel<T>(destNode, tag, context, sendData));
+    }
+
 
     template <typename T>
     void recv(Channel<T> channel){
@@ -138,34 +153,24 @@ public:
     	e.wait();
     }
 
-    // TODO
-    // Is an interface without channels better ?
     template <typename T>
     void recv(const Node srcNode, const unsigned tag, const Context context, T& data){
-	CommUUID srcURI = contextMap.at(context.getContextUUID()).at(srcNode.uuid);
-	Event e =  CommunicationPolicy::asyncRecvData(data.data(), data.size(), srcURI, context, tag);
+	Event e =  asyncRecv(Channel<T>(srcNode, tag, context, data));
 	e.wait();
-
     }
-    
-    // TODO
-    // Can there be a default context ?
-    template <typename T>
-    void recv(const Node srcNode, const unsigned tag, T& data){
-	CommUUID srcURI = contextMap.at(getInitialContext().getContextUUID()).at(srcNode.uuid);
-	Event e =  CommunicationPolicy::asyncRecvData(data.data(), data.size(), srcURI, getInitialContext(), tag);
-	e.wait();
-
-    }
-
 
     template <typename T>
     Event asyncRecv(Channel<T> channel){
-	typedef typename T::value_type value_type;
-	CommUUID srcURI = contextMap.at(channel.context.getContextUUID()).at(channel.src.uuid);
-	return CommunicationPolicy::asyncRecvData(const_cast<value_type*>(channel.data()), channel.size(), srcURI, channel.context, channel.channelType);
+	CommUUID srcCommUUID = contextMap.at(channel.context.getContextUUID()).at(channel.contact.uuid);
+	return CommunicationPolicy::asyncRecvData(channel.data(), channel.size(), srcCommUUID, channel.context, channel.channelType);
 
     }
+
+    template <typename T>
+    Event asyncRecv(const Node srcNode, const unsigned tag, const Context context, T& data){
+	return asyncRecv(Channel<T>(srcNode, tag, context, data));
+    }
+
 
     /**************************************************************************
      *
@@ -174,13 +179,14 @@ public:
      **************************************************************************/ 
     // TODO 
     // Make collective interfaces more slim
+    // Rethink collective channel !
     // ==> because some sizes, data not needed
 
     template <typename T_Send, typename T_Recv>
     void gather(const CollectiveChannel<T_Send, T_Recv> channel){
 	typedef typename T_Recv::value_type recv_value_type;
      	CommUUID rootURI = contextMap.at(channel.context.getContextUUID()).at(channel.root.uuid);
-    	CommunicationPolicy::gather(channel.sendData(), channel.sendSize(), const_cast<recv_value_type*>(channel.recvData()), channel.recvSize(), rootURI, channel.dest);
+    	CommunicationPolicy::gather(channel.sendData(), channel.sendSize(), const_cast<recv_value_type*>(channel.recvData()), channel.recvSize(), rootURI, channel.contact);
     }
 
     template <typename T_Send, typename T_Recv>
@@ -194,7 +200,7 @@ public:
     void scatter(const CollectiveChannel<T_Send, T_Recv> channel){
 	typedef typename T_Recv::value_type recv_value_type;
      	CommUUID rootURI = contextMap.at(channel.context.getContextUUID()).at(channel.root.uuid);
-    	CommunicationPolicy::gather(channel.sendData(), channel.sendSize(), const_cast<recv_value_type*>(channel.recvData()), channel.recvSize(), rootURI, channel.dest);
+    	CommunicationPolicy::gather(channel.sendData(), channel.sendSize(), const_cast<recv_value_type*>(channel.recvData()), channel.recvSize(), rootURI, channel.contact);
     }
 
     template <typename T_Send, typename T_Recv>

@@ -158,6 +158,8 @@ std::vector<EdgeDescriptor> generate2DMeshTopology(const unsigned height, const 
  * COMMUNICATION AUXILARY
  *
  *******************************************************************************/
+
+/*
 void broadcast(MPICommunicator &mpiCommunicator, BGLGraph &myGraph){
     Context initialContext = mpiCommunicator.getInitialContext();
     unsigned cid = initialContext.getCommUUID();
@@ -187,20 +189,19 @@ void broadcastP2P(MPICommunicator &mpiCommunicator, BGLGraph &myGraph){
     Vertex myVertex = myGraph.getVertices().at(cid);
     mpiCommunicator.synchronize(initialContext);
     if(cid == 0) std::cerr << "C Broadcast example p2p" << std::endl;
-    Vertex rootVertex = myGraph.getVertices().at(0);
 
     if(cid == 0){
 	int verticesCount = myGraph.getVertices().size();
 	for(int i = 1; i < verticesCount; ++i){
 	    std::string send = "Hello World (Direct)";
-	    MPICommunicator::Channel<std::string>  directChannel(rootVertex, myGraph.getVertices().at(i), send, 0, initialContext);
+	    MPICommunicator::Channel<std::string>  directChannel(myGraph.getVertices().at(i), send, 0, initialContext);
 	    mpiCommunicator.send(directChannel);
 	}
 
     }
     else {
 	std::string recv = "00000000000000000000";
-	MPICommunicator::Channel<std::string>  directChannel(rootVertex, myVertex, recv, 0, initialContext);
+	MPICommunicator::Channel<std::string>  directChannel(myVertex, recv, 0, initialContext);
 	mpiCommunicator.recv(directChannel);
 	std::cerr << recv << std::endl;
     }
@@ -221,7 +222,7 @@ void sumP2P(MPICommunicator &mpiCommunicator, BGLGraph &graph){
 
     if(cid == 0){
 	for(unsigned i = 1; i < contextSize; ++i){
-	    MPICommunicator::Channel<std::array<int,1> > c (graph.getVertices().at(i), rootVertex, data, 0, initialContext);
+	    MPICommunicator::Channel<std::array<int,1> > c (rootVertex, data, 0, initialContext);
 	    mpiCommunicator.recv(c);
 	    sum += data[0];
 	    std::cout << data[0];
@@ -232,12 +233,13 @@ void sumP2P(MPICommunicator &mpiCommunicator, BGLGraph &graph){
 
     }
     else {
-	MPICommunicator::Channel<std::array<int,1> > c (myVertex, rootVertex, data, 0, initialContext);
+	MPICommunicator::Channel<std::array<int,1> > c (rootVertex, data, 0, initialContext);
 	data[0] = myVertex.uuid;
 	mpiCommunicator.send(c);
     }
 
 }
+*/
 
 void nearestNeighborExchange(MPICommunicator &mpiCommunicator, BGLGraph &graph){
     Context initialContext = mpiCommunicator.getInitialContext();
@@ -249,6 +251,7 @@ void nearestNeighborExchange(MPICommunicator &mpiCommunicator, BGLGraph &graph){
     std::vector<std::pair<Vertex, Edge> > inEdges  = graph.getInEdges(myVertex);
     std::vector<std::pair<Vertex, Edge> > outEdges = graph.getOutEdges(myVertex);
 
+
     typedef std::array<unsigned, 1> Buffer;
     typedef MPICommunicator::Channel<Buffer> Channel;
     
@@ -258,16 +261,18 @@ void nearestNeighborExchange(MPICommunicator &mpiCommunicator, BGLGraph &graph){
 
     // Send data to out edges
     for(unsigned i = 0; i < outEdges.size(); ++i){
-	Vertex v = outEdges.at(i).first;
-	mpiCommunicator.asyncSend(Channel(myVertex, v, outBuffer, 0, initialContext));
+	Vertex dest = outEdges.at(i).first;
+	Edge   e   = outEdges.at(i).second;
+	mpiCommunicator.asyncSend(dest, e.uuid, initialContext, outBuffer);
     }
 
     // Recv data from in edges
     unsigned inVertexSum = 0;
     for(unsigned i = 0; i < inEdges.size(); ++i){
-	Vertex v = inEdges.at(i).first;
-	inVertexSum += v.uuid;
-	mpiCommunicator.recv(v, 0, inBuffers[i]);
+	Vertex src = inEdges.at(i).first;
+	Edge   e   = inEdges.at(i).second;
+	mpiCommunicator.recv(src, e.uuid, initialContext, inBuffers[i]);
+	inVertexSum += src.uuid;
     }
 
     // Sum up collected data
@@ -281,8 +286,6 @@ void nearestNeighborExchange(MPICommunicator &mpiCommunicator, BGLGraph &graph){
 
 }
 	
-
-
 /*******************************************************************************
  *
  * MAIN

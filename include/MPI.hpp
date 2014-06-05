@@ -150,7 +150,7 @@ namespace CommunicationPolicy {
 	}
 
 	template <typename T>
-	void recvData(T*  data, const size_t count, const CommUUID src, const Context context, const MsgType msgType){
+	void recvData(const T*  data, const size_t count, const CommUUID src, const Context context, const MsgType msgType){
 	    MPI_Status  status;	    
 	    URI srcURI = uriMap.at(context.getContextUUID()).at(src);
 	    MPI_Recv(const_cast<T*>(data), count, MPIDatatypes<T>::type, srcURI, msgType, context.getContextUUID(), &status);
@@ -158,7 +158,7 @@ namespace CommunicationPolicy {
 	}
 
 	template <typename T>
-	Event asyncRecvData(T*  data, const size_t count, const URI src, const Context context, const MsgType msgType){
+	Event asyncRecvData(const T*  data, const size_t count, const URI src, const Context context, const MsgType msgType){
 	    MPI_Request   request;
 	    URI srcURI = uriMap.at(context.getContextUUID()).at(src);
 	    MPI_Irecv(const_cast<T*>(data), count, MPIDatatypes<T>::type, srcURI, msgType, context.getContextUUID(), &request);
