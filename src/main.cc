@@ -9,7 +9,7 @@
 #include <vector>   /* vector   */
 #include <array>    /* array */
 #include <math.h>   /* ceil */
-
+#include <time.h>   /* time */
 
 
 
@@ -162,96 +162,12 @@ std::vector<EdgeDescriptor> generate2DMeshTopology(const unsigned height, const 
  *
  *******************************************************************************/
 
-/*
-void broadcast(MPICommunicator &mpiCommunicator, BGLGraph &myGraph){
-    Context initialContext = mpiCommunicator.getInitialContext();
-    unsigned cid = initialContext.getCommUUID();
-    mpiCommunicator.synchronize(initialContext);
-    if(cid == 0) std::cerr << "C Broadcast example" << std::endl;
-    std::string send;
-    std::string recv;
-    Vertex rootVertex = myGraph.getVertices().at(0);
-    MPICommunicator::CollectiveChannel<std::string, std::string> broadcastChannel(send, recv, rootVertex, initialContext);
-    if(cid == 0){
-	send = "Hello World (Broadcast)";
-	mpiCommunicator.broadcast(broadcastChannel);
-
-    }
-    else {
-	recv = "00000000000000000000000";
-	mpiCommunicator.broadcast(broadcastChannel);
-	std::cerr << recv << std::endl;
-    
-    }
-
-}
-
-void broadcastP2P(MPICommunicator &mpiCommunicator, BGLGraph &myGraph){
-    Context initialContext = mpiCommunicator.getInitialContext();
-    unsigned cid = initialContext.getCommUUID();
-    Vertex myVertex = myGraph.getVertices().at(cid);
-    mpiCommunicator.synchronize(initialContext);
-    if(cid == 0) std::cerr << "C Broadcast example p2p" << std::endl;
-
-    if(cid == 0){
-	int verticesCount = myGraph.getVertices().size();
-	for(int i = 1; i < verticesCount; ++i){
-	    std::string send = "Hello World (Direct)";
-	    MPICommunicator::Channel<std::string>  directChannel(myGraph.getVertices().at(i), send, 0, initialContext);
-	    mpiCommunicator.send(directChannel);
-	}
-
-    }
-    else {
-	std::string recv = "00000000000000000000";
-	MPICommunicator::Channel<std::string>  directChannel(myVertex, recv, 0, initialContext);
-	mpiCommunicator.recv(directChannel);
-	std::cerr << recv << std::endl;
-    }
-}
-
-void sumP2P(MPICommunicator &mpiCommunicator, BGLGraph &graph){
-    Context initialContext = mpiCommunicator.getInitialContext();
-    size_t contextSize = initialContext.size();
-    unsigned cid = initialContext.getCommUUID();
-    Vertex myVertex = graph.getVertices().at(cid);
-    Vertex rootVertex = graph.getVertices().at(0);
-
-    mpiCommunicator.announce(myVertex, initialContext);
-
-    std::array<int, 1> data{{0}};
-
-    int sum = 0;
-
-    if(cid == 0){
-	for(unsigned i = 1; i < contextSize; ++i){
-	    MPICommunicator::Channel<std::array<int,1> > c (rootVertex, data, 0, initialContext);
-	    mpiCommunicator.recv(c);
-	    sum += data[0];
-	    std::cout << data[0];
-	    if(i != (contextSize - 1))
-	       std::cout << " + ";
-	}
-	std::cout << " = " << sum << std::endl;
-
-    }
-    else {
-	MPICommunicator::Channel<std::array<int,1> > c (rootVertex, data, 0, initialContext);
-	data[0] = myVertex.uuid;
-	mpiCommunicator.send(c);
-    }
-
-}
-*/
-
 void nearestNeighborExchange(MPICommunicator &mpiCommunicator, BGLGraph &graph, std::vector<Vertex> myVertices){
     Context initialContext = mpiCommunicator.getInitialContext();
     // Distribute and announce vertices
     unsigned cid           = initialContext.getCommUUID();
 
     // Handle communication of vertices
-    std::vector<Event> events;
-    std::vector<unsigned> sums;
     typedef std::array<unsigned, 1> Buffer;
     typedef MPICommunicator::Channel<Buffer> Channel;
 
@@ -292,6 +208,32 @@ void nearestNeighborExchange(MPICommunicator &mpiCommunicator, BGLGraph &graph, 
 
 }
 
+unsigned randomMaster(MPICommunicator &mpiCommunicator){
+    Context context    = mpiCommunicator.getInitialContext();
+    size_t contextSize = context.size();
+    unsigned masterID  = context.getCommUUID();
+
+    srand (time(NULL) + masterID);
+    int random = rand();
+    //std::cout << "ID " << masterID << " " <<random << std::endl;
+    
+    typedef std::vector<int> channelType;
+    channelType sendData(1, random);
+    channelType recvData(contextSize, 0);
+
+
+    MPICommunicator::CollectiveChannel<channelType, channelType> gatherChannel(sendData, recvData, context);
+    mpiCommunicator.allGather(gatherChannel);
+
+    for(unsigned i = 0; i < recvData.size(); ++i){
+	if(recvData[i] > random){
+	    masterID = i;
+	    random = recvData[i];
+	}
+    }
+
+    return masterID;
+}
 
 
 /*******************************************************************************
@@ -323,6 +265,9 @@ std::vector<Vertex> distributeVerticesEvenly(MPICommunicator &mpiCommunicator, B
 
     return myVertices;
 }
+
+
+
 /*******************************************************************************
  *
  * MAIN
@@ -366,7 +311,8 @@ int main(){
     // broadcast(mpiCommunicator, myGraph);
     // broadcastP2P(mpiCommunicator, myGraph);
     // sumP2P(mpiCommunicator, myGraph);
-    nearestNeighborExchange(mpiCommunicator, myGraph, myVertices);
+    //nearestNeighborExchange(mpiCommunicator, myGraph, myVertices);
+    std::cout << "Master: " << randomMaster(mpiCommunicator) << std::endl;
     
 
 }
