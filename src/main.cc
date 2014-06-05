@@ -8,7 +8,8 @@
 #include <tuple>    /* pair */
 #include <vector>   /* vector   */
 #include <array>    /* array */
-#include <mpi.h>    /* MPI_INIT */
+#include <math.h>   /* ceil */
+
 
 
 
@@ -27,12 +28,13 @@ typedef typename BGLGraph::Edge                        Edge;
 typedef std::tuple<Vertex, Vertex, Edge>               EdgeDescriptor;
 
 // Communicator
-// Vertex ist struct with at least UUID uuid member
+// Vertex / Edge is a struct with at least UUID uuid public member
 typedef CommunicationPolicy::MPI                   Mpi;
 typedef Communicator<Mpi, Vertex>                  MPICommunicator;
 typedef typename MPICommunicator::Context          Context;
 typedef typename MPICommunicator::BinaryOperations BinaryOperations;
 typedef typename MPICommunicator::Event            Event;
+
 
 
 /*******************************************************************************
@@ -48,7 +50,7 @@ std::vector<Vertex> generateVertices(const size_t numVertices){
     return vertices;
 }
 
-std::vector<EdgeDescriptor> generateFullyConnected(const unsigned verticesCount, std::vector<Vertex> &vertices){
+std::vector<EdgeDescriptor> generateFullyConnectedTopology(const unsigned verticesCount, std::vector<Vertex> &vertices){
     vertices = generateVertices(verticesCount);
     std::cout << "Create fully connected with " << vertices.size() << " cells" << std::endl;
 
@@ -72,14 +74,13 @@ std::vector<EdgeDescriptor> generateFullyConnected(const unsigned verticesCount,
 
 std::vector<EdgeDescriptor> generateStarTopology(const unsigned verticesCount, std::vector<Vertex> &vertices){
     vertices = generateVertices(verticesCount);
-    std::cout << "Create star with " << vertices.size() << " cells" << std::endl;
     
     unsigned edgeCount = 0;    
     std::vector<EdgeDescriptor> edges;
 
     for(unsigned i = 0; i < vertices.size(); ++i){
 	if(i != 0){
-	    edges.push_back(std::make_tuple(vertices[0], vertices[i], Edge(edgeCount++)));
+	    edges.push_back(std::make_tuple(vertices[i], vertices[0], Edge(edgeCount++)));
 	}
 		
     }
@@ -152,6 +153,8 @@ std::vector<EdgeDescriptor> generate2DMeshTopology(const unsigned height, const 
 
     return edges;
 }
+
+
 
 /*******************************************************************************
  *
@@ -241,51 +244,85 @@ void sumP2P(MPICommunicator &mpiCommunicator, BGLGraph &graph){
 }
 */
 
-void nearestNeighborExchange(MPICommunicator &mpiCommunicator, BGLGraph &graph){
+void nearestNeighborExchange(MPICommunicator &mpiCommunicator, BGLGraph &graph, std::vector<Vertex> myVertices){
     Context initialContext = mpiCommunicator.getInitialContext();
+    // Distribute and announce vertices
     unsigned cid           = initialContext.getCommUUID();
-    Vertex myVertex        = graph.getVertices().at(cid);
-    
-    mpiCommunicator.announce(myVertex, initialContext);
 
-    std::vector<std::pair<Vertex, Edge> > inEdges  = graph.getInEdges(myVertex);
-    std::vector<std::pair<Vertex, Edge> > outEdges = graph.getOutEdges(myVertex);
-
-
+    // Handle communication of vertices
+    std::vector<Event> events;
+    std::vector<unsigned> sums;
     typedef std::array<unsigned, 1> Buffer;
     typedef MPICommunicator::Channel<Buffer> Channel;
-    
-    // Create data buffer
-    std::vector<Buffer> inBuffers(inEdges.size(), Buffer{{0}});
-    Buffer outBuffer{{myVertex.uuid}};
 
-    // Send data to out edges
-    for(unsigned i = 0; i < outEdges.size(); ++i){
-	Vertex dest = outEdges.at(i).first;
-	Edge   e   = outEdges.at(i).second;
-	mpiCommunicator.asyncSend(dest, e.uuid, initialContext, outBuffer);
+    // Async send vertices data
+    for(unsigned vertex_i = 0; vertex_i < myVertices.size(); vertex_i++){
+    	Vertex myVertex = myVertices.at(vertex_i);
+    	std::vector<std::pair<Vertex, Edge> > outEdges = graph.getOutEdges(myVertex);
+    	Buffer outBuffer{{myVertex.uuid}};
+
+    	// Send data to out edges
+    	for(unsigned i = 0; i < outEdges.size(); ++i){
+    	    Vertex dest = outEdges.at(i).first;
+    	    Edge   e   = outEdges.at(i).second;
+    	    mpiCommunicator.asyncSend(dest, e.uuid, initialContext, outBuffer);
+    	}
     }
 
-    // Recv data from in edges
-    unsigned inVertexSum = 0;
-    for(unsigned i = 0; i < inEdges.size(); ++i){
-	Vertex src = inEdges.at(i).first;
-	Edge   e   = inEdges.at(i).second;
-	mpiCommunicator.recv(src, e.uuid, initialContext, inBuffers[i]);
-	inVertexSum += src.uuid;
-    }
+    // Sync recv vertices data
+    for(unsigned vertex_i = 0; vertex_i < myVertices.size(); vertex_i++){
+    	Vertex myVertex = myVertices.at(vertex_i);
+    	std::vector<std::pair<Vertex, Edge> > inEdges  = graph.getInEdges(myVertex);
+    	std::vector<Buffer>  inBuffers (inEdges.size(), Buffer{{0}});
 
-    // Sum up collected data
-    unsigned recvSum = 0;
-    for(Buffer b : inBuffers){
-	recvSum += b[0];
+    	// Recv data from in edges
+    	for(unsigned i = 0; i < inEdges.size(); ++i){
+    	    Vertex src = inEdges.at(i).first;
+    	    Edge   e   = inEdges.at(i).second;
+    	    mpiCommunicator.recv(src, e.uuid, initialContext, inBuffers[i]);
+    	}
+	
+    	unsigned recvSum = 0;
+    	for(Buffer b : inBuffers){
+    	    recvSum += b[0];
+    	}
+    	std::cout << "CommID[" << cid << "] Vertex: " << myVertices[vertex_i].uuid << " NeighborIDSum: " << recvSum <<  std::endl;
+	
     }
-    
-    std::cout << " recvSum: " << recvSum << " inVertexSum: " << inVertexSum<< std::endl;
-    assert(recvSum == inVertexSum);
 
 }
+
+
+
+/*******************************************************************************
+ *
+ * VERTEX DISTRIBUTION
+ *
+ *******************************************************************************/
+std::vector<Vertex> distributeVerticesEvenly(MPICommunicator &mpiCommunicator, BGLGraph &graph){
+    Context initialContext = mpiCommunicator.getInitialContext();
+
+    // Distribute and announce vertices
+    size_t contextSize     = initialContext.size();
+    unsigned cid           = initialContext.getCommUUID();
+    unsigned vertexCount   = graph.getVertices().size();
+    unsigned maxVertex     = ceil((float)vertexCount / contextSize);
+
+    std::vector<Vertex> myVertices;
+    for(unsigned i = 0; i < maxVertex; ++i){
+	unsigned vertex_i = cid + (i * contextSize);
+	if(vertex_i >= vertexCount){
+	    break;
+	}
+	else {
+	    myVertices.push_back(graph.getVertices().at(vertex_i));
+	}
 	
+    }
+    mpiCommunicator.announce(myVertices, initialContext);
+
+    return myVertices;
+}
 /*******************************************************************************
  *
  * MAIN
@@ -297,10 +334,10 @@ int main(){
      * Create graph
      ****************************************************************************/
     std::vector<Vertex> vertices;
-    //std::vector<EdgeDescriptor> edges = generateFullyConnected(10, vertices);
+    //std::vector<EdgeDescriptor> edges = generateFullyConnectedTopology(10, vertices);
     //std::vector<EdgeDescriptor> edges = generateStarTopology(10, vertices);
     //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(8, vertices);
-    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(3, 3, vertices);
+    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(3, 4, vertices);
     BGLGraph myGraph (edges, vertices);
 
     //myGraph.print();
@@ -325,10 +362,11 @@ int main(){
     /***************************************************************************
      * Examples communication 
      ****************************************************************************/
+    std::vector<Vertex> myVertices = distributeVerticesEvenly(mpiCommunicator, myGraph);
     // broadcast(mpiCommunicator, myGraph);
     // broadcastP2P(mpiCommunicator, myGraph);
     // sumP2P(mpiCommunicator, myGraph);
-    nearestNeighborExchange(mpiCommunicator, myGraph);
+    nearestNeighborExchange(mpiCommunicator, myGraph, myVertices);
     
 
 }

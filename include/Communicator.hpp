@@ -82,6 +82,13 @@ public:
 	    root(root), context(context), sendContainer(sendContainer), recvContainer(recvContainer) {
 	}
 
+	CollectiveChannel( T_ContainerSend &sendContainer, 
+			   T_ContainerRecv &recvContainer, 
+			   const Context context) :
+	    root(0), context(context), sendContainer(sendContainer), recvContainer(recvContainer) {
+	}
+
+
 	size_t sendSize() const {
 	    return sendContainer.size();
 	}
@@ -247,15 +254,15 @@ public:
      *
      ***************************************************************************/
     void announce(const std::vector<Node> nodes, const Context context){
-    	assert(nodes.size() > 0);
+    	//assert(nodes.size() > 0);
 
 	// Each announces how many nodes it manages
 	typedef std::array<unsigned, 1> reduceType;
 	reduceType nodeCount {{(unsigned) nodes.size()}};
 	reduceType maxNodes  {{0}};
-    	CollectiveChannel<reduceType, reduceType> reduceChannel(nodeCount, maxNodes, nodes.at(0), context);
-    	allReduce(reduceChannel, BinaryOperations::MAX);
-
+	CollectiveChannel<reduceType, reduceType> reduceChannel(nodeCount, maxNodes, context);
+	allReduce(reduceChannel, BinaryOperations::MAX);
+	 
 	
     	for(unsigned i = 0; i < maxNodes[0]; ++i){
     	    const size_t contextSize = context.size();
@@ -264,20 +271,20 @@ public:
 	    channelType sendData(sendCount);
 	    channelType recvData(contextSize);
 
-    	    CollectiveChannel<channelType, channelType> gatherChannel(sendData, recvData, nodes.at(0), context);
+    	    CollectiveChannel<channelType, channelType> gatherChannel(sendData, recvData, context);
     	    if(i < nodes.size()){
-    		sendData[0] = nodes.at(i).uuid;
+    	    	sendData[0] = nodes.at(i).uuid;
     	    }
     	    else{
-    		sendData[0] = -1;
+    	    	sendData[0] = -1;
     	    }
 
     	    allGather(gatherChannel);
 
     	    for(unsigned j = 0; j < contextSize; ++j){
-    		if(recvData[j] != -1){
-    		    contextMap.at(context.getContextUUID()).insert(std::make_pair(j, recvData[j]));
-    		}
+    	    	if(recvData[j] != -1){
+    	    	    contextMap.at(context.getContextUUID()).insert(std::make_pair(recvData[j], j));
+    	    	}
     	    }
 
     	}
