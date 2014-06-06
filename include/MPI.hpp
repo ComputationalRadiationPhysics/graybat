@@ -124,7 +124,6 @@ namespace CommunicationPolicy {
 	    	uriMap.at(initialContext.getContextUUID()).insert(std::make_pair(CommUUID(i),URI(i)));
 	    }
 
-	    // Create Map context -> uuid
 	    std::cout << "Init MPI " << uriMap.at(initialContext.getContextUUID()).at(initialContext.getCommUUID()) << std::endl;
 	    
 	}
@@ -260,7 +259,7 @@ namespace CommunicationPolicy {
 		URI otherUris[newContext.size()];
 	    	for(unsigned i = 0; i < newContext.size(); ++i){
 	    		allGather(&uri, 1, otherUris, 1, newContext);
-	    		uriMap.at(newContext.getContextUUID()).insert(std::make_pair(i, otherUris[i]));
+	    		uriMap[newContext.getContextUUID()][i] =  otherUris[i];
 	    	}
 	    	return newContext;
 
