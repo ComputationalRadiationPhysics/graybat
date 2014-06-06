@@ -217,7 +217,6 @@ unsigned randomComm(MPICommunicator &mpiCommunicator){
 
     srand (time(NULL) + masterID);
     int random = rand();
-    //std::cout << "ID " << masterID << " " <<random << std::endl;
     
     std::vector<int> sendData(1, random);
     std::vector<int> recvData(contextSize, 0);

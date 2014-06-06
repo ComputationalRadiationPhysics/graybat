@@ -30,150 +30,29 @@ private:
 
 public:
 
-    /**************************
-     * Inner Channel Class
-     **************************/
-    // template <typename T_Container>
-    // class Channel {
-
-
-    // public:
-    // 	typedef typename T_Container::value_type value_type;
-
-    // 	Channel(const Node contact, 
-    // 		const unsigned channelType, 
-    // 		const Context context,
-    // 		T_Container &container
-    // 		) :
-    // 	    contact(contact), channelType(channelType), context(context), container(container){
-	
-    // 	}
-
-    // 	size_t size() const {
-    // 	    return container.size();
-    // 	}
-
-    // 	const value_type*  data() const {
-    // 	    return container.data();
-    // 	}
-
-    // 	const Node contact;
-    // 	const unsigned channelType;
-    // 	const Context context;
-    // private:
-    // 	T_Container &container;
-
-
-    // };
-
-    /*********************************
-     * Inner CollectiveChannel Class
-     *********************************/
-    // template <typename T_ContainerSend, typename T_ContainerRecv>
-    // class CollectiveChannel {
-    // public:
-    // 	typedef typename T_ContainerSend::value_type value_type_send;
-    // 	typedef typename T_ContainerRecv::value_type value_type_recv;
-
-    // 	CollectiveChannel( T_ContainerSend &sendContainer, 
-    // 			   T_ContainerRecv &recvContainer, 
-    // 			   const Node root, 
-    // 			   const Context context) :
-    // 	    root(root), context(context), sendContainer(sendContainer), recvContainer(recvContainer) {
-    // 	}
-
-    // 	CollectiveChannel( T_ContainerSend &sendContainer, 
-    // 			   T_ContainerRecv &recvContainer, 
-    // 			   const Context context) :
-    // 	    root(0), context(context), sendContainer(sendContainer), recvContainer(recvContainer) {
-    // 	}
-
-
-    // 	size_t sendSize() const {
-    // 	    return sendContainer.size();
-    // 	}
-
-    // 	size_t recvSize() const {
-    // 	    return recvContainer.size();
-    // 	}
-
-    // 	const value_type_send*  sendData() const {
-    // 	    return sendContainer.data();
-    // 	}
-
-    // 	const value_type_recv*  recvData() const {
-    // 	    return recvContainer.data();
-    // 	}
-
-    // 	const Node root;
-    // 	const Context context;
-
-    // private:
-    // 	T_ContainerSend &sendContainer;
-    // 	T_ContainerRecv &recvContainer;
-
-    // };
-
-
-    // Communicator() : CommunicationPolicy(){
-    // 	contextMap.insert(std::make_pair(getInitialContext().getContextUUID(), std::map<NodeUUID, CommUUID>()));
-
-    // }
-
-
     /***************************************************************************
      *
      * POINT TO POINT COMMUNICATION
      *
      ***************************************************************************/
-    // TODO
-    // Remove channels ?
-
-    // template <typename T>
-    // void send(Channel<T> channel){
-    // 	Event e = asyncSend(channel);
-    // 	e.wait();
-    // }
-
     template <typename T>
     void send(const Node destNode, const unsigned tag, const Context context, T& sendData){
 	Event e = asyncSend(destNode, tag, context, sendData);
 	e.wait();
     }
 
-    // template <typename T>
-    // Event asyncSend(Channel<T> channel){
-    // 	CommUUID destCommUUID = contextMap.at(channel.context.getContextUUID()).at(channel.contact.uuid);
-    // 	return CommunicationPolicy::asyncSendData(channel.data(), channel.size(), destCommUUID, channel.context, channel.channelType);
-    // }
-
     template <typename T>
     Event asyncSend(const Node destNode, const unsigned tag, const Context context, T& sendData){
 	CommUUID destCommUUID = contextMap.at(context.getContextUUID()).at(destNode.uuid);
 	return CommunicationPolicy::asyncSendData(sendData.data(), sendData.size(), destCommUUID, context, tag);
-
-	//return asyncSend(Channel<T>(destNode, tag, context, sendData));
     }
 
-
-    // template <typename T>
-    // void recv(Channel<T> channel){
-    // 	Event e = asyncRecv(channel);
-    // 	e.wait();
-    // }
 
     template <typename T>
     void recv(const Node srcNode, const unsigned tag, const Context context, T& recvData){
 	Event e =  asyncRecv(srcNode, tag, context, recvData);
 	e.wait();
     }
-
-    // template <typename T>
-    // Event asyncRecv(Channel<T> channel){
-    // 	CommUUID srcCommUUID = contextMap.at(channel.context.getContextUUID()).at(channel.contact.uuid);
-    // 	return CommunicationPolicy::asyncRecvData(channel.data(), channel.size(), srcCommUUID, channel.context, channel.channelType);
-
-    // }
 
     template <typename T>
     Event asyncRecv(const Node srcNode, const unsigned tag, const Context context, const T& recvData){
@@ -198,7 +77,6 @@ public:
     void allGather(const Context context, const T_Send& sendData, const T_Recv& recvData){
     	CommunicationPolicy::allGather(sendData.data(), sendData.size(), recvData.data(), sendData.size(), context);
     }
-
 
     template <typename T_Send, typename T_Recv>
     void scatter(const CommUUID rootCommUUID, const Context context, const T_Send& sendData, const T_Recv& recvData){
@@ -239,15 +117,14 @@ public:
      *
      ***************************************************************************/
     void announce(const std::vector<Node> nodes, const Context context){
-    	//assert(nodes.size() > 0);
 
 	// Each announces how many nodes it manages
-	std::array<unsigned, 1> nodeCount {{(unsigned) nodes.size()}};
-	std::array<unsigned, 1> maxNodes  {{0}};
-	allReduce(context, BinaryOperations::MAX, nodeCount, maxNodes);
+	std::array<unsigned, 1> myNodesCount {{(unsigned) nodes.size()}};
+	std::array<unsigned, 1> maxNodesCount  {{0}};
+	allReduce(context, BinaryOperations::MAX, myNodesCount, maxNodesCount);
 	 
 	
-    	for(unsigned i = 0; i < maxNodes[0]; ++i){
+    	for(unsigned i = 0; i < maxNodesCount[0]; ++i){
     	    const size_t contextSize = context.size();
 	    std::array<int, 1> sendData{{-1}};
 	    std::vector<int> recvData(contextSize);
