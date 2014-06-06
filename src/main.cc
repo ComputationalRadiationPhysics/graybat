@@ -171,7 +171,6 @@ void nearestNeighborExchange(MPICommunicator &mpiCommunicator, BGLGraph &graph, 
 
     // Handle communication of vertices
     typedef std::array<unsigned, 1> Buffer;
-    typedef MPICommunicator::Channel<Buffer> Channel;
 
     // Async send vertices data
     for(unsigned vertex_i = 0; vertex_i < myVertices.size(); vertex_i++){
@@ -220,9 +219,8 @@ unsigned randomComm(MPICommunicator &mpiCommunicator){
     int random = rand();
     //std::cout << "ID " << masterID << " " <<random << std::endl;
     
-    typedef std::vector<int> channelType;
-    channelType sendData(1, random);
-    channelType recvData(contextSize, 0);
+    std::vector<int> sendData(1, random);
+    std::vector<int> recvData(contextSize, 0);
 
     mpiCommunicator.allGather(context, sendData, recvData);
 
@@ -356,7 +354,7 @@ int main(){
     myVertices = occupyRandomVertex(mpiCommunicator, myGraph, myVertices, masterID);
     
 
-     nearestNeighborExchange(mpiCommunicator, myGraph, myVertices);
+    nearestNeighborExchange(mpiCommunicator, myGraph, myVertices);
 
 }
 

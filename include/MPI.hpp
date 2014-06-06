@@ -177,7 +177,7 @@ namespace CommunicationPolicy {
 	 *
 	 **************************************************************************/ 
 	template <typename T>
-	void reduce(const T* sendData, T* recvData, const size_t count, BinaryOperation op, const CommUUID root, const Context context){
+	void reduce(const T* sendData, const T* recvData, const size_t count, BinaryOperation op, const CommUUID root, const Context context){
 	    URI rootURI = uriMap.at(context.getContextUUID()).at(root);
 	    MPI_Reduce(const_cast<T*>(sendData), const_cast<T*>(recvData), count, MPIDatatypes<T>::type, op , rootURI, context.getContextUUID());
 	}
