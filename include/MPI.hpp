@@ -25,6 +25,11 @@ namespace CommunicationPolicy {
     	static constexpr MPI_Datatype type = MPI_CHAR;
     };
 
+    template<>
+    struct MPIDatatypes<const bool>{
+    	static constexpr MPI_Datatype type = MPI_CHAR;
+    };
+
 
     class MPI{
     protected:
@@ -178,13 +183,13 @@ namespace CommunicationPolicy {
 	}
 
 	template <typename T>
-	void allReduce(const T* sendData, T* recvData, const size_t count, BinaryOperation op, const Context context){
+	void allReduce(const T* sendData, const T* recvData, const size_t count, BinaryOperation op, const Context context){
 	    MPI_Allreduce(const_cast<T*>(sendData), const_cast<T*>(recvData), count, MPIDatatypes<T>::type, op , context.getContextUUID());
 
 	}
 
 	template <typename T_Send, typename T_Recv>
-	void gather(const T_Send* sendData, const size_t sendCount, T_Recv* recvData, const size_t recvCount, const CommUUID root, const Context context){
+	void gather(const T_Send* sendData, const size_t sendCount, const T_Recv* recvData, const size_t recvCount, const CommUUID root, const Context context){
 	    URI rootURI = uriMap.at(context.getContextUUID()).at(root);
 	    MPI_Gather(const_cast<T_Send*>(sendData), sendCount, MPIDatatypes<T_Send>::type, 
 		       const_cast<T_Recv*>(recvData), recvCount, MPIDatatypes<T_Recv>::type, 
@@ -192,7 +197,7 @@ namespace CommunicationPolicy {
 	}
 
 	template <typename T_Send, typename T_Recv>
-	void allGather(const T_Send* sendData, const size_t sendCount, T_Recv* recvData, const size_t recvCount, const Context context){
+	void allGather(const T_Send* sendData, const size_t sendCount, const T_Recv* recvData, const size_t recvCount, const Context context){
 	    MPI_Allgather(const_cast<T_Send*>(sendData), sendCount, MPIDatatypes<T_Send>::type, 
 			  const_cast<T_Recv*>(recvData), recvCount, MPIDatatypes<T_Recv>::type, 
 			  context.getContextUUID());
@@ -214,7 +219,7 @@ namespace CommunicationPolicy {
 	}
 	
 	template <typename T>
-	void broadcast(T* data, const size_t count, const CommUUID root, const Context context){
+	void broadcast(const T* data, const size_t count, const CommUUID root, const Context context){
 	    URI rootURI = uriMap.at(context.getContextUUID()).at(root);
 	    MPI_Bcast(const_cast<T*>(data), count, MPIDatatypes<T>::type, rootURI, context.getContextUUID());
 	}

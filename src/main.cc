@@ -12,6 +12,8 @@
 #include <time.h>   /* time */
 
 
+#define FALSE 0
+#define TRUE  1
 
 /*******************************************************************************
  *
@@ -182,7 +184,8 @@ void nearestNeighborExchange(MPICommunicator &mpiCommunicator, BGLGraph &graph, 
     	    Vertex dest = outEdges.at(i).first;
     	    Edge   e   = outEdges.at(i).second;
     	    mpiCommunicator.asyncSend(dest, e.uuid, initialContext, outBuffer);
-    	}
+	}
+
     }
 
     // Sync recv vertices data
@@ -208,7 +211,7 @@ void nearestNeighborExchange(MPICommunicator &mpiCommunicator, BGLGraph &graph, 
 
 }
 
-unsigned randomMaster(MPICommunicator &mpiCommunicator){
+unsigned randomComm(MPICommunicator &mpiCommunicator){
     Context context    = mpiCommunicator.getInitialContext();
     size_t contextSize = context.size();
     unsigned masterID  = context.getCommUUID();
@@ -221,9 +224,7 @@ unsigned randomMaster(MPICommunicator &mpiCommunicator){
     channelType sendData(1, random);
     channelType recvData(contextSize, 0);
 
-
-    MPICommunicator::CollectiveChannel<channelType, channelType> gatherChannel(sendData, recvData, context);
-    mpiCommunicator.allGather(gatherChannel);
+    mpiCommunicator.allGather(context, sendData, recvData);
 
     for(unsigned i = 0; i < recvData.size(); ++i){
 	if(recvData[i] > random){
@@ -233,6 +234,45 @@ unsigned randomMaster(MPICommunicator &mpiCommunicator){
     }
 
     return masterID;
+}
+
+std::vector<Vertex> occupyRandomVertex(MPICommunicator &mpiCommunicator, BGLGraph &myGraph, std::vector<Vertex> myVertices, unsigned masterID){
+    Context context = mpiCommunicator.getInitialContext();
+    unsigned cid    = context.getCommUUID();
+    std::array<unsigned, 1> randomVertex{{0}};
+    std::array<char, 1> iHaveVertex{{FALSE}};
+    std::vector<char> whoHasVertex(context.size(), FALSE);
+
+    if(cid == masterID){
+    	randomVertex[0] = rand() % myGraph.getVertices().size();
+	mpiCommunicator.broadcast(masterID, context, randomVertex);
+	mpiCommunicator.gather(masterID, context, iHaveVertex, whoHasVertex);
+	
+    	for(unsigned i = 0; i < whoHasVertex.size(); ++i){
+    	    if(whoHasVertex[i] == TRUE){
+    		Vertex v = myGraph.getVertices().at(randomVertex[0]);
+    		myVertices.push_back(v);
+    		std::cout << "Master " << masterID << " occupied Vertex with id " << v.uuid << std::endl;
+    		break;
+    	    }
+    	}
+
+    }
+    else {
+	mpiCommunicator.broadcast(masterID, context, randomVertex);
+  
+    	for(unsigned i = 0; i < myVertices.size(); ++i){
+    	    if(myVertices[i].uuid == randomVertex[0]){
+    		iHaveVertex[0] = TRUE;
+    		myVertices.erase(myVertices.begin() + i);
+		break;
+    	    }
+    	}
+	mpiCommunicator.gather(masterID, context, iHaveVertex, whoHasVertex);
+    }
+
+    mpiCommunicator.announce(myVertices, context);
+    return myVertices;
 }
 
 
@@ -279,18 +319,18 @@ int main(){
      * Create graph
      ****************************************************************************/
     std::vector<Vertex> vertices;
+    std::vector<Vertex> myVertices;
     //std::vector<EdgeDescriptor> edges = generateFullyConnectedTopology(10, vertices);
     //std::vector<EdgeDescriptor> edges = generateStarTopology(10, vertices);
     //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(8, vertices);
-    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(3, 4, vertices);
+    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(2, 8, vertices);
     BGLGraph myGraph (edges, vertices);
-
-    //myGraph.print();
 
     /***************************************************************************
      * Create communicator
      ****************************************************************************/
     MPICommunicator mpiCommunicator;
+    //Context context = mpiCommunicator.getInitialContext();
 
     /***************************************************************************
      * Example create new context
@@ -307,13 +347,16 @@ int main(){
     /***************************************************************************
      * Examples communication 
      ****************************************************************************/
-    std::vector<Vertex> myVertices = distributeVerticesEvenly(mpiCommunicator, myGraph);
-    // broadcast(mpiCommunicator, myGraph);
-    // broadcastP2P(mpiCommunicator, myGraph);
-    // sumP2P(mpiCommunicator, myGraph);
-    //nearestNeighborExchange(mpiCommunicator, myGraph, myVertices);
-    std::cout << "Master: " << randomMaster(mpiCommunicator) << std::endl;
+    unsigned masterID = 0;
+
+    myVertices = distributeVerticesEvenly(mpiCommunicator, myGraph);
+
+    masterID = randomComm(mpiCommunicator);
+    myVertices = occupyRandomVertex(mpiCommunicator, myGraph, myVertices, masterID);
+    myVertices = occupyRandomVertex(mpiCommunicator, myGraph, myVertices, masterID);
     
+
+     nearestNeighborExchange(mpiCommunicator, myGraph, myVertices);
 
 }
 
