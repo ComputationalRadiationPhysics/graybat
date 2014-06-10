@@ -14,7 +14,7 @@ private:
     typedef T_Node                                         Node;
     typedef T_CommunicationPolicy                          CommunicationPolicy;
     typedef unsigned                                       NodeID;
-    typedef typename CommunicationPolicy::ContextID      ContextID;
+    typedef typename CommunicationPolicy::ContextID        ContextID;
     typedef unsigned                                       CommID;
     typedef typename CommunicationPolicy::BinaryOperation  BinaryOperation;
 
