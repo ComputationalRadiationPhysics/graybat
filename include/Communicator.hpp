@@ -29,7 +29,7 @@ private:
     // TODO
     // Remove ContextIDMap from Communicator
     // Put into own class
-    std::map<ContextID, std::map<NodeID, CommID>> contextMap;
+    std::map<ContextID, std::map<NodeID, CommID>> commMap;
 
 public:
 
@@ -46,7 +46,7 @@ public:
 
     template <typename T>
     Event asyncSend(const Node destNode, const unsigned tag, const Context context, T& sendData){
-	CommID destCommID = contextMap.at(context.getContextID()).at(destNode.id);
+	CommID destCommID = commMap.at(context.getContextID()).at(destNode.id);
 	return CommunicationPolicy::asyncSendData(sendData.data(), sendData.size(), destCommID, context, tag);
     }
 
@@ -59,7 +59,7 @@ public:
 
     template <typename T>
     Event asyncRecv(const Node srcNode, const unsigned tag, const Context context, const T& recvData){
-	CommID srcCommID = contextMap.at(context.getContextID()).at(srcNode.id);
+	CommID srcCommID = commMap.at(context.getContextID()).at(srcNode.id);
 	return CommunicationPolicy::asyncRecvData(recvData.data(), recvData.size(), srcCommID, context, tag);
     }
 
@@ -143,7 +143,7 @@ public:
 
     	    for(unsigned j = 0; j < contextSize; ++j){
     	    	if(recvData[j] != -1){
-		    contextMap[context.getContextID()][recvData[j]] = j;
+		    commMap[context.getContextID()][recvData[j]] = j;
     	    	}
     	    }
 
@@ -160,12 +160,12 @@ public:
     Context getContext(std::vector<Node> nodes, Context oldContext){
 	std::vector<CommID> ids;
 	for(Node node : nodes){
-	    ids.push_back(contextMap.at(oldContext.getContextID()).at(node.id));
+	    ids.push_back(commMap.at(oldContext.getContextID()).at(node.id));
 	}
 
 	Context newContext = CommunicationPolicy::createContext(ids, oldContext);
 
-	contextMap.insert(std::make_pair(newContext.getContextID(), std::map<NodeID, CommID>()));
+	commMap[newContext.getContextID()] =  std::map<NodeID, CommID>();
 	return newContext;
     }
 

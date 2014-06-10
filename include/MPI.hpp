@@ -261,6 +261,7 @@ namespace CommunicationPolicy {
 	    	URI uri;
 	    	MPI_Comm_rank(newMPIContext, &uri);
 	    	Context newContext(++contextCount, uri, MPICommSize(newMPIContext));
+		contextMap[newContext.getContextID()] = newMPIContext;
 
 	    	// Update UriMap
 	    	uriMap.insert(std::make_pair(newContext.getContextID(), std::map<CommID, URI>()));
@@ -299,6 +300,7 @@ namespace CommunicationPolicy {
 	}
 
 	size_t MPICommSize(MPI_Comm comm){
+	    initMPI();
 	    int n;
 	    MPI_Comm_size(comm, &n);
 	    return n;

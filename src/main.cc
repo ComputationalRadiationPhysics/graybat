@@ -397,29 +397,32 @@ int main(){
     MPICommunicator mpiCommunicator;
     Context context = mpiCommunicator.getInitialContext();
 
+    myVertices = distributeVerticesEvenly(mpiCommunicator, myGraph);
+
     /***************************************************************************
      * Example create new context
      ****************************************************************************/
-    // std::vector<Vertex> contextVertices;
-    // contextVertices.push_back(myGraph.getVertices().at(2));
-    // contextVertices.push_back(myGraph.getVertices().at(3));
-    // Context newContext = mpiCommunicator.getContext(contextVertices, initialContext);
-    // if(newContext.valid()){
-    // 	mpiCommunicator.announce(myVertices, newContext);
-    // 	std::cout << "old context id: " << initialContext.getCommID() << " new context id:  " << newContext.getCommID() << std::endl;
-    // }
+
+    std::vector<Vertex> contextVertices;
+    contextVertices.push_back(myGraph.getVertices().at(2));
+    contextVertices.push_back(myGraph.getVertices().at(3));
+    Context newContext = mpiCommunicator.getContext(contextVertices, context);
+    if(newContext.valid()){
+    	mpiCommunicator.announce(myVertices, newContext);
+    	std::cout << "old context id: " << context.getCommID() << " new context id:  " << newContext.getCommID() << std::endl;
+    }
 
     /***************************************************************************
      * Examples communication 
      ****************************************************************************/
-    unsigned masterID = 0;
+    // unsigned masterID = 0;
 
-    myVertices = distributeVerticesEvenly(mpiCommunicator, myGraph);
+    // myVertices = distributeVerticesEvenly(mpiCommunicator, myGraph);
 
-    masterID = randomComm(mpiCommunicator);
+    // masterID = randomComm(mpiCommunicator);
 
-    VCMAP<Vertex, MPICommunicator> vcMap(mpiCommunicator);
-    vcMap.announce(myVertices, context);
+    // // VCMAP<Vertex, MPICommunicator> vcMap(mpiCommunicator);
+    // // vcMap.announce(myVertices, context);
 
 
     // myVertices = occupyRandomVertex(mpiCommunicator, myGraph, myVertices, masterID);
