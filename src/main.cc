@@ -21,7 +21,7 @@
  *
  ******************************************************************************/
 // Graph
-// Property is struct with at least UUID uuid and typename UUDI
+// Property is struct with at least ID id and typename UUDI
 typedef GraphPolicy::NoProperty NoProperty; 
 typedef GraphPolicy::BGL<NoProperty, NoProperty> BGL;
 typedef Graph<BGL>                                     BGLGraph;
@@ -30,13 +30,81 @@ typedef typename BGLGraph::Edge                        Edge;
 typedef std::tuple<Vertex, Vertex, Edge>               EdgeDescriptor;
 
 // Communicator
-// Vertex / Edge is a struct with at least UUID uuid public member
+// Vertex / Edge is a struct with at least ID id public member
 typedef CommunicationPolicy::MPI                   Mpi;
 typedef Communicator<Mpi, Vertex>                  MPICommunicator;
 typedef typename MPICommunicator::Context          Context;
 typedef typename MPICommunicator::BinaryOperations BinaryOperations;
 typedef typename MPICommunicator::Event            Event;
 
+/*******************************************************************************
+ *
+ * TESTING
+ *
+ *******************************************************************************/
+template <typename T_Vertex, typename T_Communicator>
+struct VCMAP {
+    typedef T_Communicator                   Communicator;
+    typedef typename Communicator::Context   Context;
+    typedef typename Communicator::ContextID ContextID;
+    typedef typename Communicator::CommID    CommID;
+    typedef T_Vertex                         Vertex;
+    typedef typename Vertex::ID              VertexID;
+
+
+    VCMAP(Communicator communicator) : communicator(communicator) {
+
+    }
+
+    std::map<ContextID, std::map<VertexID, CommID>> commMap;
+    Communicator& communicator;
+
+
+    void announce(const std::vector<Vertex> vertices, const Context context){
+
+	// Each announces how many nodes it manages
+	std::array<unsigned, 1> myVerticesCount {{(unsigned) vertices.size()}};
+	std::array<unsigned, 1> maxVerticesCount  {{0}};
+	communicator.allReduce(context, BinaryOperations::MAX, myVerticesCount, maxVerticesCount);
+	 
+	
+    	for(unsigned i = 0; i < maxVerticesCount[0]; ++i){
+    	    const size_t contextSize = context.size();
+	    std::array<int, 1> sendData{{-1}};
+	    std::vector<int> recvData(contextSize);
+
+    	    if(i < vertices.size()){
+    	    	sendData[0] = vertices.at(i).id;
+    	    }
+    	    else{
+    	    	sendData[0] = -1;
+    	    }
+
+    	    communicator.allGather(context, sendData, recvData);
+
+    	    for(unsigned j = 0; j < contextSize; ++j){
+    	    	if(recvData[j] != -1){
+		    commMap[context.getContextID()][recvData[j]] = j;
+    	    	}
+    	    }
+
+    	}
+
+    }
+
+    void announce(const Vertex vertex, const Context context){
+	std::vector<Vertex> vertices;
+	vertices.push_back(vertex);
+	announce(vertices, context, communicator);
+    }
+
+    CommID getCommID(Vertex vertex, Context context){
+	CommID commID = commMap.at(context.getContextID()).at(vertex.id);
+	return commID;
+	
+    }
+
+};
 
 
 /*******************************************************************************
@@ -61,7 +129,7 @@ std::vector<EdgeDescriptor> generateFullyConnectedTopology(const unsigned vertic
 
     for(unsigned i = 0; i < vertices.size(); ++i){
 	for(unsigned j = 0; j < vertices.size(); ++j){
-	    if(vertices[i].uuid == vertices[j].uuid){
+	    if(vertices[i].id == vertices[j].id){
 		continue;
 	    } 
 	    else {
@@ -106,7 +174,7 @@ std::vector<EdgeDescriptor> generateHyperCubeTopology(const unsigned dimension, 
 
     for(Vertex v1 : vertices){
 	for(Vertex v2 : vertices){
-	    if(hammingDistance(v1.uuid, v2.uuid) == 1){
+	    if(hammingDistance(v1.id, v2.id) == 1){
 		edges.push_back(std::make_tuple(v1, v2, Edge(edgeCount++)));
 	    }
 
@@ -127,7 +195,7 @@ std::vector<EdgeDescriptor> generate2DMeshTopology(const unsigned height, const 
     unsigned edgeCount = 0;
 
     for(Vertex v: vertices){
-	unsigned i    = v.uuid;
+	unsigned i    = v.id;
 
 	if(i >= width){
 	    unsigned up   = i - width;
@@ -176,13 +244,13 @@ void nearestNeighborExchange(MPICommunicator &mpiCommunicator, BGLGraph &graph, 
     for(unsigned vertex_i = 0; vertex_i < myVertices.size(); vertex_i++){
     	Vertex myVertex = myVertices.at(vertex_i);
     	std::vector<std::pair<Vertex, Edge> > outEdges = graph.getOutEdges(myVertex);
-    	Buffer outBuffer{{myVertex.uuid}};
+    	Buffer outBuffer{{myVertex.id}};
 
     	// Send data to out edges
     	for(unsigned i = 0; i < outEdges.size(); ++i){
     	    Vertex dest = outEdges.at(i).first;
     	    Edge   e   = outEdges.at(i).second;
-    	    mpiCommunicator.asyncSend(dest, e.uuid, initialContext, outBuffer);
+    	    mpiCommunicator.asyncSend(dest, e.id, initialContext, outBuffer);
 	}
 
     }
@@ -197,14 +265,14 @@ void nearestNeighborExchange(MPICommunicator &mpiCommunicator, BGLGraph &graph, 
     	for(unsigned i = 0; i < inEdges.size(); ++i){
     	    Vertex src = inEdges.at(i).first;
     	    Edge   e   = inEdges.at(i).second;
-    	    mpiCommunicator.recv(src, e.uuid, initialContext, inBuffers[i]);
+    	    mpiCommunicator.recv(src, e.id, initialContext, inBuffers[i]);
     	}
 	
     	unsigned recvSum = 0;
     	for(Buffer b : inBuffers){
     	    recvSum += b[0];
     	}
-    	std::cout << "CommID[" << cid << "] Vertex: " << myVertices[vertex_i].uuid << " NeighborIDSum: " << recvSum <<  std::endl;
+    	std::cout << "CommID[" << cid << "] Vertex: " << myVertices[vertex_i].id << " NeighborIDSum: " << recvSum <<  std::endl;
 	
     }
 
@@ -249,7 +317,7 @@ std::vector<Vertex> occupyRandomVertex(MPICommunicator &mpiCommunicator, BGLGrap
     	    if(whoHasVertex[i] == TRUE){
     		Vertex v = myGraph.getVertices().at(randomVertex[0]);
     		myVertices.push_back(v);
-    		std::cout << "Master " << masterID << " occupied Vertex with id " << v.uuid << std::endl;
+    		std::cout << "Master " << masterID << " occupied Vertex with id " << v.id << std::endl;
     		break;
     	    }
     	}
@@ -259,7 +327,7 @@ std::vector<Vertex> occupyRandomVertex(MPICommunicator &mpiCommunicator, BGLGrap
 	mpiCommunicator.broadcast(masterID, context, randomVertex);
   
     	for(unsigned i = 0; i < myVertices.size(); ++i){
-    	    if(myVertices[i].uuid == randomVertex[0]){
+    	    if(myVertices[i].id == randomVertex[0]){
     		iHaveVertex[0] = TRUE;
     		myVertices.erase(myVertices.begin() + i);
 		break;
@@ -327,7 +395,7 @@ int main(){
      * Create communicator
      ****************************************************************************/
     MPICommunicator mpiCommunicator;
-    //Context context = mpiCommunicator.getInitialContext();
+    Context context = mpiCommunicator.getInitialContext();
 
     /***************************************************************************
      * Example create new context
@@ -338,7 +406,7 @@ int main(){
     // Context newContext = mpiCommunicator.getContext(contextVertices, initialContext);
     // if(newContext.valid()){
     // 	mpiCommunicator.announce(myVertices, newContext);
-    // 	std::cout << "old context uuid: " << initialContext.getCommID() << " new context uuid:  " << newContext.getCommID() << std::endl;
+    // 	std::cout << "old context id: " << initialContext.getCommID() << " new context id:  " << newContext.getCommID() << std::endl;
     // }
 
     /***************************************************************************
@@ -350,12 +418,15 @@ int main(){
 
     masterID = randomComm(mpiCommunicator);
 
+    VCMAP<Vertex, MPICommunicator> vcMap(mpiCommunicator);
+    vcMap.announce(myVertices, context);
 
-    myVertices = occupyRandomVertex(mpiCommunicator, myGraph, myVertices, masterID);
-    myVertices = occupyRandomVertex(mpiCommunicator, myGraph, myVertices, masterID);
+
+    // myVertices = occupyRandomVertex(mpiCommunicator, myGraph, myVertices, masterID);
+    // myVertices = occupyRandomVertex(mpiCommunicator, myGraph, myVertices, masterID);
     
 
-    nearestNeighborExchange(mpiCommunicator, myGraph, myVertices);
+    // nearestNeighborExchange(mpiCommunicator, myGraph, myVertices);
 
 }
 

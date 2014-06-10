@@ -9,11 +9,11 @@
 namespace GraphPolicy {
 
     struct NoProperty{
-	typedef unsigned UUID;
-	NoProperty() : uuid(0){}
-	NoProperty(UUID uuid) : uuid(uuid){}
+	typedef unsigned ID;
+	NoProperty() : id(0){}
+	NoProperty(ID id) : id(id){}
 
-	UUID uuid;
+	ID id;
     };
 
     template <typename T_VertexProperty = NoProperty, typename T_EdgeProperty = NoProperty>

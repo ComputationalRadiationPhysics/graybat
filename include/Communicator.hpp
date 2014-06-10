@@ -14,8 +14,6 @@ private:
     typedef T_Node                                         Node;
     typedef T_CommunicationPolicy                          CommunicationPolicy;
     typedef unsigned                                       NodeID;
-    typedef typename CommunicationPolicy::ContextID        ContextID;
-    typedef unsigned                                       CommID;
     typedef typename CommunicationPolicy::BinaryOperation  BinaryOperation;
 
 
@@ -23,10 +21,13 @@ public:
     typedef typename CommunicationPolicy::Event             Event;
     typedef typename CommunicationPolicy::BinaryOperations  BinaryOperations;
     typedef typename CommunicationPolicy::Context           Context;
+    typedef typename CommunicationPolicy::ContextID         ContextID;
+    typedef unsigned                                        CommID;
+
 
 private:
     // TODO
-    // Remove ContextMap from Communicator
+    // Remove ContextIDMap from Communicator
     // Put into own class
     std::map<ContextID, std::map<NodeID, CommID>> contextMap;
 
@@ -45,7 +46,7 @@ public:
 
     template <typename T>
     Event asyncSend(const Node destNode, const unsigned tag, const Context context, T& sendData){
-	CommID destCommID = contextMap.at(context.getContextID()).at(destNode.uuid);
+	CommID destCommID = contextMap.at(context.getContextID()).at(destNode.id);
 	return CommunicationPolicy::asyncSendData(sendData.data(), sendData.size(), destCommID, context, tag);
     }
 
@@ -58,7 +59,7 @@ public:
 
     template <typename T>
     Event asyncRecv(const Node srcNode, const unsigned tag, const Context context, const T& recvData){
-	CommID srcCommID = contextMap.at(context.getContextID()).at(srcNode.uuid);
+	CommID srcCommID = contextMap.at(context.getContextID()).at(srcNode.id);
 	return CommunicationPolicy::asyncRecvData(recvData.data(), recvData.size(), srcCommID, context, tag);
     }
 
@@ -132,7 +133,7 @@ public:
 	    std::vector<int> recvData(contextSize);
 
     	    if(i < nodes.size()){
-    	    	sendData[0] = nodes.at(i).uuid;
+    	    	sendData[0] = nodes.at(i).id;
     	    }
     	    else{
     	    	sendData[0] = -1;
@@ -157,12 +158,12 @@ public:
     }
 
     Context getContext(std::vector<Node> nodes, Context oldContext){
-	std::vector<CommID> uuids;
+	std::vector<CommID> ids;
 	for(Node node : nodes){
-	    uuids.push_back(contextMap.at(oldContext.getContextID()).at(node.uuid));
+	    ids.push_back(contextMap.at(oldContext.getContextID()).at(node.id));
 	}
 
-	Context newContext = CommunicationPolicy::createContext(uuids, oldContext);
+	Context newContext = CommunicationPolicy::createContext(ids, oldContext);
 
 	contextMap.insert(std::make_pair(newContext.getContextID(), std::map<NodeID, CommID>()));
 	return newContext;

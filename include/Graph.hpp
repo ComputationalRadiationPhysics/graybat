@@ -36,7 +36,7 @@ public:
 
     std::vector<Vertex> getAdjacentVertices(const Vertex vertex){
     	std::vector<Vertex> adjacentVertices;
-    	for(Edge e: GraphPolicy::getOutEdges(vertex.uuid)){
+    	for(Edge e: GraphPolicy::getOutEdges(vertex.id)){
     	    GraphPolicyVertex target = GraphPolicy::getEdgeTarget(e);
     	    Vertex s = GraphPolicy::getVertexProperty(target);
     	    adjacentVertices.push_back(s);
@@ -48,7 +48,7 @@ public:
     std::vector<std::pair<Vertex, Edge> > getOutEdges(const Vertex srcVertex){
 
     	std::vector<std::pair<Vertex, Edge> > outEdges;
-    	for(GraphPolicyEdge e : GraphPolicy::getOutEdges(srcVertex.uuid)){
+    	for(GraphPolicyEdge e : GraphPolicy::getOutEdges(srcVertex.id)){
     	    GraphPolicyVertex target = GraphPolicy::getEdgeTarget(e);
 	    Vertex vertex = GraphPolicy::getVertexProperty(target);
     	    Edge   edge   = GraphPolicy::getEdgeProperty(e);
@@ -59,7 +59,7 @@ public:
 
     std::vector<std::pair<Vertex, Edge> > getInEdges(const Vertex targetVertex){
     	std::vector<std::pair<Vertex, Edge> > inEdges;
-    	for(GraphPolicyEdge e : GraphPolicy::getInEdges(targetVertex.uuid)){
+    	for(GraphPolicyEdge e : GraphPolicy::getInEdges(targetVertex.id)){
     	     GraphPolicyVertex source = GraphPolicy::getEdgeSource(e);
 	     Vertex vertex            = GraphPolicy::getVertexProperty(source);
 	     Edge edge = GraphPolicy::getEdgeProperty(e);
@@ -74,7 +74,7 @@ public:
 	for(Vertex v : vertices){
 	    std::vector<std::pair<Vertex, Edge> > outEdges = getOutEdges(v);
 	    for(std::pair<Vertex, Edge> e : outEdges){
-		std::cout << "Edge [" << e.second.uuid << "] : (" << v.uuid << ") ==> (" << e.first.uuid << ")" << std::endl; 
+		std::cout << "Edge [" << e.second.id << "] : (" << v.id << ") ==> (" << e.first.id << ")" << std::endl; 
 	    }
 
 	}
@@ -93,7 +93,7 @@ private:
     std::vector<std::tuple <GraphPolicyVertex, GraphPolicyVertex, Edge> > toGraphPolicyEdges(std::vector<EdgeDescriptor> edges){
 	std::vector<std::tuple<GraphPolicyVertex, GraphPolicyVertex, Edge> > bglEdges;
 	for(auto e : edges){
-	    bglEdges.push_back(std::make_tuple(std::get<0>(e).uuid, std::get<1>(e).uuid, std::get<2>(e)));
+	    bglEdges.push_back(std::make_tuple(std::get<0>(e).id, std::get<1>(e).id, std::get<2>(e)));
 	}
 	return bglEdges;
     }
