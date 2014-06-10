@@ -167,7 +167,7 @@ std::vector<EdgeDescriptor> generate2DMeshTopology(const unsigned height, const 
 void nearestNeighborExchange(MPICommunicator &mpiCommunicator, BGLGraph &graph, std::vector<Vertex> myVertices){
     Context initialContext = mpiCommunicator.getInitialContext();
     // Distribute and announce vertices
-    unsigned cid           = initialContext.getCommUUID();
+    unsigned cid           = initialContext.getCommID();
 
     // Handle communication of vertices
     typedef std::array<unsigned, 1> Buffer;
@@ -213,7 +213,7 @@ void nearestNeighborExchange(MPICommunicator &mpiCommunicator, BGLGraph &graph, 
 unsigned randomComm(MPICommunicator &mpiCommunicator){
     Context context    = mpiCommunicator.getInitialContext();
     size_t contextSize = context.size();
-    unsigned masterID  = context.getCommUUID();
+    unsigned masterID  = context.getCommID();
 
     srand (time(NULL) + masterID);
     int random = rand();
@@ -235,7 +235,7 @@ unsigned randomComm(MPICommunicator &mpiCommunicator){
 
 std::vector<Vertex> occupyRandomVertex(MPICommunicator &mpiCommunicator, BGLGraph &myGraph, std::vector<Vertex> myVertices, unsigned masterID){
     Context context = mpiCommunicator.getInitialContext();
-    unsigned cid    = context.getCommUUID();
+    unsigned cid    = context.getCommID();
     std::array<unsigned, 1> randomVertex{{0}};
     std::array<char, 1> iHaveVertex{{FALSE}};
     std::vector<char> whoHasVertex(context.size(), FALSE);
@@ -283,7 +283,7 @@ std::vector<Vertex> distributeVerticesEvenly(MPICommunicator &mpiCommunicator, B
 
     // Distribute and announce vertices
     size_t contextSize     = initialContext.size();
-    unsigned cid           = initialContext.getCommUUID();
+    unsigned cid           = initialContext.getCommID();
     unsigned vertexCount   = graph.getVertices().size();
     unsigned maxVertex     = ceil((float)vertexCount / contextSize);
 
@@ -338,7 +338,7 @@ int main(){
     // Context newContext = mpiCommunicator.getContext(contextVertices, initialContext);
     // if(newContext.valid()){
     // 	mpiCommunicator.announce(myVertices, newContext);
-    // 	std::cout << "old context uuid: " << initialContext.getCommUUID() << " new context uuid:  " << newContext.getCommUUID() << std::endl;
+    // 	std::cout << "old context uuid: " << initialContext.getCommID() << " new context uuid:  " << newContext.getCommID() << std::endl;
     // }
 
     /***************************************************************************
@@ -349,6 +349,8 @@ int main(){
     myVertices = distributeVerticesEvenly(mpiCommunicator, myGraph);
 
     masterID = randomComm(mpiCommunicator);
+
+
     myVertices = occupyRandomVertex(mpiCommunicator, myGraph, myVertices, masterID);
     myVertices = occupyRandomVertex(mpiCommunicator, myGraph, myVertices, masterID);
     

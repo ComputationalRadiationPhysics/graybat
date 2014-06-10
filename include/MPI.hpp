@@ -33,8 +33,9 @@ namespace CommunicationPolicy {
 
     class MPI{
     protected:
-	typedef MPI_Comm ContextUUID;
-	typedef unsigned CommUUID;
+	//typedef MPI_Comm ContextID;
+	typedef MPI_Comm ContextID;
+	typedef unsigned CommID;
 	typedef MPI_Op   BinaryOperation;
 
 	/**************************
@@ -42,11 +43,11 @@ namespace CommunicationPolicy {
 	 **************************/
 	class Context {
 	public:
-	    Context(ContextUUID contextUUID) : 
+	    Context(ContextID contextUUID) : 
 	    contextUUID(contextUUID),
 	    commUUID(0){}
 	    
-	    Context(ContextUUID contextUUID, CommUUID uuid) : 
+	    Context(ContextID contextUUID, CommID uuid) : 
 		contextUUID(contextUUID),
 		commUUID(uuid){}
 
@@ -56,11 +57,11 @@ namespace CommunicationPolicy {
 		return n;
 	    }
 
-	    CommUUID getCommUUID() const {
+	    CommID getCommID() const {
 		return commUUID;
 	    }
 
-	    ContextUUID getContextUUID() const {
+	    ContextID getContextID() const {
 		return contextUUID;
 	    }
 
@@ -68,8 +69,8 @@ namespace CommunicationPolicy {
 		return (contextUUID != MPI_COMM_NULL);
 	    }
 	private:
-	    const ContextUUID contextUUID;
-	    const CommUUID commUUID;
+	    const ContextID contextUUID;
+	    const CommID commUUID;
 	};
 
 	/**************************
@@ -102,7 +103,7 @@ namespace CommunicationPolicy {
 	typedef unsigned MsgType;
 	typedef int URI;
 
-	std::map<ContextUUID, std::map<CommUUID, URI> > uriMap;
+	std::map<ContextID, std::map<CommID, URI> > uriMap;
 
     protected:
 	struct BinaryOperations {
@@ -119,12 +120,12 @@ namespace CommunicationPolicy {
 	    size_t contextSize = initialContext.size();
 
 	    // Create Map uuid -> uri
-	    uriMap.insert(std::make_pair(initialContext.getContextUUID(), std::map<CommUUID, URI>()));
+	    uriMap.insert(std::make_pair(initialContext.getContextID(), std::map<CommID, URI>()));
 	    for(unsigned i = 0; i < contextSize; ++i){
-	    	uriMap.at(initialContext.getContextUUID()).insert(std::make_pair(CommUUID(i),URI(i)));
+	    	uriMap.at(initialContext.getContextID()).insert(std::make_pair(CommID(i),URI(i)));
 	    }
 
-	    std::cout << "Init MPI " << uriMap.at(initialContext.getContextUUID()).at(initialContext.getCommUUID()) << std::endl;
+	    std::cout << "Init MPI " << uriMap.at(initialContext.getContextID()).at(initialContext.getCommID()) << std::endl;
 	    
 	}
 
@@ -138,34 +139,34 @@ namespace CommunicationPolicy {
 	 *
 	 **************************************************************************/ 
 	template <typename T>
-	void sendData(const T* const data, const size_t count, const CommUUID dest, const Context context, const MsgType msgType){
-	    URI destURI = uriMap.at(context.getContextUUID()).at(dest);
-	    MPI_Send(const_cast<T*>(data), count, MPIDatatypes<T>::type, dest, msgType, context.getContextUUID());
+	void sendData(const T* const data, const size_t count, const CommID dest, const Context context, const MsgType msgType){
+	    URI destURI = uriMap.at(context.getContextID()).at(dest);
+	    MPI_Send(const_cast<T*>(data), count, MPIDatatypes<T>::type, dest, msgType, context.getContextID());
 
 	}
 
 	template <typename T>
-	Event asyncSendData(const T* const data, const size_t count, const CommUUID dest, const Context context, const MsgType msgType){
+	Event asyncSendData(const T* const data, const size_t count, const CommID dest, const Context context, const MsgType msgType){
 	    MPI_Request   request;
-	    URI destURI = uriMap.at(context.getContextUUID()).at(dest);
-	    MPI_Isend(const_cast<T*>(data), count, MPIDatatypes<T>::type, destURI, msgType, context.getContextUUID(), &request);
+	    URI destURI = uriMap.at(context.getContextID()).at(dest);
+	    MPI_Isend(const_cast<T*>(data), count, MPIDatatypes<T>::type, destURI, msgType, context.getContextID(), &request);
 	    return Event(request);
 
 	}
 
 	template <typename T>
-	void recvData(const T*  data, const size_t count, const CommUUID src, const Context context, const MsgType msgType){
+	void recvData(const T*  data, const size_t count, const CommID src, const Context context, const MsgType msgType){
 	    MPI_Status  status;	    
-	    URI srcURI = uriMap.at(context.getContextUUID()).at(src);
-	    MPI_Recv(const_cast<T*>(data), count, MPIDatatypes<T>::type, srcURI, msgType, context.getContextUUID(), &status);
+	    URI srcURI = uriMap.at(context.getContextID()).at(src);
+	    MPI_Recv(const_cast<T*>(data), count, MPIDatatypes<T>::type, srcURI, msgType, context.getContextID(), &status);
     
 	}
 
 	template <typename T>
 	Event asyncRecvData(const T*  data, const size_t count, const URI src, const Context context, const MsgType msgType){
 	    MPI_Request   request;
-	    URI srcURI = uriMap.at(context.getContextUUID()).at(src);
-	    MPI_Irecv(const_cast<T*>(data), count, MPIDatatypes<T>::type, srcURI, msgType, context.getContextUUID(), &request);
+	    URI srcURI = uriMap.at(context.getContextID()).at(src);
+	    MPI_Irecv(const_cast<T*>(data), count, MPIDatatypes<T>::type, srcURI, msgType, context.getContextID(), &request);
 	    return Event(request);
 
 	}
@@ -176,56 +177,56 @@ namespace CommunicationPolicy {
 	 *
 	 **************************************************************************/ 
 	template <typename T>
-	void reduce(const T* sendData, const T* recvData, const size_t count, BinaryOperation op, const CommUUID root, const Context context){
-	    URI rootURI = uriMap.at(context.getContextUUID()).at(root);
-	    MPI_Reduce(const_cast<T*>(sendData), const_cast<T*>(recvData), count, MPIDatatypes<T>::type, op , rootURI, context.getContextUUID());
+	void reduce(const T* sendData, const T* recvData, const size_t count, BinaryOperation op, const CommID root, const Context context){
+	    URI rootURI = uriMap.at(context.getContextID()).at(root);
+	    MPI_Reduce(const_cast<T*>(sendData), const_cast<T*>(recvData), count, MPIDatatypes<T>::type, op , rootURI, context.getContextID());
 	}
 
 	template <typename T>
 	void allReduce(const T* sendData, const T* recvData, const size_t count, BinaryOperation op, const Context context){
-	    MPI_Allreduce(const_cast<T*>(sendData), const_cast<T*>(recvData), count, MPIDatatypes<T>::type, op , context.getContextUUID());
+	    MPI_Allreduce(const_cast<T*>(sendData), const_cast<T*>(recvData), count, MPIDatatypes<T>::type, op , context.getContextID());
 
 	}
 
 	template <typename T_Send, typename T_Recv>
-	void gather(const T_Send* sendData, const size_t sendCount, const T_Recv* recvData, const size_t recvCount, const CommUUID root, const Context context){
-	    URI rootURI = uriMap.at(context.getContextUUID()).at(root);
+	void gather(const T_Send* sendData, const size_t sendCount, const T_Recv* recvData, const size_t recvCount, const CommID root, const Context context){
+	    URI rootURI = uriMap.at(context.getContextID()).at(root);
 	    MPI_Gather(const_cast<T_Send*>(sendData), sendCount, MPIDatatypes<T_Send>::type, 
 		       const_cast<T_Recv*>(recvData), recvCount, MPIDatatypes<T_Recv>::type, 
-		       rootURI, context.getContextUUID());
+		       rootURI, context.getContextID());
 	}
 
 	template <typename T_Send, typename T_Recv>
 	void allGather(const T_Send* sendData, const size_t sendCount, const T_Recv* recvData, const size_t recvCount, const Context context){
 	    MPI_Allgather(const_cast<T_Send*>(sendData), sendCount, MPIDatatypes<T_Send>::type, 
 			  const_cast<T_Recv*>(recvData), recvCount, MPIDatatypes<T_Recv>::type, 
-			  context.getContextUUID());
+			  context.getContextID());
 	}
 
 	template <typename T_Send, typename T_Recv>
-	void scatter(const T_Send* sendData, const size_t sendCount, T_Recv* recvData, const size_t recvCount, const CommUUID root, const Context context){
-	    URI rootURI = uriMap.at(context.getContextUUID()).at(root);
+	void scatter(const T_Send* sendData, const size_t sendCount, T_Recv* recvData, const size_t recvCount, const CommID root, const Context context){
+	    URI rootURI = uriMap.at(context.getContextID()).at(root);
 	    MPI_Scatter(const_cast<T_Send*>(sendData), sendCount, MPIDatatypes<T_Send>::type, 
 			const_cast<T_Recv*>(recvData), recvCount, MPIDatatypes<T_Recv>::type, 
-			rootURI, context.getContextUUID());
+			rootURI, context.getContextID());
 	}
 
 	template <typename T_Send, typename T_Recv>
 	void allToAll(const T_Send* sendData, const size_t sendCount, T_Recv* recvData, const size_t recvCount, const Context context){
 	    MPI_Alltoall(const_cast<T_Send*>(sendData), sendCount, MPIDatatypes<T_Send>::type, 
 			 const_cast<T_Recv*>(recvData), recvCount, MPIDatatypes<T_Recv>::type, 
-			 context.getContextUUID());
+			 context.getContextID());
 	}
 	
 	template <typename T>
-	void broadcast(const T* data, const size_t count, const CommUUID root, const Context context){
-	    URI rootURI = uriMap.at(context.getContextUUID()).at(root);
-	    MPI_Bcast(const_cast<T*>(data), count, MPIDatatypes<T>::type, rootURI, context.getContextUUID());
+	void broadcast(const T* data, const size_t count, const CommID root, const Context context){
+	    URI rootURI = uriMap.at(context.getContextID()).at(root);
+	    MPI_Bcast(const_cast<T*>(data), count, MPIDatatypes<T>::type, rootURI, context.getContextID());
 	}
 
 
 	void synchronize(Context context){
-	    MPI_Barrier(context.getContextUUID());
+	    MPI_Barrier(context.getContextID());
 	}
 
 	/***************************************************************************
@@ -233,39 +234,39 @@ namespace CommunicationPolicy {
 	 * ORGANISATION
 	 *
 	 ***************************************************************************/
-	Context createContext(const std::vector<CommUUID> uuids, const Context oldContext){
+	Context createContext(const std::vector<CommID> uuids, const Context oldContext){
 	    assert(uuids.size() > 1);
-	    ContextUUID  newContextUUID;
+	    ContextID  newContextID;
 	    MPI_Group oldGroup, newGroup;
 
 	    // Translate commUUIDs to uris
 	    std::vector<URI> ranks;
-	    for(CommUUID u : uuids){
-		ranks.push_back(uriMap.at(oldContext.getContextUUID()).at(u));
+	    for(CommID u : uuids){
+		ranks.push_back(uriMap.at(oldContext.getContextID()).at(u));
 	    }
 
 	    // Create new context	    
-	    MPI_Comm_group(oldContext.getContextUUID(), &oldGroup);
+	    MPI_Comm_group(oldContext.getContextID(), &oldGroup);
 	    MPI_Group_incl(oldGroup, ranks.size(), &(ranks[0]), &newGroup);
-	    MPI_Comm_create(oldContext.getContextUUID(), newGroup, &newContextUUID);
+	    MPI_Comm_create(oldContext.getContextID(), newGroup, &newContextID);
 
-	    if(newContextUUID != MPI_COMM_NULL){
+	    if(newContextID != MPI_COMM_NULL){
 	    	URI uri;
-	    	MPI_Comm_rank(newContextUUID, &uri);
-	    	Context newContext(newContextUUID, uri);
+	    	MPI_Comm_rank(newContextID, &uri);
+	    	Context newContext(newContextID, uri);
 
 		// Update UriMap
-		uriMap.insert(std::make_pair(newContext.getContextUUID(), std::map<CommUUID, URI>()));
+		uriMap.insert(std::make_pair(newContext.getContextID(), std::map<CommID, URI>()));
 		URI otherUris[newContext.size()];
 	    	for(unsigned i = 0; i < newContext.size(); ++i){
 	    		allGather(&uri, 1, otherUris, 1, newContext);
-	    		uriMap[newContext.getContextUUID()][i] =  otherUris[i];
+	    		uriMap[newContext.getContextID()][i] =  otherUris[i];
 	    	}
 	    	return newContext;
 
 	    }
 	    else {
-	    	return Context(newContextUUID);
+	    	return Context(newContextID);
 		
 	    }
 	    
@@ -282,11 +283,11 @@ namespace CommunicationPolicy {
 	    }
 	}
 
-	CommUUID initialUUID(){
+	CommID initialUUID(){
 	    initMPI();
 	    URI uriTmp;
 	    MPI_Comm_rank(MPI_COMM_WORLD, &uriTmp);
-	    return (CommUUID)uriTmp;
+	    return (CommID)uriTmp;
 
 	}
 
