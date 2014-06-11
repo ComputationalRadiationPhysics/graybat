@@ -3,6 +3,7 @@
 #include <BGL.hpp>
 #include <Communicator.hpp>
 #include <MPI.hpp>
+#include <NameService.hpp>
 
 #include <iostream> /* cout */
 #include <tuple>    /* pair */
@@ -36,75 +37,6 @@ typedef Communicator<Mpi, Vertex>                  MPICommunicator;
 typedef typename MPICommunicator::Context          Context;
 typedef typename MPICommunicator::BinaryOperations BinaryOperations;
 typedef typename MPICommunicator::Event            Event;
-
-/*******************************************************************************
- *
- * TESTING
- *
- *******************************************************************************/
-template <typename T_Vertex, typename T_Communicator>
-struct VCMAP {
-    typedef T_Communicator                   Communicator;
-    typedef typename Communicator::Context   Context;
-    typedef typename Communicator::ContextID ContextID;
-    typedef typename Communicator::CommID    CommID;
-    typedef T_Vertex                         Vertex;
-    typedef typename Vertex::ID              VertexID;
-
-
-    VCMAP(Communicator communicator) : communicator(communicator) {
-
-    }
-
-    std::map<ContextID, std::map<VertexID, CommID>> commMap;
-    Communicator& communicator;
-
-
-    void announce(const std::vector<Vertex> vertices, const Context context){
-
-	// Each announces how many nodes it manages
-	std::array<unsigned, 1> myVerticesCount {{(unsigned) vertices.size()}};
-	std::array<unsigned, 1> maxVerticesCount  {{0}};
-	communicator.allReduce(context, BinaryOperations::MAX, myVerticesCount, maxVerticesCount);
-	 
-	
-    	for(unsigned i = 0; i < maxVerticesCount[0]; ++i){
-    	    const size_t contextSize = context.size();
-	    std::array<int, 1> sendData{{-1}};
-	    std::vector<int> recvData(contextSize);
-
-    	    if(i < vertices.size()){
-    	    	sendData[0] = vertices.at(i).id;
-    	    }
-    	    else{
-    	    	sendData[0] = -1;
-    	    }
-
-    	    communicator.allGather(context, sendData, recvData);
-
-    	    for(unsigned j = 0; j < contextSize; ++j){
-    	    	if(recvData[j] != -1){
-		    commMap[context.getContextID()][recvData[j]] = j;
-    	    	}
-    	    }
-
-    	}
-
-    }
-
-    void announce(const Vertex vertex, const Context context){
-	std::vector<Vertex> vertices;
-	vertices.push_back(vertex);
-	announce(vertices, context, communicator);
-    }
-
-    CommID getCommID(Vertex vertex, Context context){
-	CommID commID = commMap.at(context.getContextID()).at(vertex.id);
-	return commID;
-	
-    }
-
-};
 
 
 /*******************************************************************************
@@ -232,113 +164,112 @@ std::vector<EdgeDescriptor> generate2DMeshTopology(const unsigned height, const 
  *
  *******************************************************************************/
 
-void nearestNeighborExchange(MPICommunicator &mpiCommunicator, BGLGraph &graph, std::vector<Vertex> myVertices){
-    Context initialContext = mpiCommunicator.getInitialContext();
-    // Distribute and announce vertices
-    unsigned cid           = initialContext.getCommID();
+// void nearestNeighborExchange(MPICommunicator &mpiCommunicator, BGLGraph &graph, std::vector<Vertex> myVertices){
+//     Context initialContext = mpiCommunicator.getInitialContext();
+//     // Distribute and announce vertices
+//     unsigned cid           = initialContext.getCommID();
 
-    // Handle communication of vertices
-    typedef std::array<unsigned, 1> Buffer;
+//     // Handle communication of vertices
+//     typedef std::array<unsigned, 1> Buffer;
 
-    // Async send vertices data
-    for(unsigned vertex_i = 0; vertex_i < myVertices.size(); vertex_i++){
-    	Vertex myVertex = myVertices.at(vertex_i);
-    	std::vector<std::pair<Vertex, Edge> > outEdges = graph.getOutEdges(myVertex);
-    	Buffer outBuffer{{myVertex.id}};
+//     // Async send vertices data
+//     for(unsigned vertex_i = 0; vertex_i < myVertices.size(); vertex_i++){
+//     	Vertex myVertex = myVertices.at(vertex_i);
+//     	std::vector<std::pair<Vertex, Edge> > outEdges = graph.getOutEdges(myVertex);
+//     	Buffer outBuffer{{myVertex.id}};
 
-    	// Send data to out edges
-    	for(unsigned i = 0; i < outEdges.size(); ++i){
-    	    Vertex dest = outEdges.at(i).first;
-    	    Edge   e   = outEdges.at(i).second;
-    	    mpiCommunicator.asyncSend(dest, e.id, initialContext, outBuffer);
-	}
+//     	// Send data to out edges
+//     	for(unsigned i = 0; i < outEdges.size(); ++i){
+//     	    Vertex dest = outEdges.at(i).first;
+//     	    Edge   e   = outEdges.at(i).second;
+//     	    mpiCommunicator.asyncSend(dest, e.id, initialContext, outBuffer);
+// 	}
 
-    }
+//     }
 
-    // Sync recv vertices data
-    for(unsigned vertex_i = 0; vertex_i < myVertices.size(); vertex_i++){
-    	Vertex myVertex = myVertices.at(vertex_i);
-    	std::vector<std::pair<Vertex, Edge> > inEdges  = graph.getInEdges(myVertex);
-    	std::vector<Buffer>  inBuffers (inEdges.size(), Buffer{{0}});
+//     // Sync recv vertices data
+//     for(unsigned vertex_i = 0; vertex_i < myVertices.size(); vertex_i++){
+//     	Vertex myVertex = myVertices.at(vertex_i);
+//     	std::vector<std::pair<Vertex, Edge> > inEdges  = graph.getInEdges(myVertex);
+//     	std::vector<Buffer>  inBuffers (inEdges.size(), Buffer{{0}});
 
-    	// Recv data from in edges
-    	for(unsigned i = 0; i < inEdges.size(); ++i){
-    	    Vertex src = inEdges.at(i).first;
-    	    Edge   e   = inEdges.at(i).second;
-    	    mpiCommunicator.recv(src, e.id, initialContext, inBuffers[i]);
-    	}
+//     	// Recv data from in edges
+//     	for(unsigned i = 0; i < inEdges.size(); ++i){
+//     	    Vertex src = inEdges.at(i).first;
+//     	    Edge   e   = inEdges.at(i).second;
+//     	    mpiCommunicator.recv(src, e.id, initialContext, inBuffers[i]);
+//     	}
 	
-    	unsigned recvSum = 0;
-    	for(Buffer b : inBuffers){
-    	    recvSum += b[0];
-    	}
-    	std::cout << "CommID[" << cid << "] Vertex: " << myVertices[vertex_i].id << " NeighborIDSum: " << recvSum <<  std::endl;
+//     	unsigned recvSum = 0;
+//     	for(Buffer b : inBuffers){
+//     	    recvSum += b[0];
+//     	}
+//     	std::cout << "CommID[" << cid << "] Vertex: " << myVertices[vertex_i].id << " NeighborIDSum: " << recvSum <<  std::endl;
 	
-    }
+//     }
 
-}
+// }
 
-unsigned randomComm(MPICommunicator &mpiCommunicator){
-    Context context    = mpiCommunicator.getInitialContext();
-    size_t contextSize = context.size();
-    unsigned masterID  = context.getCommID();
+// unsigned randomComm(MPICommunicator &mpiCommunicator){
+//     Context context    = mpiCommunicator.getInitialContext();
+//     size_t contextSize = context.size();
+//     unsigned masterID  = context.getCommID();
 
-    srand (time(NULL) + masterID);
-    int random = rand();
+//     srand (time(NULL) + masterID);
+//     int random = rand();
     
-    std::vector<int> sendData(1, random);
-    std::vector<int> recvData(contextSize, 0);
+//     std::vector<int> sendData(1, random);
+//     std::vector<int> recvData(contextSize, 0);
 
-    mpiCommunicator.allGather(context, sendData, recvData);
+//     mpiCommunicator.allGather(context, sendData, recvData);
 
-    for(unsigned i = 0; i < recvData.size(); ++i){
-	if(recvData[i] > random){
-	    masterID = i;
-	    random = recvData[i];
-	}
-    }
+//     for(unsigned i = 0; i < recvData.size(); ++i){
+// 	if(recvData[i] > random){
+// 	    masterID = i;
+// 	    random = recvData[i];
+// 	}
+//     }
 
-    return masterID;
-}
+//     return masterID;
+// }
 
-std::vector<Vertex> occupyRandomVertex(MPICommunicator &mpiCommunicator, BGLGraph &myGraph, std::vector<Vertex> myVertices, unsigned masterID){
-    Context context = mpiCommunicator.getInitialContext();
-    unsigned cid    = context.getCommID();
-    std::array<unsigned, 1> randomVertex{{0}};
-    std::array<char, 1> iHaveVertex{{FALSE}};
-    std::vector<char> whoHasVertex(context.size(), FALSE);
+// std::vector<Vertex> occupyRandomVertex(MPICommunicator &mpiCommunicator, BGLGraph &myGraph, std::vector<Vertex> myVertices, unsigned masterID){
+//     Context context = mpiCommunicator.getInitialContext();
+//     unsigned cid    = context.getCommID();
+//     std::array<unsigned, 1> randomVertex{{0}};
+//     std::array<char, 1> iHaveVertex{{FALSE}};
+//     std::vector<char> whoHasVertex(context.size(), FALSE);
 
-    if(cid == masterID){
-    	randomVertex[0] = rand() % myGraph.getVertices().size();
-	mpiCommunicator.broadcast(masterID, context, randomVertex);
-	mpiCommunicator.gather(masterID, context, iHaveVertex, whoHasVertex);
+//     if(cid == masterID){
+//     	randomVertex[0] = rand() % myGraph.getVertices().size();
+// 	mpiCommunicator.broadcast(masterID, context, randomVertex);
+// 	mpiCommunicator.gather(masterID, context, iHaveVertex, whoHasVertex);
 	
-    	for(unsigned i = 0; i < whoHasVertex.size(); ++i){
-    	    if(whoHasVertex[i] == TRUE){
-    		Vertex v = myGraph.getVertices().at(randomVertex[0]);
-    		myVertices.push_back(v);
-    		std::cout << "Master " << masterID << " occupied Vertex with id " << v.id << std::endl;
-    		break;
-    	    }
-    	}
+//     	for(unsigned i = 0; i < whoHasVertex.size(); ++i){
+//     	    if(whoHasVertex[i] == TRUE){
+//     		Vertex v = myGraph.getVertices().at(randomVertex[0]);
+//     		myVertices.push_back(v);
+//     		std::cout << "Master " << masterID << " occupied Vertex with id " << v.id << std::endl;
+//     		break;
+//     	    }
+//     	}
 
-    }
-    else {
-	mpiCommunicator.broadcast(masterID, context, randomVertex);
+//     }
+//     else {
+// 	mpiCommunicator.broadcast(masterID, context, randomVertex);
   
-    	for(unsigned i = 0; i < myVertices.size(); ++i){
-    	    if(myVertices[i].id == randomVertex[0]){
-    		iHaveVertex[0] = TRUE;
-    		myVertices.erase(myVertices.begin() + i);
-		break;
-    	    }
-    	}
-	mpiCommunicator.gather(masterID, context, iHaveVertex, whoHasVertex);
-    }
+//     	for(unsigned i = 0; i < myVertices.size(); ++i){
+//     	    if(myVertices[i].id == randomVertex[0]){
+//     		iHaveVertex[0] = TRUE;
+//     		myVertices.erase(myVertices.begin() + i);
+// 		break;
+//     	    }
+//     	}
+// 	mpiCommunicator.gather(masterID, context, iHaveVertex, whoHasVertex);
+//     }
 
-    mpiCommunicator.announce(myVertices, context);
-    return myVertices;
-}
+//     return myVertices;
+// }
 
 
 /*******************************************************************************
@@ -366,7 +297,7 @@ std::vector<Vertex> distributeVerticesEvenly(MPICommunicator &mpiCommunicator, B
 	}
 	
     }
-    mpiCommunicator.announce(myVertices, initialContext);
+    //mpiCommunicator.announce(myVertices, initialContext);
 
     return myVertices;
 }
@@ -394,10 +325,12 @@ int main(){
     /***************************************************************************
      * Create communicator
      ****************************************************************************/
-    MPICommunicator mpiCommunicator;
-    Context context = mpiCommunicator.getInitialContext();
+    MPICommunicator myCommunicator;
 
-    myVertices = distributeVerticesEvenly(mpiCommunicator, myGraph);
+    NameService<BGLGraph, MPICommunicator> ns(myGraph, myCommunicator);
+
+    myVertices = distributeVerticesEvenly(myCommunicator, myGraph);
+    ns.announce(myVertices);
 
     /***************************************************************************
      * Example create new context
@@ -406,30 +339,27 @@ int main(){
     std::vector<Vertex> contextVertices;
     contextVertices.push_back(myGraph.getVertices().at(2));
     contextVertices.push_back(myGraph.getVertices().at(3));
-    Context newContext = mpiCommunicator.getContext(contextVertices, context);
-    if(newContext.valid()){
-    	mpiCommunicator.announce(myVertices, newContext);
-    	std::cout << "old context id: " << context.getCommID() << " new context id:  " << newContext.getCommID() << std::endl;
-    }
+    
+    // Context newContext = myCommunicator.getContext(contextVertices, context);
+    // if(newContext.valid()){
+    // 	myCommunicator.announce(myVertices, newContext);
+    // 	std::cout << "old context id: " << context.getCommID() << " new context id:  " << newContext.getCommID() << std::endl;
+    // }
 
     /***************************************************************************
      * Examples communication 
      ****************************************************************************/
     // unsigned masterID = 0;
 
-    // myVertices = distributeVerticesEvenly(mpiCommunicator, myGraph);
+    // myVertices = distributeVerticesEvenly(myCommunicator, myGraph);
 
-    // masterID = randomComm(mpiCommunicator);
+    // masterID = randomComm(myCommunicator);
 
-    // // VCMAP<Vertex, MPICommunicator> vcMap(mpiCommunicator);
-    // // vcMap.announce(myVertices, context);
-
-
-    // myVertices = occupyRandomVertex(mpiCommunicator, myGraph, myVertices, masterID);
-    // myVertices = occupyRandomVertex(mpiCommunicator, myGraph, myVertices, masterID);
+    // myVertices = occupyRandomVertex(myCommunicator, myGraph, myVertices, masterID);
+    // myVertices = occupyRandomVertex(myCommunicator, myGraph, myVertices, masterID);
     
 
-    // nearestNeighborExchange(mpiCommunicator, myGraph, myVertices);
+    // nearestNeighborExchange(myCommunicator, myGraph, myVertices);
 
 }
 

@@ -266,8 +266,9 @@ namespace CommunicationPolicy {
 	    	// Update UriMap
 	    	uriMap.insert(std::make_pair(newContext.getContextID(), std::map<CommID, URI>()));
 	    	URI otherUris[newContext.size()];
+		allGather(&uri, 1, otherUris, 1, newContext);
+
 	    	for(unsigned i = 0; i < newContext.size(); ++i){
-	    		allGather(&uri, 1, otherUris, 1, newContext);
 	    		uriMap[newContext.getContextID()][i] =  otherUris[i];
 	    	}
 	    	return newContext;
