@@ -1,6 +1,7 @@
 #pragma once
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/subgraph.hpp>
 #include <tuple>
 #include <vector>
 
@@ -28,6 +29,7 @@ namespace GraphPolicy {
 				      boost::bidirectionalS, 
 				      VertexProperty,
 				      EdgeProperty> Graph;
+
 
 	typedef typename boost::graph_traits<Graph>::in_edge_iterator   InEdgeIter;
 	typedef typename boost::graph_traits<Graph>::out_edge_iterator  OutEdgeIter;
@@ -98,6 +100,12 @@ namespace GraphPolicy {
 	Vertex getEdgeSource(Edge edge){
 	    return boost::source(edge, graph);
 	}
+
+	// Graph createSubGraph(const std::vector<Vertex> vertices){
+	//     Graph subGraph = graph.create_subgraph(vertices.begin(), vertices.end());
+	//     return subGraph;
+	// }
+
 
     private:
 	void setVertexProperty(Vertex vertex, VertexProperty value){

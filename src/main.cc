@@ -329,8 +329,8 @@ int main(){
 
     NameService<BGLGraph, MPICommunicator> ns(myGraph, myCommunicator);
 
-    myVertices = distributeVerticesEvenly(myCommunicator, myGraph);
-    ns.announce(myVertices);
+    // myVertices = distributeVerticesEvenly(myCommunicator, myGraph);
+    // ns.announce(myVertices);
 
     /***************************************************************************
      * Example create new context
@@ -339,6 +339,8 @@ int main(){
     std::vector<Vertex> contextVertices;
     contextVertices.push_back(myGraph.getVertices().at(2));
     contextVertices.push_back(myGraph.getVertices().at(3));
+
+    //myGraph.createSubGraph(contextVertices);
     
     // Context newContext = myCommunicator.getContext(contextVertices, context);
     // if(newContext.valid()){

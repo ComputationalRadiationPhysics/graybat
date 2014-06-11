@@ -29,6 +29,10 @@ public:
 	
     }
 
+    // Graph(GraphPolicy::Graph){
+
+    // }
+
     std::vector<Vertex> getVertices(){
 	Container<GraphPolicyVertex> v = GraphPolicy::getVertices();
 	return getVerticesProperties(v);
@@ -80,12 +84,22 @@ public:
 	}
 
     }
+    
+    // void createSubGraph(std::vector<Vertex> vertices){
+    // 	std::vector<GraphPolicyVertex> graphPolicyVertices;
+    // 	for(unsigned v_i = 0; v_i < vertices.size(); ++v_i){
+    // 	    graphPolicyVertices.push_back(GraphPolicyVertex(vertices[v_i].id));
+    // 	}
+    // 	GraphPolicy::createSubGraph(graphPolicyVertices);
+
+    // }
+
 	      
 private:
-    std::vector<Vertex> getVerticesProperties(Container<GraphPolicyVertex> v){
+    std::vector<Vertex> getVerticesProperties(Container<GraphPolicyVertex> vertices){
 	std::vector<Vertex> properties;
-	for(VertexIter vi = v.begin(); vi != v.end(); ++vi){
-	    properties.push_back(GraphPolicy::getVertexProperty(*vi));
+	for(GraphPolicyVertex v : vertices){
+	    properties.push_back(GraphPolicy::getVertexProperty(v));
 	}
 	return properties;
     }
