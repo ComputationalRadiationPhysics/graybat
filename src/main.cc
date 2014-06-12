@@ -2,6 +2,7 @@
 #include <Graph.hpp>
 #include <BGL.hpp>
 #include <Communicator.hpp>
+#include <GraphCommunicator.hpp>
 #include <MPI.hpp>
 #include <NameService.hpp>
 
@@ -33,11 +34,12 @@ typedef std::tuple<Vertex, Vertex, Edge>               EdgeDescriptor;
 // Communicator
 // Vertex / Edge is a struct with at least ID id public member
 typedef CommunicationPolicy::MPI                   Mpi;
-typedef Communicator<Mpi, Vertex>                  MPICommunicator;
+typedef Communicator<Mpi>                          MPICommunicator;
 typedef typename MPICommunicator::Context          Context;
 typedef typename MPICommunicator::BinaryOperations BinaryOperations;
 typedef typename MPICommunicator::Event            Event;
 
+typedef NameService<BGLGraph, MPICommunicator>     NS;
 
 /*******************************************************************************
  *
@@ -165,7 +167,7 @@ std::vector<EdgeDescriptor> generate2DMeshTopology(const unsigned height, const 
  *******************************************************************************/
 
 // void nearestNeighborExchange(MPICommunicator &mpiCommunicator, BGLGraph &graph, std::vector<Vertex> myVertices){
-//     Context initialContext = mpiCommunicator.getInitialContext();
+//     Context initialContext = mpiCommunicator.getGlobalContext();
 //     // Distribute and announce vertices
 //     unsigned cid           = initialContext.getCommID();
 
@@ -211,7 +213,7 @@ std::vector<EdgeDescriptor> generate2DMeshTopology(const unsigned height, const 
 // }
 
 // unsigned randomComm(MPICommunicator &mpiCommunicator){
-//     Context context    = mpiCommunicator.getInitialContext();
+//     Context context    = mpiCommunicator.getGlobalContext();
 //     size_t contextSize = context.size();
 //     unsigned masterID  = context.getCommID();
 
@@ -234,7 +236,7 @@ std::vector<EdgeDescriptor> generate2DMeshTopology(const unsigned height, const 
 // }
 
 // std::vector<Vertex> occupyRandomVertex(MPICommunicator &mpiCommunicator, BGLGraph &myGraph, std::vector<Vertex> myVertices, unsigned masterID){
-//     Context context = mpiCommunicator.getInitialContext();
+//     Context context = mpiCommunicator.getGlobalContext();
 //     unsigned cid    = context.getCommID();
 //     std::array<unsigned, 1> randomVertex{{0}};
 //     std::array<char, 1> iHaveVertex{{FALSE}};
@@ -278,7 +280,7 @@ std::vector<EdgeDescriptor> generate2DMeshTopology(const unsigned height, const 
  *
  *******************************************************************************/
 std::vector<Vertex> distributeVerticesEvenly(MPICommunicator &mpiCommunicator, BGLGraph &graph){
-    Context initialContext = mpiCommunicator.getInitialContext();
+    Context initialContext = mpiCommunicator.getGlobalContext();
 
     // Distribute and announce vertices
     size_t contextSize     = initialContext.size();
@@ -319,26 +321,48 @@ int main(){
     //std::vector<EdgeDescriptor> edges = generateFullyConnectedTopology(10, vertices);
     //std::vector<EdgeDescriptor> edges = generateStarTopology(10, vertices);
     //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(8, vertices);
-    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(2, 8, vertices);
+    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(1, 2, vertices);
     BGLGraph myGraph (edges, vertices);
+    myGraph.print();
 
     /***************************************************************************
      * Create communicator
      ****************************************************************************/
     MPICommunicator myCommunicator;
 
-    NameService<BGLGraph, MPICommunicator> ns(myGraph, myCommunicator);
+    NS ns(myGraph, myCommunicator);
+    GraphCommunicator<BGLGraph, MPICommunicator, NS> myGraphCommunicator(myGraph, myCommunicator, ns);
 
-    // myVertices = distributeVerticesEvenly(myCommunicator, myGraph);
-    // ns.announce(myVertices);
+    myVertices = distributeVerticesEvenly(myCommunicator, myGraph);
+    ns.announce(myVertices);
+
+    Vertex v = myVertices.at(0);
+    if(v.id == 0){
+
+	std::string data("Hello World");
+	Edge   e = myGraph.getOutEdges(v).at(0).second;
+	Vertex d = myGraph.getOutEdges(v).at(0).first;
+	myGraphCommunicator.send(d, e, data);
+    }
+    else{
+	std::string data("           ");
+	Edge   e = myGraph.getInEdges(v).at(0).second;
+	Vertex s = myGraph.getInEdges(v).at(0).first;
+	myGraphCommunicator.recv(s, e, data);
+
+    }
+    
+
+
+
 
     /***************************************************************************
      * Example create new context
      ****************************************************************************/
 
-    std::vector<Vertex> contextVertices;
-    contextVertices.push_back(myGraph.getVertices().at(2));
-    contextVertices.push_back(myGraph.getVertices().at(3));
+    // std::vector<Vertex> contextVertices;
+    // contextVertices.push_back(myGraph.getVertices().at(2));
+    // contextVertices.push_back(myGraph.getVertices().at(3));
 
     //myGraph.createSubGraph(contextVertices);
     

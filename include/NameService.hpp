@@ -13,24 +13,27 @@ struct NameService {
     typedef typename Communicator::ContextID CommunicatorContextID;
     typedef typename Communicator::BinaryOperations BinaryOperations;
 
+    // Maps
+    std::map<VertexID, CommID> commMap;
+    std::map<GraphContext, CommunicatorContextID> contextMap;
+
+    // References
+    Graph& graph;
+    Communicator& communicator;
+    unsigned graphContextCount;
+
     NameService(Graph& graph, Communicator& communicator) : 
 	graph(graph),
 	communicator(communicator),
 	graphContextCount(0){
 	
-	contextMap[graphContextCount] = communicator.getInitialContext().getContextID();
+	contextMap[graphContextCount] = communicator.getGlobalContext().getContextID();
 
     }
 
-    std::map<VertexID, CommID> commMap;
-    std::map<GraphContext, CommunicatorContextID> contextMap;
-    Graph& graph;
-    Communicator& communicator;
-    unsigned graphContextCount;
-
 
     void announce(const std::vector<Vertex> vertices){
-	CommunicatorContext communicatorContext = communicator.getInitialContext();
+	CommunicatorContext communicatorContext = communicator.getGlobalContext();
 
     	// Each announces how many nodes it manages
     	std::array<unsigned, 1> myVerticesCount {{(unsigned) vertices.size()}};
@@ -83,6 +86,10 @@ struct NameService {
 
     GraphContext getGlobalGraphContext(){
 	return contextMap[0];
+    }
+
+    CommID mapVertex(Vertex vertex){
+	return commMap[vertex.id];
     }
 
     // void announce(const Vertex vertex, const Context context){

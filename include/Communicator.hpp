@@ -8,14 +8,11 @@
 #include <assert.h>   /* assert */
 
 
-template <class T_CommunicationPolicy, typename T_Node>
+template <class T_CommunicationPolicy>
 class Communicator : public T_CommunicationPolicy {
 private:
-    typedef T_Node                                         Node;
     typedef T_CommunicationPolicy                          CommunicationPolicy;
-    typedef unsigned                                       NodeID;
     typedef typename CommunicationPolicy::BinaryOperation  BinaryOperation;
-
 
 public:
     typedef typename CommunicationPolicy::Event             Event;
@@ -33,8 +30,10 @@ public:
      ***************************************************************************/
     template <typename T>
     void send(const CommID destCommID, const unsigned tag, const Context context, T& sendData){
+
 	Event e = asyncSend(destCommID, tag, context, sendData);
 	e.wait();
+	std::cout << "schla" << std::endl;
     }
 
     template <typename T>
@@ -47,10 +46,11 @@ public:
     void recv(const CommID srcCommID, const unsigned tag, const Context context, T& recvData){
 	Event e =  asyncRecv(srcCommID, tag, context, recvData);
 	e.wait();
+
     }
 
     template <typename T>
-    Event asyncRecv(const CommID srcCommID, const unsigned tag, const Context context, const T& recvData){
+    Event asyncRecv(const CommID srcCommID, const unsigned tag, const Context context, T& recvData){
 	return CommunicationPolicy::asyncRecvData(recvData.data(), recvData.size(), srcCommID, context, tag);
     }
 
@@ -95,7 +95,7 @@ public:
     }
 
     template <typename T>
-    void broadcast(const NodeID rootCommID, const Context context, const T& data){
+    void broadcast(const CommID rootCommID, const Context context, const T& data){
 	CommunicationPolicy::broadcast(data.data(), data.size(), rootCommID, context);
     }
 
@@ -110,11 +110,11 @@ public:
      * ORGANISATION
      *
      ***************************************************************************/
-    Context getContext(const std::vector<CommID> ids, const Context oldContext){
+    Context createContext(const std::vector<CommID> ids, const Context oldContext){
 	return CommunicationPolicy::createContext(ids, oldContext);
     }
 
-    Context getInitialContext(){
+    Context getGlobalContext(){
 	return CommunicationPolicy::initialContext;
     }
 

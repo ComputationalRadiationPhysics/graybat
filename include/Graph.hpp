@@ -29,10 +29,6 @@ public:
 	
     }
 
-    // Graph(GraphPolicy::Graph){
-
-    // }
-
     std::vector<Vertex> getVertices(){
 	Container<GraphPolicyVertex> v = GraphPolicy::getVertices();
 	return getVerticesProperties(v);
