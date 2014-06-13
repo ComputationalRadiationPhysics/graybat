@@ -12,9 +12,9 @@ template <class T_CommunicationPolicy>
 class Communicator : public T_CommunicationPolicy {
 private:
     typedef T_CommunicationPolicy                          CommunicationPolicy;
-    typedef typename CommunicationPolicy::BinaryOperation  BinaryOperation;
 
 public:
+    typedef typename CommunicationPolicy::BinaryOperation  BinaryOperation;
     typedef typename CommunicationPolicy::Event             Event;
     typedef typename CommunicationPolicy::BinaryOperations  BinaryOperations;
     typedef typename CommunicationPolicy::Context           Context;
@@ -85,8 +85,8 @@ public:
     // TODO 
     // Fill with various binary functions
     template <typename T>
-    void reduce(const CommID rootCommID, const Context context, const BinaryOperation op, const T& sendData, const T& recvData){
-     	CommunicationPolicy::reduce(sendData.data(), recvData.data(), sendData.size(), op, rootCommID, context);
+    void reduce(const CommID rootCommID, const Context context, const BinaryOperation op, const std::vector<T> sendData, const T& recvData){
+     	CommunicationPolicy::reduce(sendData.data(), &recvData, sendData.size(), op, rootCommID, context);
     }
 
     template <typename T>

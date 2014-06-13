@@ -40,6 +40,7 @@ typedef typename MPICommunicator::BinaryOperations BinaryOperations;
 typedef typename MPICommunicator::Event            Event;
 
 typedef NameService<BGLGraph, MPICommunicator>     NS;
+typedef GraphCommunicator<BGLGraph, MPICommunicator, NS> GC;
 
 /*******************************************************************************
  *
@@ -166,51 +167,67 @@ std::vector<EdgeDescriptor> generate2DMeshTopology(const unsigned height, const 
  *
  *******************************************************************************/
 
-// void nearestNeighborExchange(MPICommunicator &mpiCommunicator, BGLGraph &graph, std::vector<Vertex> myVertices){
-//     Context initialContext = mpiCommunicator.getGlobalContext();
-//     // Distribute and announce vertices
-//     unsigned cid           = initialContext.getCommID();
+template<typename T_Communicator, typename T_Graph>
+void nearestNeighborExchange(T_Communicator &communicator, T_Graph &graph, std::vector<typename T_Graph::Vertex> myVertices){
+    typedef typename T_Graph::Vertex Vertex;
+    typedef typename T_Graph::Edge   Edge;
+    typedef std::array<unsigned, 1>  Buffer;
 
-//     // Handle communication of vertices
-//     typedef std::array<unsigned, 1> Buffer;
+    // Async send vertices data
+    for(Vertex myVertex : myVertices){
+    	std::vector<std::pair<Vertex, Edge> > outEdges = graph.getOutEdges(myVertex);
+    	Buffer outBuffer{{myVertex.id}};
 
-//     // Async send vertices data
-//     for(unsigned vertex_i = 0; vertex_i < myVertices.size(); vertex_i++){
-//     	Vertex myVertex = myVertices.at(vertex_i);
-//     	std::vector<std::pair<Vertex, Edge> > outEdges = graph.getOutEdges(myVertex);
-//     	Buffer outBuffer{{myVertex.id}};
+    	// Send data to out edges
+	for(std::pair<Vertex, Edge> outEdge : outEdges){
+    	    Vertex dest = outEdge.first;
+    	    Edge   e    = outEdge.second;
+    	    communicator.asyncSend(dest, e, outBuffer);
+	}
 
-//     	// Send data to out edges
-//     	for(unsigned i = 0; i < outEdges.size(); ++i){
-//     	    Vertex dest = outEdges.at(i).first;
-//     	    Edge   e   = outEdges.at(i).second;
-//     	    mpiCommunicator.asyncSend(dest, e.id, initialContext, outBuffer);
-// 	}
+    }
 
-//     }
+    // Sync recv vertices data
+    for(Vertex myVertex : myVertices){
+    	std::vector<std::pair<Vertex, Edge> > inEdges  = graph.getInEdges(myVertex);
+    	std::vector<Buffer>  inBuffers (inEdges.size(), Buffer{{0}});
 
-//     // Sync recv vertices data
-//     for(unsigned vertex_i = 0; vertex_i < myVertices.size(); vertex_i++){
-//     	Vertex myVertex = myVertices.at(vertex_i);
-//     	std::vector<std::pair<Vertex, Edge> > inEdges  = graph.getInEdges(myVertex);
-//     	std::vector<Buffer>  inBuffers (inEdges.size(), Buffer{{0}});
 
-//     	// Recv data from in edges
-//     	for(unsigned i = 0; i < inEdges.size(); ++i){
-//     	    Vertex src = inEdges.at(i).first;
-//     	    Edge   e   = inEdges.at(i).second;
-//     	    mpiCommunicator.recv(src, e.id, initialContext, inBuffers[i]);
-//     	}
+    	// Recv data from in edges
+	for(unsigned i = 0 ; i < inBuffers.size(); ++i){
+    	    Vertex src = inEdges[i].first;
+    	    Edge   e   = inEdges[i].second;
+    	    communicator.recv(src, e, inBuffers[i]);
+    	}
 	
-//     	unsigned recvSum = 0;
-//     	for(Buffer b : inBuffers){
-//     	    recvSum += b[0];
-//     	}
-//     	std::cout << "CommID[" << cid << "] Vertex: " << myVertices[vertex_i].id << " NeighborIDSum: " << recvSum <<  std::endl;
+    	unsigned recvSum = 0;
+    	for(Buffer b : inBuffers){
+    	    recvSum += b[0];
+    	}
+    	std::cout << "Vertex: " << myVertex.id << " NeighborIDSum: " << recvSum <<  std::endl;
 	
-//     }
+    }
 
-// }
+}
+
+template<typename T_Communicator, typename T_Graph>
+void reduceVertexIDs(T_Communicator &communicator, T_Graph &graph, std::vector<typename T_Graph::Vertex> myVertices){
+    typedef typename T_Graph::Vertex Vertex;
+    typedef typename T_Graph::Edge   Edge;
+
+    Vertex rootVertex = graph.getVertices().at(0);
+    unsigned recvData;
+
+
+    for(Vertex vertex : myVertices){
+	std::vector<unsigned> sendData(1, vertex.id);
+	communicator.reduce(rootVertex, sendData, recvData);
+    }
+
+    
+    
+
+}
 
 // unsigned randomComm(MPICommunicator &mpiCommunicator){
 //     Context context    = mpiCommunicator.getGlobalContext();
@@ -279,18 +296,16 @@ std::vector<EdgeDescriptor> generate2DMeshTopology(const unsigned height, const 
  * VERTEX DISTRIBUTION
  *
  *******************************************************************************/
-std::vector<Vertex> distributeVerticesEvenly(MPICommunicator &mpiCommunicator, BGLGraph &graph){
-    Context initialContext = mpiCommunicator.getGlobalContext();
-
+template<typename T_Graph>
+std::vector<Vertex> distributeVerticesEvenly(const unsigned processID, const unsigned processCount, T_Graph &graph){
+    typedef typename T_Graph::Vertex Vertex;
     // Distribute and announce vertices
-    size_t contextSize     = initialContext.size();
-    unsigned cid           = initialContext.getCommID();
     unsigned vertexCount   = graph.getVertices().size();
-    unsigned maxVertex     = ceil((float)vertexCount / contextSize);
+    unsigned maxVertex     = ceil((float)vertexCount / processCount);
 
     std::vector<Vertex> myVertices;
     for(unsigned i = 0; i < maxVertex; ++i){
-	unsigned vertex_i = cid + (i * contextSize);
+	unsigned vertex_i = processID + (i * processCount);
 	if(vertex_i >= vertexCount){
 	    break;
 	}
@@ -299,8 +314,6 @@ std::vector<Vertex> distributeVerticesEvenly(MPICommunicator &mpiCommunicator, B
 	}
 	
     }
-    //mpiCommunicator.announce(myVertices, initialContext);
-
     return myVertices;
 }
 
@@ -321,39 +334,16 @@ int main(){
     //std::vector<EdgeDescriptor> edges = generateFullyConnectedTopology(10, vertices);
     //std::vector<EdgeDescriptor> edges = generateStarTopology(10, vertices);
     //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(8, vertices);
-    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(1, 2, vertices);
+    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(1, 4, vertices);
     BGLGraph myGraph (edges, vertices);
-    myGraph.print();
+
 
     /***************************************************************************
      * Create communicator
      ****************************************************************************/
     MPICommunicator myCommunicator;
-
-    NS ns(myGraph, myCommunicator);
-    GraphCommunicator<BGLGraph, MPICommunicator, NS> myGraphCommunicator(myGraph, myCommunicator, ns);
-
-    myVertices = distributeVerticesEvenly(myCommunicator, myGraph);
-    ns.announce(myVertices);
-
-    Vertex v = myVertices.at(0);
-    if(v.id == 0){
-
-	std::string data("Hello World");
-	Edge   e = myGraph.getOutEdges(v).at(0).second;
-	Vertex d = myGraph.getOutEdges(v).at(0).first;
-	myGraphCommunicator.send(d, e, data);
-    }
-    else{
-	std::string data("           ");
-	Edge   e = myGraph.getInEdges(v).at(0).second;
-	Vertex s = myGraph.getInEdges(v).at(0).first;
-	myGraphCommunicator.recv(s, e, data);
-
-    }
-    
-
-
+    NS nameService(myGraph, myCommunicator);
+    GC myGraphCommunicator(myCommunicator, nameService);
 
 
     /***************************************************************************
@@ -364,7 +354,7 @@ int main(){
     // contextVertices.push_back(myGraph.getVertices().at(2));
     // contextVertices.push_back(myGraph.getVertices().at(3));
 
-    //myGraph.createSubGraph(contextVertices);
+    // myGraph.createSubGraph(contextVertices);
     
     // Context newContext = myCommunicator.getContext(contextVertices, context);
     // if(newContext.valid()){
@@ -375,6 +365,18 @@ int main(){
     /***************************************************************************
      * Examples communication 
      ****************************************************************************/
+    unsigned myProcessID  = myCommunicator.getGlobalContext().getCommID();
+    unsigned processCount = myCommunicator.getGlobalContext().size();
+
+    myVertices = distributeVerticesEvenly(myProcessID, processCount, myGraph);
+    nameService.announce(myVertices);
+
+
+    //nearestNeighborExchange(myGraphCommunicator, myGraph, myVertices);
+    reduceVertexIDs(myGraphCommunicator, myGraph, myVertices);
+
+
+
     // unsigned masterID = 0;
 
     // myVertices = distributeVerticesEvenly(myCommunicator, myGraph);

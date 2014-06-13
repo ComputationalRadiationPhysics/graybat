@@ -16,6 +16,7 @@ struct NameService {
     // Maps
     std::map<VertexID, CommID> commMap;
     std::map<GraphContext, CommunicatorContextID> contextMap;
+    std::map<CommID, std::vector<Vertex> > vertexMap;
 
     // References
     Graph& graph;
@@ -59,6 +60,7 @@ struct NameService {
     	    	if(recvData[commID] != -1){
     		    VertexID vertexID = (VertexID) recvData[commID];
     		    commMap[vertexID] = commID;
+		    vertexMap[commID].push_back(graph.getVertices().at(vertexID));
 		    
     	    	}
     	    }
@@ -90,6 +92,10 @@ struct NameService {
 
     CommID mapVertex(Vertex vertex){
 	return commMap[vertex.id];
+    }
+    
+    std::vector<Vertex> mapCommID(CommID commID){
+	return vertexMap[commID];
     }
 
     // void announce(const Vertex vertex, const Context context){
