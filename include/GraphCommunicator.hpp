@@ -22,8 +22,6 @@ struct GraphCommunicator {
 	nameService(nameService){
 
 	reduceCount = 0;
-	reduceTmp   = 0;
-
     }
 
     Communicator& communicator;
@@ -59,9 +57,11 @@ struct GraphCommunicator {
 
     }
 
-    
+    // TODO
+    // Return Event because its non blocking !
     template <typename T>
     void reduce(const Vertex rootVertex, const std::vector<T> sendData, T& recvData){
+	static T reduceTmp;
 	CommID rootCommID = nameService.mapVertex(rootVertex);
 	std::vector<Vertex> vertices = nameService.mapCommID(rootCommID);
 
@@ -81,14 +81,14 @@ struct GraphCommunicator {
 	reduceCount++;
 	if(reduceCount == vertices.size()){
 	    communicator.reduce(rootCommID, globalContext, BinaryOperations::SUM, std::vector<unsigned>(1 , reduceTmp), recvData);
-	    std::cout << "Reduce: " << recvData << std::endl;
 	    reduceTmp = 0;
 	    reduceCount = 0;
 	}
 
-    }
-    
-    unsigned reduceTmp;
-    unsigned reduceCount;
+	
 
+    }
+
+    unsigned reduceCount;
+    
 };

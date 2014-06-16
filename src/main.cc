@@ -218,12 +218,18 @@ void reduceVertexIDs(T_Communicator &communicator, T_Graph &graph, std::vector<t
     Vertex rootVertex = graph.getVertices().at(0);
     unsigned recvData;
 
-
     for(Vertex vertex : myVertices){
 	std::vector<unsigned> sendData(1, vertex.id);
 	communicator.reduce(rootVertex, sendData, recvData);
     }
+    
+    for(Vertex vertex : myVertices){
+	if(vertex.id == rootVertex.id){
+	    std::cout << "Reduce: " << recvData << std::endl;
 
+	}
+
+    }
     
     
 
@@ -334,7 +340,7 @@ int main(){
     //std::vector<EdgeDescriptor> edges = generateFullyConnectedTopology(10, vertices);
     //std::vector<EdgeDescriptor> edges = generateStarTopology(10, vertices);
     //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(8, vertices);
-    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(1, 4, vertices);
+    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(1, 100, vertices);
     BGLGraph myGraph (edges, vertices);
 
 
