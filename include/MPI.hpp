@@ -45,15 +45,23 @@ namespace CommunicationPolicy {
 	 **************************/
 	class Context {
 	public:
-	    Context(ContextID contextID) : 
-	    contextID(contextID),
-	    commID(0),
-	    contextSize(0){}
-	    
+	    Context() :
+		contextID(0),
+		commID(0),
+		contextSize(0){}
+
 	    Context(ContextID contextID, CommID id, size_t contextSize) : 
 		contextID(contextID),
 		commID(id),
 		contextSize(contextSize){}
+
+	    Context& operator=(const Context& otherContext){
+		contextID = otherContext.getContextID();
+		commID    = otherContext.getCommID();
+		contextSize = otherContext.size();
+		return *this;
+
+	    }
 
 	    size_t size() const{
 		return contextSize;
@@ -72,9 +80,9 @@ namespace CommunicationPolicy {
 	    }
 
 	private:
-	    const ContextID contextID;
-	    const CommID    commID;
-	    const size_t    contextSize;
+	    ContextID contextID;
+	    CommID    commID;
+	    size_t    contextSize;
 	};
 
 	/**************************
@@ -211,6 +219,29 @@ namespace CommunicationPolicy {
 	}
 
 	template <typename T_Send, typename T_Recv>
+	void allGather2(const T_Send* sendData, const size_t sendCount, const T_Recv* recvData, const size_t recvCount, const Context context){
+
+	    int rcounts[context.size()];
+	    int rdispls[context.size()];
+
+	    allGather(&sendCount, 1, rcounts, context.size(), context);
+
+
+	    int offset  = 0;
+
+	    for (unsigned i=0; i < context.size(); ++i) { 
+		rdispls[i] = offset; 
+		offset += rcounts[i];
+		
+	    } 
+	    
+	    MPI_Allgatherv(const_cast<T_Send*>(sendData), sendCount, MPIDatatypes<T_Send>::type, 
+			   const_cast<T_Recv*>(recvData), rcounts, rdispls, MPIDatatypes<T_Recv>::type, 
+			   contextMap[context.getContextID()]);
+
+	}
+
+	template <typename T_Send, typename T_Recv>
 	void scatter(const T_Send* sendData, const size_t sendCount, T_Recv* recvData, const size_t recvCount, const CommID root, const Context context){
 	    URI rootURI = uriMap.at(context.getContextID()).at(root);
 	    MPI_Scatter(const_cast<T_Send*>(sendData), sendCount, MPIDatatypes<T_Send>::type, 
@@ -275,7 +306,7 @@ namespace CommunicationPolicy {
 
 	    }
 	    else {
-	    	return Context(0);
+	    	return Context();
 		
 	    }
 	    

@@ -11,6 +11,7 @@ private:
 public:
     typedef typename GraphPolicy::VertexProperty Vertex;
     typedef typename GraphPolicy::EdgeProperty   Edge;
+    typedef unsigned                             GraphID;
 
 private: 
     template <typename T> 
@@ -23,11 +24,28 @@ private:
     typedef std::tuple<Vertex, Vertex, Edge>                EdgeDescriptor;
 
 
-public:
-    Graph(std::vector<EdgeDescriptor> edges, std::vector<Vertex> vertices) :
-	GraphPolicy(toGraphPolicyEdges(edges), vertices){
+
+
+    Graph(typename GraphPolicy::Graph& graph, unsigned id) : 
+	GraphPolicy(graph),
+	id(id){
 	
     }
+
+public:
+
+    GraphID id;
+
+    Graph() : id(0){
+
+    }
+ 
+    Graph(std::vector<EdgeDescriptor> edges, std::vector<Vertex> vertices) :
+	GraphPolicy(toGraphPolicyEdges(edges), vertices),
+	id(0){
+	
+    }
+    
 
     std::vector<Vertex> getVertices(){
 	Container<GraphPolicyVertex> v = GraphPolicy::getVertices();
@@ -80,15 +98,18 @@ public:
 	}
 
     }
-    
-    // void createSubGraph(std::vector<Vertex> vertices){
-    // 	std::vector<GraphPolicyVertex> graphPolicyVertices;
-    // 	for(unsigned v_i = 0; v_i < vertices.size(); ++v_i){
-    // 	    graphPolicyVertices.push_back(GraphPolicyVertex(vertices[v_i].id));
-    // 	}
-    // 	GraphPolicy::createSubGraph(graphPolicyVertices);
 
-    // }
+    Graph<GraphPolicy> createSubGraph(std::vector<Vertex> vertices){
+    	std::vector<GraphPolicyVertex> graphPolicyVertices;
+    	for(unsigned v_i = 0; v_i < vertices.size(); ++v_i){
+    	    graphPolicyVertices.push_back(GraphPolicyVertex(vertices[v_i].id));
+    	}
+
+	typename GraphPolicy::Graph& sg = GraphPolicy::createSubGraph(graphPolicyVertices);
+
+	return Graph<GraphPolicy>(sg, id + 1);
+
+    }
 
 	      
 private:

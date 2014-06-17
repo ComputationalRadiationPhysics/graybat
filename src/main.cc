@@ -34,13 +34,13 @@ typedef std::tuple<Vertex, Vertex, Edge>               EdgeDescriptor;
 // Communicator
 // Vertex / Edge is a struct with at least ID id public member
 typedef CommunicationPolicy::MPI                   Mpi;
-typedef Communicator<Mpi>                          MPICommunicator;
-typedef typename MPICommunicator::Context          Context;
-typedef typename MPICommunicator::BinaryOperations BinaryOperations;
-typedef typename MPICommunicator::Event            Event;
+typedef Communicator<Mpi>                          MpiCommunicator;
+typedef typename MpiCommunicator::Context          Context;
+typedef typename MpiCommunicator::BinaryOperations BinaryOperations;
+typedef typename MpiCommunicator::Event            Event;
 
-typedef NameService<BGLGraph, MPICommunicator>     NS;
-typedef GraphCommunicator<BGLGraph, MPICommunicator, NS> GC;
+typedef NameService<BGLGraph, MpiCommunicator>     NS;
+typedef GraphCommunicator<BGLGraph, MpiCommunicator, NS> GC;
 
 /*******************************************************************************
  *
@@ -178,12 +178,12 @@ void nearestNeighborExchange(T_Communicator &communicator, T_Graph &graph, std::
     	std::vector<std::pair<Vertex, Edge> > outEdges = graph.getOutEdges(myVertex);
     	Buffer outBuffer{{myVertex.id}};
 
-    	// Send data to out edges
-	for(std::pair<Vertex, Edge> outEdge : outEdges){
+    	//Send data to out edges
+    	for(std::pair<Vertex, Edge> outEdge : outEdges){
     	    Vertex dest = outEdge.first;
     	    Edge   e    = outEdge.second;
     	    communicator.asyncSend(dest, e, outBuffer);
-	}
+    	}
 
     }
 
@@ -194,7 +194,7 @@ void nearestNeighborExchange(T_Communicator &communicator, T_Graph &graph, std::
 
 
     	// Recv data from in edges
-	for(unsigned i = 0 ; i < inBuffers.size(); ++i){
+    	for(unsigned i = 0 ; i < inBuffers.size(); ++i){
     	    Vertex src = inEdges[i].first;
     	    Edge   e   = inEdges[i].second;
     	    communicator.recv(src, e, inBuffers[i]);
@@ -220,7 +220,7 @@ void reduceVertexIDs(T_Communicator &communicator, T_Graph &graph, std::vector<t
 
     for(Vertex vertex : myVertices){
 	std::vector<unsigned> sendData(1, vertex.id);
-	communicator.reduce(rootVertex, sendData, recvData);
+	communicator.reduce(rootVertex, vertex, graph, sendData, recvData);
     }
     
     for(Vertex vertex : myVertices){
@@ -231,11 +231,9 @@ void reduceVertexIDs(T_Communicator &communicator, T_Graph &graph, std::vector<t
 
     }
     
-    
-
 }
 
-// unsigned randomComm(MPICommunicator &mpiCommunicator){
+// unsigned randomComm(MpiCommunicator &mpiCommunicator){
 //     Context context    = mpiCommunicator.getGlobalContext();
 //     size_t contextSize = context.size();
 //     unsigned masterID  = context.getCommID();
@@ -258,7 +256,36 @@ void reduceVertexIDs(T_Communicator &communicator, T_Graph &graph, std::vector<t
 //     return masterID;
 // }
 
-// std::vector<Vertex> occupyRandomVertex(MPICommunicator &mpiCommunicator, BGLGraph &myGraph, std::vector<Vertex> myVertices, unsigned masterID){
+template<typename T_Communicator, typename T_Graph>
+typename T_Graph::Vertex randomVertex(T_Communicator& communicator, T_Graph& graph, std::vector<typename T_Graph::Vertex> vertices ){
+    typedef T_Graph                Graph;
+    typedef typename Graph::Vertex Vertex;
+    typedef typename Vertex::ID    VertexID;
+    
+    VertexID vertexID  = 0;
+
+    for(Vertex vertex : vertices){
+	srand(time(NULL) + vertex.id);
+	unsigned random = rand();
+
+	std::vector<unsigned> recvData(graph.getVertices().size(), 0);
+
+	communicator.allGather(vertex, graph, random, recvData);
+
+	for(VertexID i = 0; i < recvData.size(); ++i){
+	    if(recvData[i] > random){
+		vertexID = i;
+		random = recvData[i];
+	    }
+	}
+
+
+    }
+
+    return graph.getVertices().at(vertexID);  
+}
+
+// std::vector<Vertex> occupyRandomVertex(MpiCommunicator &mpiCommunicator, BGLGraph &myGraph, std::vector<Vertex> myVertices, unsigned masterID){
 //     Context context = mpiCommunicator.getGlobalContext();
 //     unsigned cid    = context.getCommID();
 //     std::array<unsigned, 1> randomVertex{{0}};
@@ -340,33 +367,26 @@ int main(){
     //std::vector<EdgeDescriptor> edges = generateFullyConnectedTopology(10, vertices);
     //std::vector<EdgeDescriptor> edges = generateStarTopology(10, vertices);
     //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(8, vertices);
-    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(1, 100, vertices);
+    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(2, 2, vertices);
     BGLGraph myGraph (edges, vertices);
 
 
     /***************************************************************************
      * Create communicator
      ****************************************************************************/
-    MPICommunicator myCommunicator;
+    MpiCommunicator myCommunicator;
     NS nameService(myGraph, myCommunicator);
     GC myGraphCommunicator(myCommunicator, nameService);
 
 
     /***************************************************************************
-     * Example create new context
+     * Create subgraph
      ****************************************************************************/
+    std::vector<Vertex> contextVertices;
+    contextVertices.push_back(myGraph.getVertices().at(0));
+    contextVertices.push_back(myGraph.getVertices().at(1));
 
-    // std::vector<Vertex> contextVertices;
-    // contextVertices.push_back(myGraph.getVertices().at(2));
-    // contextVertices.push_back(myGraph.getVertices().at(3));
-
-    // myGraph.createSubGraph(contextVertices);
-    
-    // Context newContext = myCommunicator.getContext(contextVertices, context);
-    // if(newContext.valid()){
-    // 	myCommunicator.announce(myVertices, newContext);
-    // 	std::cout << "old context id: " << context.getCommID() << " new context id:  " << newContext.getCommID() << std::endl;
-    // }
+    BGLGraph mySubGraph = myGraph.createSubGraph(contextVertices);
 
     /***************************************************************************
      * Examples communication 
@@ -374,12 +394,19 @@ int main(){
     unsigned myProcessID  = myCommunicator.getGlobalContext().getCommID();
     unsigned processCount = myCommunicator.getGlobalContext().size();
 
-    myVertices = distributeVerticesEvenly(myProcessID, processCount, myGraph);
+    myVertices = distributeVerticesEvenly(myProcessID, processCount, mySubGraph);
+    //myVertices = distributeVerticesEvenly(myProcessID, processCount, myGraph);
+
     nameService.announce(myVertices);
+    nameService.announce(myGraph, mySubGraph);
 
 
     //nearestNeighborExchange(myGraphCommunicator, myGraph, myVertices);
-    reduceVertexIDs(myGraphCommunicator, myGraph, myVertices);
+    //reduceVertexIDs(myGraphCommunicator, myGraph, myVertices);
+
+    //nearestNeighborExchange(myGraphCommunicator, mySubGraph, myVertices);
+    //reduceVertexIDs(myGraphCommunicator, mySubGraph, myVertices);
+    randomVertex(myGraphCommunicator, mySubGraph, myVertices);
 
 
 

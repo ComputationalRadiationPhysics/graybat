@@ -8,14 +8,14 @@ struct NameService {
     typedef typename Graph::Vertex           Vertex;
     typedef typename Communicator::CommID    CommID;
     typedef typename Vertex::ID              VertexID;
-    typedef unsigned                         GraphContext;
-    typedef typename Communicator::Context   CommunicatorContext;
-    typedef typename Communicator::ContextID CommunicatorContextID;
+    typedef typename Graph::GraphID          GraphID;
+    typedef typename Communicator::Context   Context;
+    typedef typename Communicator::ContextID ContextID;
     typedef typename Communicator::BinaryOperations BinaryOperations;
 
     // Maps
     std::map<VertexID, CommID> commMap;
-    std::map<GraphContext, CommunicatorContextID> contextMap;
+    std::map<GraphID, Context> contextMap;
     std::map<CommID, std::vector<Vertex> > vertexMap;
 
     // References
@@ -28,13 +28,13 @@ struct NameService {
 	communicator(communicator),
 	graphContextCount(0){
 	
-	contextMap[graphContextCount] = communicator.getGlobalContext().getContextID();
+	contextMap[graph.id] =  communicator.getGlobalContext();
 
     }
 
 
     void announce(const std::vector<Vertex> vertices){
-	CommunicatorContext communicatorContext = communicator.getGlobalContext();
+	Context communicatorContext = communicator.getGlobalContext();
 
     	// Each announces how many nodes it manages
     	std::array<unsigned, 1> myVerticesCount {{(unsigned) vertices.size()}};
@@ -69,45 +69,34 @@ struct NameService {
 
     }
 
-    GraphContext createGraphContext(const std::vector<Vertex> vertices, const GraphContext oldGraphContext){
-	// Collect communicator which manage vertices
+    void announce(Graph& graph, Graph& subGraph){
+	std::vector<Vertex> vertices = subGraph.getVertices();
+
 	std::vector<CommID> commIDs;
 	for(Vertex vertex : vertices){
-	    commIDs.push_back(commMap[vertex]);
+	    commIDs.push_back(mapVertex(vertex));
 	}
-
-	// Create new communicator context
-	CommunicatorContext oldCommunicatorContext = contextMap[oldGraphContext];
-	CommunicatorContext newCommunicatorContext = communicator.getContext(commIDs, oldCommunicatorContext);
-	GraphContext newGraphContext(++graphContextCount);
 	
-	contextMap[newGraphContext] = newCommunicatorContext;
+	Context oldContext = mapGraph(graph);
+	Context newContext = communicator.createContext(commIDs, oldContext);
 	
-	return newGraphContext;
-    }
+	contextMap[subGraph.id] = newContext;
 
-    GraphContext getGlobalGraphContext(){
-	return contextMap[0];
     }
 
     CommID mapVertex(Vertex vertex){
 	return commMap[vertex.id];
+
     }
     
     std::vector<Vertex> mapCommID(CommID commID){
 	return vertexMap[commID];
+
     }
 
-    // void announce(const Vertex vertex, const Context context){
-    // 	std::vector<Vertex> vertices;
-    // 	vertices.push_back(vertex);
-    // 	announce(vertices, context, communicator);
-    // }
+    Context mapGraph(Graph graph){
+	return contextMap[graph.id];
 
-    // CommID getCommID(Vertex vertex, Context context){
-    // 	CommID commID = commMap.at(context.getContextID()).at(vertex.id);
-    // 	return commID;
-	
-    // }
+    }
 
 };

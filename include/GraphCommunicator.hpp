@@ -60,19 +60,13 @@ struct GraphCommunicator {
     // TODO
     // Return Event because its non blocking !
     template <typename T>
-    void reduce(const Vertex rootVertex, const std::vector<T> sendData, T& recvData){
+    void reduce(const Vertex rootVertex, const Vertex srcVertex, Graph graph, const std::vector<T> sendData, T& recvData){
 	static T reduceTmp;
 	CommID rootCommID = nameService.mapVertex(rootVertex);
-	std::vector<Vertex> vertices = nameService.mapCommID(rootCommID);
+	CommID srcCommID  = nameService.mapVertex(srcVertex);
+	std::vector<Vertex> vertices = nameService.mapCommID(srcCommID);
 
-
-	Context globalContext = communicator.getGlobalContext();
-	// TODO
-	// subGraph dependand Context
-	// Start reduce just when every Vertex in subGraph which
-	// is managaed by this communicator has started reduce
-	// 
-	// Context subGraphContext = nameService.mapGraph(subGraph);
+	Context context = nameService.mapGraph(graph);
 
 	for(T d : sendData){
 	    reduceTmp += d;
@@ -80,10 +74,46 @@ struct GraphCommunicator {
 
 	reduceCount++;
 	if(reduceCount == vertices.size()){
-	    communicator.reduce(rootCommID, globalContext, BinaryOperations::SUM, std::vector<unsigned>(1 , reduceTmp), recvData);
+	    communicator.reduce(rootCommID, context, BinaryOperations::SUM, std::vector<unsigned>(1 , reduceTmp), recvData);
 	    reduceTmp = 0;
 	    reduceCount = 0;
 	}
+
+	
+
+    }
+
+    // TODO
+    // Return Event because its non blocking !
+    template <typename T>
+    void allGather(const Vertex srcVertex, Graph& graph, const T sendData, std::vector<T>& recvData){
+	static std::vector<T> gatherTmp;
+	CommID srcCommID  = nameService.mapVertex(srcVertex);
+	std::vector<Vertex> vertices = nameService.mapCommID(srcCommID);
+	Context context = nameService.mapGraph(graph);
+
+	gatherTmp.push_back(sendData);
+
+	if(gatherTmp.size() == vertices.size()){
+	    communicator.allGather2(context, gatherTmp, recvData);
+	    gatherTmp.clear();
+		
+	}
+
+	for(T t : recvData){
+	    std::cout << t << std::endl;
+	}
+
+	// for(T d : sendData){
+	//     reduceTmp += d;
+	// }
+
+	// reduceCount++;
+	// if(reduceCount == vertices.size()){
+	//     communicator.reduce(rootCommID, context, BinaryOperations::SUM, std::vector<unsigned>(1 , reduceTmp), recvData);
+	//     reduceTmp = 0;
+	//     reduceCount = 0;
+	// }
 
 	
 

@@ -27,9 +27,11 @@ namespace GraphPolicy {
 	typedef boost::adjacency_list<boost::vecS, 
 				      boost::vecS, 
 				      boost::bidirectionalS, 
-				      VertexProperty,
-				      EdgeProperty> Graph;
+				      boost::property<boost::vertex_index_t, size_t, VertexProperty>,
+				      boost::property<boost::edge_index_t, size_t, EdgeProperty>> GraphTmp;
 
+    protected:
+	typedef boost::subgraph<GraphTmp> Graph;
 
 	typedef typename boost::graph_traits<Graph>::in_edge_iterator   InEdgeIter;
 	typedef typename boost::graph_traits<Graph>::out_edge_iterator  OutEdgeIter;
@@ -45,75 +47,96 @@ namespace GraphPolicy {
 	typedef typename std::tuple<Vertex, Vertex, EdgeProperty>       EdgeDescriptor;
 
     protected:
-
-	Graph graph;
 	template <typename T> using               Container = std::vector<T>;
-    
-	BGL(std::vector<EdgeDescriptor> edges, 
-	    std::vector<VertexProperty> vertexProperties){
-	
-	    graph = Graph(vertexProperties.size());
 
+	Graph* graph;
+
+	BGL(Graph& subGraph) : graph(&subGraph){
+
+	}
+
+	BGL(std::vector<EdgeDescriptor> edges, 
+	    std::vector<VertexProperty> vertexProperties) {
+	
+	    graph = new Graph(vertexProperties.size());
+	    
 	    for(auto edge: edges){
-		Edge e = boost::add_edge(std::get<0>(edge), std::get<1>(edge), graph).first;
+		Edge e = boost::add_edge(std::get<0>(edge), std::get<1>(edge), (*graph)).first;
 		setEdgeProperty(e, std::get<2>(edge));
 	    
 	    }
 
 	    // Bind vertex_descriptor and VertexProperty;
-	    for(unsigned i = 0; i < boost::num_vertices(graph); ++i){
-		setVertexProperty(boost::vertex(i, graph), vertexProperties.at(i));
+	    for(unsigned i = 0; i < boost::num_vertices((*graph)); ++i){
+		setVertexProperty(boost::vertex(i, (*graph)), vertexProperties.at(i));
 	    }
 
 	}
 
+	~BGL(){
+	    // TODO
+	    // just delete graph if its root graph
+	    // delete graph;
+	}
+
 	Container<Vertex> getVertices(){
 	    AllVertexIter vi, vi_end;
-	    std::tie(vi, vi_end) =  boost::vertices(graph);
+	    std::tie(vi, vi_end) =  boost::vertices((*graph));
 	    return Container<Vertex>(vi, vi_end);
 	}
 
 	VertexProperty getVertexProperty(Vertex vertex){
-	    return graph[vertex];
+	    return (*graph)[vertex];
 	}
   
 	EdgeProperty getEdgeProperty(Edge edge){
-	    return graph[edge];
+	    return (*graph)[edge];
 	}
 
 	Container<Edge> getInEdges(Vertex vertex){
 	    InEdgeIter ei, ei_end;
-	    std::tie(ei, ei_end) = boost::in_edges(vertex, graph);
+	    std::tie(ei, ei_end) = boost::in_edges((*graph).global_to_local(vertex), (*graph));
 	    return Container<Edge> (ei, ei_end);
 	}
 
 	Container<Edge> getOutEdges(Vertex vertex){
 	    OutEdgeIter ei, ei_end;
-	    std::tie(ei, ei_end) = boost::out_edges(vertex, graph);
+	    std::tie(ei, ei_end) = boost::out_edges((*graph).global_to_local(vertex), (*graph));
 	    return Container<Edge> (ei, ei_end);
 	}
 
 	Vertex getEdgeTarget(Edge edge){
-	    return boost::target(edge, graph);
+	    return boost::target(edge, (*graph));
 	}
 
 	Vertex getEdgeSource(Edge edge){
-	    return boost::source(edge, graph);
+	    return boost::source(edge, (*graph));
 	}
 
-	// Graph createSubGraph(const std::vector<Vertex> vertices){
-	//     Graph subGraph = graph.create_subgraph(vertices.begin(), vertices.end());
-	//     return subGraph;
-	// }
+	Graph& createSubGraph(const std::vector<Vertex> vertices){
+	    //subGraph =  graph.create_subgraph(vertices.begin(), vertices.end());
+	    return (*graph).create_subgraph(vertices.begin(), vertices.end());
+	    // AllVertexIter vi, vi_end;
+	    // std::tie(vi, vi_end) =  boost::vertices(subGraph);
+	    // Container<Vertex>c (vi, vi_end);
+
+	    // for(Vertex v : c){
+	    // 	std::cout << subGraph[v].id << std::endl;
+	    // }
+
+
+	    //std::cout << "BGL " << subGraph[boost::vertex(2, subGraph)].id << std::endl;
+	    //return sg;
+	}
 
 
     private:
 	void setVertexProperty(Vertex vertex, VertexProperty value){
-	    graph[vertex] = value;
+	    (*graph)[vertex] = value;
 	}
 
 	void setEdgeProperty(Edge edge, EdgeProperty value){
-	    graph[edge] = value;
+	    (*graph)[edge] = value;
 	}
 
 

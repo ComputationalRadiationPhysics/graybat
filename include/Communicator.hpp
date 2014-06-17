@@ -29,28 +29,26 @@ public:
      *
      ***************************************************************************/
     template <typename T>
-    void send(const CommID destCommID, const unsigned tag, const Context context, T& sendData){
-
+    void send(const CommID destCommID, const unsigned tag, const Context context, const T& sendData) const {
 	Event e = asyncSend(destCommID, tag, context, sendData);
 	e.wait();
-	std::cout << "schla" << std::endl;
     }
 
     template <typename T>
-    Event asyncSend(const CommID destCommID, const unsigned tag, const Context context, T& sendData){
+    Event asyncSend(const CommID destCommID, const unsigned tag, const Context context, const T& sendData){
 	return CommunicationPolicy::asyncSendData(sendData.data(), sendData.size(), destCommID, context, tag);
     }
 
 
     template <typename T>
-    void recv(const CommID srcCommID, const unsigned tag, const Context context, T& recvData){
+    void recv(const CommID srcCommID, const unsigned tag, const Context context, const T& recvData){
 	Event e =  asyncRecv(srcCommID, tag, context, recvData);
 	e.wait();
 
     }
 
     template <typename T>
-    Event asyncRecv(const CommID srcCommID, const unsigned tag, const Context context, T& recvData){
+    Event asyncRecv(const CommID srcCommID, const unsigned tag, const Context context, const T& recvData){
 	return CommunicationPolicy::asyncRecvData(recvData.data(), recvData.size(), srcCommID, context, tag);
     }
 
@@ -71,6 +69,12 @@ public:
     void allGather(const Context context, const T_Send& sendData, const T_Recv& recvData){
     	CommunicationPolicy::allGather(sendData.data(), sendData.size(), recvData.data(), sendData.size(), context);
     }
+
+    template <typename T_Send, typename T_Recv>
+    void allGather2(const Context context, const T_Send& sendData, const T_Recv& recvData){
+    	CommunicationPolicy::allGather2(sendData.data(), sendData.size(), recvData.data(), sendData.size(), context);
+    }
+
 
     template <typename T_Send, typename T_Recv>
     void scatter(const CommID rootCommID, const Context context, const T_Send& sendData, const T_Recv& recvData){
