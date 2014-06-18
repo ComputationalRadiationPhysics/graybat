@@ -60,19 +60,26 @@ public:
      **************************************************************************/ 
     // TODO 
     // Make collective interfaces more slim
-    template <typename T_Send, typename T_Recv>
-    void gather(const CommID rootCommID, const Context context, const T_Send& sendData, T_Recv& recvData){
+    template <typename T>
+    void gather(const CommID rootCommID, const Context context, const std::vector<T>& sendData, std::vector<T>& recvData){
     	CommunicationPolicy::gather(sendData.data(), sendData.size(), recvData.data(), sendData.size(), rootCommID, context);
     }
 
-    template <typename T_Send, typename T_Recv>
-    void allGather(const Context context, const T_Send& sendData, const T_Recv& recvData){
-    	CommunicationPolicy::allGather(sendData.data(), sendData.size(), recvData.data(), sendData.size(), context);
+    template <typename T>
+    void gather2(const CommID rootCommID, const Context context, const std::vector<T>& sendData, std::vector<T>& recvData){
+    	CommunicationPolicy::gather2(sendData.data(), sendData.size(), recvData.data(), sendData.size(), rootCommID, context);
     }
 
-    template <typename T_Send, typename T_Recv>
-    void allGather2(const Context context, const T_Send& sendData, const T_Recv& recvData){
-    	CommunicationPolicy::allGather2(sendData.data(), sendData.size(), recvData.data(), sendData.size(), context);
+    template <typename T>
+    void allGather(const Context context, const std::vector<T>& sendData, std::vector<T>& recvData){
+    	CommunicationPolicy::allGather(sendData.data(), sendData.size(), recvData.data(), context);
+    }
+
+    // TODO
+    // give some nice name (allGatherV sounds crap)
+    template <typename T>
+    void allGather2(const Context context, const std::vector<T>& sendData, std::vector<T>& recvData){
+    	CommunicationPolicy::allGather2(sendData.data(), sendData.size(), recvData, context);
     }
 
 

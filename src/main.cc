@@ -257,32 +257,61 @@ void reduceVertexIDs(T_Communicator &communicator, T_Graph &graph, std::vector<t
 // }
 
 template<typename T_Communicator, typename T_Graph>
-typename T_Graph::Vertex randomVertex(T_Communicator& communicator, T_Graph& graph, std::vector<typename T_Graph::Vertex> vertices ){
+typename T_Graph::Vertex randomVertex( T_Communicator& communicator, T_Graph& graph, const std::vector<typename T_Graph::Vertex> vertices ){
     typedef T_Graph                Graph;
     typedef typename Graph::Vertex Vertex;
     typedef typename Vertex::ID    VertexID;
     
     VertexID vertexID  = 0;
+    unsigned myRandom = 0;
+    std::vector<unsigned> recvData;
 
     for(Vertex vertex : vertices){
 	srand(time(NULL) + vertex.id);
-	unsigned random = rand();
-
-	std::vector<unsigned> recvData(graph.getVertices().size(), 0);
-
-	communicator.allGather(vertex, graph, random, recvData);
-
-	for(VertexID i = 0; i < recvData.size(); ++i){
-	    if(recvData[i] > random){
-		vertexID = i;
-		random = recvData[i];
-	    }
-	}
-
+	myRandom = rand();
+	communicator.allGather(vertex, graph, myRandom, recvData);
 
     }
 
+    unsigned greatestRandom = 0;
+
+    for(VertexID i = 0; i < recvData.size(); ++i){
+	if(recvData[i] > greatestRandom){
+	    vertexID = i;
+	    greatestRandom = recvData[i];
+	}
+    }
+
+
     return graph.getVertices().at(vertexID);  
+}
+
+template<typename T_Communicator, typename T_Graph>
+void occupyRandomVertex(T_Communicator& communicator, T_Graph& graph, std::vector<typename T_Graph::Vertex>& vertices, typename T_Graph::Vertex masterVertex){
+    typedef T_Graph                Graph;
+    typedef typename Graph::Vertex Vertex;
+    typedef typename Vertex::ID    VertexID;
+
+    for(Vertex vertex : vertices){
+	std::vector<VertexID> randomVertex;
+
+	if(vertex.id == masterVertex.id){
+	    randomVertex.push_back(rand() % graph.getVertices().size());
+	    communicator.broadcast(vertex, masterVertex, graph, randomVertex);
+	    std::cout << "master: " << randomVertex[0] << std::endl;
+	    
+	}
+	else {
+	    communicator.broadcast(vertex, masterVertex, graph, randomVertex);
+	    for(VertexID vertexID : randomVertex){
+		std::cout << "slave: " << vertexID << std::endl;
+	    }
+
+
+	}
+
+    }
+
 }
 
 // std::vector<Vertex> occupyRandomVertex(MpiCommunicator &mpiCommunicator, BGLGraph &myGraph, std::vector<Vertex> myVertices, unsigned masterID){
@@ -363,11 +392,11 @@ int main(){
      * Create graph
      ****************************************************************************/
     std::vector<Vertex> vertices;
-    std::vector<Vertex> myVertices;
+
     //std::vector<EdgeDescriptor> edges = generateFullyConnectedTopology(10, vertices);
     //std::vector<EdgeDescriptor> edges = generateStarTopology(10, vertices);
     //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(8, vertices);
-    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(2, 2, vertices);
+    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(2, 5, vertices);
     BGLGraph myGraph (edges, vertices);
 
 
@@ -382,11 +411,12 @@ int main(){
     /***************************************************************************
      * Create subgraph
      ****************************************************************************/
-    std::vector<Vertex> contextVertices;
-    contextVertices.push_back(myGraph.getVertices().at(0));
-    contextVertices.push_back(myGraph.getVertices().at(1));
-
-    BGLGraph mySubGraph = myGraph.createSubGraph(contextVertices);
+    std::vector<Vertex> subGraphVertices;
+    subGraphVertices.push_back(myGraph.getVertices().at(0));
+    subGraphVertices.push_back(myGraph.getVertices().at(1));
+    subGraphVertices.push_back(myGraph.getVertices().at(2));
+    subGraphVertices.push_back(myGraph.getVertices().at(3));
+    BGLGraph mySubGraph = myGraph.createSubGraph(subGraphVertices);
 
     /***************************************************************************
      * Examples communication 
@@ -394,28 +424,29 @@ int main(){
     unsigned myProcessID  = myCommunicator.getGlobalContext().getCommID();
     unsigned processCount = myCommunicator.getGlobalContext().size();
 
-    myVertices = distributeVerticesEvenly(myProcessID, processCount, mySubGraph);
-    //myVertices = distributeVerticesEvenly(myProcessID, processCount, myGraph);
+    std::vector<Vertex> mySubGraphVertices = distributeVerticesEvenly(myProcessID, processCount, mySubGraph);
+    std::vector<Vertex> myGraphVertices    = distributeVerticesEvenly(myProcessID, processCount, myGraph);
 
-    nameService.announce(myVertices);
+    nameService.announce(mySubGraphVertices);
     nameService.announce(myGraph, mySubGraph);
 
 
-    //nearestNeighborExchange(myGraphCommunicator, myGraph, myVertices);
-    //reduceVertexIDs(myGraphCommunicator, myGraph, myVertices);
+    //nearestNeighborExchange(myGraphCommunicator, myGraph, myGraphVertices);
+    //reduceVertexIDs(myGraphCommunicator, myGraph, myGraphVertices);
 
-    //nearestNeighborExchange(myGraphCommunicator, mySubGraph, myVertices);
-    //reduceVertexIDs(myGraphCommunicator, mySubGraph, myVertices);
-    randomVertex(myGraphCommunicator, mySubGraph, myVertices);
+    //nearestNeighborExchange(myGraphCommunicator, mySubGraph, mySubGraphVertices);
+    
 
+    if(!mySubGraphVertices.empty()){
 
+	reduceVertexIDs(myGraphCommunicator, mySubGraph, mySubGraphVertices);
 
-    // unsigned masterID = 0;
+	Vertex v = randomVertex(myGraphCommunicator, mySubGraph, mySubGraphVertices);
+	occupyRandomVertex(myGraphCommunicator, mySubGraph, mySubGraphVertices, v);
+	std::cout << "Random vertex: " << v.id << std::endl;
 
-    // myVertices = distributeVerticesEvenly(myCommunicator, myGraph);
-
-    // masterID = randomComm(myCommunicator);
-
+    }
+    
     // myVertices = occupyRandomVertex(myCommunicator, myGraph, myVertices, masterID);
     // myVertices = occupyRandomVertex(myCommunicator, myGraph, myVertices, masterID);
     

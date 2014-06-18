@@ -31,6 +31,9 @@ namespace CommunicationPolicy {
     };
 
 
+    // TODO
+    // Remove C like interface
+    // not usefull for anyone -.-
     class MPI{
     protected:
 	typedef unsigned ContextID;
@@ -211,33 +214,84 @@ namespace CommunicationPolicy {
 		       rootURI, contextMap[context.getContextID()]);
 	}
 
-	template <typename T_Send, typename T_Recv>
-	void allGather(const T_Send* sendData, const size_t sendCount, const T_Recv* recvData, const size_t recvCount, const Context context){
-	    MPI_Allgather(const_cast<T_Send*>(sendData), sendCount, MPIDatatypes<T_Send>::type, 
-			  const_cast<T_Recv*>(recvData), recvCount, MPIDatatypes<T_Recv>::type, 
-			  contextMap[context.getContextID()]);
-	}
-
-	template <typename T_Send, typename T_Recv>
-	void allGather2(const T_Send* sendData, const size_t sendCount, const T_Recv* recvData, const size_t recvCount, const Context context){
-
+	template <typename T>
+	void gather2(const T* sendData, const size_t sendCount, std::vector<T>& recvData, const CommID root, const Context context){
+	    URI rootURI = uriMap.at(context.getContextID()).at(root);
 	    int rcounts[context.size()];
 	    int rdispls[context.size()];
+	    
+	    int sendCountTmp = (int)sendCount;
+	    
+	    allGather(&(sendCountTmp), 1, rcounts, context);
 
-	    allGather(&sendCount, 1, rcounts, context.size(), context);
-
-
-	    int offset  = 0;
+	    unsigned offset  = 0;
 
 	    for (unsigned i=0; i < context.size(); ++i) { 
-		rdispls[i] = offset; 
-		offset += rcounts[i];
+	    	rdispls[i] = offset; 
+	    	offset += rcounts[i];
 		
 	    } 
 	    
-	    MPI_Allgatherv(const_cast<T_Send*>(sendData), sendCount, MPIDatatypes<T_Send>::type, 
-			   const_cast<T_Recv*>(recvData), rcounts, rdispls, MPIDatatypes<T_Recv>::type, 
+	    const T* recvDataCollective = (T*) malloc(sizeof(T) * offset);
+	    
+	    MPI_Gatherv(const_cast<T*>(sendData), sendCount, MPIDatatypes<T>::type, 
+			const_cast<T*>(recvDataCollective), rcounts, rdispls, MPIDatatypes<T>::type, 
+			rootURI, contextMap[context.getContextID()]);
+
+
+	    std::vector<T> recvDataTmp;
+
+	    if(root == context.getCommID()){
+		for(unsigned i = 0; i < offset; ++i){
+		    recvDataTmp.push_back(recvDataCollective[i]);
+		}
+	    }
+
+	    recvData = recvDataTmp;
+
+	}
+
+	template <typename T_Send, typename T_Recv>
+	void allGather(const T_Send* sendData, const size_t sendCount, const T_Recv* recvData, const Context context){
+	    MPI_Allgather(const_cast<T_Send*>(sendData), sendCount, MPIDatatypes<T_Send>::type, 
+			  const_cast<T_Recv*>(recvData), sendCount, MPIDatatypes<T_Recv>::type, 
+			  contextMap[context.getContextID()]);
+	}
+
+	// TODO
+	// beautify
+	template <typename T>
+	void allGather2(const T* sendData, const size_t sendCount, std::vector<T>& recvData, const Context context){
+
+	    int rcounts[context.size()];
+	    int rdispls[context.size()];
+	    
+	    int sendCountTmp = (int)sendCount;
+	    
+	    allGather(&(sendCountTmp), 1, rcounts, context);
+
+	    unsigned offset  = 0;
+
+	    for (unsigned i=0; i < context.size(); ++i) { 
+	    	rdispls[i] = offset; 
+	    	offset += rcounts[i];
+		
+	    } 
+	    
+	    const T* recvDataCollective = (T*) malloc(sizeof(T) * offset);
+	    
+	    MPI_Allgatherv(const_cast<T*>(sendData), sendCount, MPIDatatypes<T>::type, 
+			   const_cast<T*>(recvDataCollective), rcounts, rdispls, MPIDatatypes<T>::type, 
 			   contextMap[context.getContextID()]);
+
+
+	    std::vector<T> recvDataTmp;
+
+	    for(unsigned i = 0; i < offset; ++i){
+		recvDataTmp.push_back(recvDataCollective[i]);
+	    }
+
+	    recvData = recvDataTmp;
 
 	}
 
@@ -272,15 +326,15 @@ namespace CommunicationPolicy {
 	 * ORGANISATION
 	 *
 	 ***************************************************************************/
-	Context createContext(const std::vector<CommID> ids, const Context oldContext){
-	    assert(ids.size() > 1);
+	Context createContext(const std::vector<CommID> commIDs, const Context oldContext){
+	    assert(commIDs.size() > 0);
 	    MPI_Comm  newMPIContext;
 	    MPI_Group oldGroup, newGroup;
 
 	    // Translate commIDs to uris
 	    std::vector<URI> ranks;
-	    for(CommID u : ids){
-	    	ranks.push_back(uriMap.at(oldContext.getContextID()).at(u));
+	    for(CommID commID : commIDs){
+	    	ranks.push_back(uriMap[oldContext.getContextID()][commID]);
 	    }
 
 	    // Create new context	    
@@ -292,12 +346,12 @@ namespace CommunicationPolicy {
 	    	URI uri;
 	    	MPI_Comm_rank(newMPIContext, &uri);
 	    	Context newContext(++contextCount, uri, MPICommSize(newMPIContext));
-		contextMap[newContext.getContextID()] = newMPIContext;
+	    	contextMap[newContext.getContextID()] = newMPIContext;
 
 	    	// Update UriMap
 	    	uriMap.insert(std::make_pair(newContext.getContextID(), std::map<CommID, URI>()));
 	    	URI otherUris[newContext.size()];
-		allGather(&uri, 1, otherUris, 1, newContext);
+	    	allGather(&uri, 1, otherUris, newContext);
 
 	    	for(unsigned i = 0; i < newContext.size(); ++i){
 	    		uriMap[newContext.getContextID()][i] =  otherUris[i];

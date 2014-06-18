@@ -1,5 +1,6 @@
 #pragma once
 #include <map> /* map */
+#include <set> /* set */
 
 template <typename T_Graph, typename T_Communicator>
 struct NameService {
@@ -44,8 +45,8 @@ struct NameService {
 	
     	for(unsigned i = 0; i < maxVerticesCount[0]; ++i){
     	    const size_t communicatorContextSize = communicatorContext.size();
-    	    std::array<int, 1> sendData{{-1}};
-    	    std::vector<int> recvData(communicatorContextSize);
+    	    std::vector<int> sendData(1, -1);
+    	    std::vector<int> recvData(communicatorContextSize, 0);
 
     	    if(i < vertices.size()){
     	    	sendData[0] = vertices.at(i).id;
@@ -72,13 +73,15 @@ struct NameService {
     void announce(Graph& graph, Graph& subGraph){
 	std::vector<Vertex> vertices = subGraph.getVertices();
 
-	std::vector<CommID> commIDs;
+	std::set<CommID> commIDs;
+
 	for(Vertex vertex : vertices){
-	    commIDs.push_back(mapVertex(vertex));
+	    commIDs.insert(mapVertex(vertex));
 	}
 	
 	Context oldContext = mapGraph(graph);
-	Context newContext = communicator.createContext(commIDs, oldContext);
+	std::vector<CommID> tmp(commIDs.begin(), commIDs.end());
+	Context newContext = communicator.createContext(tmp, oldContext);
 	
 	contextMap[subGraph.id] = newContext;
 

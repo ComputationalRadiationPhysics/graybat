@@ -110,7 +110,6 @@ public:
 	return Graph<GraphPolicy>(sg, id + 1);
 
     }
-
 	      
 private:
     std::vector<Vertex> getVerticesProperties(Container<GraphPolicyVertex> vertices){
