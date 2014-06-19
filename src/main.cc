@@ -235,26 +235,30 @@ void reduceVertexIDs(T_Communicator &communicator, T_Graph &graph, std::vector<t
     
 }
 
+// TODO
+// throw exception when communicator not inside this context ?
 template<typename T_Communicator>
 typename T_Communicator::CommID randomCommID(T_Communicator &communicator, typename T_Communicator::Context context){
+
     size_t contextSize = context.size();
     typename T_Communicator::CommID masterID  = context.getCommID();
+    if(context.valid()){
 
-    srand (time(NULL) + masterID);
-    int random = rand();
+	srand (time(NULL) + masterID);
+	int random = rand();
     
-    std::vector<int> sendData(1, random);
-    std::vector<int> recvData(contextSize, 0);
+	std::vector<int> sendData(1, random);
+	std::vector<int> recvData(contextSize, 0);
 
-    communicator.allGather(context, sendData, recvData);
+	communicator.allGather(context, sendData, recvData);
 
-    for(unsigned i = 0; i < recvData.size(); ++i){
-	if(recvData[i] > random){
-	    masterID = i;
-	    random = recvData[i];
+	for(unsigned i = 0; i < recvData.size(); ++i){
+	    if(recvData[i] > random){
+		masterID = i;
+		random = recvData[i];
+	    }
 	}
     }
-
     return masterID;
 }
 
@@ -345,6 +349,7 @@ void occupyRandomVertex(T_Communicator& communicator, T_Graph& myGraph, T_NameSe
 }
 
 
+
 /*******************************************************************************
  *
  * VERTEX DISTRIBUTION
@@ -396,6 +401,7 @@ int main(){
      * Create communicator
      ****************************************************************************/
     MpiCommunicator myCommunicator;
+    CommID myCommID = myCommunicator.getGlobalContext().getCommID();
     NS nameService(myGraph, myCommunicator);
     GC myGraphCommunicator(myCommunicator, nameService);
 
@@ -424,7 +430,7 @@ int main(){
 
     // Several communication schemas
     if(!mySubGraphVertices.empty()){
-	//reduceVertexIDs(myGraphCommunicator, mySubGraph, mySubGraphVertices);
+	reduceVertexIDs(myGraphCommunicator, mySubGraph, mySubGraphVertices);
 	//nearestNeighborExchange(myGraphCommunicator, mySubGraph, mySubGraphVertices);
     }
 
@@ -432,16 +438,22 @@ int main(){
      * Redistribution of vertex
      ****************************************************************************/
 
+
+
+    CommID masterCommID = randomCommID(myCommunicator, nameService.mapGraph(mySubGraph));
+    occupyRandomVertex(myCommunicator, mySubGraph, nameService, mySubGraphVertices, masterCommID);
+    nameService.announce(mySubGraphVertices);
+    nameService.announce(myGraph, mySubGraph);
+
+
+    for(Vertex v : mySubGraphVertices){
+    	std::cout << "[" << myCommID << "] " << "Vertex: " << v.id << std::endl;
+    }
+    
     if(!mySubGraphVertices.empty()){    
-	CommID masterCommID = randomCommID(myCommunicator, nameService.mapGraph(mySubGraph));
-
-	occupyRandomVertex(myCommunicator, mySubGraph, nameService, mySubGraphVertices, masterCommID);
-	//std::cout << mySubGraphVertices.size() << std::endl;
-
-
 	// Several communication schemas
-	reduceVertexIDs(myGraphCommunicator, mySubGraph, mySubGraphVertices);
-	//nearestNeighborExchange(myGraphCommunicator, mySubGraph, mySubGraphVertices);
+     	reduceVertexIDs(myGraphCommunicator, mySubGraph, mySubGraphVertices);
+    // 	//nearestNeighborExchange(myGraphCommunicator, mySubGraph, mySubGraphVertices);
     }
 
 
