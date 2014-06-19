@@ -71,7 +71,8 @@ struct GraphCommunicator {
     void reduce(const Vertex rootVertex, const Vertex srcVertex, Graph graph, const std::vector<T> sendData, T& recvData){
 	static unsigned reduceCount;
 	static T reduceTmp;
-	static T* recvDataPtr;
+	static T* rootRecvDataPtr;
+	static bool imRoot;
 	CommID rootCommID = nameService.mapVertex(rootVertex);
 	CommID srcCommID  = nameService.mapVertex(srcVertex);
 	std::vector<Vertex> vertices = nameService.mapCommID(srcCommID);
@@ -83,16 +84,23 @@ struct GraphCommunicator {
 	}
 
 	if(rootVertex.id == srcVertex.id){
-	    recvDataPtr = &recvData;
+	    rootRecvDataPtr = &recvData;
+	    imRoot = true;
 	}
 
 	reduceCount++;
 	if(reduceCount == vertices.size()){
 	    T recvDataCollctive;
 	    communicator.reduce(rootCommID, context, BinaryOperations::SUM, std::vector<T>(1 , reduceTmp), recvDataCollctive);
-	    *recvDataPtr = recvDataCollctive;
-	    reduceTmp = 0;
+
+	    if(imRoot){
+		*rootRecvDataPtr = recvDataCollctive;
+	    }
+	    
+	    // reset static vars
+	    reduceTmp   = 0;
 	    reduceCount = 0;
+	    imRoot      = false;
 	}
 
 	
@@ -102,7 +110,8 @@ struct GraphCommunicator {
     template <typename T>
     void gather(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, const T sendData, std::vector<T>& recvData){
 	static std::vector<T>  sendTmp;
-	static std::vector<T>* recvDataPtr;
+	static T* rootRecvDataPtr;
+	static bool imRoot;
 
 	CommID srcCommID  = nameService.mapVertex(srcVertex);
 	CommID rootCommID  = nameService.mapVertex(rootVertex);
@@ -112,13 +121,22 @@ struct GraphCommunicator {
 	sendTmp.push_back(sendData);
 
 	if(rootVertex.id == srcVertex.id){
-	    recvDataPtr = &recvData;
+	    rootRecvDataPtr = &recvData;
+	    imRoot = true;
 	}
 
 	if(sendTmp.size() == vertices.size()){
 	    std::vector<T> recvDataCollective;
 	    communicator.gather2(rootCommID, context, sendTmp, recvDataCollective);
-	    *recvDataPtr = recvDataCollective;
+
+	    if(imRoot){
+		*rootRecvDataPtr = recvDataCollective;
+	    }
+
+	    // reset static var
+	    sendTmp.clear();
+	    imRoot = false;
+
 
 	}
 
@@ -165,7 +183,6 @@ struct GraphCommunicator {
     	std::vector<Vertex> vertices = nameService.mapCommID(srcCommID);
     	Context context = nameService.mapGraph(graph);
 
-
     	broadcastPtr.push_back(&sendData);
 	if(rootVertex.id == srcVertex.id){
 	    sendDataPtr = sendData;
@@ -184,17 +201,18 @@ struct GraphCommunicator {
 
 	    }
 	    else {
-		std::vector<T> recvDataCollective;
-		communicator.broadcast(rootCommID, context, recvDataCollective);
+		std::vector<T> recvData(1, 0);
+		communicator.broadcast(rootCommID, context, recvData);
 		for(unsigned i = 0; i < broadcastPtr.size(); ++i){
-		    *(broadcastPtr[i]) = recvDataCollective;
+		    *(broadcastPtr[i]) = recvData;
 		}
 
 	    }
 	    
-	    
+	    // reset static vars
 	    broadcastCount = 0;
 	    broadcastPtr.clear();
+	    imRoot = false;
 
     	}
 
