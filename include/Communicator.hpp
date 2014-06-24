@@ -108,6 +108,7 @@ public:
     template <typename T>
     void broadcast(const CommID rootCommID, const Context context, const T& data){
 	CommunicationPolicy::broadcast(data.data(), data.size(), rootCommID, context);
+	
     }
 
 

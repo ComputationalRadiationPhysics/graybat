@@ -110,6 +110,18 @@ public:
 	return Graph<GraphPolicy>(sg, id + 1);
 
     }
+
+  bool contains(Vertex testVertex){
+    std::vector<Vertex> vertices = getVertices();
+    for(Vertex containedVertex: vertices){
+      if(containedVertex.id == testVertex.id){
+	return true;
+      }
+
+    }
+    return false;
+
+  }
 	      
 private:
     std::vector<Vertex> getVerticesProperties(Container<GraphPolicyVertex> vertices){

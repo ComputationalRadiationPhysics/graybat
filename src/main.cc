@@ -13,7 +13,6 @@
 #include <math.h>   /* ceil */
 #include <time.h>   /* time */
 
-
 #define FALSE 0
 #define TRUE  1
 
@@ -293,58 +292,57 @@ typename T_Graph::Vertex randomVertex( T_Communicator& communicator, T_Graph& gr
 }
 
 
-//template<typename T_Communicator, typename T_Graph, typename T_NameService>
 template<typename T_Communicator, typename T_Graph, typename T_NameService>
-//void occupyRandomVertex(T_Communicator &communicator, T_Graph &myGraph, T_NameService& nameService, std::vector<typename T_Graph:Vertex> &myVertices, typename T_Communicator::CommID masterCommID){
 void occupyRandomVertex(T_Communicator& communicator, T_Graph& myGraph, T_NameService& nameService, std::vector<typename T_Graph::Vertex>& myVertices, typename T_Communicator::CommID masterCommID){
     typedef T_Graph Graph;
     typedef typename Graph::Vertex Vertex;
     typedef typename Vertex::ID    VertexID;
 
     Context context = nameService.mapGraph(myGraph);
-     if(context.valid()){
+      if(context.valid()){
 
-    	unsigned cid    = context.getCommID();
-    	std::array<VertexID, 1> randomVertex{{0}};
+     	unsigned cid    = context.getCommID();
+     	std::array<VertexID, 1> randomVertex{{0}};
 
-    	bool haveVertex = false;
-    	if(cid == masterCommID){
-	    randomVertex[0] = rand() % myGraph.getVertices().size();
+     	bool haveVertex = false;
+     	if(cid == masterCommID){
+     	    randomVertex[0] = rand() % myGraph.getVertices().size();
+     	    
 	    communicator.broadcast(masterCommID, context, randomVertex);
 
-    	    VertexID vertexID = randomVertex[0];
-    	    Vertex vertex     = myGraph.getVertices().at(vertexID);
+     	    // VertexID vertexID = randomVertex[0];
+     	    // Vertex vertex     = myGraph.getVertices().at(vertexID);
 
 
-    	    for(Vertex v : myVertices){
-    	    	if(v.id == vertex.id){
-    	    	    std::cout << "[" << masterCommID << "] " << "Allready have random vertex: " << vertex.id << std::endl;
-    	    	    haveVertex = true;
-    	    	}
-    	    }
+     	    // for(Vertex v : myVertices){
+     	    // 	if(v.id == vertex.id){
+     	    // 	    std::cout << "[" << masterCommID << "] " << "Allready have random vertex: " << vertex.id << std::endl;
+     	    // 	    haveVertex = true;
+     	    // 	}
+     	    // }
 	
-    	    if(!haveVertex){
-    	    	std::cout << "[" << masterCommID << "] " << "Occupy vertex: " << vertex.id << std::endl;
-    	    	myVertices.push_back(vertex);
-    	    }
+     	    // if(!haveVertex){
+     	    // 	std::cout << "[" << masterCommID << "] " << "Occupy vertex: " << vertex.id << std::endl;
+     	    // 	myVertices.push_back(vertex);
+     	    // }
 
-    	}
-    	else {
-	   communicator.broadcast(masterCommID, context, randomVertex);
-    	    VertexID vertexID = randomVertex[0];
-    	    Vertex vertex     = myGraph.getVertices().at(vertexID);
+     	}
+     	else {
+     	   communicator.broadcast(masterCommID, context, randomVertex);
+     	    // VertexID vertexID = randomVertex[0];
+     	    // Vertex vertex     = myGraph.getVertices().at(vertexID);
 
-    	    for(auto it = myVertices.begin(); it != myVertices.end(); ++it){
-    	    	if(it->id == vertex.id){
-    	    	    myVertices.erase(it);
-    	    	    break;
-    	    	}
+     	    // for(auto it = myVertices.begin(); it != myVertices.end(); ++it){
+     	    // 	if(it->id == vertex.id){
+     	    // 	    myVertices.erase(it);
+     	    // 	    break;
+     	    // 	}
 
-    	    }
+     	    // }
 
-    	}
+     	}
 
-     }
+      }
 
 }
 
@@ -438,23 +436,29 @@ int main(){
      * Redistribution of vertex
      ****************************************************************************/
 
+    // TODO
+    // Communicator which has no vertex of subgraph
+    // can´t occupy vertex from this subgraph!
+    // Because this communicator is not part
+    // of the subgraph context!
+    // Need to recreate context first!
 
 
-    CommID masterCommID = randomCommID(myCommunicator, nameService.mapGraph(mySubGraph));
+    CommID masterCommID = 2; //randomCommID(myCommunicator, nameService.mapGraph(mySubGraph));
     occupyRandomVertex(myCommunicator, mySubGraph, nameService, mySubGraphVertices, masterCommID);
     nameService.announce(mySubGraphVertices);
-    nameService.announce(myGraph, mySubGraph);
+    //nameService.announce(myGraph, mySubGraph);
 
 
     for(Vertex v : mySubGraphVertices){
     	std::cout << "[" << myCommID << "] " << "Vertex: " << v.id << std::endl;
     }
     
-    if(!mySubGraphVertices.empty()){    
-	// Several communication schemas
-     	reduceVertexIDs(myGraphCommunicator, mySubGraph, mySubGraphVertices);
-    // 	//nearestNeighborExchange(myGraphCommunicator, mySubGraph, mySubGraphVertices);
-    }
+    // if(!mySubGraphVertices.empty()){    
+    // 	// Several communication schemas
+    //  	reduceVertexIDs(myGraphCommunicator, mySubGraph, mySubGraphVertices);
+    // // 	//nearestNeighborExchange(myGraphCommunicator, mySubGraph, mySubGraphVertices);
+    // }
 
 
 }
