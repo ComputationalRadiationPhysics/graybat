@@ -399,7 +399,8 @@ int main(){
      * Create communicator
      ****************************************************************************/
     MpiCommunicator myCommunicator;
-    CommID myCommID = myCommunicator.getGlobalContext().getCommID();
+    CommID myProcessID  = myCommunicator.getGlobalContext().getCommID();
+    unsigned processCount = myCommunicator.getGlobalContext().size();
     NS nameService(myGraph, myCommunicator);
     GC myGraphCommunicator(myCommunicator, nameService);
 
@@ -413,24 +414,39 @@ int main(){
     BGLGraph mySubGraph = myGraph.createSubGraph(subGraphVertices);
 
     /***************************************************************************
-     * Examples communication 
+     * Examples communication schemas
      ****************************************************************************/
 
     // Distribute vertices to communicators
-    unsigned myProcessID  = myCommunicator.getGlobalContext().getCommID();
-    unsigned processCount = myCommunicator.getGlobalContext().size();
     std::vector<Vertex> mySubGraphVertices = distributeVerticesEvenly(myProcessID, processCount, mySubGraph);
     std::vector<Vertex> myGraphVertices    = distributeVerticesEvenly(myProcessID, processCount, myGraph);
 
     // Announce distribution on network
-    nameService.announce(mySubGraphVertices);
-    nameService.announce(myGraph, mySubGraph);
 
-    // Several communication schemas
-    if(!mySubGraphVertices.empty()){
-	reduceVertexIDs(myGraphCommunicator, mySubGraph, mySubGraphVertices);
-	//nearestNeighborExchange(myGraphCommunicator, mySubGraph, mySubGraphVertices);
+    nameService.announce(myGraphVertices);
+    nameService.announce(myGraph);
+
+    //nameService.announce(mySubGraphVertices);
+    //nameService.announce(myGraph, mySubGraph);
+
+    // Communication on graph level
+    if(!myGraphVertices.empty()){
+      reduceVertexIDs(myGraphCommunicator, myGraph, myGraphVertices);
+      //nearestNeighborExchange(myGraphCommunicator, myGraph, myGraphVertices);
+
     }
+    else {
+      //Process not part of subgraph
+    }
+
+    // Communication on subgraph level
+    if(!mySubGraphVertices.empty()){
+      //reduceVertexIDs(myGraphCommunicator, mySubGraph, mySubGraphVertices);
+    }
+    else {
+      // Process not part of subgraph
+    }
+    
 
     /***************************************************************************
      * Redistribution of vertex
@@ -444,14 +460,14 @@ int main(){
     // Need to recreate context first!
 
 
-    CommID masterCommID = 2; //randomCommID(myCommunicator, nameService.mapGraph(mySubGraph));
-    occupyRandomVertex(myCommunicator, mySubGraph, nameService, mySubGraphVertices, masterCommID);
-    nameService.announce(mySubGraphVertices);
+    // CommID masterCommID = 2; //randomCommID(myCommunicator, nameService.mapGraph(mySubGraph));
+    // occupyRandomVertex(myCommunicator, mySubGraph, nameService, mySubGraphVertices, masterCommID);
+    // nameService.announce(mySubGraphVertices);
     //nameService.announce(myGraph, mySubGraph);
 
 
     for(Vertex v : mySubGraphVertices){
-    	std::cout << "[" << myCommID << "] " << "Vertex: " << v.id << std::endl;
+    	std::cout << "[" << myProcessID << "] " << "Vertex: " << v.id << std::endl;
     }
     
     // if(!mySubGraphVertices.empty()){    
