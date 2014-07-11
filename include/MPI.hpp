@@ -196,8 +196,11 @@ namespace CommunicationPolicy {
 	 **************************************************************************/ 
 	template <typename T>
 	void reduce(const T* sendData, const T* recvData, const size_t count, BinaryOperation op, const CommID root, const Context context){
-	    URI rootURI = uriMap.at(context.getContextID()).at(root);
-	    MPI_Reduce(const_cast<T*>(sendData), const_cast<T*>(recvData), count, MPIDatatypes<T>::type, op , rootURI, contextMap[context.getContextID()]);
+	  // std::cout << "uriMapSize: " << uriMap.size() << std::endl;;
+	  // std::cout << "Context ID " << context.getContextID() << std::endl;
+	  // std::cout << "Context size " << context.size() << std::endl;
+	  URI rootURI = uriMap.at(context.getContextID()).at(root);
+	  MPI_Reduce(const_cast<T*>(sendData), const_cast<T*>(recvData), count, MPIDatatypes<T>::type, op , rootURI, contextMap[context.getContextID()]);
 	}
 
 	template <typename T>
@@ -258,8 +261,9 @@ namespace CommunicationPolicy {
 			  contextMap[context.getContextID()]);
 	}
 
-	// TODO
-	// beautify
+      // TODO
+      // Equivalent to allGatherV
+      // beautify
 	template <typename T>
 	void allGather2(const T* sendData, const size_t sendCount, std::vector<T>& recvData, const Context context){
 

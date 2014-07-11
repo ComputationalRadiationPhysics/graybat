@@ -22,31 +22,28 @@ private:
     typedef typename Container<GraphPolicyEdge>::iterator   EdgeIter;
     typedef typename Container<GraphPolicyVertex>::iterator VertexIter;
     typedef std::tuple<Vertex, Vertex, Edge>                EdgeDescriptor;
+  typedef typename Vertex::ID                               VertexID;
 
 
-
-
-    Graph(typename GraphPolicy::Graph& graph, unsigned id) : 
-	GraphPolicy(graph),
-	id(id){
+  Graph(Graph<GraphPolicy>& superGraph, typename GraphPolicy::Graph& subGraph, unsigned id) : 
+	GraphPolicy(subGraph),
+	id(id),
+	superGraph(superGraph){
 	
     }
 
 public:
 
-    GraphID id;
-
-    Graph() : id(0){
-
-    }
+  GraphID id;
+  Graph<GraphPolicy>& superGraph;
  
     Graph(std::vector<EdgeDescriptor> edges, std::vector<Vertex> vertices) :
 	GraphPolicy(toGraphPolicyEdges(edges), vertices),
-	id(0){
+	id(0),
+	superGraph(*this){
 	
     }
     
-
     std::vector<Vertex> getVertices(){
 	Container<GraphPolicyVertex> v = GraphPolicy::getVertices();
 	return getVerticesProperties(v);
@@ -107,7 +104,7 @@ public:
 
 	typename GraphPolicy::Graph& sg = GraphPolicy::createSubGraph(graphPolicyVertices);
 
-	return Graph<GraphPolicy>(sg, id + 1);
+	return Graph<GraphPolicy>(*this, sg, id + 1);
 
     }
 
@@ -121,6 +118,19 @@ public:
     }
     return false;
 
+  }
+
+  bool hasSuperGraph(){
+    if(id == superGraph.id){
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
+
+  VertexID getLocalID(Vertex vertex){
+    return GraphPolicy::getLocalID(vertex.id);
   }
 	      
 private:

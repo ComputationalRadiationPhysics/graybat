@@ -182,7 +182,7 @@ void nearestNeighborExchange(T_Communicator &communicator, T_Graph &graph, std::
     	for(std::pair<Vertex, Edge> outEdge : outEdges){
     	    Vertex dest = outEdge.first;
     	    Edge   e    = outEdge.second;
-    	    communicator.asyncSend(dest, e, outBuffer);
+    	    communicator.asyncSend(graph, dest, e, outBuffer);
     	}
 
     }
@@ -197,7 +197,7 @@ void nearestNeighborExchange(T_Communicator &communicator, T_Graph &graph, std::
     	for(unsigned i = 0 ; i < inBuffers.size(); ++i){
     	    Vertex src = inEdges[i].first;
     	    Edge   e   = inEdges[i].second;
-    	    communicator.recv(src, e, inBuffers[i]);
+    	    communicator.recv(graph, src, e, inBuffers[i]);
     	}
 	
     	unsigned recvSum = 0;
@@ -220,13 +220,13 @@ void reduceVertexIDs(T_Communicator &communicator, T_Graph &graph, std::vector<t
     std::vector<unsigned> sendData(1,0);
 
     for(Vertex vertex : myVertices){
-	sendData[0] = vertex.id;
-	communicator.reduce(rootVertex, vertex, graph, sendData, recvData);
+    	sendData[0] = vertex.id;
+    	communicator.reduce(rootVertex, vertex, graph, sendData, recvData);
     }
     
     for(Vertex vertex : myVertices){
     	if(vertex.id == rootVertex.id){
-    	    std::cout << "Reduce: " << recvData << std::endl;
+	  std::cout << "Reduce graph " << graph.id << ": " << recvData << std::endl;
 
     	}
 
@@ -391,8 +391,10 @@ int main(){
     //std::vector<EdgeDescriptor> edges = generateFullyConnectedTopology(10, vertices);
     //std::vector<EdgeDescriptor> edges = generateStarTopology(10, vertices);
     //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(8, vertices);
-    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(2, 2, vertices);
+    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(2, 4, vertices);
     BGLGraph myGraph (edges, vertices);
+
+
 
 
     /***************************************************************************
@@ -422,17 +424,22 @@ int main(){
     std::vector<Vertex> myGraphVertices    = distributeVerticesEvenly(myProcessID, processCount, myGraph);
 
     // Announce distribution on network
+    nameService.announce(myGraph, myGraphVertices);
+    nameService.announce(mySubGraph, mySubGraphVertices);
 
-    nameService.announce(myGraphVertices);
-    nameService.announce(myGraph);
 
-    //nameService.announce(mySubGraphVertices);
-    //nameService.announce(myGraph, mySubGraph);
+    // TODO
+    // Debug nearestNeighborExchange
+
+    // TODO
+    // Behavior when there are less processes then
+    // vertices in a graph --> a process has to
+    // handle several vertices
 
     // Communication on graph level
     if(!myGraphVertices.empty()){
       reduceVertexIDs(myGraphCommunicator, myGraph, myGraphVertices);
-      //nearestNeighborExchange(myGraphCommunicator, myGraph, myGraphVertices);
+      //nearestNeighborExchange(myGraphCommunicator, myGraph, myGraphVertices); <== BUGGY
 
     }
     else {
@@ -441,7 +448,9 @@ int main(){
 
     // Communication on subgraph level
     if(!mySubGraphVertices.empty()){
-      //reduceVertexIDs(myGraphCommunicator, mySubGraph, mySubGraphVertices);
+      //std::cout << "CommID:" << myProcessID << " wanna reduce" <<std::endl;
+      reduceVertexIDs(myGraphCommunicator, mySubGraph, mySubGraphVertices);
+      //nearestNeighborExchange(myGraphCommunicator, mySubGraph, mySubGraphVertices); <== BUGGY
     }
     else {
       // Process not part of subgraph

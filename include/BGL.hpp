@@ -114,20 +114,12 @@ namespace GraphPolicy {
 	}
 
 	Graph& createSubGraph(const std::vector<Vertex> vertices){
-	    //subGraph =  graph.create_subgraph(vertices.begin(), vertices.end());
 	    return (*graph).create_subgraph(vertices.begin(), vertices.end());
-	    // AllVertexIter vi, vi_end;
-	    // std::tie(vi, vi_end) =  boost::vertices(subGraph);
-	    // Container<Vertex>c (vi, vi_end);
-
-	    // for(Vertex v : c){
-	    // 	std::cout << subGraph[v].id << std::endl;
-	    // }
-
-
-	    //std::cout << "BGL " << subGraph[boost::vertex(2, subGraph)].id << std::endl;
-	    //return sg;
 	}
+
+      Vertex getLocalID(Vertex vertex){
+	return (*graph).global_to_local(vertex);
+      }
 
 
     private:

@@ -3,7 +3,7 @@
 template <typename T_Graph, typename T_Communicator, typename T_NameService>
 struct GraphCommunicator {
 
-    typedef T_Graph        Graph;
+    typedef T_Graph                 Graph;
     typedef typename Graph::Vertex  Vertex;
     typedef typename Graph::Edge    Edge;
 
@@ -26,31 +26,34 @@ struct GraphCommunicator {
     Communicator& communicator;
     NameService&  nameService;
     
+  // TODO
+  // Replace globalcontext with context of graph
+  // ==> context = nameservice.mapGraph(graph)
     template <typename T>
-    void send(const Vertex dest, const Edge edge, const T& data){
-	CommID destCommID = nameService.mapVertex(dest);
-	Context globalContext = communicator.getGlobalContext();
-	communicator.send(destCommID, edge.id, globalContext, data);
+    void send(Graph &graph, const Vertex dest, const Edge edge, const T& data){
+      CommID destCommID = nameService.mapVertex(graph, dest);
+      Context globalContext = communicator.getGlobalContext();
+      communicator.send(destCommID, edge.id, globalContext, data);
     }
 
     template <typename T>
-    Event asyncSend(const Vertex dest, const Edge edge, const T& data){
-	CommID destCommID = nameService.mapVertex(dest);
+    Event asyncSend(Graph& graph, const Vertex dest, const Edge edge, const T& data){
+      CommID destCommID = nameService.mapVertex(graph, dest);
 	Context globalContext = communicator.getGlobalContext();
 	return communicator.asyncSend(destCommID, edge.id, globalContext, data);
     }
 
     template <typename T>
-    void recv(const Vertex src, const Edge edge, const T& data){
-	CommID srcCommID = nameService.mapVertex(src);
+    void recv(Graph& graph, const Vertex src, const Edge edge, const T& data){
+      CommID srcCommID = nameService.mapVertex(graph, src);
 	Context globalContext = communicator.getGlobalContext();
 	communicator.recv(srcCommID, edge.id, globalContext, data);
 
     }
 
     template <typename T>
-    void asyncRecv(const Vertex src, const Edge edge, const T& data){
-	CommID srcCommID = nameService.mapVertex(src);
+    void asyncRecv(Graph& graph, const Vertex src, const Edge edge, const T& data){
+      CommID srcCommID = nameService.mapVertex(graph, src);
 	Context globalContext = communicator.getGlobalContext();
 	communicator.recv(srcCommID, edge.id, globalContext, data);
 
@@ -68,16 +71,17 @@ struct GraphCommunicator {
     // first collect all values and then reduce them !
     // Return Event because its non blocking !
     template <typename T>
-    void reduce(const Vertex rootVertex, const Vertex srcVertex, Graph graph, const std::vector<T> sendData, T& recvData){
+    void reduce(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, const std::vector<T> sendData, T& recvData){
 	static unsigned reduceCount;
 	static T reduceTmp;
 	static T* rootRecvDataPtr;
 	static bool imRoot;
-	CommID rootCommID = nameService.mapVertex(rootVertex);
-	CommID srcCommID  = nameService.mapVertex(srcVertex);
-	std::vector<Vertex> vertices = nameService.mapCommID(srcCommID);
+	CommID rootCommID = nameService.mapVertex(graph, rootVertex);
+	CommID srcCommID  = nameService.mapVertex(graph, srcVertex);
+	std::vector<Vertex> vertices = nameService.mapCommID(graph, srcCommID);
 
 	Context context = nameService.mapGraph(graph);
+	//std::cout << "reduce context size:" << context.size() << " graph id:" << graph.id << std::endl;
 
 	for(T d : sendData){
 	    reduceTmp += d;
@@ -113,9 +117,9 @@ struct GraphCommunicator {
 	static T* rootRecvDataPtr;
 	static bool imRoot;
 
-	CommID srcCommID  = nameService.mapVertex(srcVertex);
-	CommID rootCommID  = nameService.mapVertex(rootVertex);
-	std::vector<Vertex> vertices = nameService.mapCommID(srcCommID);
+	CommID srcCommID  = nameService.mapVertex(graph, srcVertex);
+	CommID rootCommID  = nameService.mapVertex(graph, rootVertex);
+	std::vector<Vertex> vertices = nameService.mapCommID(graph, srcCommID);
 	Context context = nameService.mapGraph(graph);
 
 	sendTmp.push_back(sendData);
@@ -149,8 +153,8 @@ struct GraphCommunicator {
 	static std::vector<T> sendTmp;
 	static std::vector<std::vector<T>*> recvDataPtr;
 
-	CommID srcCommID  = nameService.mapVertex(srcVertex);
-	std::vector<Vertex> vertices = nameService.mapCommID(srcCommID);
+	CommID srcCommID  = nameService.mapVertex(graph, srcVertex);
+	std::vector<Vertex> vertices = nameService.mapCommID(graph, srcCommID);
 	Context context = nameService.mapGraph(graph);
 
 	sendTmp.push_back(sendData);
@@ -178,9 +182,9 @@ struct GraphCommunicator {
 	static std::vector<T> sendDataPtr;
 	static bool imRoot;
 
-    	CommID srcCommID  = nameService.mapVertex(srcVertex);
-    	CommID rootCommID  = nameService.mapVertex(rootVertex);
-    	std::vector<Vertex> vertices = nameService.mapCommID(srcCommID);
+    	CommID srcCommID  = nameService.mapVertex(graph, srcVertex);
+    	CommID rootCommID  = nameService.mapVertex(graph, rootVertex);
+    	std::vector<Vertex> vertices = nameService.mapCommID(graph, srcCommID);
     	Context context = nameService.mapGraph(graph);
 
     	broadcastPtr.push_back(&sendData);

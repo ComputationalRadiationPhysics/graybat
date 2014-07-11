@@ -25,9 +25,9 @@ struct NameService {
     typedef typename Communicator::BinaryOperations BinaryOperations;
 
     // Maps
-    std::map<VertexID, CommID> commMap;
-    std::map<GraphID, Context> contextMap;
-    std::map<CommID, std::vector<Vertex> > vertexMap;
+  std::map<GraphID, std::map<VertexID, CommID> > commMap;
+  std::map<GraphID, Context> contextMap;
+  std::map<GraphID, std::map<CommID, std::vector<Vertex>> > vertexMap;
 
     // References
     Graph& graph;
@@ -39,48 +39,95 @@ struct NameService {
 
     }
 
-
-  /**
-   *
-   *
-   */
   void announce(Graph& graph, const std::vector<Vertex> vertices){
-    Context communicatorContext = mapGraph(graph);
+    
+    // Get super context
+    Context oldContext;
+    if(graph.hasSuperGraph()){
+      oldContext = mapGraph(graph.superGraph);
+    }
+    else {
+      oldContext = communicator.getGlobalContext();
+    }
 
-    // Each announces how many nodes it manages
-    std::array<unsigned, 1> myVerticesCount {{(unsigned) vertices.size()}};
-    std::array<unsigned, 1> maxVerticesCount  {{0}};
-    communicator.allReduce(communicatorContext, BinaryOperations::MAX, myVerticesCount, maxVerticesCount);
-	 
+    
+    if(oldContext.valid()){
+      // Each process announces which vertices it manages
+      std::array<unsigned, 1> myVerticesCount {{(unsigned) vertices.size()}};
+      std::array<unsigned, 1> maxVerticesCount  {{0}};
+      communicator.allReduce(oldContext, BinaryOperations::MAX, myVerticesCount, maxVerticesCount);
 	
-    for(unsigned i = 0; i < maxVerticesCount[0]; ++i){
-      const size_t communicatorContextSize = communicatorContext.size();
-      std::vector<int> sendData(1, -1);
-      std::vector<int> recvData(communicatorContextSize, 0);
+      for(unsigned i = 0; i < maxVerticesCount[0]; ++i){
+	std::vector<int> sendData(1, -1);
+	std::vector<int> recvData(oldContext.size(), 0);
 
-      if(i < vertices.size()){
-  	sendData[0] = vertices.at(i).id;
-      }
-      else{
-  	sendData[0] = -1;
-      }
+	if(i < vertices.size()){
+	  //std::cout << "graphID:" << graph.id << " commiD:" << oldContext.getCommID() << " size:" << vertices.size() << std::endl;
+	  sendData[0] = graph.getLocalID(vertices.at(i));
+	}
+	else{
+	  sendData[0] = -1;
+	}
 
-      communicator.allGather(communicatorContext, sendData, recvData);
+	communicator.allGather(oldContext, sendData, recvData);
 
-      for(unsigned commID = 0; commID < communicatorContextSize; ++commID){
-  	if(recvData[commID] != -1){
-  	  VertexID vertexID = (VertexID) recvData[commID];
-  	  commMap[vertexID] = commID;
-  	  vertexMap[commID].push_back(graph.getVertices().at(vertexID));
+	std::vector<std::vector<Vertex> > vertexMapTmp (oldContext.size(), std::vector<Vertex>());
+	for(unsigned commID = 0; commID < vertexMapTmp.size(); ++commID){
+	  if(recvData[commID] != -1){
+	    VertexID vertexID = (VertexID) recvData[commID];
+	    Vertex v = graph.getVertices().at(vertexID);
+	    commMap[graph.id][v.id] = commID; // <======= FAIL
+
+	    // if(graph.id == 1){
+	    //   std::cout << "graphID:" << graph.id << " myCommID:" << oldContext.getCommID() << " commID:" << mapVertex(graph, v) << " Vertex:" << v.id <<std::endl;
+	    // }
+	    vertexMapTmp[commID].push_back(v);
 		    
-  	}
+	  }
+
+	}
+      
+	for(unsigned commID = 0; commID < vertexMapTmp.size(); ++commID){
+	  vertexMap[graph.id][commID] = vertexMapTmp[commID];
+
+	}
+
       }
+
+      //Create new sub context for the graph
+      if(graph.hasSuperGraph()){
+      	createGraphContext(graph.superGraph, graph);
+
+      }
+      else {
+      	createGraphContext(graph);
+
+      }
+
 
     }
 
+
+  }
+  
+  CommID mapVertex(Graph& graph, Vertex vertex){
+    return commMap[graph.id][vertex.id];
+
+  }
+    
+  std::vector<Vertex> mapCommID(Graph& graph, CommID commID){
+    return vertexMap[graph.id][commID];
+
   }
 
-  /**
+  Context mapGraph(Graph& graph){
+    return contextMap[graph.id];
+
+  }
+
+private:
+
+/**
    * Creates a context for the given subgraph inherited from
    * the context of the given graph.
    *
@@ -88,18 +135,21 @@ struct NameService {
    * @param[in] subGraph is a subgraph of graph
    *
    */
-  void announce(Graph& graph, Graph& subGraph){
+  void createGraphContext(Graph& graph, Graph& subGraph){
     std::vector<Vertex> vertices = subGraph.getVertices();
 
-    std::set<CommID> commID;
+    std::set<CommID> commIDs;
     for(Vertex vertex : vertices){
-      commID.insert(mapVertex(vertex));
+      //std::cout << "graphID:" << subGraph.id << " CommID:" << mapVertex(subGraph, vertex) << " vertex:" << vertex.id << std::endl;
+      commIDs.insert(mapVertex(subGraph, vertex));
     }
-	
+
     Context oldContext = mapGraph(graph);
-    Context newContext = communicator.createContext(std::vector<CommID>(commID.begin(), commID.end()), oldContext);
-	
-    contextMap[subGraph.id] = newContext;
+    Context newContext = communicator.createContext(std::vector<CommID>(commIDs.begin(), commIDs.end()), oldContext);
+    if(newContext.valid()){
+      //std::cout << "valid oldContext:" << oldContext.getCommID() << std::endl;
+      contextMap[subGraph.id] = newContext;
+    }
 
   }
 
@@ -110,12 +160,12 @@ struct NameService {
    *
    * @param[in]
    */
-  void announce(Graph& graph){
+  void createGraphContext(Graph& graph){
     std::vector<Vertex> vertices = graph.getVertices();
 
     std::set<CommID> commID;
     for(Vertex vertex : vertices){
-      commID.insert(mapVertex(vertex));
+      commID.insert(mapVertex(graph, vertex));
     }
 	
     Context oldContext = communicator.getGlobalContext();
@@ -125,19 +175,5 @@ struct NameService {
     
   }
 
-    CommID mapVertex(Vertex vertex){
-	return commMap[vertex.id];
-
-    }
-    
-    std::vector<Vertex> mapCommID(CommID commID){
-	return vertexMap[commID];
-
-    }
-
-    Context mapGraph(Graph& graph){
-	return contextMap[graph.id];
-
-    }
 
 };
