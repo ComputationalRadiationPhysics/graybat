@@ -29,7 +29,7 @@ private:
     GraphPolicy(subGraph),
     id(id),
     superGraph(superGraph){
-    std::cerr << "Construct Graph from superGraph: " << id << std::endl;
+
   }
 
 public:
@@ -42,13 +42,12 @@ public:
 	GraphPolicy(toGraphPolicyEdges(edges), vertices),
 	id(0),
 	superGraph(*this){
-      std::cerr << "Construct Graph: " << id << std::endl;
 	
     }
 
 
   ~Graph(){
-    std::cerr << "Deconstruct Graph" << std::endl;
+
   }
 
   
@@ -98,7 +97,7 @@ public:
 	for(Vertex v : vertices){
 	    std::vector<std::pair<Vertex, Edge> > outEdges = getOutEdges(v);
 	    for(std::pair<Vertex, Edge> e : outEdges){
-		std::cout << "Edge [" << e.second.id << "] : (" << v.id << ") ==> (" << e.first.id << ")" << std::endl; 
+	      std::cout << "Graph [" << id << "] "<<"Edge [" << e.second.id << "] : (" << v.id << ") ==> (" << e.first.id << ")" << std::endl; 
 	    }
 
 	}

@@ -390,9 +390,9 @@ int main(){
     //std::vector<EdgeDescriptor> edges = generateFullyConnectedTopology(10, graphVertices);
     //std::vector<EdgeDescriptor> edges = generateStarTopology(10, graphVertices);
     //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(8, graphVertices);
-    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(2, 2, graphVertices);
+    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(100, 400, graphVertices);
     BGLGraph myGraph (edges, graphVertices);
-    myGraph.print();
+    //myGraph.print();
 
 
     /***************************************************************************
@@ -410,9 +410,9 @@ int main(){
      ****************************************************************************/
      std::vector<Vertex> subGraphVertices;
      subGraphVertices.push_back(myGraph.getVertices().at(2));
-     subGraphVertices.push_back(myGraph.getVertices().at(1));
-     BGLGraph& mySubGraph = myGraph.createSubGraph(subGraphVertices); //<== BUG ...commenting this line removes seg fault
-     mySubGraph.print();
+     subGraphVertices.push_back(myGraph.getVertices().at(3));
+     BGLGraph& mySubGraph = myGraph.createSubGraph(subGraphVertices); 
+     //mySubGraph.print();
 
 
     /***************************************************************************

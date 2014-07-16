@@ -77,10 +77,9 @@ namespace GraphPolicy {
       ~BGL(){
 	// TODO
 	// For some reason its no good idea to destroy the graph
-	// just delete graph if its root graph
-	// if(graph->is_root()){
-	//   delete graph;
-	// }
+	if(graph->is_root()){
+	  delete graph;
+	}
       }
 
 	Container<Vertex> getVertices(){
