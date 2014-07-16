@@ -78,13 +78,14 @@ struct GraphCommunicator {
 	static bool imRoot;
 	CommID rootCommID = nameService.mapVertex(graph, rootVertex);
 	CommID srcCommID  = nameService.mapVertex(graph, srcVertex);
-	std::vector<Vertex> vertices = nameService.mapCommID(graph, srcCommID);
+	std::vector<Vertex> vertices = nameService.mapCommID(graph, srcCommID); // <== BUGGY gives not correct vertices of a Communicator
 
 	Context context = nameService.mapGraph(graph);
 	//std::cout << "reduce context size:" << context.size() << " graph id:" << graph.id << std::endl;
 
 	for(T d : sendData){
-	    reduceTmp += d;
+	  //std::cout << reduceTmp << std::endl;
+	  reduceTmp += d;
 	}
 
 	if(rootVertex.id == srcVertex.id){
@@ -93,6 +94,7 @@ struct GraphCommunicator {
 	}
 
 	reduceCount++;
+	//std::cout << "srcCommID: " << srcCommID << " reduceCount: "<< reduceCount << " vertices.size(): " << vertices.size() << std::endl;
 	if(reduceCount == vertices.size()){
 	    T recvDataCollctive;
 	    communicator.reduce(rootCommID, context, BinaryOperations::SUM, std::vector<T>(1 , reduceTmp), recvDataCollctive);

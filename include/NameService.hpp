@@ -57,6 +57,7 @@ struct NameService {
       std::array<unsigned, 1> maxVerticesCount  {{0}};
       communicator.allReduce(oldContext, BinaryOperations::MAX, myVerticesCount, maxVerticesCount);
 	
+      std::vector<std::vector<Vertex> > newVertexMap (oldContext.size(), std::vector<Vertex>());
       for(unsigned i = 0; i < maxVerticesCount[0]; ++i){
 	std::vector<int> sendData(1, -1);
 	std::vector<int> recvData(oldContext.size(), 0);
@@ -71,24 +72,25 @@ struct NameService {
 
 	communicator.allGather(oldContext, sendData, recvData);
 
-	std::vector<std::vector<Vertex> > vertexMapTmp (oldContext.size(), std::vector<Vertex>());
-	for(unsigned commID = 0; commID < vertexMapTmp.size(); ++commID){
+
+	for(unsigned commID = 0; commID < newVertexMap.size(); ++commID){
 	  if(recvData[commID] != -1){
 	    VertexID vertexID = (VertexID) recvData[commID];
 	    Vertex v = graph.getVertices().at(vertexID);
-	    commMap[graph.id][v.id] = commID; // <======= FAIL
+	    commMap[graph.id][v.id] = commID; 
 
 	    // if(graph.id == 1){
 	    //   std::cout << "graphID:" << graph.id << " myCommID:" << oldContext.getCommID() << " commID:" << mapVertex(graph, v) << " Vertex:" << v.id <<std::endl;
 	    // }
-	    vertexMapTmp[commID].push_back(v);
+	    //vertexMap[graph.id][commID].push_back(v);
+	    newVertexMap[commID].push_back(v);
 		    
 	  }
 
 	}
       
-	for(unsigned commID = 0; commID < vertexMapTmp.size(); ++commID){
-	  vertexMap[graph.id][commID] = vertexMapTmp[commID];
+	for(unsigned commID = 0; commID < newVertexMap.size(); ++commID){
+	  vertexMap[graph.id][commID] = newVertexMap[commID];
 
 	}
 

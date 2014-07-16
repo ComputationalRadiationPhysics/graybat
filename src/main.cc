@@ -423,6 +423,17 @@ int main(){
     std::vector<Vertex> mySubGraphVertices = distributeVerticesEvenly(myProcessID, processCount, mySubGraph);
     std::vector<Vertex> myGraphVertices    = distributeVerticesEvenly(myProcessID, processCount, myGraph);
 
+
+    // Output vertex property
+    for(Vertex v : mySubGraphVertices){
+      std::cout << "[" << myProcessID << "] " << "Graph: "<< mySubGraph.id << " Vertex: " << v.id << std::endl;
+    }
+
+    for(Vertex v : myGraphVertices){
+      std::cout << "[" << myProcessID << "] " << "Graph: "<< myGraph.id << " Vertex: " << v.id << std::endl;
+    }
+
+
     // Announce distribution on network
     nameService.announce(myGraph, myGraphVertices);
     nameService.announce(mySubGraph, mySubGraphVertices);
@@ -430,11 +441,6 @@ int main(){
 
     // TODO
     // Debug nearestNeighborExchange
-
-    // TODO
-    // Behavior when there are less processes then
-    // vertices in a graph --> a process has to
-    // handle several vertices
 
     // Communication on graph level
     if(!myGraphVertices.empty()){
@@ -475,9 +481,6 @@ int main(){
     //nameService.announce(myGraph, mySubGraph);
 
 
-    for(Vertex v : mySubGraphVertices){
-    	std::cout << "[" << myProcessID << "] " << "Vertex: " << v.id << std::endl;
-    }
     
     // if(!mySubGraphVertices.empty()){    
     // 	// Several communication schemas
