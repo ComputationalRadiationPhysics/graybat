@@ -13,7 +13,7 @@ if(USE_CLANG)
   SET (CMAKE_CXX_FLAGS "-Wall -Wextra -O2 -std=c++11")
 else(USE_CLANG)
   SET (CMAKE_CXX_COMPILER "/usr/bin/mpic++")
-  SET (CMAKE_CXX_FLAGS "-Wall -Wextra -O2 -std=c++11")
+  SET (CMAKE_CXX_FLAGS "-Wall -Wextra -O2 -g -std=c++11")
 endif(USE_CLANG)
 
 

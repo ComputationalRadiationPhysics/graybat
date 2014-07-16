@@ -49,11 +49,12 @@ namespace GraphPolicy {
     protected:
 	template <typename T> using               Container = std::vector<T>;
 
-	Graph* graph;
+      Graph* graph;
 
 	BGL(Graph& subGraph) : graph(&subGraph){
 
 	}
+
 
 	BGL(std::vector<EdgeDescriptor> edges, 
 	    std::vector<VertexProperty> vertexProperties) {
@@ -73,11 +74,14 @@ namespace GraphPolicy {
 
 	}
 
-	~BGL(){
-	    // TODO
-	    // just delete graph if its root graph
-	    // delete graph;
-	}
+      ~BGL(){
+	// TODO
+	// For some reason its no good idea to destroy the graph
+	// just delete graph if its root graph
+	// if(graph->is_root()){
+	//   delete graph;
+	// }
+      }
 
 	Container<Vertex> getVertices(){
 	    AllVertexIter vi, vi_end;

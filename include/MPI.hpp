@@ -133,7 +133,7 @@ namespace CommunicationPolicy {
 	// Member
 	Context initialContext;
 
-	MPI() : contextCount(1), initialContext(contextCount, initialID(), MPICommSize(MPI_COMM_WORLD)) {
+	MPI() : contextCount(1), initialContext(contextCount, initialCommID(), MPICommSize(MPI_COMM_WORLD)) {
 	    size_t contextSize = initialContext.size();
 	    contextMap[contextCount] = MPI_COMM_WORLD;
 
@@ -147,9 +147,9 @@ namespace CommunicationPolicy {
 	    
 	}
 
-	~MPI(){
-	    MPI_Finalize();
-	}
+      ~MPI(){
+	MPI_Finalize();
+      }
 
 	/**************************************************************************
 	 *
@@ -381,7 +381,7 @@ namespace CommunicationPolicy {
 	    }
 	}
 
-	CommID initialID(){
+	CommID initialCommID(){
 	    initMPI();
 	    URI uriTmp;
 	    MPI_Comm_rank(MPI_COMM_WORLD, &uriTmp);

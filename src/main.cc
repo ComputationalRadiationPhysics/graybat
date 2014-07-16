@@ -182,7 +182,7 @@ void nearestNeighborExchange(T_Communicator &communicator, T_Graph &graph, std::
     	for(std::pair<Vertex, Edge> outEdge : outEdges){
     	    Vertex dest = outEdge.first;
     	    Edge   e    = outEdge.second;
-    	    communicator.asyncSend(graph, dest, e, outBuffer);
+    	    communicator.asyncSend(graph, dest, e, outBuffer);// <== BUGGY leads to segfault on some configuration
     	}
 
     }
@@ -197,14 +197,14 @@ void nearestNeighborExchange(T_Communicator &communicator, T_Graph &graph, std::
     	for(unsigned i = 0 ; i < inBuffers.size(); ++i){
     	    Vertex src = inEdges[i].first;
     	    Edge   e   = inEdges[i].second;
-    	    communicator.recv(graph, src, e, inBuffers[i]);
+	    communicator.recv(graph, src, e, inBuffers[i]); // <== BUGGY leads to segfault on some configuration
     	}
 	
-    	unsigned recvSum = 0;
-    	for(Buffer b : inBuffers){
-    	    recvSum += b[0];
-    	}
-    	std::cout << "Vertex: " << myVertex.id << " NeighborIDSum: " << recvSum <<  std::endl;
+	unsigned recvSum = 0;
+	for(Buffer b : inBuffers){
+	  recvSum += b[0];
+	}
+	std::cout << "Vertex: " << myVertex.id << " NeighborIDSum: " << recvSum <<  std::endl;
 	
     }
 
@@ -213,7 +213,6 @@ void nearestNeighborExchange(T_Communicator &communicator, T_Graph &graph, std::
 template<typename T_Communicator, typename T_Graph>
 void reduceVertexIDs(T_Communicator &communicator, T_Graph &graph, std::vector<typename T_Graph::Vertex> myVertices){
     typedef typename T_Graph::Vertex Vertex;
-    typedef typename T_Graph::Edge   Edge;
 
     Vertex rootVertex = graph.getVertices().at(0);
     unsigned recvData = 0;
@@ -226,7 +225,7 @@ void reduceVertexIDs(T_Communicator &communicator, T_Graph &graph, std::vector<t
     
     for(Vertex vertex : myVertices){
     	if(vertex.id == rootVertex.id){
-	  std::cout << "Reduce graph " << graph.id << ": " << recvData << std::endl;
+    	  std::cout << "Reduce graph " << graph.id << ": " << recvData << std::endl;
 
     	}
 
@@ -386,35 +385,35 @@ int main(){
     /***************************************************************************
      * Create graph
      ****************************************************************************/
-    std::vector<Vertex> vertices;
+    std::vector<Vertex> graphVertices;
 
-    //std::vector<EdgeDescriptor> edges = generateFullyConnectedTopology(10, vertices);
-    //std::vector<EdgeDescriptor> edges = generateStarTopology(10, vertices);
-    //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(8, vertices);
-    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(2, 2, vertices);
-    BGLGraph myGraph (edges, vertices);
-
-
+    //std::vector<EdgeDescriptor> edges = generateFullyConnectedTopology(10, graphVertices);
+    //std::vector<EdgeDescriptor> edges = generateStarTopology(10, graphVertices);
+    //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(8, graphVertices);
+    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(2, 2, graphVertices);
+    BGLGraph myGraph (edges, graphVertices);
+    myGraph.print();
 
 
     /***************************************************************************
      * Create communicator
      ****************************************************************************/
-    MpiCommunicator myCommunicator;
-    CommID myProcessID  = myCommunicator.getGlobalContext().getCommID();
-    unsigned processCount = myCommunicator.getGlobalContext().size();
-    NS nameService(myGraph, myCommunicator);
-    GC myGraphCommunicator(myCommunicator, nameService);
+     MpiCommunicator myCommunicator;
+     CommID myProcessID  = myCommunicator.getGlobalContext().getCommID();
+     unsigned processCount = myCommunicator.getGlobalContext().size();
+     NS nameService(myGraph, myCommunicator);
+     GC myGraphCommunicator(myCommunicator, nameService);
 
 
     /***************************************************************************
      * Create subgraph
      ****************************************************************************/
-    std::vector<Vertex> subGraphVertices;
-    subGraphVertices.push_back(myGraph.getVertices().at(2));
-    subGraphVertices.push_back(myGraph.getVertices().at(3));
-    subGraphVertices.push_back(myGraph.getVertices().at(1));
-    BGLGraph mySubGraph = myGraph.createSubGraph(subGraphVertices);
+     std::vector<Vertex> subGraphVertices;
+     subGraphVertices.push_back(myGraph.getVertices().at(2));
+     subGraphVertices.push_back(myGraph.getVertices().at(1));
+     BGLGraph& mySubGraph = myGraph.createSubGraph(subGraphVertices); //<== BUG ...commenting this line removes seg fault
+     mySubGraph.print();
+
 
     /***************************************************************************
      * Examples communication schemas
@@ -425,14 +424,16 @@ int main(){
     std::vector<Vertex> myGraphVertices    = distributeVerticesEvenly(myProcessID, processCount, myGraph);
 
     // Output vertex property
-    for(Vertex v : mySubGraphVertices){
-      std::cout << "[" << myProcessID << "] " << "Graph: "<< mySubGraph.id << " Vertex: " << v.id << std::endl;
-    }
+    // for(Vertex v : mySubGraphVertices){
+    //   std::cout << "[" << myProcessID << "] " << "Graph: "<< mySubGraph.id << " Vertex: " << v.id << std::endl;
+    // }
 
-    for(Vertex v : myGraphVertices){
-      std::cout << "[" << myProcessID << "] " << "Graph: "<< myGraph.id << " Vertex: " << v.id << std::endl;
-    }
-
+    // for(Vertex v : myGraphVertices){
+    //   std::cout << "[" << myProcessID << "] " << "Graph: "<< myGraph.id << " Vertex: " << v.id << std::endl;
+    // }
+    
+    //std::cerr << "graph.id " << myGraph.id << std::endl;
+    
 
     // Announce distribution on network
     nameService.announce(myGraph, myGraphVertices);
@@ -443,22 +444,20 @@ int main(){
       nearestNeighborExchange(myGraphCommunicator, myGraph, myGraphVertices); 
       reduceVertexIDs(myGraphCommunicator, myGraph, myGraphVertices);
 
-
-    }
-    else {
+     }
+    //else {
       //Process not part of subgraph
-    }
+    //}
 
     // Communication on subgraph level
     if(!mySubGraphVertices.empty()){
-      //std::cout << "CommID:" << myProcessID << " wanna reduce" <<std::endl;
       nearestNeighborExchange(myGraphCommunicator, mySubGraph, mySubGraphVertices);
       reduceVertexIDs(myGraphCommunicator, mySubGraph, mySubGraphVertices);
 
     }
-    else {
-      // Process not part of subgraph
-    }
+    // else {
+    //   // Process not part of subgraph
+    // }
     
 
     /***************************************************************************

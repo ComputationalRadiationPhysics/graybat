@@ -26,23 +26,32 @@ private:
 
 
   Graph(Graph<GraphPolicy>& superGraph, typename GraphPolicy::Graph& subGraph, unsigned id) : 
-	GraphPolicy(subGraph),
-	id(id),
-	superGraph(superGraph){
-	
-    }
+    GraphPolicy(subGraph),
+    id(id),
+    superGraph(superGraph){
+    std::cerr << "Construct Graph from superGraph: " << id << std::endl;
+  }
 
 public:
 
   GraphID id;
   Graph<GraphPolicy>& superGraph;
+  std::vector<Graph<GraphPolicy>> subGraphs;
  
     Graph(std::vector<EdgeDescriptor> edges, std::vector<Vertex> vertices) :
 	GraphPolicy(toGraphPolicyEdges(edges), vertices),
 	id(0),
 	superGraph(*this){
+      std::cerr << "Construct Graph: " << id << std::endl;
 	
     }
+
+
+  ~Graph(){
+    std::cerr << "Deconstruct Graph" << std::endl;
+  }
+
+  
     
     std::vector<Vertex> getVertices(){
 	Container<GraphPolicyVertex> v = GraphPolicy::getVertices();
@@ -96,15 +105,19 @@ public:
 
     }
 
-    Graph<GraphPolicy> createSubGraph(std::vector<Vertex> vertices){
+
+
+  Graph<GraphPolicy>& createSubGraph(std::vector<Vertex> vertices){
     	std::vector<GraphPolicyVertex> graphPolicyVertices;
-    	for(unsigned v_i = 0; v_i < vertices.size(); ++v_i){
-    	    graphPolicyVertices.push_back(GraphPolicyVertex(vertices[v_i].id));
-    	}
+    	 for(unsigned v_i = 0; v_i < vertices.size(); ++v_i){
+	   graphPolicyVertices.push_back(GraphPolicyVertex(vertices[v_i].id));
+    	 }
 
-	typename GraphPolicy::Graph& sg = GraphPolicy::createSubGraph(graphPolicyVertices);
+	 typename GraphPolicy::Graph& subGraph = GraphPolicy::createSubGraph(graphPolicyVertices); 
 
-	return Graph<GraphPolicy>(*this, sg, id + 1);
+	 subGraphs.push_back(Graph<GraphPolicy>(*this, subGraph, id + 1));
+	 return subGraphs.back();
+
 
     }
 
