@@ -391,7 +391,7 @@ int main(){
     //std::vector<EdgeDescriptor> edges = generateFullyConnectedTopology(10, vertices);
     //std::vector<EdgeDescriptor> edges = generateStarTopology(10, vertices);
     //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(8, vertices);
-    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(2, 4, vertices);
+    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(2, 2, vertices);
     BGLGraph myGraph (edges, vertices);
 
 
@@ -413,6 +413,7 @@ int main(){
     std::vector<Vertex> subGraphVertices;
     subGraphVertices.push_back(myGraph.getVertices().at(2));
     subGraphVertices.push_back(myGraph.getVertices().at(3));
+    subGraphVertices.push_back(myGraph.getVertices().at(1));
     BGLGraph mySubGraph = myGraph.createSubGraph(subGraphVertices);
 
     /***************************************************************************
@@ -422,7 +423,6 @@ int main(){
     // Distribute vertices to communicators
     std::vector<Vertex> mySubGraphVertices = distributeVerticesEvenly(myProcessID, processCount, mySubGraph);
     std::vector<Vertex> myGraphVertices    = distributeVerticesEvenly(myProcessID, processCount, myGraph);
-
 
     // Output vertex property
     for(Vertex v : mySubGraphVertices){
@@ -438,14 +438,11 @@ int main(){
     nameService.announce(myGraph, myGraphVertices);
     nameService.announce(mySubGraph, mySubGraphVertices);
 
-
-    // TODO
-    // Debug nearestNeighborExchange
-
     // Communication on graph level
     if(!myGraphVertices.empty()){
+      nearestNeighborExchange(myGraphCommunicator, myGraph, myGraphVertices); 
       reduceVertexIDs(myGraphCommunicator, myGraph, myGraphVertices);
-      //nearestNeighborExchange(myGraphCommunicator, myGraph, myGraphVertices); <== BUGGY
+
 
     }
     else {
@@ -455,8 +452,9 @@ int main(){
     // Communication on subgraph level
     if(!mySubGraphVertices.empty()){
       //std::cout << "CommID:" << myProcessID << " wanna reduce" <<std::endl;
+      nearestNeighborExchange(myGraphCommunicator, mySubGraph, mySubGraphVertices);
       reduceVertexIDs(myGraphCommunicator, mySubGraph, mySubGraphVertices);
-      //nearestNeighborExchange(myGraphCommunicator, mySubGraph, mySubGraphVertices); <== BUGGY
+
     }
     else {
       // Process not part of subgraph
