@@ -7,8 +7,19 @@
 
 #include <types.hpp>
 
+/**
+ * @brief Brief comment on GraphPolicy.
+ *
+ */
 namespace GraphPolicy {
 
+    /************************************************************************//**
+     * @struct NoProperty
+     *
+     * @brief Dummy property for a GraphPolicy, 
+     *        that only contains the required id.
+     *
+     ***************************************************************************/
     struct NoProperty{
 	typedef unsigned ID;
 	NoProperty() : id(0){}
@@ -17,6 +28,17 @@ namespace GraphPolicy {
 	ID id;
     };
 
+
+    /***********************************************************************//**
+     * @class BGL
+     *
+     * @brief A implementation for GraphPolicy for the hostclass graph.
+     *
+     * Provides only some functionality of the Boost Graph Library that
+     * is needed by the usecase of the implementor. For the inner graph,
+     * a subgraph implementation was choosen to support subgraph creation.
+     *
+     ***************************************************************************/
     template <typename T_VertexProperty = NoProperty, typename T_EdgeProperty = NoProperty>
     class BGL {
     protected:
@@ -32,44 +54,58 @@ namespace GraphPolicy {
 
     protected:
 	typedef boost::subgraph<GraphTmp> Graph;
+	typedef typename Graph::vertex_descriptor Vertex;
+	typedef typename Graph::edge_descriptor   Edge;
+	template <typename T> using               Container = std::vector<T>;
 
+    private:
 	typedef typename boost::graph_traits<Graph>::in_edge_iterator   InEdgeIter;
 	typedef typename boost::graph_traits<Graph>::out_edge_iterator  OutEdgeIter;
 	typedef typename boost::graph_traits<Graph>::adjacency_iterator AdjacentVertexIter;
 	typedef typename boost::graph_traits<Graph>::vertex_iterator    AllVertexIter;
-
-
-    protected:
-	typedef typename Graph::vertex_descriptor Vertex;
-	typedef typename Graph::edge_descriptor   Edge;
-
-    private:
-	typedef typename std::tuple<Vertex, Vertex, EdgeProperty>       EdgeDescriptor;
+	typedef typename std::tuple<VertexProperty, VertexProperty, EdgeProperty>       EdgeDescriptor;
 
     protected:
-	template <typename T> using               Container = std::vector<T>;
+
 
       Graph* graph;
 
+	/**
+	 * @brief Creates this BGL graph from other BGL graph. Used for subgraph creation 
+	 *        created by createSubGraph(std::vector<Vertex>).
+	 *
+	 */
 	BGL(Graph& subGraph) : graph(&subGraph){
-
+	     
 	}
+	
 
-
+	/**
+	 * @brief Creates this BGL graph from edges (VertexProperty ==EdgeProperty==> VertexProperty)
+	 *        and VertexProperties. VertexProperty and EdgeProperty need to have at least
+	 *        an id member to be unique identifiable. The ids need to range from 0 to n-1,
+	 *        how n is the number of vertices in this graph. Vertex.id is mapped 1:1 to the 
+	 *        BGL inner representation of vertices, thus a vertex with id i is also the ith
+	 *        vertex in the BGL graph.
+	 *
+	 */
 	BGL(std::vector<EdgeDescriptor> edges, 
 	    std::vector<VertexProperty> vertexProperties) {
 	
 	    graph = new Graph(vertexProperties.size());
 	    
-	    for(auto edge: edges){
-		Edge e = boost::add_edge(std::get<0>(edge), std::get<1>(edge), (*graph)).first;
-		setEdgeProperty(e, std::get<2>(edge));
+	    for(EdgeDescriptor edgeDescriptor: edges){
+		VertexProperty srcVertex    = std::get<0>(edgeDescriptor);
+		VertexProperty targetVertex = std::get<1>(edgeDescriptor);
+		EdgeProperty edgeProperty   = std::get<2>(edgeDescriptor);
+		Edge edge = boost::add_edge(srcVertex.id, targetVertex.id, (*graph)).first;
+		setEdgeProperty(edge, edgeProperty);
 	    
 	    }
 
 	    // Bind vertex_descriptor and VertexProperty;
 	    for(unsigned i = 0; i < boost::num_vertices((*graph)); ++i){
-		setVertexProperty(boost::vertex(i, (*graph)), vertexProperties.at(i));
+		setVertexProperty(boost::vertex(vertexProperties.at(i).id, (*graph)), vertexProperties.at(i));
 	    }
 
 	}
@@ -77,7 +113,7 @@ namespace GraphPolicy {
       ~BGL(){
 	// TODO
 	// For some reason its no good idea to destroy the graph
-	if(graph->is_root()){
+	  if((*graph).is_root()){
 	  delete graph;
 	}
       }

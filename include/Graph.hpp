@@ -3,6 +3,17 @@
 #include <iostream>
 #include <tuple>
 
+
+
+/************************************************************************//**
+ * @class Graph
+ *									   
+ * @brief A class to describe directed graphs.
+ *
+ * Hostclass for a GraphPolicy, that implements
+ * the graph functionality.     
+ *
+ ***************************************************************************/
 template <class T_GraphPolicy>
 class Graph : public T_GraphPolicy{
 private:
@@ -10,7 +21,9 @@ private:
 
 public:
     typedef typename GraphPolicy::VertexProperty Vertex;
+    typedef typename Vertex::ID                  VertexID;
     typedef typename GraphPolicy::EdgeProperty   Edge;
+    typedef std::tuple<Vertex, Vertex, Edge>     EdgeDescriptor;
     typedef unsigned                             GraphID;
 
 private: 
@@ -21,42 +34,52 @@ private:
     typedef typename GraphPolicy::Edge                      GraphPolicyEdge;
     typedef typename Container<GraphPolicyEdge>::iterator   EdgeIter;
     typedef typename Container<GraphPolicyVertex>::iterator VertexIter;
-    typedef std::tuple<Vertex, Vertex, Edge>                EdgeDescriptor;
-  typedef typename Vertex::ID                               VertexID;
 
+    Graph(Graph<GraphPolicy>& superGraph, typename GraphPolicy::Graph& subGraph, unsigned id) : 
+	GraphPolicy(subGraph),
+	id(id),
+	superGraph(superGraph){
 
-  Graph(Graph<GraphPolicy>& superGraph, typename GraphPolicy::Graph& subGraph, unsigned id) : 
-    GraphPolicy(subGraph),
-    id(id),
-    superGraph(superGraph){
-
-  }
+    }
 
 public:
 
-  GraphID id;
-  Graph<GraphPolicy>& superGraph;
-  std::vector<Graph<GraphPolicy>> subGraphs;
+    GraphID id;
+    Graph<GraphPolicy>& superGraph;
+    std::vector<Graph<GraphPolicy>> subGraphs;
  
+
+    /**
+     * @brief The graph has to be described by *edges* (source Vertex ==Edge==> target Vertex) and
+     *        the *vertices* of this graph.
+     *
+     */
     Graph(std::vector<EdgeDescriptor> edges, std::vector<Vertex> vertices) :
-	GraphPolicy(toGraphPolicyEdges(edges), vertices),
+	GraphPolicy(edges, vertices),
 	id(0),
 	superGraph(*this){
 	
     }
 
 
-  ~Graph(){
+    ~Graph(){
 
-  }
+    }
 
   
-    
+    /**
+     * @brief Returns all vertices of the graph
+     * 
+     */
     std::vector<Vertex> getVertices(){
 	Container<GraphPolicyVertex> v = GraphPolicy::getVertices();
 	return getVerticesProperties(v);
     }
 
+    /**
+     * @brief Returns all vertices, that are adjacent (connected) to *vertex*
+     *
+     */
     std::vector<Vertex> getAdjacentVertices(const Vertex vertex){
     	std::vector<Vertex> adjacentVertices;
     	for(Edge e: GraphPolicy::getOutEdges(vertex.id)){
@@ -68,6 +91,10 @@ public:
     	return adjacentVertices;
     }
 
+    /**
+     * @brief Returns all outgoing edges of *srcVertex* paired with its target vertex.
+     *
+     */
     std::vector<std::pair<Vertex, Edge> > getOutEdges(const Vertex srcVertex){
 
     	std::vector<std::pair<Vertex, Edge> > outEdges;
@@ -80,70 +107,106 @@ public:
     	return outEdges;
     }
 
+    /**
+     * @brief Returns all incoming edges to *targetVertex* paired with its source vertex.
+     *
+     */
     std::vector<std::pair<Vertex, Edge> > getInEdges(const Vertex targetVertex){
     	std::vector<std::pair<Vertex, Edge> > inEdges;
     	for(GraphPolicyEdge e : GraphPolicy::getInEdges(targetVertex.id)){
-    	     GraphPolicyVertex source = GraphPolicy::getEdgeSource(e);
-	     Vertex vertex            = GraphPolicy::getVertexProperty(source);
-	     Edge edge = GraphPolicy::getEdgeProperty(e);
-	     inEdges.push_back(std::make_pair(vertex, edge));
+	    GraphPolicyVertex source = GraphPolicy::getEdgeSource(e);
+	    Vertex vertex            = GraphPolicy::getVertexProperty(source);
+	    Edge edge = GraphPolicy::getEdgeProperty(e);
+	    inEdges.push_back(std::make_pair(vertex, edge));
     	}
     	return inEdges;
     }
 
+    /**
+     * @brief Prints graphs vertices connected by edges in simple representation
+     *
+     */
     void print(){
 	std::vector<Vertex> vertices = getVertices();
 
 	for(Vertex v : vertices){
 	    std::vector<std::pair<Vertex, Edge> > outEdges = getOutEdges(v);
 	    for(std::pair<Vertex, Edge> e : outEdges){
-	      std::cout << "Graph [" << id << "] "<<"Edge [" << e.second.id << "] : (" << v.id << ") ==> (" << e.first.id << ")" << std::endl; 
+		std::cout << "Graph [" << id << "] "<<"Edge [" << e.second.id << "] : (" << v.id << ") ==> (" << e.first.id << ")" << std::endl; 
 	    }
 
 	}
 
     }
 
-
-
-  Graph<GraphPolicy>& createSubGraph(std::vector<Vertex> vertices){
+    /**
+     * @brief Creates a subgraph of this graph from *vertices* 
+     *        and returns a reference to this newly created subgraph. 
+     *
+     * Connected vertices in this graph are still connected in the subgraph.
+     * The subgraph will be added to the children of this graph and this graph
+     * will be the supergraph of the subgraph. The global id of the subgraph
+     * vertices are always reachable with vertex.id. To obtain the local id
+     * whithin a subgraph it is possible to call getLocalID(Vertex).
+     *
+     * @param[in] vertices A list of vertices that should be in set of the graph vertices
+     *
+     */
+    Graph<GraphPolicy>& createSubGraph(const std::vector<Vertex> vertices){
     	std::vector<GraphPolicyVertex> graphPolicyVertices;
-    	 for(unsigned v_i = 0; v_i < vertices.size(); ++v_i){
-	   graphPolicyVertices.push_back(GraphPolicyVertex(vertices[v_i].id));
-    	 }
+	for(unsigned v_i = 0; v_i < vertices.size(); ++v_i){
+	    graphPolicyVertices.push_back(GraphPolicyVertex(vertices[v_i].id));
+	}
 
-	 typename GraphPolicy::Graph& subGraph = GraphPolicy::createSubGraph(graphPolicyVertices); 
+	typename GraphPolicy::Graph& subGraph = GraphPolicy::createSubGraph(graphPolicyVertices); 
 
-	 subGraphs.push_back(Graph<GraphPolicy>(*this, subGraph, id + 1));
-	 return subGraphs.back();
+	subGraphs.push_back(Graph<GraphPolicy>(*this, subGraph, id + 1));
+	return subGraphs.back();
 
+
+    }
+
+    /**
+     * @brief Cheacks wheather *textVertex* is in the set of vertices of this graph.
+     * 
+     * @return **true**  If testVertex is part of this graph.
+     * @return **false** If testVertex is not part of this graph.
+     */
+    bool contains(Vertex testVertex){
+	std::vector<Vertex> vertices = getVertices();
+	for(Vertex containedVertex: vertices){
+	    if(containedVertex.id == testVertex.id){
+		return true;
+	    }
+
+	}
+	return false;
 
     }
 
-  bool contains(Vertex testVertex){
-    std::vector<Vertex> vertices = getVertices();
-    for(Vertex containedVertex: vertices){
-      if(containedVertex.id == testVertex.id){
-	return true;
-      }
-
+    /**
+     * @brief Checks wheather this graph has an supergraph (is subgraph) 
+     *
+     * @return **true** If this graph is subgrapph of some supergraph.
+     * @return **false** If this graph has no supergraph (is rootgraph).
+     */
+    bool hasSuperGraph(){
+	if(id == superGraph.id){
+	    return false;
+	}
+	else {
+	    return true;
+	}
     }
-    return false;
 
-  }
-
-  bool hasSuperGraph(){
-    if(id == superGraph.id){
-      return false;
+    /**
+     * @brief Returns the local id of *vertex* in this graph.
+     *
+     * If this graph has no supergraph (hasSuperGraph()==false) then local ids are the same as global ids.
+     */
+    VertexID getLocalID(Vertex vertex){
+	return GraphPolicy::getLocalID(vertex.id);
     }
-    else {
-      return true;
-    }
-  }
-
-  VertexID getLocalID(Vertex vertex){
-    return GraphPolicy::getLocalID(vertex.id);
-  }
 	      
 private:
     std::vector<Vertex> getVerticesProperties(Container<GraphPolicyVertex> vertices){
@@ -154,12 +217,4 @@ private:
 	return properties;
     }
 	      
-    std::vector<std::tuple <GraphPolicyVertex, GraphPolicyVertex, Edge> > toGraphPolicyEdges(std::vector<EdgeDescriptor> edges){
-	std::vector<std::tuple<GraphPolicyVertex, GraphPolicyVertex, Edge> > bglEdges;
-	for(auto e : edges){
-	    bglEdges.push_back(std::make_tuple(std::get<0>(e).id, std::get<1>(e).id, std::get<2>(e)));
-	}
-	return bglEdges;
-    }
-
 };
