@@ -159,6 +159,15 @@ std::vector<EdgeDescriptor> generate2DMeshTopology(const unsigned height, const 
     return edges;
 }
 
+template <typename T_Graph>
+void printVertexDistribution(const std::vector<Vertex>& vertices,const T_Graph& graph, CommID commID){
+  for(Vertex v : vertices){
+    std::cout << "[" <<  commID << "] " << "Graph: "<< graph.id << " Vertex: " << v.id << std::endl;
+  }
+
+
+}
+
 
 
 /*******************************************************************************
@@ -382,108 +391,94 @@ std::vector<Vertex> distributeVerticesEvenly(const unsigned processID, const uns
  *******************************************************************************/
 int main(){
 
-    /***************************************************************************
-     * Create graph
-     ****************************************************************************/
-    std::vector<Vertex> graphVertices;
-
-    //std::vector<EdgeDescriptor> edges = generateFullyConnectedTopology(10, graphVertices);
-    //std::vector<EdgeDescriptor> edges = generateStarTopology(10, graphVertices);
-    //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(8, graphVertices);
-    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(100, 400, graphVertices);
-    BGLGraph myGraph (edges, graphVertices);
-    //myGraph.print();
+  /***************************************************************************
+   * Create graph
+   ****************************************************************************/
+  std::vector<Vertex> graphVertices;
+  //std::vector<EdgeDescriptor> edges = generateFullyConnectedTopology(10, graphVertices);
+  //std::vector<EdgeDescriptor> edges = generateStarTopology(10, graphVertices);
+  //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(8, graphVertices);
+  std::vector<EdgeDescriptor> edges = generate2DMeshTopology(2, 2, graphVertices);
+  BGLGraph graph (edges, graphVertices); //graph.print();
 
 
-    /***************************************************************************
-     * Create communicator
-     ****************************************************************************/
-     MpiCommunicator myCommunicator;
-     CommID myProcessID  = myCommunicator.getGlobalContext().getCommID();
-     unsigned processCount = myCommunicator.getGlobalContext().size();
-     NS nameService(myGraph, myCommunicator);
-     GC myGraphCommunicator(myCommunicator, nameService);
+
+  /***************************************************************************
+   * Create some subgraph
+   ****************************************************************************/
+  std::vector<Vertex> subGraphVertices;
+  for(unsigned vertex_i = 0; vertex_i < graphVertices.size() / 2; ++vertex_i){
+    subGraphVertices.push_back(graph.getVertices().at(vertex_i));
+  }
+  BGLGraph& subGraph = graph.createSubGraph(subGraphVertices); //subGraph.print();
 
 
-    /***************************************************************************
-     * Create subgraph
-     ****************************************************************************/
-     std::vector<Vertex> subGraphVertices;
-     subGraphVertices.push_back(myGraph.getVertices().at(2));
-     subGraphVertices.push_back(myGraph.getVertices().at(3));
-     BGLGraph& mySubGraph = myGraph.createSubGraph(subGraphVertices); 
-     //mySubGraph.print();
+
+  /***************************************************************************
+   * Create communicator
+   ****************************************************************************/
+  MpiCommunicator communicator;
+  CommID myCommID  = communicator.getGlobalContext().getCommID();
+  unsigned commCount = communicator.getGlobalContext().size();
+  NS nameService(graph, communicator);
+  GC graphCommunicator(communicator, nameService);
 
 
-    /***************************************************************************
-     * Examples communication schemas
-     ****************************************************************************/
+  /***************************************************************************
+   * Examples communication schemas
+   ****************************************************************************/
 
-    // Distribute vertices to communicators
-    std::vector<Vertex> mySubGraphVertices = distributeVerticesEvenly(myProcessID, processCount, mySubGraph);
-    std::vector<Vertex> myGraphVertices    = distributeVerticesEvenly(myProcessID, processCount, myGraph);
-
-    // Output vertex property
-    // for(Vertex v : mySubGraphVertices){
-    //   std::cout << "[" << myProcessID << "] " << "Graph: "<< mySubGraph.id << " Vertex: " << v.id << std::endl;
-    // }
-
-    // for(Vertex v : myGraphVertices){
-    //   std::cout << "[" << myProcessID << "] " << "Graph: "<< myGraph.id << " Vertex: " << v.id << std::endl;
-    // }
-    
-    //std::cerr << "graph.id " << myGraph.id << std::endl;
-    
-
-    // Announce distribution on network
-    nameService.announce(myGraph, myGraphVertices);
-    nameService.announce(mySubGraph, mySubGraphVertices);
-
-    // Communication on graph level
-    if(!myGraphVertices.empty()){
-      nearestNeighborExchange(myGraphCommunicator, myGraph, myGraphVertices); 
-      reduceVertexIDs(myGraphCommunicator, myGraph, myGraphVertices);
-
-     }
-    //else {
-      //Process not part of subgraph
-    //}
-
-    // Communication on subgraph level
-    if(!mySubGraphVertices.empty()){
-      nearestNeighborExchange(myGraphCommunicator, mySubGraph, mySubGraphVertices);
-      reduceVertexIDs(myGraphCommunicator, mySubGraph, mySubGraphVertices);
-
-    }
-    // else {
-    //   // Process not part of subgraph
-    // }
-    
-
-    /***************************************************************************
-     * Redistribution of vertex
-     ****************************************************************************/
-
-    // TODO
-    // Communicator which has no vertex of subgraph
-    // can´t occupy vertex from this subgraph!
-    // Because this communicator is not part
-    // of the subgraph context!
-    // Need to recreate context first!
+  // Distribute vertices to communicators
+  std::vector<Vertex> myGraphVertices    = distributeVerticesEvenly(myCommID, commCount, graph);
+  std::vector<Vertex> mySubGraphVertices = distributeVerticesEvenly(myCommID, commCount, subGraph);
 
 
-    // CommID masterCommID = 2; //randomCommID(myCommunicator, nameService.mapGraph(mySubGraph));
-    // occupyRandomVertex(myCommunicator, mySubGraph, nameService, mySubGraphVertices, masterCommID);
-    // nameService.announce(mySubGraphVertices);
-    //nameService.announce(myGraph, mySubGraph);
+  // // Output vertex property
+  printVertexDistribution(myGraphVertices, graph, myCommID);
+  printVertexDistribution(mySubGraphVertices, subGraph, myCommID);
+
+  // Announce distribution on network
+  nameService.announce(graph, myGraphVertices);
+  nameService.announce(subGraph, mySubGraphVertices);
+
+  //Communication on graph level
+  if(!myGraphVertices.empty()){
+    nearestNeighborExchange(graphCommunicator, graph, myGraphVertices); 
+    reduceVertexIDs(graphCommunicator, graph, myGraphVertices);
+
+  }
+
+  // Communication on subgraph level
+  if(!mySubGraphVertices.empty()){
+    nearestNeighborExchange(graphCommunicator, subGraph, mySubGraphVertices);
+    reduceVertexIDs(graphCommunicator, subGraph, mySubGraphVertices);
+
+  }
+
+  /***************************************************************************
+   * Redistribution of vertex
+   ****************************************************************************/
+
+  // TODO
+  // Communicator which has no vertex of subgraph
+  // can´t occupy vertex from this subgraph!
+  // Because this communicator is not part
+  // of the subgraph context!
+  // Need to recreate context first!
+
+
+  // CommID masterCommID = 2; //randomCommID(communicator, nameService.mapGraph(subGraph));
+  // occupyRandomVertex(communicator, subGraph, nameService, mySubGraphVertices, masterCommID);
+  // nameService.announce(mySubGraphVertices);
+  //nameService.announce(graph, subGraph);
 
 
     
-    // if(!mySubGraphVertices.empty()){    
-    // 	// Several communication schemas
-    //  	reduceVertexIDs(myGraphCommunicator, mySubGraph, mySubGraphVertices);
-    // // 	//nearestNeighborExchange(myGraphCommunicator, mySubGraph, mySubGraphVertices);
-    // }
+  // if(!mySubGraphVertices.empty()){    
+  // 	// Several communication schemas
+  //  	reduceVertexIDs(myGraphCommunicator, subGraph, mySubGraphVertices);
+  // // 	//nearestNeighborExchange(myGraphCommunicator, subGraph, mySubGraphVertices);
+  // }
 
 
 }
