@@ -1,23 +1,6 @@
 project(genericCommunicator)
 cmake_minimum_required(VERSION 2.8.5)
 
-
-
-###############################################################################
-# Using Clang is awesome
-# code based on http://stackoverflow.com/q/7031126
-###############################################################################
-option(USE_CLANG "build application with clang" OFF) # OFF is the default
-if(USE_CLANG)
-  SET (CMAKE_CXX_COMPILER "/usr/bin/clang++")
-  SET (CMAKE_CXX_FLAGS "-Wall -Wextra -O2 -std=c++11")
-else(USE_CLANG)
-  SET (CMAKE_CXX_COMPILER "/usr/bin/mpic++")
-  SET (CMAKE_CXX_FLAGS "-Wall -Wextra -O2 -g -std=c++11")
-endif(USE_CLANG)
-
-
-
 ###############################################################################
 # Boost
 ###############################################################################
@@ -25,6 +8,27 @@ find_package(Boost 1.48.0 REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${Boost_LIBRARIES})
 
+################################################################################
+# Find MPI
+################################################################################
+find_package(MPI REQUIRED)
+  include_directories(SYSTEM ${MPI_C_INCLUDE_PATH})
+set(LIBS ${LIBS} ${MPI_C_LIBRARIES})
+
+# bullxmpi fails if it can not find its c++ counter part
+if(MPI_CXX_FOUND)
+  set(LIBS ${LIBS} ${MPI_CXX_LIBRARIES})
+endif(MPI_CXX_FOUND)
+
+###############################################################################
+# Compiler Flags
+###############################################################################
+if(CMAKE_COMPILER_IS_GNUCXX)
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+endif(CMAKE_COMPILER_IS_GNUCXX)
 
 ###############################################################################
 # Build executables
@@ -39,13 +43,7 @@ target_link_libraries(Main ${LIBS})
 # Custom targets
 ###############################################################################
 
-# RUN
-add_custom_target(run
-  COMMAND make
-  COMMAND mpirun -np 4 ./Main
-)
-
-# DOXYGEN
+# doc
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/doxygen.conf ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
