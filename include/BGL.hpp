@@ -8,7 +8,7 @@
 #include <types.hpp>
 
 /**
- * @brief Brief comment on GraphPolicy.
+ * @brief Policies for Graph, that implements graph functionality.
  *
  */
 namespace GraphPolicy {
@@ -32,7 +32,7 @@ namespace GraphPolicy {
     /***********************************************************************//**
      * @class BGL
      *
-     * @brief A implementation for GraphPolicy for the hostclass graph.
+     * @brief A implementation for GraphPolicy for the hostclass Graph.
      *
      * Provides only some functionality of the Boost Graph Library that
      * is needed by the usecase of the implementor. For the inner graph,
@@ -68,7 +68,7 @@ namespace GraphPolicy {
     protected:
 
 
-      Graph* graph;
+	Graph* graph;
 
 	/**
 	 * @brief Creates this BGL graph from other BGL graph. Used for subgraph creation 
@@ -82,7 +82,9 @@ namespace GraphPolicy {
 
 	/**
 	 * @brief Creates this BGL graph from edges (VertexProperty ==EdgeProperty==> VertexProperty)
-	 *        and VertexProperties. VertexProperty and EdgeProperty need to have at least
+	 *        and VertexProperties. 
+	 *
+	 *        VertexProperty and EdgeProperty need to have at least
 	 *        an id member to be unique identifiable. The ids need to range from 0 to n-1,
 	 *        how n is the number of vertices in this graph. Vertex.id is mapped 1:1 to the 
 	 *        BGL inner representation of vertices, thus a vertex with id i is also the ith
@@ -110,55 +112,100 @@ namespace GraphPolicy {
 
 	}
 
-      ~BGL(){
-	// TODO
-	// For some reason its no good idea to destroy the graph
-	  if((*graph).is_root()){
-	  delete graph;
+	~BGL(){
+	    // TODO
+	    // For some reason its no good idea to destroy the graph
+	    if((*graph).is_root()){
+		delete graph;
+	    }
 	}
-      }
 
+	/**
+	 * @brief Returns a container of all vertices of this graph. This
+	 *        container supports at least the iterator mechanism.
+	 *
+	 * @remark Instead of returning the Container of vertices, a pair
+	 *         of first and end iterator would be more efficient. But
+	 *         this would also lead to different problems, because
+	 *         BGL provides different iterators for different functions.
+	 *
+	 */
 	Container<Vertex> getVertices(){
 	    AllVertexIter vi, vi_end;
 	    std::tie(vi, vi_end) =  boost::vertices((*graph));
 	    return Container<Vertex>(vi, vi_end);
 	}
 
+	/**
+	 * @brief Returns the property of *vertex*.
+	 *
+	 */
 	VertexProperty getVertexProperty(Vertex vertex){
 	    return (*graph)[vertex];
 	}
   
+	/**
+	 * @brief Return the property of *edge*.
+	 *
+	 */
 	EdgeProperty getEdgeProperty(Edge edge){
 	    return (*graph)[edge];
 	}
 
+	/**
+	 * @brief Returns all incoming edges of *vertex*.
+	 *
+	 */
 	Container<Edge> getInEdges(Vertex vertex){
 	    InEdgeIter ei, ei_end;
 	    std::tie(ei, ei_end) = boost::in_edges((*graph).global_to_local(vertex), (*graph));
 	    return Container<Edge> (ei, ei_end);
 	}
 
+	/**
+	 * @brief Returns all outgoing edges of *vertex*.
+	 *
+	 */
 	Container<Edge> getOutEdges(Vertex vertex){
 	    OutEdgeIter ei, ei_end;
 	    std::tie(ei, ei_end) = boost::out_edges((*graph).global_to_local(vertex), (*graph));
 	    return Container<Edge> (ei, ei_end);
 	}
 
+	/**
+	 * @brief Return the vertex to which *edge* points to.
+	 *
+	 */
 	Vertex getEdgeTarget(Edge edge){
 	    return boost::target(edge, (*graph));
 	}
 
+	/**
+	 * @brief Return the vertex to which *edge* points from.
+	 *
+	 */
 	Vertex getEdgeSource(Edge edge){
 	    return boost::source(edge, (*graph));
 	}
 
-	Graph& createSubGraph(const std::vector<Vertex> vertices){
+	/**
+	 * @brief Creates a subgraph from a list of *vertices*.
+	 *
+	 * This vertices should be part of this graph.
+	 *
+	 */
+	Graph& createSubGraph(const Container<Vertex> vertices){
 	    return (*graph).create_subgraph(vertices.begin(), vertices.end());
 	}
 
-      Vertex getLocalID(Vertex vertex){
-	return (*graph).global_to_local(vertex);
-      }
+	/**
+	 * @brief Returns the local id of *vertex* in this graph.
+	 *
+	 * If this graph has no supergraph (graph.is_root()==true) then local ids are the same as global ids.
+	 */
+	Vertex getLocalID(Vertex vertex){
+	    return (*graph).global_to_local(vertex);
+	}
 
 
     private:
