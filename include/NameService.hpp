@@ -3,6 +3,8 @@
 #include <set> /* set */
 
 /************************************************************************//**
+ * @class NameService
+ *
  * @brief A central instance to locate host the Communicator
  *        of vertices.
  *
@@ -65,7 +67,7 @@ struct NameService {
 	// Get super context
 	Context oldContext;
 	if(graph.hasSuperGraph()){
-	    oldContext = mapGraph(graph.superGraph);
+	    oldContext = getGraphContext(graph.superGraph);
 	}
 	else {
 	    oldContext = communicator.getGlobalContext();
@@ -128,7 +130,7 @@ struct NameService {
     }
   
     /**
-     * @brief Returns the CommID of the host Communicator of *vertex* of a *graph*
+     * @brief Returns the CommID of the host Communicator of *vertex* in the *graph*
      *
      * @bug When the location of *vertex* is not known then
      *      the programm crashes by an exception. 
@@ -153,7 +155,7 @@ struct NameService {
      *      This Exception should be hanled somehow!
      *
      */
-    std::vector<Vertex> mapCommID(Graph& graph, CommID commID){
+    std::vector<Vertex> getHostedVertices(Graph& graph, CommID commID){
 	return vertexMap[graph.id][commID];
 
     }
@@ -164,7 +166,7 @@ struct NameService {
      *        returned context.
      *
      */
-    Context mapGraph(Graph& graph){
+    Context getGraphContext(Graph& graph){
 	return contextMap[graph.id];
 
     }
@@ -187,7 +189,7 @@ private:
 	    commIDs.insert(locateVertex(subGraph, vertex));
 	}
 
-	Context oldContext = mapGraph(graph);
+	Context oldContext = getGraphContext(graph);
 	Context newContext = communicator.createContext(std::vector<CommID>(commIDs.begin(), commIDs.end()), oldContext);
 	if(newContext.valid()){
 	    contextMap[subGraph.id] = newContext;

@@ -8,7 +8,7 @@
 #include <assert.h>   /* assert */
 
 /************************************************************************//**
-* @Class Communicator
+* @class Communicator
 *
 * @brief A generic communicator implemented by a CommunicationPolicy
 *
@@ -45,27 +45,14 @@ public:
      ***************************************************************************/
 
     /**
-     * @brief Synchron transmission of a message *sendData" to Communicator with CommID *destCommID*.
+     * @brief Asyncron transmission of a message *sendData" to Communicator with CommID *destCommID*.
      * 
-     * @remark uses asyncSend() and waits afterwards on the Event
-     *
      * @param[in] destCommID CommID that will receive the message
      * @param[in] tag        Makes it possible to distinguish messages
      * @param[in] context    Context in which both sender and receiver are part of
      * @param[in] sendData   Some data reference unknown type T (that's immaterial) that will be send
      *
-     */
-    template <typename T>
-    void send(const CommID destCommID, const Tag tag, const Context context, const T& sendData) const {
-	Event e = asyncSend(destCommID, tag, context, sendData);
-	e.wait();
-    }
-
-    /**
-     * @brief Asyncron transmission of a message *sendData" to Communicator with CommID *destCommID*.
-     * 
-     * @see send()
-     *
+     * @return Event Can be waited (Event::wait())for or checked for (Event::ready())
      */
     template <typename T>
     Event asyncSend(const CommID destCommID, const Tag tag, const Context context, const T& sendData){
@@ -73,27 +60,14 @@ public:
     }
 
     /**
-     * @brief Syncron receive of a message *recvData" from Communicator with CommID *srcCommID*
-     *
-     * @remark uses asyncRecv() and waits afterwards on the Event
+     * @brief Asyncron receive of a message *recvData" from Communicator with CommID *srcCommID*
      * 
      * @param[in]  srcCommID  CommID that sended the message
      * @param[in]  tag        Makes it possible to distinguish messages
      * @param[in]  context    Context in which both sender and receiver are part of
      * @param[out] recvData   Some data reference unknown type T (that's immaterial) received data will be written to
      *
-     */
-    template <typename T>
-    void recv(const CommID srcCommID, const unsigned tag, const Context context, const T& recvData){
-	Event e =  asyncRecv(srcCommID, tag, context, recvData);
-	e.wait();
-
-    }
-
-    /**
-     * @brief Asyncron receive of a message *recvData" from Communicator with CommID *srcCommID*
-     * 
-     * @see recv()
+     * @return Event Can be waited (Event::wait())for or checked for (Event::ready())
      *
      */
     template <typename T>

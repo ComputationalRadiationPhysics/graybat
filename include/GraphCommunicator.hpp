@@ -1,11 +1,26 @@
 #pragma once
 
+#include <sstream>
+#include <atomic>  // std::atomic
+#include <mutex>   // std::mutex
+
+/************************************************************************//**
+* @class GraphCommunicator
+*
+* @brief Provides point to point and collective communication schemas
+*        on graph base. Communicator is used as communication backend
+*        and NameService provide location information of the vertices
+*        of the Graph.
+*
+***************************************************************************/
 template <typename T_Graph, typename T_Communicator, typename T_NameService>
 struct GraphCommunicator {
 
     typedef T_Graph                 Graph;
     typedef typename Graph::Vertex  Vertex;
+    typedef typename Vertex::ID     VertexID;
     typedef typename Graph::Edge    Edge;
+    typedef typename Graph::GraphID GraphID;
 
     typedef T_Communicator Communicator;
     typedef typename Communicator::Context          Context;
@@ -26,36 +41,75 @@ struct GraphCommunicator {
     Communicator& communicator;
     NameService&  nameService;
     
-  // TODO
-  // Replace globalcontext with context of graph
-  // ==> context = nameservice.mapGraph(graph)
+    /**
+     * @brief Synchron transmission of *data* to the *destVertex* on *edge*.
+     *
+     * @param[in] graph The graph in which the communication takes place.
+     * @param[in] destVertex Vertex that will receive the *data*.
+     * @param[in] edge Edge over which the *data* will be transmitted.
+     * @param[in] data Data that will be send.
+     *
+     */
     template <typename T>
-    void send(Graph &graph, const Vertex dest, const Edge edge, const T& data){
-      CommID destCommID = nameService.locateVertex(graph, dest);
-      Context globalContext = communicator.getGlobalContext();
-      communicator.send(destCommID, edge.id, globalContext, data);
+    void send(Graph &graph, const Vertex destVertex, const Edge edge, const T& data){
+      CommID destCommID = nameService.locateVertex(graph, destVertex);
+      Context context = nameService.getGraphContext(graph);
+      Event e = communicator.asyncSend(destCommID, edge.id, context, data);
+      e.wait();
     }
 
+    /**
+     * @brief Asynchron transmission of *data* to the *destVertex* on *edge*.
+     *
+     * @param[in] graph The graph in which the communication takes place.
+     * @param[in] destVertex Vertex that will receive the *data*.
+     * @param[in] edge Edge over which the *data* will be transmitted.
+     * @param[in] data Data that will be send.
+     *
+     * @return Event Can be waited (Event::wait()) for or checked for (Event::ready())
+     *
+     */
     template <typename T>
-    Event asyncSend(Graph& graph, const Vertex dest, const Edge edge, const T& data){
-      CommID destCommID = nameService.locateVertex(graph, dest);
-	Context globalContext = communicator.getGlobalContext();
-	return communicator.asyncSend(destCommID, edge.id, globalContext, data);
+    Event asyncSend(Graph& graph, const Vertex destVertex, const Edge edge, const T& data){
+      CommID destCommID = nameService.locateVertex(graph, destVertex);
+      Context context = nameService.getGraphContext(graph);
+      return communicator.asyncSend(destCommID, edge.id, context, data);
     }
 
+    /**
+     * @brief Synchron receive of *data* from the *srcVertex* on *edge*.
+     *
+     * @param[in]  graph The graph in which the communication takes place.
+     * @param[in]  srcVertex Vertex that send the *data*
+     * @param[in]  edge Edge over which the *data* will be transmitted.
+     * @param[out] data Data that will be received
+     *
+     */
     template <typename T>
-    void recv(Graph& graph, const Vertex src, const Edge edge, const T& data){
-      CommID srcCommID = nameService.locateVertex(graph, src);
-	Context globalContext = communicator.getGlobalContext();
-	communicator.recv(srcCommID, edge.id, globalContext, data);
+    void recv(Graph& graph, const Vertex srcVertex, const Edge edge, const T& data){
+      CommID srcCommID = nameService.locateVertex(graph, srcVertex);
+      Context context = nameService.getGraphContext(graph);
+      Event e = communicator.asyncRecv(srcCommID, edge.id, context, data);
+      e.wait();
 
     }
 
+    /**
+     * @brief Asynchron receive of *data* from the *srcVertex* on *edge*.
+     *
+     * @param[in]  graph The graph in which the communication takes place.
+     * @param[in]  srcVertex Vertex that send the *data*
+     * @param[in]  edge Edge over which the *data* will be transmitted.
+     * @param[out] data Data that will be received
+     *
+     * @return Event Can be waited (Event::wait()) for or checked for (Event::ready())
+     *
+     */
     template <typename T>
-    void asyncRecv(Graph& graph, const Vertex src, const Edge edge, const T& data){
-      CommID srcCommID = nameService.locateVertex(graph, src);
-	Context globalContext = communicator.getGlobalContext();
-	communicator.recv(srcCommID, edge.id, globalContext, data);
+    Event asyncRecv(Graph& graph, const Vertex srcVertex, const Edge edge, const T& data){
+      CommID srcCommID = nameService.locateVertex(graph, srcVertex);
+      Context context = nameService.getGraphContext(graph);
+      return communicator.asyncRecv(srcCommID, edge.id, context, data);
 
     }
 
@@ -65,85 +119,127 @@ struct GraphCommunicator {
      *
      **************************************************************************/ 
 
+    std::map<GraphID, std::map<VertexID, unsigned>> vertexCount;
+
+    template <typename T>
+    struct Reduce {
+	std::atomic<unsigned> count;
+	std::atomic<T> reduce;
+	bool imRoot;
+	T* rootRecvData;
+	
+	
+    };
+
+    /**
+     * @brief Collective reduction of sendData (here only sum). *rootVertex* will
+     *        receive the reduced value. Data of vertices from the same host
+     *        Communicator will be reduced locally first.
+     *
+     * @todo Add the possibility to choose own binary operation
+     * @todo Do I have to return an Event because its partly non blocking ?
+     * @todo By collecting data first you could get rid of Reduce.count !
+     *
+     * @remark This function should be thread safe (not tested)!
+     *
+     * @param[in]  rootVertex Vertex that will receive the reduced value.
+     * @param[in]  srcVertex  Vertex that provides *sendData* to be reduced.
+     * @param[in]  graph      Vertices of this *graph* take part in the reduction.
+     * @param[in]  sendData   Data that will be reduced.
+     * @param[out] recvData   Reduced value, that will be received by *rootVertex*
+     *
+     */
+
+    std::mutex mtx;
 
 
-    // TODO
-    // first collect all values and then reduce them !
-    // Return Event because its non blocking !
     template <typename T>
     void reduce(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, const std::vector<T> sendData, T& recvData){
-	static unsigned reduceCount;
-	static T reduceTmp;
-	static T* rootRecvDataPtr;
-	static bool imRoot;
+	static std::map<std::string, Reduce<T>> reduces;
+
 	CommID rootCommID = nameService.locateVertex(graph, rootVertex);
 	CommID srcCommID  = nameService.locateVertex(graph, srcVertex);
-	std::vector<Vertex> vertices = nameService.mapCommID(graph, srcCommID); // <== BUGGY gives not correct vertices of a Communicator
+	Context context = nameService.getGraphContext(graph);
+	std::vector<Vertex> vertices = nameService.getHostedVertices(graph, srcCommID); 
 
-	Context context = nameService.mapGraph(graph);
-	//std::cout << "reduce context size:" << context.size() << " graph id:" << graph.id << std::endl;
+	std::string reduceID = generateID(graph, srcVertex);
 
-	for(T d : sendData){
-	  //std::cout << reduceTmp << std::endl;
-	  reduceTmp += d;
+	for(T data : sendData){
+	    reduces[reduceID].reduce.fetch_add(data);
 	}
 
+
+
+	// Remember pointer of recvData from rootVertex
 	if(rootVertex.id == srcVertex.id){
-	    rootRecvDataPtr = &recvData;
-	    imRoot = true;
+	    reduces[reduceID].rootRecvData = &recvData;
+	    reduces[reduceID].imRoot = true;
 	}
 
-	reduceCount++;
-	//std::cout << "srcCommID: " << srcCommID << " reduceCount: "<< reduceCount << " vertices.size(): " << vertices.size() << std::endl;
-	if(reduceCount == vertices.size()){
+	mtx.lock();
+	reduces[reduceID].count++;
+	// Finally start reduction
+	if(reduces[reduceID].count == vertices.size()){
 	    T recvDataCollctive;
-	    communicator.reduce(rootCommID, context, BinaryOperations::SUM, std::vector<T>(1 , reduceTmp), recvDataCollctive);
+	    communicator.reduce(rootCommID, context, BinaryOperations::SUM, std::vector<T>(1 , reduces[reduceID].reduce), recvDataCollctive);
 
-	    if(imRoot){
-		*rootRecvDataPtr = recvDataCollctive;
+	    if(reduces[reduceID].imRoot){
+		*(reduces[reduceID].rootRecvData) = recvDataCollctive;
 	    }
 	    
-	    // reset static vars
-	    reduceTmp   = 0;
-	    reduceCount = 0;
-	    imRoot      = false;
-	}
+	    reduces.erase(reduceID);
 
-	
+	}
+	mtx.unlock();
 
     }
 
+
+    template <typename T>
+    struct Collective {
+	std::vector<T> send;
+	bool isRoot;
+	T* rootRecvData;
+	
+    };
+
+    /**
+     * @brief Collective operation that collects data from all vertices of the *graph* and sends this *recvData*
+     *        the *rootVertex*.
+     *
+     * @param[in]  rootVertex Vetex that will receive the collected Data.
+     * @param[in]  srcVertex  One of the vertices that send his data *sendData*.
+     * @param[in]  graph      Vertices of this *graph* take part on the collective operation.
+     * @param[in]  sendData   Data that each *srcVertex* sends.
+     * @param[out] recvData   Data that *rootVertex* will receive from each srcVertex.
+     */
     template <typename T>
     void gather(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, const T sendData, std::vector<T>& recvData){
-	static std::vector<T>  sendTmp;
-	static T* rootRecvDataPtr;
-	static bool imRoot;
+	static std::map<std::string, Collective<T>> gathers;
 
 	CommID srcCommID  = nameService.locateVertex(graph, srcVertex);
 	CommID rootCommID  = nameService.locateVertex(graph, rootVertex);
-	std::vector<Vertex> vertices = nameService.mapCommID(graph, srcCommID);
-	Context context = nameService.mapGraph(graph);
+	std::vector<Vertex> vertices = nameService.getHostedVertices(graph, srcCommID);
+	Context context = nameService.getGraphContext(graph);
 
-	sendTmp.push_back(sendData);
+	std::string gatherID = generateID(graph, srcVertex);
+	
+	gathers[gatherID].send.push_back(sendData);
 
 	if(rootVertex.id == srcVertex.id){
-	    rootRecvDataPtr = &recvData;
-	    imRoot = true;
+	    gathers[gatherID].rootRecvData = &recvData;
+	    gathers[gatherID].isRoot = true;
 	}
 
-	if(sendTmp.size() == vertices.size()){
+	if(gathers[gatherID].send.size() == vertices.size()){
 	    std::vector<T> recvDataCollective;
-	    communicator.gather2(rootCommID, context, sendTmp, recvDataCollective);
+	    communicator.gather2(rootCommID, context, gathers[gatherID].send, recvDataCollective);
 
-	    if(imRoot){
-		*rootRecvDataPtr = recvDataCollective;
+	    if(gathers[gatherID].isRoot){
+		*(gathers[gatherID].rootRecvData) = recvDataCollective;
 	    }
 
-	    // reset static var
-	    sendTmp.clear();
-	    imRoot = false;
-
-
+	    gathers.erase(gatherID);
 	}
 
     }
@@ -156,8 +252,8 @@ struct GraphCommunicator {
 	static std::vector<std::vector<T>*> recvDataPtr;
 
 	CommID srcCommID  = nameService.locateVertex(graph, srcVertex);
-	std::vector<Vertex> vertices = nameService.mapCommID(graph, srcCommID);
-	Context context = nameService.mapGraph(graph);
+	std::vector<Vertex> vertices = nameService.getHostedVertices(graph, srcCommID);
+	Context context = nameService.getGraphContext(graph);
 
 	sendTmp.push_back(sendData);
 	recvDataPtr.push_back(&recvData);
@@ -186,8 +282,8 @@ struct GraphCommunicator {
 
     	CommID srcCommID  = nameService.locateVertex(graph, srcVertex);
     	CommID rootCommID  = nameService.locateVertex(graph, rootVertex);
-    	std::vector<Vertex> vertices = nameService.mapCommID(graph, srcCommID);
-    	Context context = nameService.mapGraph(graph);
+    	std::vector<Vertex> vertices = nameService.getHostedVertices(graph, srcCommID);
+    	Context context = nameService.getGraphContext(graph);
 
     	broadcastPtr.push_back(&sendData);
 	if(rootVertex.id == srcVertex.id){
@@ -226,4 +322,12 @@ struct GraphCommunicator {
     }
 
     
+private:
+    std::string generateID(Graph &graph, Vertex vertex){
+	std::stringstream idSS; 
+	idSS << graph.id << vertexCount[graph.id][vertex.id]++;
+	return idSS.str();
+
+    }
+
 };

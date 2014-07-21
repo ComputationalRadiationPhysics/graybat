@@ -47,11 +47,15 @@ target_link_libraries(Main ${LIBS})
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/doxygen.conf ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-  message(fatal_error " Doxygen executable: " ${DOXYGEN_EXECUTABLE})
-  add_custom_target(doc
+  add_custom_target(doc 
     COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
     SOURCES ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMENT "Generating API documentation with Doxygen" VERBATIM
     )
 endif(DOXYGEN_FOUND)
+
+# update
+add_custom_target(update
+	COMMAND fish -c "update make ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc"
+	COMMENT "Build project automatically on changes of source and header files")

@@ -225,16 +225,22 @@ void reduceVertexIDs(T_Communicator &communicator, T_Graph &graph, std::vector<t
 
     Vertex rootVertex = graph.getVertices().at(0);
     unsigned recvData = 0;
+    unsigned recvData1 = 0;
+    unsigned recvData2 = 0;
     std::vector<unsigned> sendData(1,0);
 
     for(Vertex vertex : myVertices){
     	sendData[0] = vertex.id;
     	communicator.reduce(rootVertex, vertex, graph, sendData, recvData);
+    	communicator.reduce(rootVertex, vertex, graph, sendData, recvData1);
+    	communicator.reduce(rootVertex, vertex, graph, sendData, recvData2);
     }
     
     for(Vertex vertex : myVertices){
     	if(vertex.id == rootVertex.id){
 	    std::cout << "Reduce graph " << graph.id << ": " << recvData << std::endl;
+	    std::cout << "Reduce graph " << graph.id << ": " << recvData1 << std::endl;
+	    std::cout << "Reduce graph " << graph.id << ": " << recvData2 << std::endl;
 
     	}
 
