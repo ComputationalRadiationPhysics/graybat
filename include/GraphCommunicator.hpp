@@ -31,21 +31,21 @@ struct GraphCommunicator {
   // ==> context = nameservice.mapGraph(graph)
     template <typename T>
     void send(Graph &graph, const Vertex dest, const Edge edge, const T& data){
-      CommID destCommID = nameService.mapVertex(graph, dest);
+      CommID destCommID = nameService.locateVertex(graph, dest);
       Context globalContext = communicator.getGlobalContext();
       communicator.send(destCommID, edge.id, globalContext, data);
     }
 
     template <typename T>
     Event asyncSend(Graph& graph, const Vertex dest, const Edge edge, const T& data){
-      CommID destCommID = nameService.mapVertex(graph, dest);
+      CommID destCommID = nameService.locateVertex(graph, dest);
 	Context globalContext = communicator.getGlobalContext();
 	return communicator.asyncSend(destCommID, edge.id, globalContext, data);
     }
 
     template <typename T>
     void recv(Graph& graph, const Vertex src, const Edge edge, const T& data){
-      CommID srcCommID = nameService.mapVertex(graph, src);
+      CommID srcCommID = nameService.locateVertex(graph, src);
 	Context globalContext = communicator.getGlobalContext();
 	communicator.recv(srcCommID, edge.id, globalContext, data);
 
@@ -53,7 +53,7 @@ struct GraphCommunicator {
 
     template <typename T>
     void asyncRecv(Graph& graph, const Vertex src, const Edge edge, const T& data){
-      CommID srcCommID = nameService.mapVertex(graph, src);
+      CommID srcCommID = nameService.locateVertex(graph, src);
 	Context globalContext = communicator.getGlobalContext();
 	communicator.recv(srcCommID, edge.id, globalContext, data);
 
@@ -76,8 +76,8 @@ struct GraphCommunicator {
 	static T reduceTmp;
 	static T* rootRecvDataPtr;
 	static bool imRoot;
-	CommID rootCommID = nameService.mapVertex(graph, rootVertex);
-	CommID srcCommID  = nameService.mapVertex(graph, srcVertex);
+	CommID rootCommID = nameService.locateVertex(graph, rootVertex);
+	CommID srcCommID  = nameService.locateVertex(graph, srcVertex);
 	std::vector<Vertex> vertices = nameService.mapCommID(graph, srcCommID); // <== BUGGY gives not correct vertices of a Communicator
 
 	Context context = nameService.mapGraph(graph);
@@ -119,8 +119,8 @@ struct GraphCommunicator {
 	static T* rootRecvDataPtr;
 	static bool imRoot;
 
-	CommID srcCommID  = nameService.mapVertex(graph, srcVertex);
-	CommID rootCommID  = nameService.mapVertex(graph, rootVertex);
+	CommID srcCommID  = nameService.locateVertex(graph, srcVertex);
+	CommID rootCommID  = nameService.locateVertex(graph, rootVertex);
 	std::vector<Vertex> vertices = nameService.mapCommID(graph, srcCommID);
 	Context context = nameService.mapGraph(graph);
 
@@ -155,7 +155,7 @@ struct GraphCommunicator {
 	static std::vector<T> sendTmp;
 	static std::vector<std::vector<T>*> recvDataPtr;
 
-	CommID srcCommID  = nameService.mapVertex(graph, srcVertex);
+	CommID srcCommID  = nameService.locateVertex(graph, srcVertex);
 	std::vector<Vertex> vertices = nameService.mapCommID(graph, srcCommID);
 	Context context = nameService.mapGraph(graph);
 
@@ -184,8 +184,8 @@ struct GraphCommunicator {
 	static std::vector<T> sendDataPtr;
 	static bool imRoot;
 
-    	CommID srcCommID  = nameService.mapVertex(graph, srcVertex);
-    	CommID rootCommID  = nameService.mapVertex(graph, rootVertex);
+    	CommID srcCommID  = nameService.locateVertex(graph, srcVertex);
+    	CommID rootCommID  = nameService.locateVertex(graph, rootVertex);
     	std::vector<Vertex> vertices = nameService.mapCommID(graph, srcCommID);
     	Context context = nameService.mapGraph(graph);
 
