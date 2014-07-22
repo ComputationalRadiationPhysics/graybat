@@ -161,10 +161,11 @@ std::vector<EdgeDescriptor> generate2DMeshTopology(const unsigned height, const 
 
 template <typename T_Graph>
 void printVertexDistribution(const std::vector<Vertex>& vertices,const T_Graph& graph, CommID commID){
+    std::cout << "[" <<  commID << "] " << "Graph: " << graph.id << " " << "Vertices: ";
     for(Vertex v : vertices){
-	std::cout << "[" <<  commID << "] " << "Graph: "<< graph.id << " Vertex: " << v.id << std::endl;
+	std::cout << v.id << " ";
     }
-
+    std::cout << std::endl;
 
 }
 
@@ -225,22 +226,16 @@ void reduceVertexIDs(T_Communicator &communicator, T_Graph &graph, std::vector<t
 
     Vertex rootVertex = graph.getVertices().at(0);
     unsigned recvData = 0;
-    unsigned recvData1 = 0;
-    unsigned recvData2 = 0;
     std::vector<unsigned> sendData(1,0);
 
     for(Vertex vertex : myVertices){
     	sendData[0] = vertex.id;
     	communicator.reduce(rootVertex, vertex, graph, sendData, recvData);
-    	communicator.reduce(rootVertex, vertex, graph, sendData, recvData1);
-    	communicator.reduce(rootVertex, vertex, graph, sendData, recvData2);
     }
     
     for(Vertex vertex : myVertices){
     	if(vertex.id == rootVertex.id){
 	    std::cout << "Reduce graph " << graph.id << ": " << recvData << std::endl;
-	    std::cout << "Reduce graph " << graph.id << ": " << recvData1 << std::endl;
-	    std::cout << "Reduce graph " << graph.id << ": " << recvData2 << std::endl;
 
     	}
 
@@ -248,111 +243,121 @@ void reduceVertexIDs(T_Communicator &communicator, T_Graph &graph, std::vector<t
     
 }
 
-// TODO
-// throw exception when communicator not inside this context ?
+// Collective
 template<typename T_Communicator>
-typename T_Communicator::CommID randomCommID(T_Communicator &communicator, typename T_Communicator::Context context){
+unsigned randomNumber(T_Communicator &communicator, const Context &context){
+    srand (time(NULL) + context.getCommID());
+    unsigned ownRandom = rand();
+    unsigned random = 0;
 
-    size_t contextSize = context.size();
-    typename T_Communicator::CommID masterID  = context.getCommID();
     if(context.valid()){
-
-	srand (time(NULL) + masterID);
-	int random = rand();
-    
-	std::vector<int> sendData(1, random);
-	std::vector<int> recvData(contextSize, 0);
+	std::vector<int> sendData(1, ownRandom);
+	std::vector<int> recvData(context.size(), 0);
 
 	communicator.allGather(context, sendData, recvData);
 
 	for(unsigned i = 0; i < recvData.size(); ++i){
-	    if(recvData[i] > random){
-		masterID = i;
-		random = recvData[i];
-	    }
+	    random += recvData[i];
 	}
     }
-    return masterID;
+    return random;
 }
 
-template<typename T_Communicator, typename T_Graph>
-typename T_Graph::Vertex randomVertex( T_Communicator& communicator, T_Graph& graph, const std::vector<typename T_Graph::Vertex> vertices ){
-    typedef T_Graph                Graph;
-    typedef typename Graph::Vertex Vertex;
-    typedef typename Vertex::ID    VertexID;
+// Collective
+template<typename T_Communicator, typename T_NameService, typename T_Graph>
+typename T_Communicator::CommID randomHostCommID(T_Communicator &communicator, T_NameService &nameService, T_Graph &graph){
+
+    std::vector<CommID> commIDs = nameService.getGraphHostCommIDs(graph);
+    Context context = nameService.getGraphContext(graph);
+    unsigned random = randomNumber(communicator, context);
+    return commIDs.at(random % commIDs.size());
+}
+
+// template<typename T_Communicator, typename T_Graph>
+// typename T_Graph::Vertex randomVertex( T_Communicator& communicator, T_Graph& graph, const std::vector<typename T_Graph::Vertex> vertices ){
+//     typedef T_Graph                Graph;
+//     typedef typename Graph::Vertex Vertex;
+//     typedef typename Vertex::ID    VertexID;
     
-    VertexID vertexID  = 0;
-    unsigned myRandom = 0;
-    std::vector<unsigned> recvData;
+//     VertexID vertexID  = 0;
+//     unsigned myRandom = 0;
+//     std::vector<unsigned> recvData;
 
-    for(Vertex vertex : vertices){
-	srand(time(NULL) + vertex.id);
-	myRandom = rand();
-	communicator.allGather(vertex, graph, myRandom, recvData);
+//     for(Vertex vertex : vertices){
+// 	srand(time(NULL) + vertex.id);
+// 	myRandom = rand();
+// 	communicator.allGather(vertex, graph, myRandom, recvData);
 
-    }
+//     }
 
-    unsigned greatestRandom = 0;
+//     unsigned greatestRandom = 0;
 
-    for(VertexID i = 0; i < recvData.size(); ++i){
-	if(recvData[i] > greatestRandom){
-	    vertexID = i;
-	    greatestRandom = recvData[i];
-	}
-    }
+//     for(VertexID i = 0; i < recvData.size(); ++i){
+// 	if(recvData[i] > greatestRandom){
+// 	    vertexID = i;
+// 	    greatestRandom = recvData[i];
+// 	}
+//     }
 
 
-    return graph.getVertices().at(vertexID);  
-}
+//     return graph.getVertices().at(vertexID);  
+// }
 
 
 template<typename T_Communicator, typename T_Graph, typename T_NameService>
-void occupyRandomVertex(T_Communicator& communicator, T_Graph& myGraph, T_NameService& nameService, std::vector<typename T_Graph::Vertex>& myVertices, typename T_Communicator::CommID masterCommID){
+void occupyRandomVertex(T_Communicator& communicator, T_Graph& graph, T_NameService& nameService, std::vector<typename T_Graph::Vertex>& myVertices){
     typedef T_Graph Graph;
-    typedef typename Graph::Vertex Vertex;
-    typedef typename Vertex::ID    VertexID;
+    typedef typename Graph::Vertex          Vertex;
+    typedef typename Vertex::ID             VertexID;
+    typedef typename T_Communicator::CommID CommID;
 
-    Context context = nameService.mapGraph(myGraph);
+    CommID masterCommID = randomHostCommID(communicator, nameService, graph);
+    Context context = nameService.getGraphContext(graph);
+
+    if(nameService.getHostedVertices(graph, masterCommID).empty()){
+	std::cout << "The masterCommID does not host any vertices of this graph" << std::endl;
+	return;
+    }
+
     if(context.valid()){
-
-     	unsigned cid    = context.getCommID();
+     	CommID commID    = context.getCommID();
      	std::array<VertexID, 1> randomVertex{{0}};
 
      	bool haveVertex = false;
-     	if(cid == masterCommID){
-     	    randomVertex[0] = rand() % myGraph.getVertices().size();
-     	    
+     	if(commID == masterCommID){
+	    srand (time(NULL));
+     	    randomVertex[0] = rand() % graph.getVertices().size();
+
 	    communicator.broadcast(masterCommID, context, randomVertex);
 
-     	    // VertexID vertexID = randomVertex[0];
-     	    // Vertex vertex     = myGraph.getVertices().at(vertexID);
+	    VertexID vertexID = randomVertex[0];
+	    Vertex vertex     = graph.getVertices().at(vertexID);
 
-
-     	    // for(Vertex v : myVertices){
-     	    // 	if(v.id == vertex.id){
-     	    // 	    std::cout << "[" << masterCommID << "] " << "Allready have random vertex: " << vertex.id << std::endl;
-     	    // 	    haveVertex = true;
-     	    // 	}
-     	    // }
+     	    for(Vertex v : myVertices){
+     	    	if(v.id == vertex.id){
+     	    	    std::cout << "[" << masterCommID << "] " << "Allready have random vertex: " << vertex.id << std::endl;
+     	    	    haveVertex = true;
+     	    	}
+     	    }
 	
-     	    // if(!haveVertex){
-     	    // 	std::cout << "[" << masterCommID << "] " << "Occupy vertex: " << vertex.id << std::endl;
-     	    // 	myVertices.push_back(vertex);
-     	    // }
+     	    if(!haveVertex){
+     	    	std::cout << "[" << masterCommID << "] " << "Occupy vertex: " << vertex.id << std::endl;
+     	    	myVertices.push_back(vertex);
+     	    }
 
      	}
      	else {
 	    communicator.broadcast(masterCommID, context, randomVertex);
-     	    // VertexID vertexID = randomVertex[0];
-     	    // Vertex vertex     = myGraph.getVertices().at(vertexID);
+     	    VertexID vertexID = randomVertex[0];
+     	    Vertex vertex     = graph.getVertices().at(vertexID);
 
-     	    // for(auto it = myVertices.begin(); it != myVertices.end(); ++it){
-     	    // 	if(it->id == vertex.id){
-     	    // 	    myVertices.erase(it);
-     	    // 	    break;
-     	    // 	}
+     	     for(auto vertexIter = myVertices.begin(); vertexIter != myVertices.end();){
+     	     	if(vertexIter->id == vertex.id)
+     	     	    vertexIter = myVertices.erase(vertexIter);
+		else
+		    ++vertexIter;
 
-     	    // }
+     	     }
 
      	}
 
@@ -404,7 +409,7 @@ int main(){
     //std::vector<EdgeDescriptor> edges = generateFullyConnectedTopology(10, graphVertices);
     //std::vector<EdgeDescriptor> edges = generateStarTopology(10, graphVertices);
     //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(8, graphVertices);
-    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(2, 2, graphVertices);
+    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(4, 4, graphVertices);
     BGLGraph graph (edges, graphVertices); //graph.print();
 
 
@@ -423,11 +428,13 @@ int main(){
     /***************************************************************************
      * Create communicator
      ****************************************************************************/
-    MpiCommunicator communicator;
+    MpiCommunicator communicator; 
+    communicator.synchronize();
     CommID myCommID  = communicator.getGlobalContext().getCommID();
     unsigned commCount = communicator.getGlobalContext().size();
     NS nameService(graph, communicator);
     GC graphCommunicator(communicator, nameService);
+
 
 
     /***************************************************************************
@@ -438,10 +445,12 @@ int main(){
     std::vector<Vertex> myGraphVertices    = distributeVerticesEvenly(myCommID, commCount, graph);
     std::vector<Vertex> mySubGraphVertices = distributeVerticesEvenly(myCommID, commCount, subGraph);
 
-
-    // // Output vertex property
+    // Output vertex property
     printVertexDistribution(myGraphVertices, graph, myCommID);
     printVertexDistribution(mySubGraphVertices, subGraph, myCommID);
+
+    // Synchronize after output
+    communicator.synchronize();
 
     // Announce distribution on network
     nameService.announce(graph, myGraphVertices);
@@ -472,10 +481,12 @@ int main(){
     // of the subgraph context!
     // Need to recreate context first!
 
-    
-    // CommID masterCommID = 2; //randomCommID(communicator, nameService.mapGraph(subGraph));
-    // occupyRandomVertex(communicator, subGraph, nameService, mySubGraphVertices, masterCommID);
-    // nameService.announce(mySubGraphVertices);
+    if(!mySubGraphVertices.empty()){
+	occupyRandomVertex(communicator, subGraph, nameService, mySubGraphVertices);
+	printVertexDistribution(mySubGraphVertices, subGraph, myCommID);
+	nameService.announce(mySubGraphVertices);
+    }
+
     //nameService.announce(graph, subGraph);
 
 

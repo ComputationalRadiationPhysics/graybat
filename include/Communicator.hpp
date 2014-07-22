@@ -253,6 +253,17 @@ public:
      	CommunicationPolicy::synchronize(context);
     }
 
+    /**
+     * @brief Synchronizes all Communicators within the globalContext
+     *        in the programm execution (barrier).
+     *
+     * @see getGlobalContext()
+     *        
+     */
+    void synchronize(){
+     	CommunicationPolicy::synchronize(getGlobalContext());
+    }
+
 
     /***************************************************************************
      *

@@ -5,7 +5,7 @@
 /************************************************************************//**
  * @class NameService
  *
- * @brief A central instance to locate host the Communicator
+ * @brief A central instance to locate the host Communicator
  *        of vertices.
  *
  * @remark A Communicator can host several vertices.
@@ -58,6 +58,8 @@ struct NameService {
      *         be all Communicators in the network).
      *
      * @todo What happens if *vertices* is empty ?
+     *
+     * @todo What happens when there already exist an context for *graph* ?
      *
      * @param[in] graph  Its vertices will be announced
      * @param[in] vertices A set of vertices, that will be hosted by this Communicator
@@ -171,26 +173,37 @@ struct NameService {
 
     }
 
+    /**
+     * @brief Returns a set of all host Communicator CommIDs of the *graph*
+     *
+     */
+    std::vector<CommID> getGraphHostCommIDs(Graph& graph){
+	std::vector<Vertex> vertices = graph.getVertices();
+
+	std::set<CommID> commIDs;
+	for(Vertex vertex : vertices){
+	    commIDs.insert(locateVertex(graph, vertex));
+	}
+
+	return std::vector<CommID>(commIDs.begin(), commIDs.end());
+
+    }
+
 private:
 
     /**
-     * Creates a context from the given *subgraph* inherited from
-     * the context of the given graph.
+     * @brief Creates a context from the given *subgraph* inherited from
+     *        the context of the given graph.
      *
      * @param[in] graph is the supergraph of subGraph
      * @param[in] subGraph is a subgraph of graph
      *
      */
     void createGraphContext(Graph& graph, Graph& subGraph){
-	std::vector<Vertex> vertices = subGraph.getVertices();
-
-	std::set<CommID> commIDs;
-	for(Vertex vertex : vertices){
-	    commIDs.insert(locateVertex(subGraph, vertex));
-	}
+	std::vector<CommID> commIDs = getGraphHostCommIDs(subGraph);
 
 	Context oldContext = getGraphContext(graph);
-	Context newContext = communicator.createContext(std::vector<CommID>(commIDs.begin(), commIDs.end()), oldContext);
+	Context newContext = communicator.createContext(commIDs, oldContext);
 	if(newContext.valid()){
 	    contextMap[subGraph.id] = newContext;
 	}
@@ -198,26 +211,22 @@ private:
     }
 
     /**
-     * Creates a context for the the given graph inherited from
-     * the global context. After this step, vertices within
-     * this graph can do communication.
+     * @brief Creates a context for the the given graph inherited from
+     *        the global context. After this step, vertices within
+     *        this graph can do communication.
      *
-     * @param[in]
+     * @param[in] graph for which a new context from global context will be created.
      */
     void createGraphContext(Graph& graph){
-	std::vector<Vertex> vertices = graph.getVertices();
+	std::vector<CommID> commIDs = getGraphHostCommIDs(graph);
 
-	std::set<CommID> commID;
-	for(Vertex vertex : vertices){
-	    commID.insert(locateVertex(graph, vertex));
-	}
-	
 	Context oldContext = communicator.getGlobalContext();
-	Context newContext = communicator.createContext(std::vector<CommID>(commID.begin(), commID.end()), oldContext);
+	Context newContext = communicator.createContext(commIDs, oldContext);
 	
 	contextMap[graph.id] = newContext;
     
     }
+
 
 
 };
