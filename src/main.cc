@@ -480,22 +480,16 @@ int main(){
     // Because this communicator is not part
     // of the subgraph context!
     // Need to recreate context first!
-
     if(!mySubGraphVertices.empty()){
 	occupyRandomVertex(communicator, subGraph, nameService, mySubGraphVertices);
 	printVertexDistribution(mySubGraphVertices, subGraph, myCommID);
-	nameService.announce(mySubGraphVertices);
+	nameService.announce(subGraph, mySubGraphVertices);
     }
 
-    //nameService.announce(graph, subGraph);
-
-
-    
-    // if(!mySubGraphVertices.empty()){    
-    // 	// Several communication schemas
-    //  	reduceVertexIDs(myGraphCommunicator, subGraph, mySubGraphVertices);
-    // // 	//nearestNeighborExchange(myGraphCommunicator, subGraph, mySubGraphVertices);
-    // }
+    if(!mySubGraphVertices.empty()){    
+	// reduceVertexIDs(myGraphCommunicator, subGraph, mySubGraphVertices);
+	nearestNeighborExchange(graphCommunicator, subGraph, mySubGraphVertices);
+    }
 
 
 }
