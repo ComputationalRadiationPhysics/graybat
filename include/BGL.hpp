@@ -55,11 +55,14 @@ namespace GraphPolicy {
 				      boost::property<boost::vertex_index_t, size_t, VertexProperty>,
 				      boost::property<boost::edge_index_t, size_t, EdgeProperty>> GraphTmp;
 
+
     protected:
 	typedef boost::subgraph<GraphTmp> Graph;
+	template <typename T> using               Container = std::vector<T>;
+
+    public:
 	typedef typename Graph::vertex_descriptor Vertex;
 	typedef typename Graph::edge_descriptor   Edge;
-	template <typename T> using               Container = std::vector<T>;
 
     private:
 	typedef typename boost::graph_traits<Graph>::in_edge_iterator   InEdgeIter;
@@ -79,7 +82,7 @@ namespace GraphPolicy {
 	 *
 	 */
 	BGL(Graph& subGraph) : graph(&subGraph){
-	    writeGraph("subgraph.dot");
+	    //writeGraph("subgraph.dot");
 	}
 	
 
@@ -113,7 +116,6 @@ namespace GraphPolicy {
 		setVertexProperty(boost::vertex(vertexProperties.at(i).id, (*graph)), vertexProperties.at(i));
 	    }
 
-	    writeGraph("graph.dot");
 	}
 
 	~BGL(){
@@ -211,53 +213,56 @@ namespace GraphPolicy {
 	    return (*graph).global_to_local(vertex);
 	}
 
-
-    private:
-
-	template<class Graph>
-	struct vertexIDWriter{
-	    vertexIDWriter(Graph &graph) : graph(graph) {}
-	    void operator()(std::ostream& out, const Vertex& v) const {
-		out << "[label=\"" << graph.getVertexProperty(v).id << "\"]";
-	    }
-	private:
-	    Graph& graph;
-	};
-
-
-	template<class Graph>
-	struct edgeIDWriter{
-	    edgeIDWriter(Graph &graph) : graph(graph) {}
-	    void operator()(std::ostream& out, const Edge& e) const {
-		out << "[label=\"" << graph.getEdgeProperty(e).id << "\"]";
-	    }
-	private:
-	    Graph& graph;
-	};
-
-	struct graphWriter {
-	    void operator()(std::ostream& out) const {
-		out << "graph [bgcolor=white]" << std::endl;
-		out << "node [shape=circle color=black]" << std::endl;
-		out << "edge [color=black]" << std::endl;
-	    }
-	};
-
 	/**
 	 * @brief Test of graph visualization with the BGL and graphviz.
 	 *        A file graph.dot will be written to the root directory
 	 *        and can be transformed to a png etc. by :
 	 *        dot graph.dot -Tpng > graph.png
 	 */
-	void writeGraph(std::string fileName){
+	template<typename VertexWriter, typename EdgeWriter, typename GraphWriter>
+	void writeGraph(VertexWriter vertexWriter, EdgeWriter edgeWriter, GraphWriter graphWriter, std::string fileName){
 	    std::fstream fileStream(fileName, std::fstream::out);
 
 	    boost::write_graphviz(fileStream, 
 				  (*graph), 
-				  vertexIDWriter<BGL<VertexProperty, EdgeProperty>>(*this), 
-				  edgeIDWriter<BGL<VertexProperty, EdgeProperty>>(*this), 
-				  graphWriter());
+				  vertexWriter,
+				  edgeWriter,
+				  graphWriter);
 	}
+
+
+    private:
+
+	// template<class Graph>
+	// struct vertexIDWriter{
+	//     vertexIDWriter(Graph &graph) : graph(graph) {}
+	//     void operator()(std::ostream& out, const Vertex& v) const {
+	// 	out << "[label=\"" << graph.getVertexProperty(v).id << "\"]";
+	//     }
+	// private:
+	//     Graph& graph;
+	// };
+
+
+	// template<class Graph>
+	// struct edgeIDWriter{
+	//     edgeIDWriter(Graph &graph) : graph(graph) {}
+	//     void operator()(std::ostream& out, const Edge& e) const {
+	// 	out << "[label=\"" << graph.getEdgeProperty(e).id << "\"]";
+	//     }
+	// private:
+	//     Graph& graph;
+	// };
+
+	// struct graphWriter {
+	//     void operator()(std::ostream& out) const {
+	// 	out << "ratio=1." << std::endl;
+	// 	out << "graph [bgcolor=white]" << std::endl;
+	// 	out << "node [shape=circle color=black]" << std::endl;
+	// 	out << "edge [color=black]" << std::endl;
+	//     }
+	// };
+
 
 
 

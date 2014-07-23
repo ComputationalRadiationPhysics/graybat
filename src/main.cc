@@ -393,6 +393,46 @@ std::vector<Vertex> distributeVerticesEvenly(const unsigned processID, const uns
     return myVertices;
 }
 
+/*******************************************************************************
+ *
+ * VISUALIZATION OF GRAPH
+ *
+ *******************************************************************************/
+std::vector<std::string> colors {"red", "green", "cyan", "blue", "magenta", "brown", "orange", "yellow"};
+
+template<class Graph, class NameService>
+struct vertexIDWriter{
+    vertexIDWriter(Graph &graph, NameService &nameService) : graph(graph), nameService(nameService) {}
+    void operator()(std::ostream& out, const BGL::Vertex& v) const {
+	unsigned i = (unsigned) v;
+	CommID commID= nameService.locateVertex(graph, graph.getVertices().at(i));
+	out << "[color =" << colors[commID % colors.size()] << "]";
+	out << "[label=\"" << graph.getVertices().at(i).id << "\"]";
+    }
+private:
+    Graph& graph;
+    NameService& nameService;
+};
+
+template<class Graph>
+struct edgeIDWriter{
+    edgeIDWriter(Graph &graph) : graph(graph) {}
+    void operator()(std::ostream& out, const BGL::Edge& e) const {
+	//unsigned i = (unsigned) e;
+	//out << "[label=\""<<  << " \"]";
+
+    }
+private:
+    Graph& graph;
+};
+
+struct graphWriter {
+    void operator()(std::ostream& out) const {
+	out << "graph [bgcolor=white]" << std::endl;
+	out << "node [shape=circle color=black]" << std::endl;
+	out << "edge [color=black]" << std::endl;
+    }
+};
 
 
 /*******************************************************************************
@@ -408,9 +448,10 @@ int main(){
     std::vector<Vertex> graphVertices;
     //std::vector<EdgeDescriptor> edges = generateFullyConnectedTopology(10, graphVertices);
     //std::vector<EdgeDescriptor> edges = generateStarTopology(10, graphVertices);
-    std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(3, graphVertices);
-    //std::vector<EdgeDescriptor> edges = generate2DMeshTopology(2, 2, graphVertices);
+    //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(4, graphVertices);
+    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(10, 10, graphVertices);
     BGLGraph graph (edges, graphVertices); //graph.print();
+
 
 
 
@@ -456,6 +497,11 @@ int main(){
     nameService.announce(graph, myGraphVertices);
     nameService.announce(subGraph, mySubGraphVertices);
 
+    // Write graph to dot file
+    if(!myGraphVertices.empty()){
+	graph.writeGraph(vertexIDWriter<BGLGraph, NS>(graph, nameService), edgeIDWriter<BGLGraph>(graph), graphWriter(), std::string("graph.dot"));
+    }
+
     //Communication on graph level
     if(!myGraphVertices.empty()){
 	nearestNeighborExchange(graphCommunicator, graph, myGraphVertices); 
@@ -480,16 +526,16 @@ int main(){
     // Because this communicator is not part
     // of the subgraph context!
     // Need to recreate context first!
-    if(!mySubGraphVertices.empty()){
-	occupyRandomVertex(communicator, subGraph, nameService, mySubGraphVertices);
-	printVertexDistribution(mySubGraphVertices, subGraph, myCommID);
-	nameService.announce(subGraph, mySubGraphVertices);
-    }
+    // if(!mySubGraphVertices.empty()){
+    // 	occupyRandomVertex(communicator, subGraph, nameService, mySubGraphVertices);
+    // 	printVertexDistribution(mySubGraphVertices, subGraph, myCommID);
+    // 	nameService.announce(subGraph, mySubGraphVertices);
+    // }
 
-    if(!mySubGraphVertices.empty()){    
+    //if(!mySubGraphVertices.empty()){    
 	// reduceVertexIDs(myGraphCommunicator, subGraph, mySubGraphVertices);
-	nearestNeighborExchange(graphCommunicator, subGraph, mySubGraphVertices);
-    }
+	//nearestNeighborExchange(graphCommunicator, subGraph, mySubGraphVertices);
+    //}
 
 
 }

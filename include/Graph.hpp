@@ -207,7 +207,13 @@ public:
     VertexID getLocalID(Vertex vertex){
 	return GraphPolicy::getLocalID(vertex.id);
     }
-	      
+	    
+    
+    template<typename VertexWriter, typename EdgeWriter, typename GraphWriter>
+    void writeGraph(VertexWriter vertexWriter, EdgeWriter edgeWriter, GraphWriter graphWriter, std::string fileName){
+	GraphPolicy::writeGraph(vertexWriter, edgeWriter, graphWriter, fileName);
+
+    }
 private:
     std::vector<Vertex> getVerticesProperties(Container<GraphPolicyVertex> vertices){
 	std::vector<Vertex> properties;
