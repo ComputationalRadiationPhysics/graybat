@@ -448,8 +448,8 @@ int main(){
     std::vector<Vertex> graphVertices;
     //std::vector<EdgeDescriptor> edges = generateFullyConnectedTopology(10, graphVertices);
     //std::vector<EdgeDescriptor> edges = generateStarTopology(10, graphVertices);
-    //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(4, graphVertices);
-    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(2, 4, graphVertices);
+    std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(4, graphVertices);
+    //std::vector<EdgeDescriptor> edges = generate2DMeshTopology(2, 4, graphVertices);
     BGLGraph graph (edges, graphVertices); //graph.print();
 
 
@@ -505,9 +505,9 @@ int main(){
 
     // BUG
     // does not work !!!
-    // if(!mySubGraphVertices.empty()){
-    // 	graph.writeGraph(vertexIDWriter<BGLGraph, NS>(subGraph, nameService), edgeIDWriter<BGLGraph>(graph), graphWriter(), std::string("graph.dot"));
-    // }
+    if(!mySubGraphVertices.empty()){
+    	subGraph.writeGraph(vertexIDWriter<BGLGraph, NS>(subGraph, nameService), edgeIDWriter<BGLGraph>(subGraph), graphWriter(), std::string("subgraph.dot"));
+    }
 
 
     //Communication on graph level
