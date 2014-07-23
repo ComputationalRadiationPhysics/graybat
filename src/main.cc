@@ -398,7 +398,7 @@ std::vector<Vertex> distributeVerticesEvenly(const unsigned processID, const uns
  * VISUALIZATION OF GRAPH
  *
  *******************************************************************************/
-std::vector<std::string> colors {"red", "green", "cyan", "blue", "magenta", "brown", "orange", "yellow"};
+std::vector<std::string> colors {"red", "green", "cyan", "skyblue1", "magenta", "beige", "orange", "yellow", "lightgray", "lightcyan", "moccasin"};
 
 template<class Graph, class NameService>
 struct vertexIDWriter{
@@ -406,7 +406,7 @@ struct vertexIDWriter{
     void operator()(std::ostream& out, const BGL::Vertex& v) const {
 	unsigned i = (unsigned) v;
 	CommID commID= nameService.locateVertex(graph, graph.getVertices().at(i));
-	out << "[color =" << colors[commID % colors.size()] << "]";
+	out << "[color=black fillcolor=" << colors[commID % colors.size()] << " fontsize=30 style=filled]";
 	out << "[label=\"" << graph.getVertices().at(i).id << "\"]";
     }
 private:
@@ -418,8 +418,6 @@ template<class Graph>
 struct edgeIDWriter{
     edgeIDWriter(Graph &graph) : graph(graph) {}
     void operator()(std::ostream& out, const BGL::Edge& e) const {
-	//unsigned i = (unsigned) e;
-	//out << "[label=\""<<  << " \"]";
 
     }
 private:
@@ -428,6 +426,7 @@ private:
 
 struct graphWriter {
     void operator()(std::ostream& out) const {
+	out << "concentrate=true" << std::endl;
 	out << "graph [bgcolor=white]" << std::endl;
 	out << "node [shape=circle color=black]" << std::endl;
 	out << "edge [color=black]" << std::endl;
