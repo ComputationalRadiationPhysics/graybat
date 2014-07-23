@@ -2,8 +2,11 @@
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/subgraph.hpp>
+#include <boost/graph/graphviz.hpp>
 #include <tuple>
 #include <vector>
+#include <string>
+#include <fstream> /* std::fstream */
 
 #include <types.hpp>
 
@@ -76,7 +79,7 @@ namespace GraphPolicy {
 	 *
 	 */
 	BGL(Graph& subGraph) : graph(&subGraph){
-	     
+	    writeGraph("subgraph.dot");
 	}
 	
 
@@ -110,6 +113,7 @@ namespace GraphPolicy {
 		setVertexProperty(boost::vertex(vertexProperties.at(i).id, (*graph)), vertexProperties.at(i));
 	    }
 
+	    writeGraph("graph.dot");
 	}
 
 	~BGL(){
@@ -209,6 +213,54 @@ namespace GraphPolicy {
 
 
     private:
+
+	template<class Graph>
+	struct vertexIDWriter{
+	    vertexIDWriter(Graph &graph) : graph(graph) {}
+	    void operator()(std::ostream& out, const Vertex& v) const {
+		out << "[label=\"" << graph.getVertexProperty(v).id << "\"]";
+	    }
+	private:
+	    Graph& graph;
+	};
+
+
+	template<class Graph>
+	struct edgeIDWriter{
+	    edgeIDWriter(Graph &graph) : graph(graph) {}
+	    void operator()(std::ostream& out, const Edge& e) const {
+		out << "[label=\"" << graph.getEdgeProperty(e).id << "\"]";
+	    }
+	private:
+	    Graph& graph;
+	};
+
+	struct graphWriter {
+	    void operator()(std::ostream& out) const {
+		out << "graph [bgcolor=white]" << std::endl;
+		out << "node [shape=circle color=black]" << std::endl;
+		out << "edge [color=black]" << std::endl;
+	    }
+	};
+
+	/**
+	 * @brief Test of graph visualization with the BGL and graphviz.
+	 *        A file graph.dot will be written to the root directory
+	 *        and can be transformed to a png etc. by :
+	 *        dot graph.dot -Tpng > graph.png
+	 */
+	void writeGraph(std::string fileName){
+	    std::fstream fileStream(fileName, std::fstream::out);
+
+	    boost::write_graphviz(fileStream, 
+				  (*graph), 
+				  vertexIDWriter<BGL<VertexProperty, EdgeProperty>>(*this), 
+				  edgeIDWriter<BGL<VertexProperty, EdgeProperty>>(*this), 
+				  graphWriter());
+	}
+
+
+
 	void setVertexProperty(Vertex vertex, VertexProperty value){
 	    (*graph)[vertex] = value;
 	}

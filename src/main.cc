@@ -408,8 +408,8 @@ int main(){
     std::vector<Vertex> graphVertices;
     //std::vector<EdgeDescriptor> edges = generateFullyConnectedTopology(10, graphVertices);
     //std::vector<EdgeDescriptor> edges = generateStarTopology(10, graphVertices);
-    //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(8, graphVertices);
-    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(4, 4, graphVertices);
+    std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(3, graphVertices);
+    //std::vector<EdgeDescriptor> edges = generate2DMeshTopology(2, 2, graphVertices);
     BGLGraph graph (edges, graphVertices); //graph.print();
 
 
