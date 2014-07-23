@@ -358,7 +358,7 @@ namespace CommunicationPolicy {
 	    	allGather(&uri, 1, otherUris, newContext);
 
 	    	for(unsigned i = 0; i < newContext.size(); ++i){
-	    		uriMap[newContext.getContextID()][i] =  otherUris[i];
+		    uriMap[newContext.getContextID()][i] =  otherUris[i];
 	    	}
 	    	return newContext;
 

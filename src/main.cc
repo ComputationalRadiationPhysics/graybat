@@ -311,7 +311,7 @@ void occupyRandomVertex(T_Communicator& communicator, T_Graph& graph, T_NameServ
     typedef typename Vertex::ID             VertexID;
     typedef typename T_Communicator::CommID CommID;
 
-    CommID masterCommID = randomHostCommID(communicator, nameService, graph);
+    CommID masterCommID = 3;//randomHostCommID(communicator, nameService, graph);
     Context context = nameService.getGraphContext(graph);
 
     if(nameService.getHostedVertices(graph, masterCommID).empty()){
@@ -326,7 +326,7 @@ void occupyRandomVertex(T_Communicator& communicator, T_Graph& graph, T_NameServ
      	bool haveVertex = false;
      	if(commID == masterCommID){
 	    srand (time(NULL));
-     	    randomVertex[0] = rand() % graph.getVertices().size();
+     	    randomVertex[0] = 1;//rand() % graph.getVertices().size();
 
 	    communicator.broadcast(masterCommID, context, randomVertex);
 
@@ -449,7 +449,7 @@ int main(){
     //std::vector<EdgeDescriptor> edges = generateFullyConnectedTopology(10, graphVertices);
     //std::vector<EdgeDescriptor> edges = generateStarTopology(10, graphVertices);
     //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(4, graphVertices);
-    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(10, 10, graphVertices);
+    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(2, 4, graphVertices);
     BGLGraph graph (edges, graphVertices); //graph.print();
 
 
@@ -502,6 +502,14 @@ int main(){
 	graph.writeGraph(vertexIDWriter<BGLGraph, NS>(graph, nameService), edgeIDWriter<BGLGraph>(graph), graphWriter(), std::string("graph.dot"));
     }
 
+
+    // BUG
+    // does not work !!!
+    // if(!mySubGraphVertices.empty()){
+    // 	graph.writeGraph(vertexIDWriter<BGLGraph, NS>(subGraph, nameService), edgeIDWriter<BGLGraph>(graph), graphWriter(), std::string("graph.dot"));
+    // }
+
+
     //Communication on graph level
     if(!myGraphVertices.empty()){
 	nearestNeighborExchange(graphCommunicator, graph, myGraphVertices); 
@@ -526,16 +534,16 @@ int main(){
     // Because this communicator is not part
     // of the subgraph context!
     // Need to recreate context first!
-    // if(!mySubGraphVertices.empty()){
-    // 	occupyRandomVertex(communicator, subGraph, nameService, mySubGraphVertices);
-    // 	printVertexDistribution(mySubGraphVertices, subGraph, myCommID);
-    // 	nameService.announce(subGraph, mySubGraphVertices);
-    // }
+    if(!mySubGraphVertices.empty()){
+    	occupyRandomVertex(communicator, subGraph, nameService, mySubGraphVertices);
+    	printVertexDistribution(mySubGraphVertices, subGraph, myCommID);
+    	nameService.announce2(subGraph, mySubGraphVertices); // <== Leads to some problem with context
+    }
 
-    //if(!mySubGraphVertices.empty()){    
-	// reduceVertexIDs(myGraphCommunicator, subGraph, mySubGraphVertices);
-	//nearestNeighborExchange(graphCommunicator, subGraph, mySubGraphVertices);
-    //}
+    if(!mySubGraphVertices.empty()){    
+	//reduceVertexIDs(myGraphCommunicator, subGraph, mySubGraphVertices);
+	nearestNeighborExchange(graphCommunicator, subGraph, mySubGraphVertices); // <== Leads finally to exception map::at in MPI.hpp asyncSend
+    }
 
 
 }

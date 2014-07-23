@@ -73,7 +73,7 @@ struct GraphCommunicator {
     Event asyncSend(Graph& graph, const Vertex destVertex, const Edge edge, const T& data){
       CommID destCommID = nameService.locateVertex(graph, destVertex);
       Context context = nameService.getGraphContext(graph);
-      return communicator.asyncSend(destCommID, edge.id, context, data);
+       return communicator.asyncSend(destCommID, edge.id, context, data);
     }
 
     /**
