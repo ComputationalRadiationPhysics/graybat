@@ -33,7 +33,8 @@ endif(CMAKE_COMPILER_IS_GNUCXX)
 ###############################################################################
 # Build executables
 ###############################################################################
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include 
+		   ${CMAKE_CURRENT_SOURCE_DIR}/include/dout/include )
 add_executable(Main src/main.cc)
 
 # add the libraries (Boost...) to this executable

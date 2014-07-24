@@ -5,6 +5,7 @@
 #include <GraphCommunicator.hpp>
 #include <MPI.hpp>
 #include <NameService.hpp>
+#include <dout.hpp>
 
 #include <iostream> /* cout */
 #include <tuple>    /* pair */
@@ -418,7 +419,7 @@ template<class Graph>
 struct edgeIDWriter{
     edgeIDWriter(Graph &graph) : graph(graph) {}
     void operator()(std::ostream& out, const BGL::Edge& e) const {
-
+	out << e;
     }
 private:
     Graph& graph;
@@ -440,7 +441,6 @@ struct graphWriter {
  *
  *******************************************************************************/
 int main(){
-
     /***************************************************************************
      * Create graph
      ****************************************************************************/
@@ -536,12 +536,12 @@ int main(){
     if(!mySubGraphVertices.empty()){
     	occupyRandomVertex(communicator, subGraph, nameService, mySubGraphVertices);
     	printVertexDistribution(mySubGraphVertices, subGraph, myCommID);
-    	nameService.announce2(subGraph, mySubGraphVertices); // <== Leads to some problem with context
+    	nameService.announce2(subGraph, mySubGraphVertices);
     }
 
     if(!mySubGraphVertices.empty()){    
 	//reduceVertexIDs(myGraphCommunicator, subGraph, mySubGraphVertices);
-	nearestNeighborExchange(graphCommunicator, subGraph, mySubGraphVertices); // <== Leads finally to exception map::at in MPI.hpp asyncSend
+	nearestNeighborExchange(graphCommunicator, subGraph, mySubGraphVertices);
     }
 
 
