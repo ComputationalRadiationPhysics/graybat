@@ -26,8 +26,6 @@ struct GraphCommunicator {
     typedef typename Communicator::Context          Context;
     typedef typename Communicator::CommID           CommID;
     typedef typename Communicator::Event            Event;
-    typedef typename Communicator::BinaryOperation  BinaryOperation;
-    typedef typename Communicator::BinaryOperations BinaryOperations;
 
     typedef T_NameService  NameService;
     
@@ -153,6 +151,16 @@ struct GraphCommunicator {
     std::mutex mtx;
 
 
+    // template<typename T>
+    // struct sum : public std::binary_function<T, T, T>
+    // {
+    // 	/** @returns the sum of x and y. */
+    // 	const T operator()(const T& x, const T& y) const
+    // 	{
+    // 	    return x + y;
+    // 	}
+    // };
+
     template <typename T>
     void reduce(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, const std::vector<T> sendData, T& recvData){
 	static std::map<std::string, Reduce<T>> reduces;
@@ -181,7 +189,7 @@ struct GraphCommunicator {
 	// Finally start reduction
 	if(reduces[reduceID].count == vertices.size()){
 	    T recvDataCollctive;
-	    communicator.reduce(rootCommID, context, BinaryOperations::SUM, std::vector<T>(1 , reduces[reduceID].reduce), recvDataCollctive);
+	    communicator.reduce(rootCommID, context, std::plus<T>(), std::vector<T>(1 , reduces[reduceID].reduce), recvDataCollctive);
 
 	    if(reduces[reduceID].imRoot){
 		*(reduces[reduceID].rootRecvData) = recvDataCollctive;

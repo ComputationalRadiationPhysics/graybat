@@ -5,12 +5,54 @@
 #include <map>          /* std::map */
 #include <exception>    /* std::exception */
 #include <sstream>      /* std::stringstream */
+#include <algorithm>    /* std::transform */
 #include <mpi.h>        /* MPI_* */
 
 
 
 namespace CommunicationPolicy {
 
+    /**************************
+     * Helper class to create MPI Operation
+     **************************/
+    // TODO 
+    // is it possible to get rid of this static shit ?
+    template<typename T, typename Op>
+    class userOperation
+    {
+    public:
+	explicit userOperation(Op& op){
+	    bool isCommutative = true;
+	    MPI_Op_create(&userOperation<T, Op>::perform, isCommutative, &_mpiOp);
+	    _op = &op;
+	}
+
+	~userOperation(){
+	    MPI_Op_free(&_mpiOp);
+	}
+
+	MPI_Op& getMpiOp(){
+	    return _mpiOp;
+	}
+
+	static void perform(void* vinvec, void* voutvec, int* plen, MPI_Datatype*)
+	{
+	    T* invec = static_cast<T*>(vinvec);
+	    T* outvec = static_cast<T*>(voutvec);
+	    std::transform(invec, invec + *plen, outvec, outvec, *_op);
+	}
+
+    private:
+	MPI_Op _mpiOp;
+	static Op* _op;
+
+    };
+
+
+    template<typename T, typename Op> Op* userOperation<T, Op>::_op = 0;
+
+
+    // Traits for typeconversion to MPI Types
     template<typename T>
     struct MPIDatatypes{
 	static constexpr MPI_Datatype type = MPI_CHAR;
@@ -40,14 +82,12 @@ namespace CommunicationPolicy {
     // TODO
     // Remove C like interface
     // not usefull for anyone -.-
+    // move Context and Event out of this class
+    // and use templates instead
     class MPI{
     protected:
 	typedef unsigned ContextID;
 	typedef unsigned CommID;
-	// TODO
-	// replace MPI binary operation
-	// by more generic one
-	typedef MPI_Op   BinaryOperation;
 
 	/**************************
 	 * Inner Context class
@@ -130,12 +170,6 @@ namespace CommunicationPolicy {
 	std::map<ContextID, MPI_Comm>               contextMap;
 
     protected:
-	struct BinaryOperations {
-	    static constexpr BinaryOperation MAX  = MPI_MAX;
-	    static constexpr BinaryOperation MIN  = MPI_MIN;
-	    static constexpr BinaryOperation SUM  = MPI_SUM;
-	    static constexpr BinaryOperation PROD = MPI_PROD;
-	};
 
 	// Member
 	Context initialContext;
@@ -187,15 +221,18 @@ namespace CommunicationPolicy {
 	 * COLLECTIVE OPERATIONS
 	 *
 	 **************************************************************************/ 
-	template <typename T>
-	void reduce(const T* sendData, const T* recvData, const size_t count, BinaryOperation op, const CommID rootCommID, const Context context){
+
+	template <typename T, typename Op>
+	void reduce(const T* sendData, const T* recvData, const size_t count, Op op, const CommID rootCommID, const Context context){
+	    userOperation<T, Op> mpiOp(op);
 	    Uri rootUri = getCommIDUri(context, rootCommID);
-	    MPI_Reduce(const_cast<T*>(sendData), const_cast<T*>(recvData), count, MPIDatatypes<T>::type, op , rootUri, contextMap[context.id]);
+	    MPI_Reduce(const_cast<T*>(sendData), const_cast<T*>(recvData), count, MPIDatatypes<T>::type, mpiOp.getMpiOp(), rootUri, contextMap[context.id]);
 	}
 
-	template <typename T>
-	void allReduce(const T* sendData, const T* recvData, const size_t count, BinaryOperation op, const Context context){
-	    MPI_Allreduce(const_cast<T*>(sendData), const_cast<T*>(recvData), count, MPIDatatypes<T>::type, op , contextMap[context.id]);
+	template <typename T, typename Op>
+	void allReduce(const T* sendData, const T* recvData, const size_t count, Op op, const Context context){
+	    userOperation<T, Op> mpiOp(op);
+	    MPI_Allreduce(const_cast<T*>(sendData), const_cast<T*>(recvData), count, MPIDatatypes<T>::type, mpiOp.getMpiOp() , contextMap[context.id]);
 
 	}
 
@@ -410,6 +447,5 @@ namespace CommunicationPolicy {
 	}
 
     };
-
 
 } // namespace CommunicationPolicy

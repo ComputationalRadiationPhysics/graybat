@@ -14,9 +14,6 @@
 #include <math.h>   /* ceil */
 #include <time.h>   /* time */
 
-#define FALSE 0
-#define TRUE  1
-
 /*******************************************************************************
  *
  * CONFIGURATION
@@ -36,7 +33,6 @@ typedef typename BGLGraph::EdgeDescriptor              EdgeDescriptor;
 typedef CommunicationPolicy::MPI                   Mpi;
 typedef Communicator<Mpi>                          MpiCommunicator;
 typedef typename MpiCommunicator::Context          Context;
-typedef typename MpiCommunicator::BinaryOperations BinaryOperations;
 typedef typename MpiCommunicator::Event            Event;
 typedef typename MpiCommunicator::CommID           CommID;
 
@@ -447,8 +443,8 @@ int main(){
     std::vector<Vertex> graphVertices;
     //std::vector<EdgeDescriptor> edges = generateFullyConnectedTopology(10, graphVertices);
     //std::vector<EdgeDescriptor> edges = generateStarTopology(10, graphVertices);
-    std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(4, graphVertices);
-    //std::vector<EdgeDescriptor> edges = generate2DMeshTopology(2, 4, graphVertices);
+    //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(4, graphVertices);
+    std::vector<EdgeDescriptor> edges = generate2DMeshTopology(2, 2, graphVertices);
     BGLGraph graph (edges, graphVertices); //graph.print();
 
 

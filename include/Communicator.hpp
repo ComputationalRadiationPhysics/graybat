@@ -29,9 +29,7 @@ private:
     typedef unsigned                                       Tag;                                            
 
 public:
-    typedef typename CommunicationPolicy::BinaryOperation   BinaryOperation;
     typedef typename CommunicationPolicy::Event             Event;
-    typedef typename CommunicationPolicy::BinaryOperations  BinaryOperations;
     typedef typename CommunicationPolicy::Context           Context;
     typedef typename CommunicationPolicy::ContextID         ContextID;
     typedef unsigned                                        CommID;
@@ -193,8 +191,6 @@ public:
      * @brief Carry out a reduction with BinaryOperation *op* on all *sendData* elements from all Communicators
      *        whithin the *context*. The result will be received by the Communicator with *rootCommID*.
      *        
-     * @todo BinaryOperation is just a set of operations dictated by the CommunicationPolicy, but
-     *       it should be some free defineable binary functor.
      *
      * @param[in] rootCommID Communicator that will receive the result of reduction
      * @param[in] context    Set of Communicators that 
@@ -203,8 +199,8 @@ public:
      * @param[out] recvData  Reduced sendData that will be received by Communicator with *rootCommID*
      *
      */
-    template <typename T>
-    void reduce(const CommID rootCommID, const Context context, const BinaryOperation op, const std::vector<T> sendData, const T& recvData){
+    template <typename T, typename Op>
+    void reduce(const CommID rootCommID, const Context context, const Op op, const std::vector<T> sendData, const T& recvData){
      	CommunicationPolicy::reduce(sendData.data(), &recvData, sendData.size(), op, rootCommID, context);
     }
 
@@ -212,17 +208,14 @@ public:
      * @brief Carry out a reduction with BinaryOperation *op* on all *sendData* elements from all Communicators
      *        whithin the *context*. The result will be received by all Communicators.
      *        
-     * @todo BinaryOperation is just a set of operations dictated by the CommunicationPolicy, but
-     *       it should be some free defineable binary functor.
-     *
      * @param[in] context    Set of Communicators that 
      * @param[in] op         BinaryOperation that should be used for reduction
      * @param[in] sendData   Data that every Communicator contributes to the reduction
      * @param[out] recvData  Reduced sendData that will be received by all Communicators.
      *
      */
-    template <typename T>
-    void allReduce(const Context context, const BinaryOperation op, const T& sendData, T& recvData){
+    template <typename T, typename Op>
+    void allReduce(const Context context, const Op op, const T& sendData, T& recvData){
 	CommunicationPolicy::allReduce(sendData.data(), recvData.data(), sendData.size(), op, context);
     }
 

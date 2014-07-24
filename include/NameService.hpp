@@ -2,6 +2,8 @@
 #include <map> /* map */
 #include <set> /* set */
 
+#include <binaryOperation.hpp> /* op::maximum */
+
 /************************************************************************//**
  * @class NameService
  *
@@ -24,7 +26,6 @@ struct NameService {
     typedef typename Graph::GraphID          GraphID;
     typedef typename Communicator::Context   Context;
     typedef typename Communicator::ContextID ContextID;
-    typedef typename Communicator::BinaryOperations BinaryOperations;
 
     // Maps
     std::map<GraphID, std::map<VertexID, CommID> > commMap;
@@ -83,7 +84,7 @@ struct NameService {
 	    //Each process announces which vertices it manages
 	    std::array<unsigned, 1> myVerticesCount {{(unsigned) vertices.size()}};
 	    std::array<unsigned, 1> maxVerticesCount  {{0}};
-	    communicator.allReduce(oldContext, BinaryOperations::MAX, myVerticesCount, maxVerticesCount);
+	    communicator.allReduce(oldContext, op::maximum<unsigned>(), myVerticesCount, maxVerticesCount);
 	
 	    std::vector<std::vector<Vertex> > newVertexMap (oldContext.size(), std::vector<Vertex>());
 	    for(unsigned i = 0; i < maxVerticesCount[0]; ++i){
@@ -174,7 +175,7 @@ struct NameService {
 		//Each process announces which vertices it manages
 		std::array<unsigned, 1> myVerticesCount {{(unsigned) vertices.size()}};
 		std::array<unsigned, 1> maxVerticesCount  {{0}};
-		communicator.allReduce(newContext, BinaryOperations::MAX, myVerticesCount, maxVerticesCount);
+		communicator.allReduce(newContext, op::maximum<unsigned>(), myVerticesCount, maxVerticesCount);
 
 		std::vector<std::vector<Vertex> > newVertexMap (newContext.size(), std::vector<Vertex>());
 		for(unsigned i = 0; i < maxVerticesCount[0]; ++i){
