@@ -3,7 +3,6 @@
 #include <utility>
 #include <map>
 #include <utility>
-#include <functional>
 #include <array>      /* array */
 #include <assert.h>   /* assert */
 

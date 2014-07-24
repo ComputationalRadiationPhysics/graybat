@@ -7,12 +7,13 @@
 #include <NameService.hpp>
 #include <dout.hpp>
 
-#include <iostream> /* cout */
-#include <tuple>    /* pair */
-#include <vector>   /* vector   */
-#include <array>    /* array */
-#include <math.h>   /* ceil */
-#include <time.h>   /* time */
+#include <iostream>   /* std::cout */
+#include <tuple>      /* std::pair */
+#include <vector>     /* std::vector   */
+#include <array>      /* std::array */
+#include <math.h>     /* std::ceil */
+#include <time.h>     /* std::time */
+#include <functional> /* std::plus */
 
 /*******************************************************************************
  *
@@ -227,7 +228,7 @@ void reduceVertexIDs(T_Communicator &communicator, T_Graph &graph, std::vector<t
 
     for(Vertex vertex : myVertices){
     	sendData[0] = vertex.id;
-    	communicator.reduce(rootVertex, vertex, graph, sendData, recvData);
+    	communicator.reduce(rootVertex, vertex, graph, std::plus<unsigned>(), sendData, recvData);
     }
     
     for(Vertex vertex : myVertices){

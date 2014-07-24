@@ -129,6 +129,8 @@ struct GraphCommunicator {
 	
     };
 
+    std::mutex mtx;
+
     /**
      * @brief Collective reduction of sendData (here only sum). *rootVertex* will
      *        receive the reduced value. Data of vertices from the same host
@@ -147,22 +149,8 @@ struct GraphCommunicator {
      * @param[out] recvData   Reduced value, that will be received by *rootVertex*
      *
      */
-
-    std::mutex mtx;
-
-
-    // template<typename T>
-    // struct sum : public std::binary_function<T, T, T>
-    // {
-    // 	/** @returns the sum of x and y. */
-    // 	const T operator()(const T& x, const T& y) const
-    // 	{
-    // 	    return x + y;
-    // 	}
-    // };
-
-    template <typename T>
-    void reduce(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, const std::vector<T> sendData, T& recvData){
+    template <typename T, typename Op>
+    void reduce(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, Op op, const std::vector<T> sendData, T& recvData){
 	static std::map<std::string, Reduce<T>> reduces;
 
 	CommID rootCommID = nameService.locateVertex(graph, rootVertex);
@@ -189,7 +177,7 @@ struct GraphCommunicator {
 	// Finally start reduction
 	if(reduces[reduceID].count == vertices.size()){
 	    T recvDataCollctive;
-	    communicator.reduce(rootCommID, context, std::plus<T>(), std::vector<T>(1 , reduces[reduceID].reduce), recvDataCollctive);
+	    communicator.reduce(rootCommID, context, op, std::vector<T>(1 , reduces[reduceID].reduce), recvDataCollctive);
 
 	    if(reduces[reduceID].imRoot){
 		*(reduces[reduceID].rootRecvData) = recvDataCollctive;
