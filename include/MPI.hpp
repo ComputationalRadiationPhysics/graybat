@@ -3,7 +3,7 @@
 
 #include <iostream>     /* std::cout */
 #include <map>          /* std::map */
-#include <exception>    /* std::exception */
+#include <exception>    /* std::out_of_range */
 #include <sstream>      /* std::stringstream */
 #include <algorithm>    /* std::transform */
 #include <mpi.h>        /* MPI_* */
@@ -12,11 +12,11 @@
 
 namespace CommunicationPolicy {
 
-    /**************************
-     * Helper class to create MPI Operation
-     **************************/
-    // TODO 
-    // is it possible to get rid of this static shit ?
+    /**
+     * @brief Construction of MPI_Op from binary operation *Op* with type *T*
+     *
+     * @todo is it possible to get rid of this static shit ?
+     */
     template<typename T, typename Op>
     class userOperation
     {
@@ -48,9 +48,10 @@ namespace CommunicationPolicy {
 
     };
 
-
     template<typename T, typename Op> Op* userOperation<T, Op>::_op = 0;
 
+
+   
 
     // Traits for typeconversion to MPI Types
     template<typename T>
@@ -89,10 +90,17 @@ namespace CommunicationPolicy {
 	typedef unsigned ContextID;
 	typedef unsigned CommID;
 
-	/**************************
-	 * Inner Context class
-	 **************************/
+	/**
+	 * @brief A Context is a set of Communicators which are
+	 *        able to communicate with each other. This class
+	 *        stores meta information about the Context.
+	 *
+	 * @todo Move to some other place (own header maybe?).
+	 */
 	class Context {
+	    typedef unsigned ContextID;
+	    typedef unsigned CommID;
+	    
 	public:
 	    Context() :
 		id(0),
@@ -135,9 +143,16 @@ namespace CommunicationPolicy {
 	    size_t    contextSize;
 	};
 
-	/**************************
-	 * Inner Event class
-	 **************************/
+	
+	/**
+	 * @brief Events are returned by non-blocking or asynchrous functions.
+	 *        Thus, events can be checked weather the the function has
+	 *        finished or not.
+	 *
+	 * @todo Add a template that defines behavior of wait and ready,
+	 *       because this Implementation can only be used from
+	 *       MPI.
+	 */
 	class Event {
 	public:
 	    Event(MPI_Request request) : request(request){
@@ -178,7 +193,7 @@ namespace CommunicationPolicy {
 	    size_t contextSize = initialContext.size();
 	    contextMap[contextCount] = MPI_COMM_WORLD;
 
-	    // Create Map id -> uri
+	    // Create Map CommID -> uri
 	    uriMap.insert(std::make_pair(initialContext.id, std::map<CommID, Uri>()));
 	    for(unsigned i = 0; i < contextSize; ++i){
 	    	uriMap.at(initialContext.id).insert(std::make_pair(CommID(i),Uri(i)));
@@ -438,7 +453,7 @@ namespace CommunicationPolicy {
 
 	    } catch(const std::out_of_range& e){
 		std::stringstream errorStream;
-		errorStream << "MPI::" << e.what()<< " : Communicator with ID " << commID << " is not part of the context " << context.id << std::endl;
+		errorStream << "MPI::getCommIDUri::" << e.what()<< " : Communicator with ID " << commID << " is not part of the context " << context.id << std::endl;
 		error(context.id, errorStream.str());
 		exit(1);
 	    }

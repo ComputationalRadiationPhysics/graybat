@@ -59,6 +59,8 @@ struct GraphCommunicator {
     /**
      * @brief Asynchron transmission of *data* to the *destVertex* on *edge*.
      *
+     * @todo Documentation how data should be formated !!!
+     *
      * @param[in] graph The graph in which the communication takes place.
      * @param[in] destVertex Vertex that will receive the *data*.
      * @param[in] edge Edge over which the *data* will be transmitted.
@@ -136,7 +138,6 @@ struct GraphCommunicator {
      *        receive the reduced value. Data of vertices from the same host
      *        Communicator will be reduced locally first.
      *
-     * @todo Add the possibility to choose own binary operation
      * @todo Do I have to return an Event because its partly non blocking ?
      * @todo By collecting data first you could get rid of Reduce.count !
      *

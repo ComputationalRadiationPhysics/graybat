@@ -118,12 +118,16 @@ namespace GraphPolicy {
 
 	}
 
+	/**
+	 * @bug cleanup of graph leads to SEG FAULTS
+	 *
+	 */
 	~BGL(){
 	    // TODO
 	    // For some reason its no good idea to destroy the graph
-	    if((*graph).is_root()){
-		delete graph;
-	    }
+	    // if((*graph).is_root()){
+	    // 	delete graph;
+	    // }
 	}
 
 	/**

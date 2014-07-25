@@ -1,8 +1,12 @@
 #pragma once
-#include <map> /* map */
-#include <set> /* set */
+#include <map>       /* map */
+#include <set>       /* set */
+#include <exception> /* std::out_of_range */
+#include <sstream>   /* std::stringstream */
+#include <assert.h>  /* assert */
 
 #include <binaryOperation.hpp> /* op::maximum */
+#include <dout.hpp>            /* dout::Dout::getInstance() */
 
 /************************************************************************//**
  * @class NameService
@@ -67,173 +71,83 @@ struct NameService {
      *
      */
     void announce(Graph& graph, const std::vector<Vertex> vertices){
-	// Get super context
+	// Get old context from graph
 	Context oldContext = getGraphContext(graph);
-	
-	if(!oldContext.valid()){
-	    if(graph.hasSuperGraph()){
-		oldContext = getGraphContext(graph.superGraph);
+
+	 if(!oldContext.valid()){
+	     if(graph.hasSuperGraph()){
+		 //std::cout << "hasSuperGraph" << std::endl;
+		 oldContext = getGraphContext(graph.superGraph);
+
+	     }
+	     else {
+		 //std::cout << "global context" << std::endl;
+		 oldContext = communicator.getGlobalContext();
+
+	     }
+
+	 }
+	 else {
+	     //std::cout << "Has already context" << std::endl;
+	 }
+
+	assert(oldContext.valid());
+
+	// Create new context for communicators which host vertices
+	unsigned hasVertices = !vertices.empty();
+	std::vector<unsigned> recvHasVertices(oldContext.size(), 0);
+	communicator.allGather(oldContext, hasVertices, recvHasVertices);
+
+	std::vector<CommID> commIDsWithVertices;
+	for(unsigned i = 0; i < recvHasVertices.size(); ++i){
+	    if(recvHasVertices[i] == 1){
+		commIDsWithVertices.push_back(i);
 	    }
-	    else {
-		oldContext = communicator.getGlobalContext();
-	    }
-
-	}
-	
-	if(oldContext.valid()){
-	    //Each process announces which vertices it manages
-	    std::array<unsigned, 1> myVerticesCount {{(unsigned) vertices.size()}};
-	    std::array<unsigned, 1> maxVerticesCount  {{0}};
-	    communicator.allReduce(oldContext, op::maximum<unsigned>(), myVerticesCount, maxVerticesCount);
-	
-	    std::vector<std::vector<Vertex> > newVertexMap (oldContext.size(), std::vector<Vertex>());
-	    for(unsigned i = 0; i < maxVerticesCount[0]; ++i){
-	    	std::vector<int> sendData(1, -1);
-	    	std::vector<int> recvData(oldContext.size(), 0);
-
-	    	if(i < vertices.size()){
-	    	    sendData[0] = graph.getLocalID(vertices.at(i));
-	    	}
-	    	else{
-	    	    sendData[0] = -1;
-	    	}
-
-	    	communicator.allGather(oldContext, sendData, recvData);
-
-
-	    	for(unsigned commID = 0; commID < newVertexMap.size(); ++commID){
-	    	    if(recvData[commID] != -1){
-	    		VertexID vertexID = (VertexID) recvData[commID];
-	    		Vertex v = graph.getVertices().at(vertexID);
-	    		commMap[graph.id][v.id] = commID; 
-	    		newVertexMap[commID].push_back(v);
-		    
-	    	    }
-
-	    	}
-      
-	    	for(unsigned commID = 0; commID < newVertexMap.size(); ++commID){
-	    	    vertexMap[graph.id][commID] = newVertexMap[commID];
-
-	    	}
-
-	    }
-
-	    //Create new sub context for the graph
-	    if(graph.hasSuperGraph()){
-	    	createGraphContext(graph.superGraph, graph);
-
-	    }
-	    else {
-	    	createGraphContext(graph);
-
-	    }
-
-
 	}
 
+	Context newContext = communicator.createContext(commIDsWithVertices, oldContext);
 
-    }
-
-    void announce2(Graph& graph, const std::vector<Vertex> vertices){
-	// Get super context
-	Context oldContext = getGraphContext(graph);
-	//bool graphHasContext = false;
-
-	if(!oldContext.valid()){
-	    if(graph.hasSuperGraph()){
-		oldContext = getGraphContext(graph.superGraph);
-
-	    }
-	    else {
-		oldContext = communicator.getGlobalContext();
-
-	    }
-
-	}
-
-	// TODO
-	// is this "if" needed ?
-	if(oldContext.valid()){
-	    // Create new context for communicators which have vertices
-	    std::vector<unsigned> sendHasVertices(1, (unsigned)!vertices.empty());
-	    std::vector<unsigned> recvHasVertices(oldContext.size(), 0);
-	    communicator.allGather(oldContext, sendHasVertices, recvHasVertices);
-
-	    std::vector<CommID> commIDsWithVertices;
-	    for(unsigned i = 0; i < oldContext.size(); ++i){
-		if(recvHasVertices[i] == 1){
-		    commIDsWithVertices.push_back(i);
-		}
-	    }
-
-	    Context newContext = communicator.createContext(commIDsWithVertices, oldContext);
-	    if(newContext.valid()){
+	// Each Communicator announces the vertices it hosts
+	if(newContext.valid()){
 	    
-		contextMap[graph.id] = newContext;
+	    contextMap[graph.id] = newContext;
 
-		//Each process announces which vertices it manages
-		std::array<unsigned, 1> myVerticesCount {{(unsigned) vertices.size()}};
-		std::array<unsigned, 1> maxVerticesCount  {{0}};
-		communicator.allReduce(newContext, op::maximum<unsigned>(), myVerticesCount, maxVerticesCount);
+	    std::vector<unsigned> myVerticesCount(1,vertices.size());
+	    unsigned maxVerticesCount = 0;
+	    communicator.allReduce(newContext, op::maximum<unsigned>(), myVerticesCount, maxVerticesCount); // <=== SEG FAULT
 
-		std::vector<std::vector<Vertex> > newVertexMap (newContext.size(), std::vector<Vertex>());
-		for(unsigned i = 0; i < maxVerticesCount[0]; ++i){
-		    std::vector<int> sendData(1, -1);
-		    std::vector<int> recvData(newContext.size(), 0);
+	    //     std::vector<std::vector<Vertex> > newVertexMap (newContext.size(), std::vector<Vertex>());
+	    //     for(unsigned i = 0; i < maxVerticesCount; ++i){
+	    // 	int vertexID;
+	    // 	std::vector<int> recvData(newContext.size(), 0);
 
-		    if(i < vertices.size()){
-			sendData[0] = graph.getLocalID(vertices.at(i));
-		    }
-		    else{
-			sendData[0] = -1;
-		    }
+	    // 	if(i < vertices.size()){
+	    // 	    vertexID = graph.getLocalID(vertices.at(i));
+	    // 	}
+	    // 	else{
+	    // 	    vertexID = -1;
+	    // 	}
 
-		    communicator.allGather(newContext, sendData, recvData);
+	    // 	communicator.allGather(newContext, vertexID, recvData);
 		
-		    // BUG
-		    // When updating context of graph that still
-		    // exist (by reducing number of host comms)
-		    // the range of CommIDs will be reduced and
-		    // therefore commID of old context are
-		    // not valid anymore.
-		    for(unsigned commID = 0; commID < newVertexMap.size(); ++commID){
-			if(recvData[commID] != -1){
-			    VertexID vertexID = (VertexID) recvData[commID];
-			    Vertex v = graph.getVertices().at(vertexID);
-			    commMap[graph.id][v.id] = commID; 
-			    newVertexMap[commID].push_back(v);
+		   
+	    // 	for(unsigned commID = 0; commID < newVertexMap.size(); ++commID){
+	    // 	    if(recvData[commID] != -1){
+	    // 		VertexID vertexID = (VertexID) recvData[commID];
+	    // 		Vertex v = graph.getVertices().at(vertexID);
+	    // 		commMap[graph.id][v.id] = commID; 
+	    // 		newVertexMap[commID].push_back(v);
 		    
-			}
+	    // 	    }
 
-		    }
+	    // 	}
       
-		    for(unsigned commID = 0; commID < newVertexMap.size(); ++commID){
-			vertexMap[graph.id][commID] = newVertexMap[commID];
+	    // 	for(unsigned commID = 0; commID < newVertexMap.size(); ++commID){
+	    // 	    vertexMap[graph.id][commID] = newVertexMap[commID];
 
-		    }
+	    // 	}
 
-		}
-
-		// // Update old context
-		// if(graphHasContext){
-		//     createGraphContext(graph, graph);
-		// }
-		// // Create new sub context for the graph
-		// else{
-
-		//     if(graph.hasSuperGraph()){
-		// 	createGraphContext(graph.superGraph, graph);
-		
-		//     }
-		//     else {
-		// 	createGraphContext(graph);
-		
-		//     }
-
-		// }
-	    
-	    }
+	    //     }
 
 	}
 	
@@ -260,10 +174,6 @@ struct NameService {
      * @brief Opposite operation of locateVertex(). It returns the
      *        vertices that are hosted by the Communicator with
      *        *commID*
-     *
-     * @bug Exception when commID is not host of vertices in *graph*.
-     *      This Exception should be hanled somehow!
-     *
      */
     std::vector<Vertex> getHostedVertices(Graph& graph, CommID commID){
 	return vertexMap[graph.id][commID];

@@ -11,8 +11,6 @@
 *
 * @brief A generic communicator implemented by a CommunicationPolicy
 *
-* @todo  Make collective interfaces more slim
-*
 * The Communicator provides two classes of communication schemas. On one
 * hand point to point communication both synchron and asynchron and on
 * the other hand collective collective operations on a Context of
@@ -68,7 +66,7 @@ public:
      *
      */
     template <typename T>
-    Event asyncRecv(const CommID srcCommID, const unsigned tag, const Context context, const T& recvData){
+    Event asyncRecv(const CommID srcCommID, const Tag tag, const Context context, const T& recvData){
 	return CommunicationPolicy::asyncRecvData(recvData.data(), recvData.size(), srcCommID, context, tag);
     }
 
@@ -83,18 +81,16 @@ public:
      * @brief Collects *sendData* from all members of the *context* and transmits it as a list
      *        to the Communicator with *rootCommID*.
      *
-     * @todo What happens when more then one element is send ?
-     *
-     * @param[in] rootCommID Communicator that will receive collcted data from *context* members
-     * @param[in] context    Set of Communicators that want to send Data
-     * @param[in] sendData   Data that every Communicator in the *context* sends with **same** size
-     * @param[out] recvData  Data from all *context* members, that Communicator with *rootCommID* will receive.
-     *                       *recvData* of all other members of the *context* will be empty.
+     * @param[in]  rootCommID Communicator that will receive collcted data from *context* members
+     * @param[in]  context    Set of Communicators that want to send Data
+     * @param[in]  sendData   Data that every Communicator in the *context* sends with **same** size
+     * @param[out] recvData   Data from all *context* members, that Communicator with *rootCommID* will receive.
+     *                        *recvData* of all other members of the *context* will be empty.
      *
      */
     template <typename T>
-    void gather(const CommID rootCommID, const Context context, const std::vector<T>& sendData, std::vector<T>& recvData){
-    	CommunicationPolicy::gather(sendData.data(), sendData.size(), recvData.data(), sendData.size(), rootCommID, context);
+    void gather(const CommID rootCommID, const Context context, const T& sendData, std::vector<T>& recvData){
+    	CommunicationPolicy::gather(&sendData, 1, recvData.data(), 1, rootCommID, context);
     }
 
     /**
@@ -106,11 +102,11 @@ public:
      *       which Communicator.
      * @todo Give some nice name, just adding 2 is very stupid.
      *
-     * @param[in] rootCommID Communicator that will receive collcted data from *context* members
-     * @param[in] context    Set of Communicators that want to send Data
-     * @param[in] sendData   Data that every Communicator in the *context* sends with **varying** size
-     * @param[out] recvData  Data from all *context* members, that Communicator with *rootCommID* will receive.
-     *                       *recvData* of all other members of the *context* will be empty.
+     * @param[in]  rootCommID Communicator that will receive collcted data from *context* members
+     * @param[in]  context    Set of Communicators that want to send Data
+     * @param[in]  sendData   Data that every Communicator in the *context* sends with **varying** size
+     * @param[out] recvData   Data from all *context* members, that Communicator with *rootCommID* will receive.
+     *                        *recvData* of all other members of the *context* will be empty.
      *
      */
     template <typename T>
@@ -122,17 +118,14 @@ public:
      * @brief Collects *sendData* from all members of the *context*  and transmits it as a list
      *        to every Communicator in the *context*
      *
-     * @todo What happens when the Communicators send more than one element
-     * @todo Add debug mode where first sendData.size() of every Communicator is checked
-     *
-     * @param[in] context    Set of Communicators that want to send Data
-     * @param[in] sendData   Data that every Communicator in the *context* sends with **same** size
-     * @param[out] recvData  Data from all *context* members, that all Communicators* will receive.
+     * @param[in]  context  Set of Communicators that want to send Data
+     * @param[in]  sendData Data that every Communicator in the *context* sends with **same** size
+     * @param[out] recvData Data from all *context* members, that all Communicators* will receive.
      *
      */
     template <typename T>
-    void allGather(const Context context, const std::vector<T>& sendData, std::vector<T>& recvData){
-    	CommunicationPolicy::allGather(sendData.data(), sendData.size(), recvData.data(), context);
+    void allGather(const Context context, const T& sendData, std::vector<T>& recvData){
+    	CommunicationPolicy::allGather(&sendData, 1, recvData.data(), context);
     }
 
     /**
@@ -144,9 +137,9 @@ public:
      *       which Communicator.
      * @todo Give some nice name, just adding 2 is very stupid.
      *
-     * @param[in] context    Set of Communicators that want to send Data
-     * @param[in] sendData   Data that every Communicator in the *context* sends with **varying** size 
-     * @param[out] recvData  Data from all *context* members, that all Communicators* will receive.
+     * @param[in]  context  Set of Communicators that want to send Data
+     * @param[in]  sendData Data that every Communicator in the *context* sends with **varying** size 
+     * @param[out] recvData Data from all *context* members, that all Communicators* will receive.
      *
      */
     template <typename T>
@@ -161,29 +154,29 @@ public:
      *
      * @remark In Contrast to broadcast where every Communicator receives the same data
      *
-     * @param[in] rootCommID Communicator that want to distribute its data
-     * @param[in] context    Set of Communicators that want to receive Data
-     * @param[in] sendData   Data that Communicator with *rootCommID* will distribute over the Communicators of the *context*
-     * @param[out] recvData  Data from Communicator with *rootCommID*.
+     * @param[in]  rootCommID Communicator that want to distribute its data
+     * @param[in]  context    Set of Communicators that want to receive Data
+     * @param[in]  sendData   Data that Communicator with *rootCommID* will distribute over the Communicators of the *context*
+     * @param[out] recvData   Data from Communicator with *rootCommID*.
      *
      */
-    template <typename T_Send, typename T_Recv>
-    void scatter(const CommID rootCommID, const Context context, const T_Send& sendData, const T_Recv& recvData){
-    	CommunicationPolicy::gather(sendData.data(), sendData.size(), recvData.data(), recvData.size(), rootCommID, context);
+    template <typename T>
+    void scatter(const CommID rootCommID, const Context context, const std::vector<T>& sendData, const T& recvData){
+    	CommunicationPolicy::scatter(sendData.data(), 1, &recvData, 1, rootCommID, context);
     }
 
     /**
-     * @brief Distributes *sendData* all Communicator of the *context* to all Communicators of the *context*.
+     * @brief Distributes *sendData* of all Communicator in the *context* to all Communicators in the *context*.
      *        Every Communicator will receive data from every other Communicator (also the own data)
      *
-     * @param[in] context    Set of Communicators that want to receive Data
-     * @param[in] sendData   Data that each Communicator wants to send
-     * @param[out] recvData  Data from all Communicator.
+     * @param[in]  context  Set of Communicators that want to receive Data
+     * @param[in]  sendData Data that each Communicator wants to send
+     * @param[out] recvData Data from all Communicator.
      *
      */
-    template <typename T_Send, typename T_Recv>
-    void allToAll(const Context context, const T_Send& sendData, const T_Recv& recvData){
-    	CommunicationPolicy::allToAll(sendData.data(), sendData.size(), recvData.data(), recvData.size(), context);
+    template <typename T>
+    void allToAll(const Context context, const T& sendData, const std::vector<T>& recvData){
+    	CommunicationPolicy::allToAll(&sendData, 1, recvData.data(), recvData.size(), context);
     }
 
     /**
@@ -199,7 +192,7 @@ public:
      *
      */
     template <typename T, typename Op>
-    void reduce(const CommID rootCommID, const Context context, const Op op, const std::vector<T> sendData, const T& recvData){
+    void reduce(const CommID rootCommID, const Context context, const Op op, const std::vector<T>& sendData, const T& recvData){
      	CommunicationPolicy::reduce(sendData.data(), &recvData, sendData.size(), op, rootCommID, context);
     }
 
@@ -214,8 +207,8 @@ public:
      *
      */
     template <typename T, typename Op>
-    void allReduce(const Context context, const Op op, const T& sendData, T& recvData){
-	CommunicationPolicy::allReduce(sendData.data(), recvData.data(), sendData.size(), op, context);
+    void allReduce(const Context context, const Op op, const std::vector<T>& sendData, T& recvData){
+	CommunicationPolicy::allReduce(sendData.data(), &recvData, sendData.size(), op, context); // <=== SEG FAULT
     }
 
     /**
