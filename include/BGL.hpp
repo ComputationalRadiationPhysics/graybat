@@ -126,7 +126,7 @@ namespace GraphPolicy {
 	    // TODO
 	    // For some reason its no good idea to destroy the graph
 	    // if((*graph).is_root()){
-	    // 	delete graph;
+	    //delete graph;
 	    // }
 	}
 

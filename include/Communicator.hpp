@@ -124,8 +124,8 @@ public:
      *
      */
     template <typename T>
-    void allGather(const Context context, const T& sendData, std::vector<T>& recvData){
-    	CommunicationPolicy::allGather(&sendData, 1, recvData.data(), context);
+    void allGather(const Context context, const std::vector<T>& sendData, std::vector<T>& recvData){
+    	CommunicationPolicy::allGather(sendData.data(), 1, recvData.data(), context);
     }
 
     /**
@@ -198,7 +198,7 @@ public:
 
     /**
      * @brief Carry out a reduction with BinaryOperation *op* on all *sendData* elements from all Communicators
-     *        whithin the *context*. The result will be received by all Communicators.
+     *        whithin the *context*.The result will be received by all Communicators.
      *        
      * @param[in] context    Set of Communicators that 
      * @param[in] op         BinaryOperation that should be used for reduction
@@ -207,8 +207,8 @@ public:
      *
      */
     template <typename T, typename Op>
-    void allReduce(const Context context, const Op op, const std::vector<T>& sendData, T& recvData){
-	CommunicationPolicy::allReduce(sendData.data(), &recvData, sendData.size(), op, context); // <=== SEG FAULT
+    void allReduce(const Context context, const Op op, const std::vector<T>& sendData, std::vector<T>& recvData){
+	CommunicationPolicy::allReduce(sendData.data(), recvData.data(), sendData.size(), op, context); // <=== SEG FAULT
     }
 
     /**

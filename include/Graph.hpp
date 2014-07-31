@@ -25,13 +25,14 @@ public:
     typedef typename GraphPolicy::EdgeProperty   Edge;
     typedef std::tuple<Vertex, Vertex, Edge>     EdgeDescriptor;
     typedef unsigned                             GraphID;
+    typedef typename GraphPolicy::Vertex         GraphPolicyVertex;
+    typedef typename GraphPolicy::Edge           GraphPolicyEdge;
+
 
 private: 
     template <typename T> 
     using Container = typename GraphPolicy::template Container<T>;
 
-    typedef typename GraphPolicy::Vertex                    GraphPolicyVertex;
-    typedef typename GraphPolicy::Edge                      GraphPolicyEdge;
     typedef typename Container<GraphPolicyEdge>::iterator   EdgeIter;
     typedef typename Container<GraphPolicyVertex>::iterator VertexIter;
 
@@ -105,6 +106,7 @@ public:
     	    outEdges.push_back(std::make_pair(vertex, edge));
     	}
     	return outEdges;
+	//return std::vector<std::pair<Vertex, Edge> > (1, std::make_pair(Vertex(0), Edge(0)));
     }
 
     /**

@@ -113,8 +113,8 @@ namespace CommunicationPolicy {
 		contextSize(contextSize){}
 
 	    Context& operator=(const Context& otherContext){
-		id = otherContext.id;
-		commID    = otherContext.getCommID();
+		id          = otherContext.id;
+		commID      = otherContext.getCommID();
 		contextSize = otherContext.size();
 		return *this;
 
@@ -189,17 +189,25 @@ namespace CommunicationPolicy {
 	// Member
 	Context initialContext;
 
-	MPI() : contextCount(1), initialContext(contextCount, initialCommID(), MPICommSize(MPI_COMM_WORLD)) {
-	    size_t contextSize = initialContext.size();
-	    contextMap[contextCount] = MPI_COMM_WORLD;
+	// MPI(){
+	//     initMPI();
+	MPI() : contextCount(1), initialContext(0,0,1) {
+	    initMPI();
+	    //initialContext = Context(contextCount, initialCommID(), MPICommSize(MPI_COMM_WORLD));
+	    //Context  = Context(0, 0, 1);
+	    // size_t contextSize = initialContext.size();
+	    // contextMap[contextCount] = MPI_COMM_WORLD;
 
 	    // Create Map CommID -> uri
-	    uriMap.insert(std::make_pair(initialContext.id, std::map<CommID, Uri>()));
-	    for(unsigned i = 0; i < contextSize; ++i){
-	    	uriMap.at(initialContext.id).insert(std::make_pair(CommID(i),Uri(i)));
+	    //uriMap.insert(std::make_pair(initialContext.id, std::map<CommID, Uri>()));
+	    //uriMap[initialContext.id] = std::map<CommID, Uri>();
+	    for(unsigned i = 0; i < 1; ++i){
+	    	//uriMap.at(initialContext.id).insert(std::make_pair(CommID(i),Uri(i)));
+		std::cout << i << std::endl;
+	    	//uriMap[0][i] = i;
 	    }
 
-	    std::cout << "Init MPI " << uriMap.at(initialContext.id).at(initialContext.getCommID()) << std::endl;
+	    //std::cout << "Init MPI " << uriMap.at(initialContext.id).at(initialContext.id) << std::endl;
 	    
 	}
 
@@ -381,7 +389,7 @@ namespace CommunicationPolicy {
 	    // Translate commIDs to uris
 	    std::vector<Uri> ranks;
 	    for(CommID commID : commIDs){
-	    	ranks.push_back(uriMap[oldContext.id][commID]);
+	    	ranks.push_back(getCommIDUri(oldContext, commID));
 	    }
 
 	    // Create new context	    
@@ -401,7 +409,7 @@ namespace CommunicationPolicy {
 	    	allGather(&uri, 1, otherUris, newContext);
 
 	    	for(unsigned i = 0; i < newContext.size(); ++i){
-		    uriMap[newContext.id][i] =  otherUris[i];
+	    	    uriMap[newContext.id][i] =  otherUris[i];
 	    	}
 	    	return newContext;
 
@@ -415,7 +423,7 @@ namespace CommunicationPolicy {
 
     private:
 	void initMPI(){
-	    int flag;
+	    int flag = 0;
 	    MPI_Initialized(&flag);
 	    if(!flag){
 		int argc;
@@ -425,7 +433,7 @@ namespace CommunicationPolicy {
 	}
 
 	CommID initialCommID(){
-	    initMPI();
+	    //initMPI();
 	    Uri uriTmp;
 	    MPI_Comm_rank(MPI_COMM_WORLD, &uriTmp);
 	    return (CommID)uriTmp;
@@ -433,7 +441,7 @@ namespace CommunicationPolicy {
 	}
 
 	size_t MPICommSize(MPI_Comm comm){
-	    initMPI();
+	    //initMPI();
 	    int n;
 	    MPI_Comm_size(comm, &n);
 	    return n;

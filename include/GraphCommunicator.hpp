@@ -5,14 +5,14 @@
 #include <mutex>   // std::mutex
 
 /************************************************************************//**
-* @class GraphCommunicator
-*
-* @brief Provides point to point and collective communication schemas
-*        on graph base. Communicator is used as communication backend
-*        and NameService provide location information of the vertices
-*        of the Graph.
-*
-***************************************************************************/
+ * @class GraphCommunicator
+ *
+ * @brief Provides point to point and collective communication schemas
+ *        on graph base. Communicator is used as communication backend
+ *        and NameService provide location information of the vertices
+ *        of the Graph.
+ *
+ ***************************************************************************/
 template <typename T_Graph, typename T_Communicator, typename T_NameService>
 struct GraphCommunicator {
 
@@ -50,10 +50,10 @@ struct GraphCommunicator {
      */
     template <typename T>
     void send(Graph &graph, const Vertex destVertex, const Edge edge, const T& data){
-      CommID destCommID = nameService.locateVertex(graph, destVertex);
-      Context context = nameService.getGraphContext(graph);
-      Event e = communicator.asyncSend(destCommID, edge.id, context, data);
-      e.wait();
+	CommID destCommID = nameService.locateVertex(graph, destVertex);
+	Context context = nameService.getGraphContext(graph);
+	Event e = communicator.asyncSend(destCommID, edge.id, context, data);
+	e.wait();
     }
 
     /**
@@ -71,9 +71,9 @@ struct GraphCommunicator {
      */
     template <typename T>
     Event asyncSend(Graph& graph, const Vertex destVertex, const Edge edge, const T& data){
-      CommID destCommID = nameService.locateVertex(graph, destVertex);
-      Context context = nameService.getGraphContext(graph);
-       return communicator.asyncSend(destCommID, edge.id, context, data);
+	CommID destCommID = nameService.locateVertex(graph, destVertex);
+	Context context = nameService.getGraphContext(graph);
+	return communicator.asyncSend(destCommID, edge.id, context, data);
     }
 
     /**
@@ -87,10 +87,10 @@ struct GraphCommunicator {
      */
     template <typename T>
     void recv(Graph& graph, const Vertex srcVertex, const Edge edge, const T& data){
-      CommID srcCommID = nameService.locateVertex(graph, srcVertex);
-      Context context = nameService.getGraphContext(graph);
-      Event e = communicator.asyncRecv(srcCommID, edge.id, context, data);
-      e.wait();
+	CommID srcCommID = nameService.locateVertex(graph, srcVertex);
+	Context context = nameService.getGraphContext(graph);
+	Event e = communicator.asyncRecv(srcCommID, edge.id, context, data);
+	e.wait();
 
     }
 
@@ -107,9 +107,9 @@ struct GraphCommunicator {
      */
     template <typename T>
     Event asyncRecv(Graph& graph, const Vertex srcVertex, const Edge edge, const T& data){
-      CommID srcCommID = nameService.locateVertex(graph, srcVertex);
-      Context context = nameService.getGraphContext(graph);
-      return communicator.asyncRecv(srcCommID, edge.id, context, data);
+	CommID srcCommID = nameService.locateVertex(graph, srcVertex);
+	Context context = nameService.getGraphContext(graph);
+	return communicator.asyncRecv(srcCommID, edge.id, context, data);
 
     }
 

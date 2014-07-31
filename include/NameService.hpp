@@ -94,7 +94,7 @@ struct NameService {
 	assert(oldContext.valid());
 
 	// Create new context for communicators which host vertices
-	unsigned hasVertices = !vertices.empty();
+	std::vector<unsigned> hasVertices(1, !vertices.empty());
 	std::vector<unsigned> recvHasVertices(oldContext.size(), 0);
 	communicator.allGather(oldContext, hasVertices, recvHasVertices);
 
@@ -105,49 +105,46 @@ struct NameService {
 	    }
 	}
 
-	Context newContext = communicator.createContext(commIDsWithVertices, oldContext);
-
+	Context newContext = communicator.createContext(commIDsWithVertices, oldContext); // <=== SEG FAULT
+	
 	// Each Communicator announces the vertices it hosts
 	if(newContext.valid()){
 	    
 	    contextMap[graph.id] = newContext;
 
 	    std::vector<unsigned> myVerticesCount(1,vertices.size());
-	    unsigned maxVerticesCount = 0;
-	    communicator.allReduce(newContext, op::maximum<unsigned>(), myVerticesCount, maxVerticesCount); // <=== SEG FAULT
+	    std::vector<unsigned> maxVerticesCount(1,  0);
+	    communicator.allReduce(newContext, op::maximum<unsigned>(), myVerticesCount, maxVerticesCount);
 
-	    //     std::vector<std::vector<Vertex> > newVertexMap (newContext.size(), std::vector<Vertex>());
-	    //     for(unsigned i = 0; i < maxVerticesCount; ++i){
-	    // 	int vertexID;
-	    // 	std::vector<int> recvData(newContext.size(), 0);
+	    std::vector<std::vector<Vertex> > newVertexMap (newContext.size(), std::vector<Vertex>());
+	    for(unsigned i = 0; i < maxVerticesCount[0]; ++i){
+		std::vector<int> vertexID(1, -1);
+	    	std::vector<int> recvData(newContext.size(), 0);
 
-	    // 	if(i < vertices.size()){
-	    // 	    vertexID = graph.getLocalID(vertices.at(i));
-	    // 	}
-	    // 	else{
-	    // 	    vertexID = -1;
-	    // 	}
+	    	if(i < vertices.size()){
+	    	    vertexID[0] = graph.getLocalID(vertices.at(i));
+	    	}
 
-	    // 	communicator.allGather(newContext, vertexID, recvData);
+	    	communicator.allGather(newContext, vertexID, recvData);
 		
 		   
-	    // 	for(unsigned commID = 0; commID < newVertexMap.size(); ++commID){
-	    // 	    if(recvData[commID] != -1){
-	    // 		VertexID vertexID = (VertexID) recvData[commID];
-	    // 		Vertex v = graph.getVertices().at(vertexID);
-	    // 		commMap[graph.id][v.id] = commID; 
-	    // 		newVertexMap[commID].push_back(v);
+	    	for(unsigned commID = 0; commID < newVertexMap.size(); ++commID){
+	    	    if(recvData[commID] != -1){
+	    		VertexID vertexID = (VertexID) recvData[commID];
+	    		Vertex v = graph.getVertices().at(vertexID);
+	    		commMap[graph.id][v.id] = commID; 
+	    		newVertexMap[commID].push_back(v);
 		    
-	    // 	    }
+	    	    }
 
-	    // 	}
+	    	}
       
-	    // 	for(unsigned commID = 0; commID < newVertexMap.size(); ++commID){
-	    // 	    vertexMap[graph.id][commID] = newVertexMap[commID];
+	    	for(unsigned commID = 0; commID < newVertexMap.size(); ++commID){
+	    	    vertexMap[graph.id][commID] = newVertexMap[commID];
 
-	    // 	}
+	    	}
 
-	    //     }
+	    }
 
 	}
 	

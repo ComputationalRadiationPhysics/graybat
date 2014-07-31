@@ -22,23 +22,23 @@
  ******************************************************************************/
 // Graph
 // Property is struct with at least ID id and typename UUDI
-typedef GraphPolicy::NoProperty NoProperty; 
-typedef GraphPolicy::BGL<NoProperty, NoProperty> BGL;
-typedef Graph<BGL>                                     BGLGraph;
-typedef typename BGLGraph::Vertex                      Vertex;
-typedef typename BGLGraph::Edge                        Edge;
-typedef typename BGLGraph::EdgeDescriptor              EdgeDescriptor;
+// typedef GraphPolicy::NoProperty NoProperty; 
+// typedef GraphPolicy::BGL<NoProperty, NoProperty> BGL;
+// typedef Graph<BGL>                                     BGLGraph;
+// typedef typename BGLGraph::Vertex                      Vertex;
+// typedef typename BGLGraph::Edge                        Edge;
+// typedef typename BGLGraph::EdgeDescriptor              EdgeDescriptor;
 
 // Communicator
 // Vertex / Edge is a struct with at least ID id public member
-typedef CommunicationPolicy::MPI                   Mpi;
-typedef Communicator<Mpi>                          MpiCommunicator;
-typedef typename MpiCommunicator::Context          Context;
-typedef typename MpiCommunicator::Event            Event;
-typedef typename MpiCommunicator::CommID           CommID;
+// typedef CommunicationPolicy::MPI                   Mpi;
+// typedef Communicator<Mpi>                          MpiCommunicator;
+// typedef typename MpiCommunicator::Context          Context;
+// typedef typename MpiCommunicator::Event            Event;
+// typedef typename MpiCommunicator::CommID           CommID;
 
-typedef NameService<BGLGraph, MpiCommunicator>     NS;
-typedef GraphCommunicator<BGLGraph, MpiCommunicator, NS> GC;
+// typedef NameService<BGLGraph, MpiCommunicator>     NS;
+// typedef GraphCommunicator<BGLGraph, MpiCommunicator, NS> GC;
 
 /*******************************************************************************
  *
@@ -54,43 +54,43 @@ std::vector<T_Vertex> generateVertices(const size_t numVertices){
     return vertices;
 }
 
-std::vector<EdgeDescriptor> generateFullyConnectedTopology(const unsigned verticesCount, std::vector<Vertex> &vertices){
-    vertices = generateVertices<Vertex>(verticesCount);
-    std::cout << "Create fully connected with " << vertices.size() << " cells" << std::endl;
+// std::vector<EdgeDescriptor> generateFullyConnectedTopology(const unsigned verticesCount, std::vector<Vertex> &vertices){
+//     vertices = generateVertices<Vertex>(verticesCount);
+//     std::cout << "Create fully connected with " << vertices.size() << " cells" << std::endl;
 
-    unsigned edgeCount = 0;    
-    std::vector<EdgeDescriptor> edges;
+//     unsigned edgeCount = 0;    
+//     std::vector<EdgeDescriptor> edges;
 
-    for(unsigned i = 0; i < vertices.size(); ++i){
-	for(unsigned j = 0; j < vertices.size(); ++j){
-	    if(vertices[i].id == vertices[j].id){
-		continue;
-	    } 
-	    else {
-		edges.push_back(std::make_tuple(vertices[i], vertices[j], Edge(edgeCount++)));
-	    }
-	}
+//     for(unsigned i = 0; i < vertices.size(); ++i){
+// 	for(unsigned j = 0; j < vertices.size(); ++j){
+// 	    if(vertices[i].id == vertices[j].id){
+// 		continue;
+// 	    } 
+// 	    else {
+// 		edges.push_back(std::make_tuple(vertices[i], vertices[j], Edge(edgeCount++)));
+// 	    }
+// 	}
 
-    }
+//     }
 
-    return edges;
-}
+//     return edges;
+// }
 
-std::vector<EdgeDescriptor> generateStarTopology(const unsigned verticesCount, std::vector<Vertex> &vertices){
-    vertices = generateVertices<Vertex>(verticesCount);
+// std::vector<EdgeDescriptor> generateStarTopology(const unsigned verticesCount, std::vector<Vertex> &vertices){
+//     vertices = generateVertices<Vertex>(verticesCount);
     
-    unsigned edgeCount = 0;    
-    std::vector<EdgeDescriptor> edges;
+//     unsigned edgeCount = 0;    
+//     std::vector<EdgeDescriptor> edges;
 
-    for(unsigned i = 0; i < vertices.size(); ++i){
-	if(i != 0){
-	    edges.push_back(std::make_tuple(vertices[i], vertices[0], Edge(edgeCount++)));
-	}
+//     for(unsigned i = 0; i < vertices.size(); ++i){
+// 	if(i != 0){
+// 	    edges.push_back(std::make_tuple(vertices[i], vertices[0], Edge(edgeCount++)));
+// 	}
 		
-    }
+//     }
 
-    return edges;
-}
+//     return edges;
+// }
 
 unsigned hammingDistance(unsigned a, unsigned b){
     unsigned abXor = a xor b;
@@ -98,33 +98,33 @@ unsigned hammingDistance(unsigned a, unsigned b){
 }
 
 
-std::vector<EdgeDescriptor> generateHyperCubeTopology(const unsigned dimension, std::vector<Vertex> &vertices){
-    assert(dimension >= 1);
-    std::vector<EdgeDescriptor> edges;
+// std::vector<EdgeDescriptor> generateHyperCubeTopology(const unsigned dimension, std::vector<Vertex> &vertices){
+//     assert(dimension >= 1);
+//     std::vector<EdgeDescriptor> edges;
 
-    unsigned verticesCount = pow(2, dimension);
-    unsigned edgeCount = 0;
-    vertices  = generateVertices<Vertex>(verticesCount);
+//     unsigned verticesCount = pow(2, dimension);
+//     unsigned edgeCount = 0;
+//     vertices  = generateVertices<Vertex>(verticesCount);
 
-    for(Vertex v1 : vertices){
-	for(Vertex v2 : vertices){
-	    if(hammingDistance(v1.id, v2.id) == 1){
-		edges.push_back(std::make_tuple(v1, v2, Edge(edgeCount++)));
-	    }
+//     for(Vertex v1 : vertices){
+// 	for(Vertex v2 : vertices){
+// 	    if(hammingDistance(v1.id, v2.id) == 1){
+// 		edges.push_back(std::make_tuple(v1, v2, Edge(edgeCount++)));
+// 	    }
 
-	}
-    }
+// 	}
+//     }
     
-    return edges;
-}
+//     return edges;
+// }
 
 // TODO
 // Make n-dimensional
 // Make connected borders
-// Templatetize this better --> give Graph type !!!
 template<typename T_Graph>
 std::vector<typename T_Graph::EdgeDescriptor> generate2DMeshTopology(const unsigned height, const unsigned width, std::vector<typename T_Graph::Vertex> &vertices){
     typedef typename T_Graph::Vertex Vertex;
+    typedef typename T_Graph::Edge Edge;
     typedef typename T_Graph::EdgeDescriptor EdgeDescriptor;
     const unsigned verticesCount = height * width;
     vertices = generateVertices<Vertex>(verticesCount);
@@ -162,16 +162,84 @@ std::vector<typename T_Graph::EdgeDescriptor> generate2DMeshTopology(const unsig
     return edges;
 }
 
-template <typename T_Graph>
-void printVertexDistribution(const std::vector<typename T_Graph::Vertex>& vertices,const T_Graph& graph, CommID commID){
-    typedef typename T_Graph::Vertex Vertex;
-    std::cout << "[" <<  commID << "] " << "Graph: " << graph.id << " " << "Vertices: ";
-    for(Vertex v : vertices){
-	std::cout << v.id << " ";
-    }
-    std::cout << std::endl;
+// template<typename T_Graph>
+// std::vector<typename T_Graph::EdgeDescriptor> generate2DMeshDiagonalTopology(const unsigned height, const unsigned width, std::vector<typename T_Graph::Vertex> &vertices){
+//     typedef typename T_Graph::Vertex Vertex;
+//     typedef typename T_Graph::Edge Edge;
+//     typedef typename T_Graph::EdgeDescriptor EdgeDescriptor;
+//     const unsigned verticesCount = height * width;
+//     vertices = generateVertices<Vertex>(verticesCount);
+//     std::vector<EdgeDescriptor> edges;
 
-}
+//     unsigned edgeCount = 0;
+
+//     for(Vertex v: vertices){
+// 	unsigned i    = v.id;
+
+// 	// UP
+// 	if(i >= width){
+// 	    unsigned up   = i - width;
+// 	    edges.push_back(std::make_tuple(vertices[i], vertices[up], Edge(edgeCount++)));
+// 	}
+
+// 	// UP LEFT
+// 	if(i >= width and (i % width) != 0){
+// 	    unsigned up_left   = i - width - 1;
+// 	    edges.push_back(std::make_tuple(vertices[i], vertices[up_left], Edge(edgeCount++)));
+// 	}
+
+// 	// UP RIGHT
+// 	if(i >= width and (i % width) != (width - 1)){
+// 	    unsigned up_right   = i - width + 1;
+// 	    edges.push_back(std::make_tuple(vertices[i], vertices[up_right], Edge(edgeCount++)));
+// 	}
+
+// 	// DOWN
+// 	if(i < (verticesCount - width)){
+// 	    unsigned down = i + width;
+// 	    edges.push_back(std::make_tuple(vertices[i], vertices[down], Edge(edgeCount++)));
+// 	}
+
+// 	// DOWN LEFT
+// 	if(i < (verticesCount - width) and (i % width) != 0){
+// 	    unsigned down_left = i + width - 1;
+// 	    edges.push_back(std::make_tuple(vertices[i], vertices[down_left], Edge(edgeCount++)));
+// 	}
+
+// 	// DOWN RIGHT
+// 	if(i < (verticesCount - width) and (i % width) != (width - 1)){
+// 	    unsigned down_right = i + width + 1;
+// 	    edges.push_back(std::make_tuple(vertices[i], vertices[down_right], Edge(edgeCount++)));
+// 	}
+
+// 	// RIGHT
+// 	if((i % width) != (width - 1)){
+// 	    int right = i + 1;
+// 	    edges.push_back(std::make_tuple(vertices[i], vertices[right], Edge(edgeCount++)));
+// 	}
+
+// 	// LEFT
+// 	if((i % width) != 0){
+// 	    int left = i - 1;
+// 	    edges.push_back(std::make_tuple(vertices[i], vertices[left], Edge(edgeCount++)));
+// 	}
+	
+
+//     }
+
+//     return edges;
+// }
+
+// template <typename T_Graph>
+// void printVertexDistribution(const std::vector<typename T_Graph::Vertex>& vertices,const T_Graph& graph, const CommID commID){
+//     typedef typename T_Graph::Vertex Vertex;
+//     std::cout << "[" <<  commID << "] " << "Graph: " << graph.id << " " << "Vertices: ";
+//     for(Vertex v : vertices){
+// 	std::cout << v.id << " ";
+//     }
+//     std::cout << std::endl;
+
+// }
 
 
 
@@ -181,100 +249,100 @@ void printVertexDistribution(const std::vector<typename T_Graph::Vertex>& vertic
  *
  *******************************************************************************/
 
-template<typename T_Communicator, typename T_Graph>
-void nearestNeighborExchange(T_Communicator &communicator, T_Graph &graph, std::vector<typename T_Graph::Vertex> myVertices){
-    typedef typename T_Graph::Vertex Vertex;
-    typedef typename T_Graph::Edge   Edge;
-    typedef std::array<unsigned, 1>  Buffer;
+// template<typename T_Communicator, typename T_Graph>
+// void nearestNeighborExchange(T_Communicator &communicator, T_Graph &graph, std::vector<typename T_Graph::Vertex> myVertices){
+//     typedef typename T_Graph::Vertex Vertex;
+//     typedef typename T_Graph::Edge   Edge;
+//     typedef std::array<unsigned, 1>  Buffer;
 
-    // Async send vertices data
-    for(Vertex myVertex : myVertices){
-    	std::vector<std::pair<Vertex, Edge> > outEdges = graph.getOutEdges(myVertex);
-    	Buffer outBuffer{{myVertex.id}};
+//     // Async send vertices data
+//     for(Vertex myVertex : myVertices){
+//     	std::vector<std::pair<Vertex, Edge> > outEdges = graph.getOutEdges(myVertex);
+//     	Buffer outBuffer{{myVertex.id}};
 
-    	//Send data to out edges
-    	for(std::pair<Vertex, Edge> outEdge : outEdges){
-    	    Vertex dest = outEdge.first;
-    	    Edge   e    = outEdge.second;
-    	    communicator.asyncSend(graph, dest, e, outBuffer);// <== BUGGY leads to segfault on some configuration
-    	}
+//     	//Send data to out edges
+//     	for(std::pair<Vertex, Edge> outEdge : outEdges){
+//     	    Vertex dest = outEdge.first;
+//     	    Edge   e    = outEdge.second;
+//     	    communicator.asyncSend(graph, dest, e, outBuffer);// <== BUGGY leads to segfault on some configuration
+//     	}
 
-    }
+//     }
 
-    // Sync recv vertices data
-    for(Vertex myVertex : myVertices){
-    	std::vector<std::pair<Vertex, Edge> > inEdges  = graph.getInEdges(myVertex);
-    	std::vector<Buffer>  inBuffers (inEdges.size(), Buffer{{0}});
+//     // Sync recv vertices data
+//     for(Vertex myVertex : myVertices){
+//     	std::vector<std::pair<Vertex, Edge> > inEdges  = graph.getInEdges(myVertex);
+//     	std::vector<Buffer>  inBuffers (inEdges.size(), Buffer{{0}});
 
 
-    	// Recv data from in edges
-    	for(unsigned i = 0 ; i < inBuffers.size(); ++i){
-    	    Vertex src = inEdges[i].first;
-    	    Edge   e   = inEdges[i].second;
-	    communicator.recv(graph, src, e, inBuffers[i]); // <== BUGGY leads to segfault on some configuration
-    	}
+//     	// Recv data from in edges
+//     	for(unsigned i = 0 ; i < inBuffers.size(); ++i){
+//     	    Vertex src = inEdges[i].first;
+//     	    Edge   e   = inEdges[i].second;
+// 	    communicator.recv(graph, src, e, inBuffers[i]); // <== BUGGY leads to segfault on some configuration
+//     	}
 	
-	unsigned recvSum = 0;
-	for(Buffer b : inBuffers){
-	    recvSum += b[0];
-	}
-	std::cout << "Vertex: " << myVertex.id << " NeighborIDSum: " << recvSum <<  std::endl;
+// 	unsigned recvSum = 0;
+// 	for(Buffer b : inBuffers){
+// 	    recvSum += b[0];
+// 	}
+// 	std::cout << "Vertex: " << myVertex.id << " NeighborIDSum: " << recvSum <<  std::endl;
 	
-    }
+//     }
 
-}
+// }
 
-template<typename T_Communicator, typename T_Graph>
-void reduceVertexIDs(T_Communicator &communicator, T_Graph &graph, std::vector<typename T_Graph::Vertex> myVertices){
-    typedef typename T_Graph::Vertex Vertex;
+// template<typename T_Communicator, typename T_Graph>
+// void reduceVertexIDs(T_Communicator &communicator, T_Graph &graph, std::vector<typename T_Graph::Vertex> myVertices){
+//     typedef typename T_Graph::Vertex Vertex;
 
-    Vertex rootVertex = graph.getVertices().at(0);
-    unsigned recvData = 0;
-    std::vector<unsigned> sendData(1,0);
+//     Vertex rootVertex = graph.getVertices().at(0);
+//     unsigned recvData = 0;
+//     std::vector<unsigned> sendData(1,0);
 
-    for(Vertex vertex : myVertices){
-    	sendData[0] = vertex.id;
-    	communicator.reduce(rootVertex, vertex, graph, std::plus<unsigned>(), sendData, recvData);
-    }
+//     for(Vertex vertex : myVertices){
+//     	sendData[0] = vertex.id;
+//     	communicator.reduce(rootVertex, vertex, graph, std::plus<unsigned>(), sendData, recvData);
+//     }
     
-    for(Vertex vertex : myVertices){
-    	if(vertex.id == rootVertex.id){
-	    std::cout << "Reduce graph " << graph.id << ": " << recvData << std::endl;
+//     for(Vertex vertex : myVertices){
+//     	if(vertex.id == rootVertex.id){
+// 	    std::cout << "Reduce graph " << graph.id << ": " << recvData << std::endl;
 
-    	}
+//     	}
 
-    }
+//     }
     
-}
+// }
 
 // Collective
-template<typename T_Communicator>
-unsigned randomNumber(T_Communicator &communicator, const Context &context){
-    srand (time(NULL) + context.getCommID());
-    unsigned ownRandom = rand();
-    unsigned random = 0;
+// template<typename T_Communicator>
+// unsigned randomNumber(T_Communicator &communicator, const Context &context){
+//     srand (time(NULL) + context.getCommID());
+//     std::vector<unsigned> ownRandom(1, rand());
+//     unsigned random = 0;
 
-    if(context.valid()){
-	std::vector<unsigned> recvData(context.size(), 0);
+//     if(context.valid()){
+// 	std::vector<unsigned> recvData(context.size(), 0);
 
-	communicator.allGather(context, ownRandom, recvData);
+// 	communicator.allGather(context, ownRandom, recvData);
 
-	for(unsigned i = 0; i < recvData.size(); ++i){
-	    random += recvData[i];
-	}
-    }
-    return random;
-}
+// 	for(unsigned i = 0; i < recvData.size(); ++i){
+// 	    random += recvData[i];
+// 	}
+//     }
+//     return random;
+// }
 
 // Collective
-template<typename T_Communicator, typename T_NameService, typename T_Graph>
-typename T_Communicator::CommID randomHostCommID(T_Communicator &communicator, T_NameService &nameService, T_Graph &graph){
+// template<typename T_Communicator, typename T_NameService, typename T_Graph>
+// typename T_Communicator::CommID randomHostCommID(T_Communicator &communicator, T_NameService &nameService, T_Graph &graph){
 
-    std::vector<CommID> commIDs = nameService.getGraphHostCommIDs(graph);
-    Context context = nameService.getGraphContext(graph);
-    unsigned random = randomNumber(communicator, context);
-    return commIDs.at(random % commIDs.size());
-}
+//     std::vector<CommID> commIDs = nameService.getGraphHostCommIDs(graph);
+//     Context context = nameService.getGraphContext(graph);
+//     unsigned random = randomNumber(communicator, context);
+//     return commIDs.at(random % commIDs.size());
+// }
 
 // template<typename T_Communicator, typename T_Graph>
 // typename T_Graph::Vertex randomVertex( T_Communicator& communicator, T_Graph& graph, const std::vector<typename T_Graph::Vertex> vertices ){
@@ -307,66 +375,66 @@ typename T_Communicator::CommID randomHostCommID(T_Communicator &communicator, T
 // }
 
 
-template<typename T_Communicator, typename T_Graph, typename T_NameService>
-void occupyRandomVertex(T_Communicator& communicator, T_Graph& graph, T_NameService& nameService, std::vector<typename T_Graph::Vertex>& myVertices){
-    typedef T_Graph Graph;
-    typedef typename Graph::Vertex          Vertex;
-    typedef typename Vertex::ID             VertexID;
-    typedef typename T_Communicator::CommID CommID;
+// template<typename T_Communicator, typename T_Graph, typename T_NameService>
+// void occupyRandomVertex(T_Communicator& communicator, T_Graph& graph, T_NameService& nameService, std::vector<typename T_Graph::Vertex>& myVertices){
+//     typedef T_Graph Graph;
+//     typedef typename Graph::Vertex          Vertex;
+//     typedef typename Vertex::ID             VertexID;
+//     typedef typename T_Communicator::CommID CommID;
 
-    CommID masterCommID = randomHostCommID(communicator, nameService, graph);
-    Context context = nameService.getGraphContext(graph);
+//     CommID masterCommID = randomHostCommID(communicator, nameService, graph);
+//     Context context = nameService.getGraphContext(graph);
 
-    if(nameService.getHostedVertices(graph, masterCommID).empty()){
-	std::cout << "The masterCommID does not host any vertices of this graph" << std::endl;
-	return;
-    }
+//     if(nameService.getHostedVertices(graph, masterCommID).empty()){
+// 	std::cout << "The masterCommID does not host any vertices of this graph" << std::endl;
+// 	return;
+//     }
 
-    if(context.valid()){
-     	CommID commID    = context.getCommID();
-     	std::array<VertexID, 1> randomVertex{{0}};
+//     if(context.valid()){
+//      	CommID commID    = context.getCommID();
+//      	std::array<VertexID, 1> randomVertex{{0}};
 
-     	bool haveVertex = false;
-     	if(commID == masterCommID){
-	    srand (time(NULL));
-     	    randomVertex[0] = rand() % graph.getVertices().size();
+//      	bool haveVertex = false;
+//      	if(commID == masterCommID){
+// 	    srand (time(NULL));
+//      	    randomVertex[0] = rand() % graph.getVertices().size();
 
-	    communicator.broadcast(masterCommID, context, randomVertex);
+// 	    communicator.broadcast(masterCommID, context, randomVertex);
 
-	    VertexID vertexID = randomVertex[0];
-	    Vertex vertex     = graph.getVertices().at(vertexID);
+// 	    VertexID vertexID = randomVertex[0];
+// 	    Vertex vertex     = graph.getVertices().at(vertexID);
 
-     	    for(Vertex v : myVertices){
-     	    	if(v.id == vertex.id){
-     	    	    std::cout << "[" << masterCommID << "] " << "Allready have random vertex: " << vertex.id << std::endl;
-     	    	    haveVertex = true;
-     	    	}
-     	    }
+//      	    for(Vertex v : myVertices){
+//      	    	if(v.id == vertex.id){
+//      	    	    std::cout << "[" << masterCommID << "] " << "Allready have random vertex: " << vertex.id << std::endl;
+//      	    	    haveVertex = true;
+//      	    	}
+//      	    }
 	
-     	    if(!haveVertex){
-     	    	std::cout << "[" << masterCommID << "] " << "Occupy vertex: " << vertex.id << std::endl;
-     	    	myVertices.push_back(vertex);
-     	    }
+//      	    if(!haveVertex){
+//      	    	std::cout << "[" << masterCommID << "] " << "Occupy vertex: " << vertex.id << std::endl;
+//      	    	myVertices.push_back(vertex);
+//      	    }
 
-     	}
-     	else {
-	    communicator.broadcast(masterCommID, context, randomVertex);
-     	    VertexID vertexID = randomVertex[0];
-     	    Vertex vertex     = graph.getVertices().at(vertexID);
+//      	}
+//      	else {
+// 	    communicator.broadcast(masterCommID, context, randomVertex);
+//      	    VertexID vertexID = randomVertex[0];
+//      	    Vertex vertex     = graph.getVertices().at(vertexID);
 
-     	     for(auto vertexIter = myVertices.begin(); vertexIter != myVertices.end();){
-     	     	if(vertexIter->id == vertex.id)
-     	     	    vertexIter = myVertices.erase(vertexIter);
-		else
-		    ++vertexIter;
+//      	     for(auto vertexIter = myVertices.begin(); vertexIter != myVertices.end();){
+//      	     	if(vertexIter->id == vertex.id)
+//      	     	    vertexIter = myVertices.erase(vertexIter);
+// 		else
+// 		    ++vertexIter;
 
-     	     }
+//      	     }
 
-     	}
+//      	}
 
-    }
+//     }
 
-}
+// }
 
 
 
@@ -406,9 +474,9 @@ std::vector<std::string> colors {"red", "green", "cyan", "skyblue1", "magenta", 
 template<class Graph, class NameService>
 struct vertexIDWriter{
     vertexIDWriter(Graph &graph, NameService &nameService) : graph(graph), nameService(nameService) {}
-    void operator()(std::ostream& out, const BGL::Vertex& v) const {
+    void operator()(std::ostream& out, const typename Graph::GraphPolicyVertex& v) const {
 	unsigned i = (unsigned) v;
-	CommID commID= nameService.locateVertex(graph, graph.getVertices().at(i));
+	unsigned commID= nameService.locateVertex(graph, graph.getVertices().at(i));
 	out << "[color=black fillcolor=" << colors[commID % colors.size()] << " fontsize=30 style=filled]";
 	out << "[label=\"" << graph.getVertices().at(i).id << "\"]";
     }
@@ -420,7 +488,7 @@ private:
 template<class Graph>
 struct edgeIDWriter{
     edgeIDWriter(Graph &graph) : graph(graph) {}
-    void operator()(std::ostream& out, const BGL::Edge& e) const {
+    void operator()(std::ostream& out, const typename Graph::GraphPolicyEdge& e) const {
 	out << e;
     }
 private:
@@ -463,15 +531,15 @@ void life() {
     typedef GraphPolicy::BGL<Cell, NoProperty> BGL;
     typedef Graph<BGL>                         LifeGraph;
     typedef typename LifeGraph::Vertex         Vertex;
-    typedef typename Vertex::ID                VertexID;
+    //typedef typename Vertex::ID                VertexID;
     typedef typename LifeGraph::Edge           Edge;
     typedef typename LifeGraph::EdgeDescriptor EdgeDescriptor;
 
     // Communicator
     typedef CommunicationPolicy::MPI            Mpi;
     typedef Communicator<Mpi>                   MpiCommunicator;
-    //typedef typename MpiCommunicator::Context   Context;
-    //typedef typename MpiCommunicator::Event     Event;
+    typedef typename MpiCommunicator::Context   Context;
+    typedef typename MpiCommunicator::Event     Event;
     typedef typename MpiCommunicator::CommID    CommID;
 
     typedef NameService<LifeGraph, MpiCommunicator>     NS;
@@ -484,51 +552,79 @@ void life() {
     std::vector<Vertex> graphVertices;
     std::vector<EdgeDescriptor> edges = generate2DMeshTopology<LifeGraph>(2, 2, graphVertices);
 
-    LifeGraph graph (edges, graphVertices); //graph.print();
+    LifeGraph graph (edges, graphVertices); graph.print();
 
     MpiCommunicator communicator;
-    NS nameService(graph, communicator);
-    GC graphCommunicator(communicator, nameService);
+    //NS nameService(graph, communicator);
+    //GC graphCommunicator(communicator, nameService);
 
     // Distribute work evenly
-    CommID myCommID  = communicator.getGlobalContext().getCommID();
-    unsigned commCount = communicator.getGlobalContext().size();
-    std::vector<Vertex> myGraphVertices = distributeVerticesEvenly(myCommID, commCount, graph);
+    // CommID myCommID  = communicator.getGlobalContext().getCommID();
+    // unsigned commCount = communicator.getGlobalContext().size();
+    // std::vector<Vertex> myGraphVertices = distributeVerticesEvenly(myCommID, commCount, graph);
 
-    // Announce work distribution 
-    nameService.announce(graph, myGraphVertices); // <=== SEG FAULT
+    //Announce work distribution 
+    //nameService.announce(graph, myGraphVertices); // <=== SEG FAULT
     
-    for(Vertex v : myGraphVertices){
-	
-	// Send status to neighbor cells
-	std::vector<std::pair<Vertex, Edge> > outEdges = graph.getOutEdges(v);
-	for(std::pair<Vertex, Edge> edge : outEdges){
-	    std::vector<unsigned> isAlive(1, v.isAlive);
-	    graphCommunicator.asyncSend(graph, edge.first, edge.second, isAlive);
-	   }
-
-    }
+    // // Send status to neighbor cells
+    // for(Vertex v : myGraphVertices){
     
-    std::map<VertexID, std::map<VertexID, unsigned> > neighborCells;
-    for(Vertex v : myGraphVertices){
-    	// Recv status from neighbor cells
-    	std::vector<std::pair<Vertex, Edge> > inEdges = graph.getInEdges(v);
-	
-	for(std::pair<Vertex, Edge> edge : inEdges){
-	    std::vector<unsigned> isAlive(1, 0);
-	    graphCommunicator.recv(graph, edge.first, edge.second, isAlive);
-	    std::cout << edge.first.id << " isAlive=" << (bool)isAlive[0] << std::endl;
-	    //neighborCells[v.id][edge.second.id] = isAlive[0];
-    	 }
-
-    }
-
-    // aliveNeighborCount = 0;
-    // for(unsigned isAlive : neighborCells){
-    // 	if(isAlive){
-    // 	    aliveNeighborCount++;
+    // 	std::vector<std::pair<Vertex, Edge> > outEdges = graph.getOutEdges(v); // <=== SEG FAULT
+    // 	for(std::pair<Vertex, Edge> edge : outEdges){
+    // 	    std::vector<unsigned> isAlive(1, v.isAlive);
+    // 	    graphCommunicator.asyncSend(graph, edge.first, edge.second, isAlive);
+	    
     // 	}
 
+    // }
+
+    // // Recv status from neighbor cells
+    // std::vector<unsigned> aliveCount(myGraphVertices.size(), 0);
+    // unsigned vertex_i = 0;
+    // for(Vertex v : myGraphVertices){
+
+    // 	std::vector<std::pair<Vertex, Edge> > inEdges = graph.getInEdges(v);
+	
+    // 	for(std::pair<Vertex, Edge> edge : inEdges){
+    // 	    std::vector<unsigned> isAlive(1, 0);
+    // 	    graphCommunicator.recv(graph, edge.first, edge.second, isAlive);
+    // 	    if(isAlive[0]){
+    // 		aliveCount.at(vertex_i)++;
+    // 	    }
+
+
+    // 	}
+    // 	std::cout << "AliveCount of vertex " << v.id << ": " << aliveCount[vertex_i] << std::endl;
+    // 	vertex_i++;
+
+    // }
+
+    // // Calculate status for next Generation
+    // vertex_i = 0;
+    // for(Vertex v : myGraphVertices){
+	
+    // 	switch(aliveCount.at(vertex_i)){
+
+    // 	case 0:
+    // 	    v.isAlive = 0;
+
+    // 	case 1:
+    // 	    v.isAlive = 0;
+
+    // 	case 2:
+    // 	    v.isAlive = v.isAlive;
+	    
+    // 	case 3: 
+    // 	    v.isAlive = 1;
+    // 	    break;
+
+    // 	default: 
+    // 	    v.isAlive = 0;
+
+	    
+
+
+    // 	}
     // }
 
     
@@ -548,106 +644,106 @@ int main(){
     life();
     return 0;
 
-    /***************************************************************************
-     * Create graph
-     ****************************************************************************/
-    std::vector<Vertex> graphVertices;
-    //std::vector<EdgeDescriptor> edges = generateFullyConnectedTopology(10, graphVertices);
-    //std::vector<EdgeDescriptor> edges = generateStarTopology(10, graphVertices);
-    //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(4, graphVertices);
-    std::vector<EdgeDescriptor> edges = generate2DMeshTopology<BGLGraph>(2, 2, graphVertices);
-    BGLGraph graph (edges, graphVertices); //graph.print();
+    // /***************************************************************************
+    //  * Create graph
+    //  ****************************************************************************/
+    // std::vector<Vertex> graphVertices;
+    // //std::vector<EdgeDescriptor> edges = generateFullyConnectedTopology(10, graphVertices);
+    // //std::vector<EdgeDescriptor> edges = generateStarTopology(10, graphVertices);
+    // //std::vector<EdgeDescriptor> edges = generateHyperCubeTopology(4, graphVertices);
+    // std::vector<EdgeDescriptor> edges = generate2DMeshTopology<BGLGraph>(2, 2, graphVertices);
+    // BGLGraph graph (edges, graphVertices); //graph.print();
 
 
-    /***************************************************************************
-     * Create some subgraph
-     ****************************************************************************/
-    std::vector<Vertex> subGraphVertices;
-    for(unsigned vertex_i = 0; vertex_i < graphVertices.size() / 2; ++vertex_i){
-	subGraphVertices.push_back(graph.getVertices().at(vertex_i));
-    }
-    BGLGraph& subGraph = graph.createSubGraph(subGraphVertices); //subGraph.print();
-
-
-
-    /***************************************************************************
-     * Create communicator
-     ****************************************************************************/
-    MpiCommunicator communicator; 
-    communicator.synchronize();
-    CommID myCommID  = communicator.getGlobalContext().getCommID();
-    unsigned commCount = communicator.getGlobalContext().size();
-    NS nameService(graph, communicator);
-    GC graphCommunicator(communicator, nameService);
+    // /***************************************************************************
+    //  * Create some subgraph
+    //  ****************************************************************************/
+    // std::vector<Vertex> subGraphVertices;
+    // for(unsigned vertex_i = 0; vertex_i < graphVertices.size() / 2; ++vertex_i){
+    // 	subGraphVertices.push_back(graph.getVertices().at(vertex_i));
+    // }
+    // BGLGraph& subGraph = graph.createSubGraph(subGraphVertices); //subGraph.print();
 
 
 
-    /***************************************************************************
-     * Examples communication schemas
-     ****************************************************************************/
-
-    // Distribute vertices to communicators
-    std::vector<Vertex> myGraphVertices    = distributeVerticesEvenly(myCommID, commCount, graph);
-    std::vector<Vertex> mySubGraphVertices = distributeVerticesEvenly(myCommID, commCount, subGraph);
-
-    // Output vertex property
-    printVertexDistribution(myGraphVertices, graph, myCommID);
-    printVertexDistribution(mySubGraphVertices, subGraph, myCommID);
-
-    // Synchronize after output
-    communicator.synchronize();
-
-    // Announce distribution on network
-    nameService.announce(graph, myGraphVertices);
-    nameService.announce(subGraph, mySubGraphVertices);
-
-    // Write graph to dot file
-    if(!myGraphVertices.empty()){
-	graph.writeGraph(vertexIDWriter<BGLGraph, NS>(graph, nameService), edgeIDWriter<BGLGraph>(graph), graphWriter(), std::string("graph.dot"));
-    }
+    // /***************************************************************************
+    //  * Create communicator
+    //  ****************************************************************************/
+    // MpiCommunicator communicator; 
+    // communicator.synchronize();
+    // CommID myCommID  = communicator.getGlobalContext().getCommID();
+    // unsigned commCount = communicator.getGlobalContext().size();
+    // NS nameService(graph, communicator);
+    // GC graphCommunicator(communicator, nameService);
 
 
-    // BUG
-    // does not work !!!
-    if(!mySubGraphVertices.empty()){
-    	subGraph.writeGraph(vertexIDWriter<BGLGraph, NS>(subGraph, nameService), edgeIDWriter<BGLGraph>(subGraph), graphWriter(), std::string("subgraph.dot"));
-    }
+
+    // /***************************************************************************
+    //  * Examples communication schemas
+    //  ****************************************************************************/
+
+    // // Distribute vertices to communicators
+    // std::vector<Vertex> myGraphVertices    = distributeVerticesEvenly(myCommID, commCount, graph);
+    // std::vector<Vertex> mySubGraphVertices = distributeVerticesEvenly(myCommID, commCount, subGraph);
+
+    // // Output vertex property
+    // printVertexDistribution(myGraphVertices, graph, myCommID);
+    // printVertexDistribution(mySubGraphVertices, subGraph, myCommID);
+
+    // // Synchronize after output
+    // communicator.synchronize();
+
+    // // Announce distribution on network
+    // nameService.announce(graph, myGraphVertices);
+    // nameService.announce(subGraph, mySubGraphVertices);
+
+    // // Write graph to dot file
+    // if(!myGraphVertices.empty()){
+    // 	graph.writeGraph(vertexIDWriter<BGLGraph, NS>(graph, nameService), edgeIDWriter<BGLGraph>(graph), graphWriter(), std::string("graph.dot"));
+    // }
 
 
-    //Communication on graph level
-    if(!myGraphVertices.empty()){
-	nearestNeighborExchange(graphCommunicator, graph, myGraphVertices); 
-	reduceVertexIDs(graphCommunicator, graph, myGraphVertices);
+    // // BUG
+    // // does not work !!!
+    // if(!mySubGraphVertices.empty()){
+    // 	subGraph.writeGraph(vertexIDWriter<BGLGraph, NS>(subGraph, nameService), edgeIDWriter<BGLGraph>(subGraph), graphWriter(), std::string("subgraph.dot"));
+    // }
 
-    }
 
-    // Communication on subgraph level
-    if(!mySubGraphVertices.empty()){
-	nearestNeighborExchange(graphCommunicator, subGraph, mySubGraphVertices);
-	reduceVertexIDs(graphCommunicator, subGraph, mySubGraphVertices);
+    // //Communication on graph level
+    // if(!myGraphVertices.empty()){
+    // 	nearestNeighborExchange(graphCommunicator, graph, myGraphVertices); 
+    // 	reduceVertexIDs(graphCommunicator, graph, myGraphVertices);
 
-    }
+    // }
 
-    /***************************************************************************
-     * Redistribution of vertex
-     ****************************************************************************/
+    // // Communication on subgraph level
+    // if(!mySubGraphVertices.empty()){
+    // 	nearestNeighborExchange(graphCommunicator, subGraph, mySubGraphVertices);
+    // 	reduceVertexIDs(graphCommunicator, subGraph, mySubGraphVertices);
 
-    // TODO
-    // Communicator which has no vertex of subgraph
-    // can´t occupy vertex from this subgraph!
-    // Because this communicator is not part
-    // of the subgraph context!
-    // Need to recreate context first!
-    if(!mySubGraphVertices.empty()){
-    	occupyRandomVertex(communicator, subGraph, nameService, mySubGraphVertices);
-    	printVertexDistribution(mySubGraphVertices, subGraph, myCommID);
-    	nameService.announce(subGraph, mySubGraphVertices);
-    }
+    // }
 
-    if(!mySubGraphVertices.empty()){    
-	//reduceVertexIDs(myGraphCommunicator, subGraph, mySubGraphVertices);
-	nearestNeighborExchange(graphCommunicator, subGraph, mySubGraphVertices);
-    }
+    // /***************************************************************************
+    //  * Redistribution of vertex
+    //  ****************************************************************************/
+
+    // // TODO
+    // // Communicator which has no vertex of subgraph
+    // // can´t occupy vertex from this subgraph!
+    // // Because this communicator is not part
+    // // of the subgraph context!
+    // // Need to recreate context first!
+    // if(!mySubGraphVertices.empty()){
+    // 	occupyRandomVertex(communicator, subGraph, nameService, mySubGraphVertices);
+    // 	printVertexDistribution(mySubGraphVertices, subGraph, myCommID);
+    // 	nameService.announce(subGraph, mySubGraphVertices);
+    // }
+
+    // if(!mySubGraphVertices.empty()){    
+    // 	//reduceVertexIDs(myGraphCommunicator, subGraph, mySubGraphVertices);
+    // 	nearestNeighborExchange(graphCommunicator, subGraph, mySubGraphVertices);
+    // }
 
 
 
