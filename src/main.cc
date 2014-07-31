@@ -666,13 +666,10 @@ void life() {
 
 	    }
 
-	    // std::cout << std::endl << std::endl;
-	
 	    for(unsigned i = 0; i < height; ++i){
 		std::cerr << "\033[F";
 	    }
 	
-	    //usleep(100000);
 	}
 	communicator.synchronize(nameService.getGraphContext(graph));
     }
