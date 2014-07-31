@@ -14,6 +14,7 @@
 #include <math.h>     /* std::ceil */
 #include <time.h>     /* std::time */
 #include <functional> /* std::plus */
+#include <unistd.h>   /* usleep */
 
 /*******************************************************************************
  *
@@ -162,73 +163,73 @@ std::vector<typename T_Graph::EdgeDescriptor> generate2DMeshTopology(const unsig
     return edges;
 }
 
-// template<typename T_Graph>
-// std::vector<typename T_Graph::EdgeDescriptor> generate2DMeshDiagonalTopology(const unsigned height, const unsigned width, std::vector<typename T_Graph::Vertex> &vertices){
-//     typedef typename T_Graph::Vertex Vertex;
-//     typedef typename T_Graph::Edge Edge;
-//     typedef typename T_Graph::EdgeDescriptor EdgeDescriptor;
-//     const unsigned verticesCount = height * width;
-//     vertices = generateVertices<Vertex>(verticesCount);
-//     std::vector<EdgeDescriptor> edges;
+template<typename T_Graph>
+std::vector<typename T_Graph::EdgeDescriptor> generate2DMeshDiagonalTopology(const unsigned height, const unsigned width, std::vector<typename T_Graph::Vertex> &vertices){
+    typedef typename T_Graph::Vertex Vertex;
+    typedef typename T_Graph::Edge Edge;
+    typedef typename T_Graph::EdgeDescriptor EdgeDescriptor;
+    const unsigned verticesCount = height * width;
+    vertices = generateVertices<Vertex>(verticesCount);
+    std::vector<EdgeDescriptor> edges;
 
-//     unsigned edgeCount = 0;
+    unsigned edgeCount = 0;
 
-//     for(Vertex v: vertices){
-// 	unsigned i    = v.id;
+    for(Vertex v: vertices){
+	unsigned i    = v.id;
 
-// 	// UP
-// 	if(i >= width){
-// 	    unsigned up   = i - width;
-// 	    edges.push_back(std::make_tuple(vertices[i], vertices[up], Edge(edgeCount++)));
-// 	}
+	// UP
+	if(i >= width){
+	    unsigned up   = i - width;
+	    edges.push_back(std::make_tuple(vertices[i], vertices[up], Edge(edgeCount++)));
+	}
 
-// 	// UP LEFT
-// 	if(i >= width and (i % width) != 0){
-// 	    unsigned up_left   = i - width - 1;
-// 	    edges.push_back(std::make_tuple(vertices[i], vertices[up_left], Edge(edgeCount++)));
-// 	}
+	// UP LEFT
+	if(i >= width and (i % width) != 0){
+	    unsigned up_left   = i - width - 1;
+	    edges.push_back(std::make_tuple(vertices[i], vertices[up_left], Edge(edgeCount++)));
+	}
 
-// 	// UP RIGHT
-// 	if(i >= width and (i % width) != (width - 1)){
-// 	    unsigned up_right   = i - width + 1;
-// 	    edges.push_back(std::make_tuple(vertices[i], vertices[up_right], Edge(edgeCount++)));
-// 	}
+	// UP RIGHT
+	if(i >= width and (i % width) != (width - 1)){
+	    unsigned up_right   = i - width + 1;
+	    edges.push_back(std::make_tuple(vertices[i], vertices[up_right], Edge(edgeCount++)));
+	}
 
-// 	// DOWN
-// 	if(i < (verticesCount - width)){
-// 	    unsigned down = i + width;
-// 	    edges.push_back(std::make_tuple(vertices[i], vertices[down], Edge(edgeCount++)));
-// 	}
+	// DOWN
+	if(i < (verticesCount - width)){
+	    unsigned down = i + width;
+	    edges.push_back(std::make_tuple(vertices[i], vertices[down], Edge(edgeCount++)));
+	}
 
-// 	// DOWN LEFT
-// 	if(i < (verticesCount - width) and (i % width) != 0){
-// 	    unsigned down_left = i + width - 1;
-// 	    edges.push_back(std::make_tuple(vertices[i], vertices[down_left], Edge(edgeCount++)));
-// 	}
+	// DOWN LEFT
+	if(i < (verticesCount - width) and (i % width) != 0){
+	    unsigned down_left = i + width - 1;
+	    edges.push_back(std::make_tuple(vertices[i], vertices[down_left], Edge(edgeCount++)));
+	}
 
-// 	// DOWN RIGHT
-// 	if(i < (verticesCount - width) and (i % width) != (width - 1)){
-// 	    unsigned down_right = i + width + 1;
-// 	    edges.push_back(std::make_tuple(vertices[i], vertices[down_right], Edge(edgeCount++)));
-// 	}
+	// DOWN RIGHT
+	if(i < (verticesCount - width) and (i % width) != (width - 1)){
+	    unsigned down_right = i + width + 1;
+	    edges.push_back(std::make_tuple(vertices[i], vertices[down_right], Edge(edgeCount++)));
+	}
 
-// 	// RIGHT
-// 	if((i % width) != (width - 1)){
-// 	    int right = i + 1;
-// 	    edges.push_back(std::make_tuple(vertices[i], vertices[right], Edge(edgeCount++)));
-// 	}
+	// RIGHT
+	if((i % width) != (width - 1)){
+	    int right = i + 1;
+	    edges.push_back(std::make_tuple(vertices[i], vertices[right], Edge(edgeCount++)));
+	}
 
-// 	// LEFT
-// 	if((i % width) != 0){
-// 	    int left = i - 1;
-// 	    edges.push_back(std::make_tuple(vertices[i], vertices[left], Edge(edgeCount++)));
-// 	}
+	// LEFT
+	if((i % width) != 0){
+	    int left = i - 1;
+	    edges.push_back(std::make_tuple(vertices[i], vertices[left], Edge(edgeCount++)));
+	}
 	
 
-//     }
+    }
 
-//     return edges;
-// }
+    return edges;
+}
 
 // template <typename T_Graph>
 // void printVertexDistribution(const std::vector<typename T_Graph::Vertex>& vertices,const T_Graph& graph, const CommID commID){
@@ -518,7 +519,14 @@ void life() {
 	typedef unsigned ID;
 	Cell() : id(0){}
 	Cell(ID id) : id(id){
-	    isAlive = rand() % 2;
+	    unsigned random = rand() % 10000;
+	    if(random > 3125){
+		isAlive = 0;
+	    }
+	    else {
+		isAlive = 1;
+	    }
+
 	}
 	
 	unsigned id;
@@ -531,15 +539,12 @@ void life() {
     typedef GraphPolicy::BGL<Cell, NoProperty> BGL;
     typedef Graph<BGL>                         LifeGraph;
     typedef typename LifeGraph::Vertex         Vertex;
-    //typedef typename Vertex::ID                VertexID;
     typedef typename LifeGraph::Edge           Edge;
     typedef typename LifeGraph::EdgeDescriptor EdgeDescriptor;
 
     // Communicator
     typedef CommunicationPolicy::MPI            Mpi;
     typedef Communicator<Mpi>                   MpiCommunicator;
-    typedef typename MpiCommunicator::Context   Context;
-    typedef typename MpiCommunicator::Event     Event;
     typedef typename MpiCommunicator::CommID    CommID;
 
     typedef NameService<LifeGraph, MpiCommunicator>     NS;
@@ -549,87 +554,129 @@ void life() {
      * Game Logik
      */
     // Create cells
+    const unsigned height = 42;
+    const unsigned width = 42;
     std::vector<Vertex> graphVertices;
-    std::vector<EdgeDescriptor> edges = generate2DMeshTopology<LifeGraph>(2, 2, graphVertices);
+    std::vector<EdgeDescriptor> edges = generate2DMeshDiagonalTopology<LifeGraph>(height, width, graphVertices);
 
-    LifeGraph graph (edges, graphVertices); graph.print();
+    LifeGraph graph (edges, graphVertices); //graph.print();
 
     MpiCommunicator communicator;
-    //NS nameService(graph, communicator);
-    //GC graphCommunicator(communicator, nameService);
+    NS nameService(graph, communicator);
+    GC graphCommunicator(communicator, nameService);
 
     // Distribute work evenly
-    // CommID myCommID  = communicator.getGlobalContext().getCommID();
-    // unsigned commCount = communicator.getGlobalContext().size();
-    // std::vector<Vertex> myGraphVertices = distributeVerticesEvenly(myCommID, commCount, graph);
+    CommID myCommID  = communicator.getGlobalContext().getCommID();
+    unsigned commCount = communicator.getGlobalContext().size();
+    std::vector<Vertex> myGraphVertices = distributeVerticesEvenly(myCommID, commCount, graph);
 
-    //Announce work distribution 
-    //nameService.announce(graph, myGraphVertices); // <=== SEG FAULT
+    // Announce work distribution 
+    nameService.announce(graph, myGraphVertices); 
+
+    while(true){
+
+	// Send status to neighbor cells
+	for(Vertex v : myGraphVertices){
     
-    // // Send status to neighbor cells
-    // for(Vertex v : myGraphVertices){
-    
-    // 	std::vector<std::pair<Vertex, Edge> > outEdges = graph.getOutEdges(v); // <=== SEG FAULT
-    // 	for(std::pair<Vertex, Edge> edge : outEdges){
-    // 	    std::vector<unsigned> isAlive(1, v.isAlive);
-    // 	    graphCommunicator.asyncSend(graph, edge.first, edge.second, isAlive);
+	    std::vector<std::pair<Vertex, Edge> > outEdges = graph.getOutEdges(v); 
+	    for(std::pair<Vertex, Edge> edge : outEdges){
+		std::vector<unsigned> isAlive(1, v.isAlive);
+		graphCommunicator.asyncSend(graph, edge.first, edge.second, isAlive);
 	    
-    // 	}
+	    }
 
-    // }
+	}
 
-    // // Recv status from neighbor cells
-    // std::vector<unsigned> aliveCount(myGraphVertices.size(), 0);
-    // unsigned vertex_i = 0;
-    // for(Vertex v : myGraphVertices){
+	// Recv status from neighbor cells
+	std::vector<unsigned> aliveCount(myGraphVertices.size(), 0);
+	unsigned vertex_i = 0;
+	for(Vertex v : myGraphVertices){
 
-    // 	std::vector<std::pair<Vertex, Edge> > inEdges = graph.getInEdges(v);
+	    std::vector<std::pair<Vertex, Edge> > inEdges = graph.getInEdges(v);
 	
-    // 	for(std::pair<Vertex, Edge> edge : inEdges){
-    // 	    std::vector<unsigned> isAlive(1, 0);
-    // 	    graphCommunicator.recv(graph, edge.first, edge.second, isAlive);
-    // 	    if(isAlive[0]){
-    // 		aliveCount.at(vertex_i)++;
-    // 	    }
+	    for(std::pair<Vertex, Edge> edge : inEdges){
+		std::vector<unsigned> isAlive(1, 0);
+		graphCommunicator.recv(graph, edge.first, edge.second, isAlive);
+		if(isAlive[0]){
+		    aliveCount.at(vertex_i)++;
+		}
 
 
-    // 	}
-    // 	std::cout << "AliveCount of vertex " << v.id << ": " << aliveCount[vertex_i] << std::endl;
-    // 	vertex_i++;
+	    }
+	    vertex_i++;
 
-    // }
+	}
 
-    // // Calculate status for next Generation
-    // vertex_i = 0;
-    // for(Vertex v : myGraphVertices){
+	// Calculate status for next Generation
+	vertex_i = 0;
+	for(Vertex &v : myGraphVertices){
 	
-    // 	switch(aliveCount.at(vertex_i)){
+	    switch(aliveCount.at(vertex_i)){
 
-    // 	case 0:
-    // 	    v.isAlive = 0;
+	    case 0:
+	    case 1:
+		v.isAlive = 0;
+		break;
 
-    // 	case 1:
-    // 	    v.isAlive = 0;
-
-    // 	case 2:
-    // 	    v.isAlive = v.isAlive;
+	    case 2:
+		v.isAlive = v.isAlive;
+		break;
 	    
-    // 	case 3: 
-    // 	    v.isAlive = 1;
-    // 	    break;
+	    case 3: 
+		v.isAlive = 1;
+		break;
 
-    // 	default: 
-    // 	    v.isAlive = 0;
+	    default: 
+		v.isAlive = 0;
+		break;
 
-	    
+	    }
+	    vertex_i++;
+	}
 
+	communicator.synchronize(nameService.getGraphContext(graph));
 
-    // 	}
-    // }
+	// Some vertex host has to print the solution
+	std::vector<unsigned> aliveMap(graph.getVertices().size(), 0);
 
+	for(Vertex v: myGraphVertices){
+	    std::vector<unsigned> isAlive(1, v.isAlive);
+	    graphCommunicator.asyncSend(graph, graph.getVertices().at(0), 0, isAlive);
+	}
+
+	if(myCommID == 0){
+	    for(Vertex v: graph.getVertices()){
+		std::vector<unsigned> isAlive(1, 0);
+		graphCommunicator.recv(graph, v, 0, isAlive);
+		aliveMap.at(v.id) = isAlive[0];
+	    }
+	
+	
+	    for(unsigned i = 0; i < aliveMap.size(); ++i){
+		if((i % (width)) == 0){
+		    std::cerr << std::endl;
+		}
+
+		if(aliveMap.at(i)){
+		    std::cerr << "#";
+		}
+		else {
+		    std::cerr << " ";
+		}
+
+	    }
+
+	    // std::cout << std::endl << std::endl;
+	
+	    for(unsigned i = 0; i < height; ++i){
+		std::cerr << "\033[F";
+	    }
+	
+	    //usleep(100000);
+	}
+	communicator.synchronize(nameService.getGraphContext(graph));
+    }
     
-
-
 }
 
 
