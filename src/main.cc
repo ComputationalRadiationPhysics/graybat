@@ -543,19 +543,21 @@ void life() {
     typedef typename LifeGraph::EdgeDescriptor EdgeDescriptor;
 
     // Communicator
-    typedef CommunicationPolicy::MPI            Mpi;
-    typedef Communicator<Mpi>                   MpiCommunicator;
-    typedef typename MpiCommunicator::CommID    CommID;
+    typedef CommunicationPolicy::MPI         Mpi;
+    typedef Communicator<Mpi>                MpiCommunicator;
+    typedef typename MpiCommunicator::CommID CommID;
 
-    typedef NameService<LifeGraph, MpiCommunicator>     NS;
+
+    typedef NameService<LifeGraph, MpiCommunicator>           NS;
     typedef GraphCommunicator<LifeGraph, MpiCommunicator, NS> GC;
+    typedef typename GC::Event                                Event;
 
     /**
      * Game Logik
      */
     // Create cells
-    const unsigned height = 42;
-    const unsigned width = 42;
+    const unsigned height = 40;
+    const unsigned width = 40;
     std::vector<Vertex> graphVertices;
     std::vector<EdgeDescriptor> edges = generate2DMeshDiagonalTopology<LifeGraph>(height, width, graphVertices);
 
@@ -572,20 +574,45 @@ void life() {
 
     // Announce work distribution 
     nameService.announce(graph, myGraphVertices); 
+    unsigned generation = 0;
 
+
+    std::vector<Event> events;   
+    std::vector<unsigned> aliveMap(graph.getVertices().size(), 0); 
+
+    // Simulate life forever
     while(true){
+
+	// Print life field
+	if(myCommID == 0){
+	    std::cout << "Generation: " << generation << std::endl;
+	    for(unsigned i = 0; i < aliveMap.size(); ++i){
+		if((i % (width)) == 0){
+		    std::cerr << std::endl;
+		}
+
+		if(aliveMap.at(i)){
+		    std::cerr << "#";
+		}
+		else {
+		    std::cerr << " ";
+		}
+
+	    }
+	}
+
 
 	// Send status to neighbor cells
 	for(Vertex v : myGraphVertices){
-    
 	    std::vector<std::pair<Vertex, Edge> > outEdges = graph.getOutEdges(v); 
 	    for(std::pair<Vertex, Edge> edge : outEdges){
 		std::vector<unsigned> isAlive(1, v.isAlive);
-		graphCommunicator.asyncSend(graph, edge.first, edge.second, isAlive);
+		events.push_back(graphCommunicator.asyncSend(graph, edge.first, edge.second, isAlive));
 	    
 	    }
 
 	}
+
 
 	// Recv status from neighbor cells
 	std::vector<unsigned> aliveCount(myGraphVertices.size(), 0);
@@ -607,7 +634,14 @@ void life() {
 
 	}
 
-	// Calculate status for next Generation
+
+	for(unsigned i = 0; i < events.size(); ++i){
+	    events.back().wait();
+	    events.pop_back();
+	}
+
+
+	// Calculate status for next generation
 	vertex_i = 0;
 	for(Vertex &v : myGraphVertices){
 	
@@ -636,12 +670,10 @@ void life() {
 
 	communicator.synchronize(nameService.getGraphContext(graph));
 
-	// Some vertex host has to print the solution
-	std::vector<unsigned> aliveMap(graph.getVertices().size(), 0);
-
+	// Send alive information to host of vertex 0
 	for(Vertex v: myGraphVertices){
 	    std::vector<unsigned> isAlive(1, v.isAlive);
-	    graphCommunicator.asyncSend(graph, graph.getVertices().at(0), 0, isAlive);
+	    events.push_back(graphCommunicator.asyncSend(graph, graph.getVertices().at(0), 0, isAlive));
 	}
 
 	if(myCommID == 0){
@@ -650,28 +682,18 @@ void life() {
 		graphCommunicator.recv(graph, v, 0, isAlive);
 		aliveMap.at(v.id) = isAlive[0];
 	    }
-	
-	
-	    for(unsigned i = 0; i < aliveMap.size(); ++i){
-		if((i % (width)) == 0){
-		    std::cerr << std::endl;
-		}
 
-		if(aliveMap.at(i)){
-		    std::cerr << "#";
-		}
-		else {
-		    std::cerr << " ";
-		}
-
-	    }
-
-	    for(unsigned i = 0; i < height; ++i){
-		std::cerr << "\033[F";
-	    }
-	
+	    // Clear screen 
+	    std::cout << "\e[1;1H\e[2J";
 	}
+
+	for(unsigned i = 0; i < events.size(); ++i){
+	    events.back().wait();
+	    events.pop_back();
+	}
+
 	communicator.synchronize(nameService.getGraphContext(graph));
+	generation++;
     }
     
 }
