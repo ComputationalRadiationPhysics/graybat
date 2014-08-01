@@ -159,16 +159,20 @@ namespace CommunicationPolicy {
 
 	    }
 
+	    ~Event(){
+
+	    }
+
 	    void wait(){
 		MPI_Status status;
 		MPI_Wait(&request, &status);
+	
 	    }
 
 	    bool ready(){
 		int flag = 0;
 		MPI_Status status;
 		MPI_Test(&request, &flag, &status);
-
 		return bool(flag);
 	    }
 
@@ -189,12 +193,10 @@ namespace CommunicationPolicy {
 	// Member
 	Context initialContext;
 
-	// MPI(){
-	//     initMPI();
 	MPI() : contextCount(1), initialContext(contextCount, initialCommID(), MPICommSize(MPI_COMM_WORLD)) {
 	    contextMap[contextCount] = MPI_COMM_WORLD;
 
-	    //Create Map CommID -> uri
+	    // Create Map CommID -> uri
 	    for(unsigned i = 0; i < initialContext.size(); ++i){
 	    	uriMap[initialContext.id][i] = i;
 	    }
@@ -216,7 +218,7 @@ namespace CommunicationPolicy {
 	Event asyncSendData(const T* const data, const size_t count, const CommID destCommID, const Context context, const MsgType msgType){
 	    MPI_Request request;
 	    Uri destUri = getCommIDUri(context, destCommID);
-	    MPI_Isend(const_cast<T*>(data), count, MPIDatatypes<T>::type, destUri, msgType, contextMap[context.id], &request);
+	    MPI_Issend(const_cast<T*>(data), count, MPIDatatypes<T>::type, destUri, msgType, contextMap[context.id], &request);
 	    return Event(request);
 
 
