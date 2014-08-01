@@ -25,12 +25,13 @@ endif(MPI_CXX_FOUND)
 ###############################################################################
 # DO not compile with -OX with x > 1, can lead to segfaults
 set (CMAKE_CXX_COMPILER "g++")
-if(CMAKE_COMPILER_IS_GNUCXX)
+set (CMAKE_CXX_COMPILER "g++")
+if(${CMAKE_COMPILER_IS_GNUCXX})
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-endif(CMAKE_COMPILER_IS_GNUCXX)
+endif(${CMAKE_COMPILER_IS_GNUCXX})
 
 ###############################################################################
 # Build executables

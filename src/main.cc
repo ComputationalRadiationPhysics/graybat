@@ -556,7 +556,7 @@ void life() {
      * Game Logik
      */
     // Create cells
-    const unsigned height = 40;
+    const unsigned height = 25;
     const unsigned width = 40;
     std::vector<Vertex> graphVertices;
     std::vector<EdgeDescriptor> edges = generate2DMeshDiagonalTopology<LifeGraph>(height, width, graphVertices);
@@ -585,7 +585,7 @@ void life() {
 
 	// Print life field
 	if(myCommID == 0){
-	    std::cout << "Generation: " << generation << std::endl;
+
 	    for(unsigned i = 0; i < aliveMap.size(); ++i){
 		if((i % (width)) == 0){
 		    std::cerr << std::endl;
@@ -598,6 +598,10 @@ void life() {
 		    std::cerr << " ";
 		}
 
+	    }
+	    //std::cout << "Generation: " << generation << std::endl;
+	    for(unsigned i = 0; i < height; ++i){
+	      std::cerr << "\033[F";
 	    }
 	}
 
@@ -684,7 +688,7 @@ void life() {
 	    }
 
 	    // Clear screen 
-	    std::cout << "\e[1;1H\e[2J";
+	    //std::cout << "\e[1;1H\e[2J";
 	}
 
 	for(unsigned i = 0; i < events.size(); ++i){
@@ -692,7 +696,7 @@ void life() {
 	    events.pop_back();
 	}
 
-	communicator.synchronize(nameService.getGraphContext(graph));
+	//communicator.synchronize(nameService.getGraphContext(graph));
 	generation++;
     }
     
