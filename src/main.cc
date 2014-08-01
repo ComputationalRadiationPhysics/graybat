@@ -164,7 +164,7 @@ std::vector<typename T_Graph::EdgeDescriptor> generate2DMeshTopology(const unsig
 }
 
 template<typename T_Graph>
-std::vector<typename T_Graph::EdgeDescriptor> generate2DMeshDiagonalTopology(const unsigned height, const unsigned width, std::vector<typename T_Graph::Vertex> &vertices){
+std::vector<typename T_Graph::EdgeDescriptor> generate2DMeshDiagonalTopology(const unsigned height, const unsigned width, std::vector<typename T_Graph::Vertex> &vertices, const bool periodic){
     typedef typename T_Graph::Vertex Vertex;
     typedef typename T_Graph::Edge Edge;
     typedef typename T_Graph::EdgeDescriptor EdgeDescriptor;
@@ -177,56 +177,62 @@ std::vector<typename T_Graph::EdgeDescriptor> generate2DMeshDiagonalTopology(con
     for(Vertex v: vertices){
 	unsigned i    = v.id;
 
-	// UP
-	if(i >= width){
-	    unsigned up   = i - width;
-	    edges.push_back(std::make_tuple(vertices[i], vertices[up], Edge(edgeCount++)));
-	}
+	    // UP
+	    if(i >= width){
+		unsigned up   = i - width;
+		edges.push_back(std::make_tuple(vertices[i], vertices[up], Edge(edgeCount++)));
+	    }
 
-	// UP LEFT
-	if(i >= width and (i % width) != 0){
-	    unsigned up_left   = i - width - 1;
-	    edges.push_back(std::make_tuple(vertices[i], vertices[up_left], Edge(edgeCount++)));
-	}
+	    // UP LEFT
+	    if(i >= width and (i % width) != 0){
+		unsigned up_left   = i - width - 1;
+		edges.push_back(std::make_tuple(vertices[i], vertices[up_left], Edge(edgeCount++)));
+	    }
 
-	// UP RIGHT
-	if(i >= width and (i % width) != (width - 1)){
-	    unsigned up_right   = i - width + 1;
-	    edges.push_back(std::make_tuple(vertices[i], vertices[up_right], Edge(edgeCount++)));
-	}
+	    // UP RIGHT
+	    if(i >= width and (i % width) != (width - 1)){
+		unsigned up_right   = i - width + 1;
+		edges.push_back(std::make_tuple(vertices[i], vertices[up_right], Edge(edgeCount++)));
+	    }
 
-	// DOWN
-	if(i < (verticesCount - width)){
-	    unsigned down = i + width;
-	    edges.push_back(std::make_tuple(vertices[i], vertices[down], Edge(edgeCount++)));
-	}
+	    // DOWN
+	    if(i < (verticesCount - width)){
+		unsigned down = i + width;
+		edges.push_back(std::make_tuple(vertices[i], vertices[down], Edge(edgeCount++)));
+	    }
 
-	// DOWN LEFT
-	if(i < (verticesCount - width) and (i % width) != 0){
-	    unsigned down_left = i + width - 1;
-	    edges.push_back(std::make_tuple(vertices[i], vertices[down_left], Edge(edgeCount++)));
-	}
+	    // DOWN LEFT
+	    if(i < (verticesCount - width) and (i % width) != 0){
+		unsigned down_left = i + width - 1;
+		edges.push_back(std::make_tuple(vertices[i], vertices[down_left], Edge(edgeCount++)));
+	    }
 
-	// DOWN RIGHT
-	if(i < (verticesCount - width) and (i % width) != (width - 1)){
-	    unsigned down_right = i + width + 1;
-	    edges.push_back(std::make_tuple(vertices[i], vertices[down_right], Edge(edgeCount++)));
-	}
+	    // DOWN RIGHT
+	    if(i < (verticesCount - width) and (i % width) != (width - 1)){
+		unsigned down_right = i + width + 1;
+		edges.push_back(std::make_tuple(vertices[i], vertices[down_right], Edge(edgeCount++)));
+	    }
 
-	// RIGHT
-	if((i % width) != (width - 1)){
-	    int right = i + 1;
-	    edges.push_back(std::make_tuple(vertices[i], vertices[right], Edge(edgeCount++)));
-	}
+	    // RIGHT
+	    if((i % width) != (width - 1)){
+		int right = i + 1;
+		edges.push_back(std::make_tuple(vertices[i], vertices[right], Edge(edgeCount++)));
+	    }
 
-	// LEFT
-	if((i % width) != 0){
-	    int left = i - 1;
-	    edges.push_back(std::make_tuple(vertices[i], vertices[left], Edge(edgeCount++)));
-	}
-	
+	    // LEFT
+	    if((i % width) != 0){
+		int left = i - 1;
+		edges.push_back(std::make_tuple(vertices[i], vertices[left], Edge(edgeCount++)));
+	    }
+
+	    
 
     }
+    
+    for(unsigned i = 0; i < width; ++i){
+	
+    }
+    
 
     return edges;
 }
@@ -556,10 +562,10 @@ void life() {
      * Game Logik
      */
     // Create cells
-    const unsigned height = 25;
-    const unsigned width = 40;
+    const unsigned height = 100;
+    const unsigned width = 100;
     std::vector<Vertex> graphVertices;
-    std::vector<EdgeDescriptor> edges = generate2DMeshDiagonalTopology<LifeGraph>(height, width, graphVertices);
+    std::vector<EdgeDescriptor> edges = generate2DMeshDiagonalTopology<LifeGraph>(height, width, graphVertices, true);
 
     LifeGraph graph (edges, graphVertices); //graph.print();
 
@@ -588,19 +594,19 @@ void life() {
 
 	    for(unsigned i = 0; i < aliveMap.size(); ++i){
 		if((i % (width)) == 0){
-		    std::cerr << std::endl;
+		    std::cout << std::endl;
 		}
 
 		if(aliveMap.at(i)){
-		    std::cerr << "#";
+		    std::cout << "#";
 		}
 		else {
-		    std::cerr << " ";
+		    std::cout << " ";
 		}
 
 	    }
-	    //std::cout << "Generation: " << generation << std::endl;
-	    for(unsigned i = 0; i < height; ++i){
+	    std::cout << "Generation: " << generation << std::endl;
+	    for(unsigned i = 0; i < height+1; ++i){
 	      std::cerr << "\033[F";
 	    }
 	}
@@ -628,10 +634,7 @@ void life() {
 	    for(std::pair<Vertex, Edge> edge : inEdges){
 		std::vector<unsigned> isAlive(1, 0);
 		graphCommunicator.recv(graph, edge.first, edge.second, isAlive);
-		if(isAlive[0]){
-		    aliveCount.at(vertex_i)++;
-		}
-
+		if(isAlive[0]) aliveCount.at(vertex_i)++;
 
 	    }
 	    vertex_i++;
@@ -674,27 +677,27 @@ void life() {
 
 	communicator.synchronize(nameService.getGraphContext(graph));
 
-	// Send alive information to host of vertex 0
-	for(Vertex v: myGraphVertices){
-	    std::vector<unsigned> isAlive(1, v.isAlive);
-	    events.push_back(graphCommunicator.asyncSend(graph, graph.getVertices().at(0), 0, isAlive));
-	}
+	// // Send alive information to host of vertex 0
+	// for(Vertex v: myGraphVertices){
+	//     std::vector<unsigned> isAlive(1, v.isAlive);
+	//     events.push_back(graphCommunicator.asyncSend(graph, graph.getVertices().at(0), 0, isAlive));
+	// }
 
-	if(myCommID == 0){
-	    for(Vertex v: graph.getVertices()){
-		std::vector<unsigned> isAlive(1, 0);
-		graphCommunicator.recv(graph, v, 0, isAlive);
-		aliveMap.at(v.id) = isAlive[0];
-	    }
+	// if(myCommID == 0){
+	//     for(Vertex v: graph.getVertices()){
+	// 	std::vector<unsigned> isAlive(1, 0);
+	// 	graphCommunicator.recv(graph, v, 0, isAlive);
+	// 	aliveMap.at(v.id) = isAlive[0];
+	//     }
 
-	    // Clear screen 
-	    //std::cout << "\e[1;1H\e[2J";
-	}
+	//     // Clear screen 
+	//     //std::cout << "\e[1;1H\e[2J";
+	// }
 
-	for(unsigned i = 0; i < events.size(); ++i){
-	    events.back().wait();
-	    events.pop_back();
-	}
+	// for(unsigned i = 0; i < events.size(); ++i){
+	//     events.back().wait();
+	//     events.pop_back();
+	// }
 
 	//communicator.synchronize(nameService.getGraphContext(graph));
 	generation++;
