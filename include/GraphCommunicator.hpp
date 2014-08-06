@@ -136,7 +136,8 @@ struct GraphCommunicator {
     /**
      * @brief Collective reduction of sendData (here only sum). *rootVertex* will
      *        receive the reduced value. Data of vertices from the same host
-     *        Communicator will be reduced locally first.
+     *        Communicator will be reduced locally first. The reduction of
+     *        a graph has to be finished til new reduction can be performed.
      *
      * @todo Do I have to return an Event because its partly non blocking ?
      * @todo By collecting data first you could get rid of Reduce.count !
@@ -165,8 +166,6 @@ struct GraphCommunicator {
 	    reduces[reduceID].reduce.fetch_add(data);
 	}
 
-
-
 	// Remember pointer of recvData from rootVertex
 	if(rootVertex.id == srcVertex.id){
 	    reduces[reduceID].rootRecvData = &recvData;
@@ -175,9 +174,12 @@ struct GraphCommunicator {
 
 	mtx.lock();
 	reduces[reduceID].count++;
+
 	// Finally start reduction
+	//std::cout << "srcVertex:" << srcVertex.id << " vertexCount:" << vertexCount[graph.id][srcVertex.id] << " Graph:" << graph.id << " RID: " << reduceID << " " << reduces[reduceID].reduce << std::endl;
 	if(reduces[reduceID].count == vertices.size()){
 	    T recvDataCollctive;
+
 	    communicator.reduce(rootCommID, context, op, std::vector<T>(1 , reduces[reduceID].reduce), recvDataCollctive);
 
 	    if(reduces[reduceID].imRoot){
@@ -185,8 +187,10 @@ struct GraphCommunicator {
 	    }
 	    
 	    reduces.erase(reduceID);
+	    vertexCount.erase(graph.id);
 
 	}
+
 	mtx.unlock();
 
     }
@@ -202,7 +206,7 @@ struct GraphCommunicator {
 
     /**
      * @brief Collective operation that collects data from all vertices of the *graph* and sends this *recvData*
-     *        the *rootVertex*.
+     *        the *rootVertex*.The gather of a graph has to be finished til new gather can be performed.
      *
      * @param[in]  rootVertex Vetex that will receive the collected Data.
      * @param[in]  srcVertex  One of the vertices that send his data *sendData*.
@@ -237,6 +241,7 @@ struct GraphCommunicator {
 	    }
 
 	    gathers.erase(gatherID);
+	    vertexCount[graph.id][srcVertex.id] = 0;
 	}
 
     }
@@ -322,8 +327,13 @@ struct GraphCommunicator {
 private:
     std::string generateID(Graph &graph, Vertex vertex){
 	std::stringstream idSS; 
-	idSS << graph.id << vertexCount[graph.id][vertex.id]++;
-	return idSS.str();
+	if(vertexCount[graph.id][vertex.id] > 0){
+	    throw std::logic_error("Can not perform collective operation on same vertex in same graph simultaneous");
+	}
+	else {
+	    idSS << graph.id << vertexCount[graph.id][vertex.id]++;
+	    return idSS.str();
+	}
 
     }
 

@@ -105,7 +105,7 @@ struct NameService {
 	    }
 	}
 
-	Context newContext = communicator.createContext(commIDsWithVertices, oldContext); // <=== SEG FAULT
+	Context newContext = communicator.createContext(commIDsWithVertices, oldContext); 
 	
 	// Each Communicator announces the vertices it hosts
 	if(newContext.valid()){
