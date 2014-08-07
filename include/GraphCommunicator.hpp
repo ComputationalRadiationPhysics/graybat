@@ -7,6 +7,8 @@
 /************************************************************************//**
  * @class GraphCommunicator
  *
+ * @todo retrieve T_Graph and T_Communicator from T_NameService
+ *
  * @brief Provides point to point and collective communication schemas
  *        on graph base. Communicator is used as communication backend
  *        and NameService provide location information of the vertices
@@ -200,7 +202,7 @@ struct GraphCommunicator {
     struct Collective {
 	std::vector<T> send;
 	bool isRoot;
-	T* rootRecvData;
+	std::vector<T>* rootRecvData;
 	
     };
 
@@ -211,8 +213,8 @@ struct GraphCommunicator {
      * @param[in]  rootVertex Vetex that will receive the collected Data.
      * @param[in]  srcVertex  One of the vertices that send his data *sendData*.
      * @param[in]  graph      Vertices of this *graph* take part on the collective operation.
-     * @param[in]  sendData   Data that each *srcVertex* sends.
-     * @param[out] recvData   Data that *rootVertex* will receive from each srcVertex.
+     * @param[in]  sendData   Data that each *srcVertex* sends (each Vertex send one element).
+     * @param[out] recvData   Data that *rootVertex* will receive from each srcVertex in local vertex.id order.
      */
     template <typename T>
     void gather(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, const T sendData, std::vector<T>& recvData){
@@ -223,8 +225,11 @@ struct GraphCommunicator {
 	std::vector<Vertex> vertices = nameService.getHostedVertices(graph, srcCommID);
 	Context context = nameService.getGraphContext(graph);
 
+
 	std::string gatherID = generateID(graph, srcVertex);
-	
+	//std::cout << "srcVertex:" << srcVertex.id << " vertexCount:" << vertexCount[graph.id][srcVertex.id] << " Graph:" << graph.id << " Collected:" << gathers[gatherID].send.size() <<" RID: " << gatherID << std::endl;	
+
+	// Temporily collect data to gather
 	gathers[gatherID].send.push_back(sendData);
 
 	if(rootVertex.id == srcVertex.id){
@@ -233,94 +238,119 @@ struct GraphCommunicator {
 	}
 
 	if(gathers[gatherID].send.size() == vertices.size()){
+	    std::vector<unsigned> recvCount;
 	    std::vector<T> recvDataCollective;
-	    communicator.gather2(rootCommID, context, gathers[gatherID].send, recvDataCollective);
+	    communicator.gather2(rootCommID, context, gathers[gatherID].send, recvDataCollective, recvCount);
 
+
+	    // Reorder received elements in vertex order
+	    std::vector<T> recvReordered(recvDataCollective.size(), 0);
+	    unsigned commID = 0;
+	    for(unsigned recv_i = 0; recv_i < recvDataCollective.size(); ){
+		std::vector<Vertex> hostedVertices = nameService.getHostedVertices(graph, commID);
+		for(Vertex v: hostedVertices){
+		    T recvElement = recvDataCollective.at(recv_i);
+		    recvReordered.at(v.id) = recvElement;
+		    recv_i++;
+		}
+		commID++;
+	    
+	    }
+	
+	    // Write received data to root communicator pointer
 	    if(gathers[gatherID].isRoot){
-		*(gathers[gatherID].rootRecvData) = recvDataCollective;
+		*(gathers[gatherID].rootRecvData) = recvReordered;
 	    }
 
 	    gathers.erase(gatherID);
-	    vertexCount[graph.id][srcVertex.id] = 0;
+	    vertexCount.erase(graph.id);
+
 	}
 
     }
+
 
     // TODO
     // Return Event because its non blocking !
-    template <typename T>
-    void allGather(const Vertex srcVertex, Graph& graph, const T sendData, std::vector<T>& recvData){
-	static std::vector<T> sendTmp;
-	static std::vector<std::vector<T>*> recvDataPtr;
+    // template <typename T>
+    // void allGather(const Vertex srcVertex, Graph& graph, const T sendData, std::vector<T>& recvData){
+    // 	static std::vector<T> sendTmp;
+    // 	static std::vector<std::vector<T>*> recvDataPtr;
 
-	CommID srcCommID  = nameService.locateVertex(graph, srcVertex);
-	std::vector<Vertex> vertices = nameService.getHostedVertices(graph, srcCommID);
-	Context context = nameService.getGraphContext(graph);
+    // 	CommID srcCommID  = nameService.locateVertex(graph, srcVertex);
+    // 	std::vector<Vertex> vertices = nameService.getHostedVertices(graph, srcCommID);
+    // 	Context context = nameService.getGraphContext(graph);
 
-	sendTmp.push_back(sendData);
-	recvDataPtr.push_back(&recvData);
+    // 	sendTmp.push_back(sendData);
+    // 	recvDataPtr.push_back(&recvData);
 
 
-	if(sendTmp.size() == vertices.size()){
-	    std::vector<T> recvDataCollective;
-	    communicator.allGather2(context, sendTmp, recvDataCollective);
+    // 	if(sendTmp.size() == vertices.size()){
+    // 	    std::vector<T> recvDataCollective;
+    // 	    communicator.allGather2(context, sendTmp, recvDataCollective);
 
-	    for(unsigned i = 0; i < recvDataPtr.size(); ++i){
-		*(recvDataPtr[i]) = recvDataCollective;
-	    }
+    // 	    for(unsigned i = 0; i < recvDataPtr.size(); ++i){
+    // 		*(recvDataPtr[i]) = recvDataCollective;
+    // 	    }
 
-	    sendTmp.clear();
-	    recvDataPtr.clear();
-	}
+    // 	    sendTmp.clear();
+    // 	    recvDataPtr.clear();
+    // 	}
 
-    }
+    // }
 
-    template <typename T>
-    void broadcast(const Vertex srcVertex, const Vertex rootVertex, Graph& graph, std::vector<T>& sendData){
-    	static unsigned broadcastCount;
-    	static std::vector<std::vector<T>*> broadcastPtr;
-	static std::vector<T> sendDataPtr;
-	static bool imRoot;
+    // template <typename T>
+    // void broadcast(const Vertex srcVertex, const Vertex rootVertex, Graph& graph, std::vector<T>& sendData){
+    // 	static unsigned broadcastCount;
+    // 	static std::vector<std::vector<T>*> broadcastPtr;
+    // 	static std::vector<T> sendDataPtr;
+    // 	static bool imRoot;
 
-    	CommID srcCommID  = nameService.locateVertex(graph, srcVertex);
-    	CommID rootCommID  = nameService.locateVertex(graph, rootVertex);
-    	std::vector<Vertex> vertices = nameService.getHostedVertices(graph, srcCommID);
-    	Context context = nameService.getGraphContext(graph);
+    // 	CommID srcCommID  = nameService.locateVertex(graph, srcVertex);
+    // 	CommID rootCommID  = nameService.locateVertex(graph, rootVertex);
+    // 	std::vector<Vertex> vertices = nameService.getHostedVertices(graph, srcCommID);
+    // 	Context context = nameService.getGraphContext(graph);
 
-    	broadcastPtr.push_back(&sendData);
-	if(rootVertex.id == srcVertex.id){
-	    sendDataPtr = sendData;
-	    imRoot = true;
+    // 	broadcastPtr.push_back(&sendData);
+    // 	if(rootVertex.id == srcVertex.id){
+    // 	    sendDataPtr = sendData;
+    // 	    imRoot = true;
 
-	}
+    // 	}
 
-	broadcastCount++;
+    // 	broadcastCount++;
 
-    	if(broadcastCount == vertices.size()){
-	    if(imRoot){
-		communicator.broadcast(rootCommID, context, sendDataPtr);
-		for(unsigned i = 0; i < broadcastPtr.size(); ++i){
-		    *(broadcastPtr[i]) = sendDataPtr;
-		}
+    // 	if(broadcastCount == vertices.size()){
+    // 	    if(imRoot){
+    // 		communicator.broadcast(rootCommID, context, sendDataPtr);
+    // 		for(unsigned i = 0; i < broadcastPtr.size(); ++i){
+    // 		    *(broadcastPtr[i]) = sendDataPtr;
+    // 		}
 
-	    }
-	    else {
-		std::vector<T> recvData(1, 0);
-		communicator.broadcast(rootCommID, context, recvData);
-		for(unsigned i = 0; i < broadcastPtr.size(); ++i){
-		    *(broadcastPtr[i]) = recvData;
-		}
+    // 	    }
+    // 	    else {
+    // 		std::vector<T> recvData(1, 0);
+    // 		communicator.broadcast(rootCommID, context, recvData);
+    // 		for(unsigned i = 0; i < broadcastPtr.size(); ++i){
+    // 		    *(broadcastPtr[i]) = recvData;
+    // 		}
 
-	    }
+    // 	    }
 	    
-	    // reset static vars
-	    broadcastCount = 0;
-	    broadcastPtr.clear();
-	    imRoot = false;
+    // 	    // reset static vars
+    // 	    broadcastCount = 0;
+    // 	    broadcastPtr.clear();
+    // 	    imRoot = false;
 
-    	}
+    // 	}
 
 	
+    // }
+
+    void synchronize(Graph &graph){
+	Context context = nameService.getGraphContext(graph);
+	communicator.synchronize(context);
+
     }
 
     

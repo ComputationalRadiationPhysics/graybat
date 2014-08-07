@@ -97,21 +97,22 @@ public:
      * @brief Collects *sendData* from all members of the *context* with varying size and transmits it as a list
      *        to Communicator with *rootCommID*.
      *
-     * @todo There is some parameter missing which gives the information which Communicator send
-     *       how many data. Until now the receiver *rootCommID* can´t say which data is from 
-     *       which Communicator.
      * @todo Give some nice name, just adding 2 is very stupid.
+     * @todo Create some version of this function where recvCount is solid and
+     *       not dynamically determined.
      *
      * @param[in]  rootCommID Communicator that will receive collcted data from *context* members
      * @param[in]  context    Set of Communicators that want to send Data
      * @param[in]  sendData   Data that every Communicator in the *context* sends with **varying** size
      * @param[out] recvData   Data from all *context* members, that Communicator with *rootCommID* will receive.
-     *                        *recvData* of all other members of the *context* will be empty.
+     *                        *recvData* of all other members of the *context* will be empty. The received
+     *                        data is ordered by the CommID of the Communicators
+     * @param[out] recvCount  Number of elements each Communicator sends (can by varying).
      *
      */
     template <typename T>
-    void gather2(const CommID rootCommID, const Context context, const std::vector<T>& sendData, std::vector<T>& recvData){
-    	CommunicationPolicy::gather2(sendData.data(), sendData.size(), recvData.data(), sendData.size(), rootCommID, context);
+    void gather2(const CommID rootCommID, const Context context, const std::vector<T>& sendData, std::vector<T>& recvData, std::vector<unsigned>& recvCount){
+    	CommunicationPolicy::gather2(sendData.data(), sendData.size(), recvData, recvCount, rootCommID, context);
     }
 
     /**

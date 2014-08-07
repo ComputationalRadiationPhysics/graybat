@@ -63,8 +63,8 @@ struct NameService {
      *         be all Communicators in the network).
      *
      * @todo What happens if *vertices* is empty ?
-     *
      * @todo What happens when there already exist an context for *graph* ?
+     * @todo What happens when not all *vertices* of a *graph* were announced ?
      *
      * @param[in] graph  Its vertices will be announced
      * @param[in] vertices A set of vertices, that will be hosted by this Communicator

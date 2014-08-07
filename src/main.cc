@@ -640,7 +640,7 @@ void life(MpiCommunicator& communicator) {
      * Game logic
      ****************************************************************************/
     // Create cells
-    const unsigned height = 25;
+    const unsigned height = 40;
     const unsigned width  = 40;
     std::vector<Vertex> graphVertices;
     std::vector<EdgeDescriptor> edges = generate2DMeshDiagonalTopology<LifeGraph>(height, width, graphVertices);
@@ -752,29 +752,11 @@ void life(MpiCommunicator& communicator) {
 	    vertex_i++;
 	}
 
-	communicator.synchronize(nameService.getGraphContext(graph));
-
 	// Send alive information to host of vertex 0
 	for(Vertex v: myGraphVertices){
-	    std::vector<unsigned> isAlive(1, v.isAlive);
-	    events.push_back(graphCommunicator.asyncSend(graph, graph.getVertices().at(0), 0, isAlive));
+	    graphCommunicator.gather(graph.getVertices().at(0), v, graph, unsigned(v.isAlive), aliveMap);
 	}
-
-	if(myCommID == 0){
-	    for(Vertex v: graph.getVertices()){
-		std::vector<unsigned> isAlive(1, 0);
-		graphCommunicator.recv(graph, v, 0, isAlive);
-		aliveMap.at(v.id) = isAlive[0];
-	    }
-
-	}
-
-	for(unsigned i = 0; i < events.size(); ++i){
-	    events.back().wait();
-	    events.pop_back();
-	}
-
-	communicator.synchronize(nameService.getGraphContext(graph));
+	
 	generation++;
     }
     
@@ -804,7 +786,7 @@ int main(){
      *  5. Again reduce und nearest neighbor communication
      *
      */
-    redistribution(communicator);
+    //redistribution(communicator);
 
     /** Example 2
      *
