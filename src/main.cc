@@ -640,8 +640,8 @@ void life(MpiCommunicator& communicator) {
      * Game logic
      ****************************************************************************/
     // Create cells
-    const unsigned height = 40;
-    const unsigned width  = 40;
+    const unsigned height = 45;
+    const unsigned width  = 45;
     std::vector<Vertex> graphVertices;
     std::vector<EdgeDescriptor> edges = generate2DMeshDiagonalTopology<LifeGraph>(height, width, graphVertices);
 
@@ -671,23 +671,22 @@ void life(MpiCommunicator& communicator) {
 
 	    for(unsigned i = 0; i < aliveMap.size(); ++i){
 		if((i % (width)) == 0){
-		    std::cout << std::endl;
+		    std::cerr << std::endl;
 		}
 
 		if(aliveMap.at(i)){
-		    std::cout << "#";
+		    std::cerr << "#";
 		}
 		else {
-		    std::cout << " ";
+		    std::cerr << " ";
 		}
 
 	    }
-	    std::cout << "Generation: " << generation << std::endl;
+	    std::cerr << "Generation: " << generation << std::endl;
 	    for(unsigned i = 0; i < height+1; ++i){
 	      std::cerr << "\033[F";
 	    }
 	}
-
 
 	// Send status to neighbor cells
 	for(Vertex v : myGraphVertices){
@@ -699,7 +698,6 @@ void life(MpiCommunicator& communicator) {
 	    }
 
 	}
-
 
 	// Recv status from neighbor cells
 	std::vector<unsigned> aliveCount(myGraphVertices.size(), 0);
@@ -749,6 +747,9 @@ void life(MpiCommunicator& communicator) {
 		break;
 
 	    }
+
+	    //v.isAlive = 1;
+
 	    vertex_i++;
 	}
 
@@ -756,7 +757,7 @@ void life(MpiCommunicator& communicator) {
 	for(Vertex v: myGraphVertices){
 	    graphCommunicator.gather(graph.getVertices().at(0), v, graph, unsigned(v.isAlive), aliveMap);
 	}
-	
+
 	generation++;
     }
     
@@ -770,10 +771,13 @@ void life(MpiCommunicator& communicator) {
  *
  *******************************************************************************/
 int main(){
+    // Init random numbers
+    srand(1234);
 
     // Communicator
     typedef CommunicationPolicy::MPI         Mpi;
     typedef Communicator<Mpi>                MpiCommunicator;
+
 
     MpiCommunicator communicator;
 
