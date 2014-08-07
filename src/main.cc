@@ -256,7 +256,7 @@ void nearestNeighborExchange(T_Communicator &communicator, T_Graph &graph, std::
     	for(std::pair<Vertex, Edge> outEdge : outEdges){
     	    Vertex dest = outEdge.first;
     	    Edge   e    = outEdge.second;
-    	    communicator.asyncSend(graph, dest, e, outBuffer);// <== BUGGY leads to segfault on some configuration
+    	    communicator.asyncSend(graph, dest, e, outBuffer);
     	}
 
     }
@@ -271,7 +271,7 @@ void nearestNeighborExchange(T_Communicator &communicator, T_Graph &graph, std::
     	for(unsigned i = 0 ; i < inBuffers.size(); ++i){
     	    Vertex src = inEdges[i].first;
     	    Edge   e   = inEdges[i].second;
-	    communicator.recv(graph, src, e, inBuffers[i]); // <== BUGGY leads to segfault on some configuration
+	    communicator.recv(graph, src, e, inBuffers[i]); 
     	}
 	
 	unsigned recvSum = 0;
@@ -347,7 +347,7 @@ void occupyRandomVertex(T_Communicator& communicator, T_Graph& graph, T_NameServ
     typedef typename T_Communicator::CommID  CommID;
     typedef typename T_Communicator::Context Context;
 
-    CommID masterCommID = 0;//randomHostCommID(communicator, nameService, graph);
+    CommID masterCommID = randomHostCommID(communicator, nameService, graph);
     Context context = nameService.getGraphContext(graph);
 
     if(nameService.getHostedVertices(graph, masterCommID).empty()){
@@ -362,7 +362,7 @@ void occupyRandomVertex(T_Communicator& communicator, T_Graph& graph, T_NameServ
      	bool haveVertex = false;
      	if(commID == masterCommID){
 	    srand (time(NULL));
-     	    randomVertex[0] = 1;//rand() % graph.getVertices().size();
+     	    randomVertex[0] = rand() % graph.getVertices().size();
 
 	    communicator.broadcast(masterCommID, context, randomVertex);
 
@@ -640,7 +640,7 @@ void life(MpiCommunicator& communicator) {
      * Game logic
      ****************************************************************************/
     // Create cells
-    const unsigned height = 45;
+    const unsigned height = 30;
     const unsigned width  = 45;
     std::vector<Vertex> graphVertices;
     std::vector<EdgeDescriptor> edges = generate2DMeshDiagonalTopology<LifeGraph>(height, width, graphVertices);
@@ -747,8 +747,6 @@ void life(MpiCommunicator& communicator) {
 		break;
 
 	    }
-
-	    //v.isAlive = 1;
 
 	    vertex_i++;
 	}
