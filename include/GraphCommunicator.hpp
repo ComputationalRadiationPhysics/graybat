@@ -7,33 +7,31 @@
 /************************************************************************//**
  * @class GraphCommunicator
  *
- * @todo retrieve T_Graph and T_Communicator from T_NameService
- *
  * @brief Provides point to point and collective communication schemas
  *        on graph base. Communicator is used as communication backend
  *        and NameService provide location information of the vertices
  *        of the Graph.
  *
  ***************************************************************************/
-template <typename T_Graph, typename T_Communicator, typename T_NameService>
+template <typename T_NameService>
 struct GraphCommunicator {
 
-    typedef T_Graph                 Graph;
+    typedef T_NameService  NameService;
+
+    typedef typename NameService::Graph Graph;
     typedef typename Graph::Vertex  Vertex;
     typedef typename Vertex::ID     VertexID;
     typedef typename Graph::Edge    Edge;
     typedef typename Graph::GraphID GraphID;
 
-    typedef T_Communicator Communicator;
+    typedef typename NameService::Communicator Communicator;
     typedef typename Communicator::Context          Context;
     typedef typename Communicator::CommID           CommID;
     typedef typename Communicator::Event            Event;
-
-    typedef T_NameService  NameService;
     
 
-    GraphCommunicator(Communicator& communicator, NameService& nameService) : 
-	communicator(communicator),
+    GraphCommunicator(NameService& nameService) : 
+	communicator(nameService.communicator),
 	nameService(nameService){
 
     }

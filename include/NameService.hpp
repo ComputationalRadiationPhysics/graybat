@@ -37,12 +37,17 @@ struct NameService {
     std::map<GraphID, std::map<CommID, std::vector<Vertex>> > vertexMap;
 
     // References
-    Graph& graph;
+    //Graph& graph;
     Communicator& communicator;
 
-    NameService(Graph& graph, Communicator& communicator) : 
-	graph(graph),
-	communicator(communicator){
+    // NameService(Graph& graph, Communicator& communicator) : 
+    // 	graph(graph),
+    // 	communicator(communicator){
+
+    // }
+
+    NameService(Communicator& communicator) : 
+    	communicator(communicator){
 
     }
 

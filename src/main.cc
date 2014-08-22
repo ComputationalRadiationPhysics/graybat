@@ -492,7 +492,7 @@ void redistribution(MpiCommunicator& communicator){
     typedef typename MpiCommunicator::CommID  CommID;
 
     typedef NameService<BGLGraph, MpiCommunicator>           NS;
-    typedef GraphCommunicator<BGLGraph, MpiCommunicator, NS> GC;
+    typedef GraphCommunicator<NS> GC;
 
 
     /***************************************************************************
@@ -521,8 +521,8 @@ void redistribution(MpiCommunicator& communicator){
      ****************************************************************************/
     CommID myCommID  = communicator.getGlobalContext().getCommID();
     unsigned commCount = communicator.getGlobalContext().size();
-    NS nameService(graph, communicator);
-    GC graphCommunicator(communicator, nameService);
+    NS nameService(communicator);
+    GC graphCommunicator(nameService);
 
 
     /***************************************************************************
@@ -632,23 +632,23 @@ void life(MpiCommunicator& communicator) {
     // Communicator
     typedef typename MpiCommunicator::CommID CommID;
 
-    typedef NameService<LifeGraph, MpiCommunicator>           NS;
-    typedef GraphCommunicator<LifeGraph, MpiCommunicator, NS> GC;
-    typedef typename GC::Event                                Event;
+    typedef NameService<LifeGraph, MpiCommunicator> NS;
+    typedef GraphCommunicator<NS>                   GC;
+    typedef typename GC::Event                      Event;
 
     /***************************************************************************
      * Game logic
      ****************************************************************************/
     // Create cells
-    const unsigned height = 30;
-    const unsigned width  = 45;
+    const unsigned height = 40;
+    const unsigned width  = 40;
     std::vector<Vertex> graphVertices;
     std::vector<EdgeDescriptor> edges = generate2DMeshDiagonalTopology<LifeGraph>(height, width, graphVertices);
 
     LifeGraph graph (edges, graphVertices); //graph.print();
 
-    NS nameService(graph, communicator);
-    GC graphCommunicator(communicator, nameService);
+    NS nameService(communicator);
+    GC graphCommunicator(nameService);
 
     // Distribute work evenly
     CommID myCommID  = communicator.getGlobalContext().getCommID();
