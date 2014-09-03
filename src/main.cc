@@ -534,11 +534,9 @@ void redistribution(MpiCommunicator& communicator){
 
 
     // TESTING BEGINN
-    typename NS::TestVertex tv = nameService.testAnnounce(graph, myGraphVertices);
-    
-    tv.send();
-
-    return;
+    // typename NS::TestVertex tv = nameService.testAnnounce(graph, myGraphVertices);
+    // tv.send();
+    // return;
     // TESTING END
 
     std::vector<Vertex> mySubGraphVertices = distributeVerticesEvenly(myCommID, commCount, subGraph);
