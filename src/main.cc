@@ -531,6 +531,16 @@ void redistribution(MpiCommunicator& communicator){
 
     // Distribute vertices to communicators
     std::vector<Vertex> myGraphVertices    = distributeVerticesEvenly(myCommID, commCount, graph);
+
+
+    // TESTING BEGINN
+    typename NS::TestVertex tv = nameService.testAnnounce(graph, myGraphVertices);
+    
+    tv.send();
+
+    return;
+    // TESTING END
+
     std::vector<Vertex> mySubGraphVertices = distributeVerticesEvenly(myCommID, commCount, subGraph);
 
     // Output vertex property
@@ -788,7 +798,7 @@ int main(){
      *  5. Again reduce und nearest neighbor communication
      *
      */
-    //redistribution(communicator);
+    redistribution(communicator);
 
     /** Example 2
      *
@@ -797,7 +807,7 @@ int main(){
      *  to neighbor cells to update own cells status.
      *
      */
-    life(communicator);
+    //life(communicator);
 
 
     return 0;

@@ -17,6 +17,7 @@
  * @remark A Communicator can host several vertices.
  * @todo   Think of vertices hosted by several Communicators
  *         for fault tolerance purpose
+ * @todo remove T_Graph template
  *
  *
  ***************************************************************************/
@@ -154,6 +155,42 @@ struct NameService {
 	}
 	
     }
+
+    //template <class T_Graph2>
+    struct TestVertex{
+	typedef T_Graph Graph;
+	typedef typename T_Graph::Vertex Vertex;
+
+	TestVertex(Communicator communicator, Graph graph, Vertex vertex) : 
+	    communicator(communicator),
+	    graph(graph),
+	    vertex(vertex){
+	    
+	}
+
+	void send(){
+	    std::cout << vertex.id << std::endl;
+	}
+
+	Communicator &communicator;
+	Graph        &graph;
+	Vertex       vertex;
+
+    };
+
+    template <class T_Graph2>
+    TestVertex testAnnounce(T_Graph2& graph, const std::vector<typename T_Graph2::Vertex> vertices){
+	typedef T_Graph2                  Graph;
+	//typedef typename T_Graph2::Vertex Vertex;
+
+	//TestVertex<Graph> testVertex(communicator, graph);
+	TestVertex testVertex(communicator, graph, vertices.at(0));
+
+
+    }
+
+
+
   
     /**
      * @brief Returns the CommID of the host Communicator of *vertex* in the *graph*
