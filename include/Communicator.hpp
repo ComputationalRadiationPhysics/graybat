@@ -209,7 +209,7 @@ public:
      */
     template <typename T, typename Op>
     void allReduce(const Context context, const Op op, const std::vector<T>& sendData, std::vector<T>& recvData){
-	CommunicationPolicy::allReduce(sendData.data(), recvData.data(), sendData.size(), op, context); // <=== SEG FAULT
+	CommunicationPolicy::allReduce(sendData.data(), recvData.data(), sendData.size(), op, context); 
     }
 
     /**
