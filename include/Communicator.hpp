@@ -28,14 +28,68 @@ private:
 public:
     typedef typename CommunicationPolicy::Event             Event;
     typedef typename CommunicationPolicy::Context           Context;
-    typedef typename CommunicationPolicy::ContextID         ContextID;
+    typedef unsigned                                        ContextID;
     typedef unsigned                                        CommID;
 
 public:
 
+
     /***************************************************************************
      *
-     * POINT TO POINT COMMUNICATION
+     * EVENT INTERFACE
+     *
+     ***************************************************************************/
+    struct NewEvent : protected CommunicationPolicy::Event {
+	NewEvent(CommunicationPolicy::Event event) : CommunicationPolicy::Event(event){
+
+	}
+
+	void wait() {
+	    CommunicationPolicy::Event::wait();
+	}
+
+
+	bool ready() {
+	    return CommunicationPolicy::Event::ready();
+	}
+
+    };
+
+
+    /***************************************************************************
+     *
+     * CONTEXT INTERFACE
+     *
+     ***************************************************************************/
+    struct NewContext : public CommunicationPolicy::Context {
+	typedef unsigned ContextID;
+
+	NewContext(CommunicationPolicy::Context context) : CommunicationPolicy::Context(context){
+
+	}
+
+	size_t size(){
+	    return CommunicationPolicy::size();
+	}
+
+	CommID getCommID(){
+	    return CommunicationPolicy::getCommID();
+	}
+
+	ContextID getContextID(){
+	    return CommunicationPolicy::getContextID();
+	}
+
+	bool valid(){
+	    return CommunicationPolicy::valid();
+
+	}
+
+    };
+
+    /***************************************************************************
+     *
+     * POINT TO POINT COMMUNICATION INTERFACE
      *
      ***************************************************************************/
 
@@ -51,6 +105,7 @@ public:
      */
     template <typename T>
     Event asyncSend(const CommID destCommID, const Tag tag, const Context context, const T& sendData){
+	
 	return CommunicationPolicy::asyncSendData(sendData.data(), sendData.size(), destCommID, context, tag);
     }
 
@@ -74,7 +129,7 @@ public:
 
     /**************************************************************************
      *
-     * COLLECTIVE OPERATIONS
+     * COLLECTIVE OPERATIONS INTERFACE
      *
      **************************************************************************/ 
     /**
