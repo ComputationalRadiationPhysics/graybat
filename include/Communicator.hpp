@@ -61,7 +61,7 @@ public:
      * CONTEXT INTERFACE
      *
      ***************************************************************************/
-    struct NewContext : public CommunicationPolicy::Context {
+    struct NewContext : protected CommunicationPolicy::Context {
 	typedef unsigned ContextID;
 
 	NewContext(CommunicationPolicy::Context context) : CommunicationPolicy::Context(context){
