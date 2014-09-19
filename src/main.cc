@@ -796,7 +796,7 @@ int main(){
      *  5. Again reduce und nearest neighbor communication
      *
      */
-    redistribution(communicator);
+    //redistribution(communicator);
 
     /** Example 2
      *
@@ -805,7 +805,7 @@ int main(){
      *  to neighbor cells to update own cells status.
      *
      */
-    //life(communicator);
+    life(communicator);
 
 
     return 0;

@@ -26,32 +26,27 @@ private:
     typedef unsigned                                       Tag;                                            
 
 public:
-    typedef typename CommunicationPolicy::Event             Event;
-    typedef typename CommunicationPolicy::Context           Context;
-    typedef unsigned                                        ContextID;
-    typedef unsigned                                        CommID;
-
-public:
-
+    typedef unsigned                                       ContextID;
+    typedef unsigned                                       CommID;
 
     /***************************************************************************
      *
      * EVENT INTERFACE
      *
      ***************************************************************************/
-    struct NewEvent : protected CommunicationPolicy::Event {
-	NewEvent(CommunicationPolicy::Event event) : CommunicationPolicy::Event(event){
+    struct Event : protected CommunicationPolicy::Event {
+    	Event(typename CommunicationPolicy::Event event) : CommunicationPolicy::Event(event){
 
-	}
+    	}
 
-	void wait() {
-	    CommunicationPolicy::Event::wait();
-	}
+    	void wait() {
+    	    CommunicationPolicy::Event::wait();
+    	}
 
 
-	bool ready() {
-	    return CommunicationPolicy::Event::ready();
-	}
+    	bool ready() {
+    	    return CommunicationPolicy::Event::ready();
+    	}
 
     };
 
@@ -61,29 +56,33 @@ public:
      * CONTEXT INTERFACE
      *
      ***************************************************************************/
-    struct NewContext : protected CommunicationPolicy::Context {
-	typedef unsigned ContextID;
+    struct Context : protected CommunicationPolicy::Context {
+    	typedef unsigned ContextID;
 
-	NewContext(CommunicationPolicy::Context context) : CommunicationPolicy::Context(context){
-
-	}
-
-	size_t size(){
-	    return CommunicationPolicy::size();
-	}
-
-	CommID getCommID(){
-	    return CommunicationPolicy::getCommID();
-	}
-
-	ContextID getContextID(){
-	    return CommunicationPolicy::getContextID();
-	}
-
-	bool valid(){
-	    return CommunicationPolicy::valid();
+	Context() : CommunicationPolicy::Context(){
 
 	}
+
+    	Context(typename CommunicationPolicy::Context context) : CommunicationPolicy::Context(context){
+
+    	}
+
+    	size_t size() const {
+    	    return CommunicationPolicy::Context::size();
+    	}
+
+    	CommID getCommID() const {
+    	    return CommunicationPolicy::Context::getCommID();
+    	}
+
+    	ContextID getID() const {
+    	    return CommunicationPolicy::Context::getID();
+    	}
+
+    	bool valid() const {
+    	    return CommunicationPolicy::Context::valid();
+
+    	}
 
     };
 
@@ -105,8 +104,7 @@ public:
      */
     template <typename T>
     Event asyncSend(const CommID destCommID, const Tag tag, const Context context, const T& sendData){
-	
-	return CommunicationPolicy::asyncSendData(sendData.data(), sendData.size(), destCommID, context, tag);
+	return Event(CommunicationPolicy::asyncSendData(sendData.data(), sendData.size(), destCommID, context, tag));
     }
 
     /**
@@ -122,7 +120,7 @@ public:
      */
     template <typename T>
     Event asyncRecv(const CommID srcCommID, const Tag tag, const Context context, const T& recvData){
-	return CommunicationPolicy::asyncRecvData(recvData.data(), recvData.size(), srcCommID, context, tag);
+	return Event(CommunicationPolicy::asyncRecvData(recvData.data(), recvData.size(), srcCommID, context, tag));
     }
 
 
@@ -316,7 +314,7 @@ public:
      *
      */
     Context createContext(const std::vector<CommID> ids, const Context oldContext){
-	return CommunicationPolicy::createContext(ids, oldContext);
+	return Context(CommunicationPolicy::createContext(ids, oldContext));
     }
 
     /**
