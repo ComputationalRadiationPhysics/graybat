@@ -3,6 +3,15 @@
 #include <iostream>
 #include <tuple>
 
+#include <boost/graph/graph_traits.hpp>
+#include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/subgraph.hpp>
+#include <boost/graph/graphviz.hpp>
+#include <tuple>
+#include <string>
+#include <fstream> /* std::fstream */
+
+#include <types.hpp>
 
 
 /************************************************************************//**
@@ -14,41 +23,53 @@
  * the graph functionality.     
  *
  ***************************************************************************/
-template <class T_GraphPolicy>
-class Graph : public T_GraphPolicy{
-private:
-    typedef T_GraphPolicy GraphPolicy;
+template <class T_VertexProperty, class T_EdgeProperty>
+class Graph {
 
 public:
-    typedef typename GraphPolicy::VertexProperty Vertex;
+    // Public typedefs
+    typedef T_VertexProperty                     Vertex;
     typedef typename Vertex::ID                  VertexID;
-    typedef typename GraphPolicy::EdgeProperty   Edge;
+    typedef T_EdgeProperty                       Edge;
     typedef std::tuple<Vertex, Vertex, Edge>     EdgeDescriptor;
     typedef unsigned                             GraphID;
-    typedef typename GraphPolicy::Vertex         GraphPolicyVertex;
-    typedef typename GraphPolicy::Edge           GraphPolicyEdge;
 
 
-private: 
-    template <typename T> 
-    using Container = typename GraphPolicy::template Container<T>;
+    // typedef typename GraphPolicy::Vertex         GraphPolicyVertex;
+    // typedef typename GraphPolicy::Edge           GraphPolicyEdge;
+    // struct NewVertex : public Vertex {
+    // 	NewVertex(Vertex v) : Vertex(v) {
+    // 	}
+    // 	unsigned id;
+    // 	Graph &graph;
+    // };
 
-    typedef typename Container<GraphPolicyEdge>::iterator   EdgeIter;
-    typedef typename Container<GraphPolicyVertex>::iterator VertexIter;
+private:
 
-    Graph(Graph<GraphPolicy>& superGraph, typename GraphPolicy::Graph& subGraph, unsigned id) : 
-	GraphPolicy(subGraph),
-	id(id),
-	superGraph(superGraph){
+    // BGL typdefs
+    typedef boost::adjacency_list<boost::vecS, 
+				  boost::vecS, 
+				  boost::bidirectionalS, 
+				  boost::property<boost::vertex_index_t, size_t, Vertex>,
+				  boost::property<boost::edge_index_t, size_t, Edge>> GraphType;
 
-    }
+    typedef boost::subgraph<GraphType> BGLGraph;
+    typedef typename BGLGraph::vertex_descriptor BGLVertex;
+    typedef typename BGLGraph::edge_descriptor   BGLEdge;
 
-public:
+    typedef typename boost::graph_traits<BGLGraph>::in_edge_iterator   InEdgeIter;
+    typedef typename boost::graph_traits<BGLGraph>::out_edge_iterator  OutEdgeIter;
+    typedef typename boost::graph_traits<BGLGraph>::adjacency_iterator AdjacentVertexIter;
+    typedef typename boost::graph_traits<BGLGraph>::vertex_iterator    AllVertexIter;
 
+
+    // Member
+    BGLGraph* graph;
     GraphID id;
-    Graph<GraphPolicy>& superGraph;
-    std::vector<Graph<GraphPolicy>> subGraphs;
- 
+    Graph<Vertex, Edge>& superGraph;
+    std::vector<Graph<Vertex, Edge>> subGraphs;
+
+public: 
 
     /**
      * @brief The graph has to be described by *edges* (source Vertex ==Edge==> target Vertex) and
@@ -56,9 +77,24 @@ public:
      *
      */
     Graph(std::vector<EdgeDescriptor> edges, std::vector<Vertex> vertices) :
-	GraphPolicy(edges, vertices),
 	id(0),
 	superGraph(*this){
+
+	graph = new BGLGraph(vertices.size());
+	    
+	for(EdgeDescriptor edgeDescriptor: edges){
+	    Vertex srcVertex    = std::get<0>(edgeDescriptor);
+	    Vertex targetVertex = std::get<1>(edgeDescriptor);
+	    Edge edge           = std::get<2>(edgeDescriptor);
+	    BGLEdge edgeID = boost::add_edge(srcVertex.id, targetVertex.id, (*graph)).first;
+	    setEdgeProperty(edgeID, edge);
+	    
+	}
+
+	// Bind vertex_descriptor and VertexProperty;
+	for(unsigned i = 0; i < boost::num_vertices((*graph)); ++i){
+	    setVertexProperty(boost::vertex(vertices.at(i).id, (*graph)), vertices.at(i));
+	}
 	
     }
 
@@ -73,9 +109,13 @@ public:
      * 
      */
     std::vector<Vertex> getVertices(){
-	Container<GraphPolicyVertex> v = GraphPolicy::getVertices();
-	return getVerticesProperties(v);
+	AllVertexIter vi, vi_end;
+	std::tie(vi, vi_end) =  boost::vertices((*graph));
+	return std::vector<Vertex>(vi, vi_end);
+
     }
+
+
 
     /**
      * @brief Returns all vertices, that are adjacent (connected) to *vertex*
@@ -83,10 +123,8 @@ public:
      */
     std::vector<Vertex> getAdjacentVertices(const Vertex vertex){
     	std::vector<Vertex> adjacentVertices;
-    	for(Edge e: GraphPolicy::getOutEdges(vertex.id)){
-    	    GraphPolicyVertex target = GraphPolicy::getEdgeTarget(e);
-    	    Vertex s = GraphPolicy::getVertexProperty(target);
-    	    adjacentVertices.push_back(s);
+    	for(std::pair<Vertex, Edge> e: getOutEdges(vertex)){
+    	    adjacentVertices.push_back(e.first);
     	}
 
     	return adjacentVertices;
@@ -97,16 +135,18 @@ public:
      *
      */
     std::vector<std::pair<Vertex, Edge> > getOutEdges(const Vertex srcVertex){
+	OutEdgeIter ei, ei_end;
+	std::tie(ei, ei_end) = boost::out_edges((*graph).global_to_local(srcVertex.id), (*graph));
+	std::vector<BGLEdge> bglOutEdges(ei, ei_end);
 
     	std::vector<std::pair<Vertex, Edge> > outEdges;
-    	for(GraphPolicyEdge e : GraphPolicy::getOutEdges(srcVertex.id)){
-    	    GraphPolicyVertex target = GraphPolicy::getEdgeTarget(e);
-	    Vertex vertex = GraphPolicy::getVertexProperty(target);
-    	    Edge   edge   = GraphPolicy::getEdgeProperty(e);
+    	for(BGLEdge e : bglOutEdges){
+    	    BGLVertex target = getEdgeTarget(e);
+	    Vertex vertex    = getVertex(target);
+    	    Edge   edge      = getEdge(e);
     	    outEdges.push_back(std::make_pair(vertex, edge));
     	}
     	return outEdges;
-	//return std::vector<std::pair<Vertex, Edge> > (1, std::make_pair(Vertex(0), Edge(0)));
     }
 
     /**
@@ -114,11 +154,15 @@ public:
      *
      */
     std::vector<std::pair<Vertex, Edge> > getInEdges(const Vertex targetVertex){
+	InEdgeIter ei, ei_end;
+	std::tie(ei, ei_end) = boost::in_edges((*graph).global_to_local(targetVertex.id), (*graph));
+	std::vector<BGLEdge> bglInEdges(ei, ei_end);
+
     	std::vector<std::pair<Vertex, Edge> > inEdges;
-    	for(GraphPolicyEdge e : GraphPolicy::getInEdges(targetVertex.id)){
-	    GraphPolicyVertex source = GraphPolicy::getEdgeSource(e);
-	    Vertex vertex            = GraphPolicy::getVertexProperty(source);
-	    Edge edge = GraphPolicy::getEdgeProperty(e);
+    	for(BGLEdge e : bglInEdges){
+	    BGLVertex source = getEdgeSource(e);
+	    Vertex vertex    = getVertex(source);
+	    Edge edge        = getEdge(e);
 	    inEdges.push_back(std::make_pair(vertex, edge));
     	}
     	return inEdges;
@@ -154,15 +198,15 @@ public:
      * @param[in] vertices A list of vertices that should be in set of the graph vertices
      *
      */
-    Graph<GraphPolicy>& createSubGraph(const std::vector<Vertex> vertices){
-    	std::vector<GraphPolicyVertex> graphPolicyVertices;
+    Graph<Vertex, Edge>& createSubGraph(const std::vector<Vertex> vertices){
+    	std::vector<BGLVertex> vertexIDs;
 	for(unsigned v_i = 0; v_i < vertices.size(); ++v_i){
-	    graphPolicyVertices.push_back(GraphPolicyVertex(vertices[v_i].id));
+	    vertexIDs.push_back(BGLVertex(vertices[v_i].id));
 	}
 
-	typename GraphPolicy::Graph& subGraph = GraphPolicy::createSubGraph(graphPolicyVertices); 
+	Graph& subGraph = (*graph).create_subgraph(vertexIDs.begin(), vertexIDs.end());
 
-	subGraphs.push_back(Graph<GraphPolicy>(*this, subGraph, id + 1));
+	subGraphs.push_back(Graph<Vertex, Edge>(*this, subGraph, id + 1));
 	return subGraphs.back();
 
 
@@ -207,22 +251,70 @@ public:
      * If this graph has no supergraph (hasSuperGraph()==false) then local ids are the same as global ids.
      */
     VertexID getLocalID(Vertex vertex){
-	return GraphPolicy::getLocalID(vertex.id);
+	return (*graph).global_to_local(vertex.id);
     }
 	    
     
-    template<typename VertexWriter, typename EdgeWriter, typename GraphWriter>
-    void writeGraph(VertexWriter vertexWriter, EdgeWriter edgeWriter, GraphWriter graphWriter, std::string fileName){
-	GraphPolicy::writeGraph(vertexWriter, edgeWriter, graphWriter, fileName);
+    // template<typename VertexWriter, typename EdgeWriter, typename GraphWriter>
+    // void writeGraph(VertexWriter vertexWriter, EdgeWriter edgeWriter, GraphWriter graphWriter, std::string fileName){
+    // 	GraphPolicy::writeGraph(vertexWriter, edgeWriter, graphWriter, fileName);
+
+    // }
+private:
+
+    Graph(Graph<Vertex, Edge>& superGraph, Graph& subGraph, unsigned id) : 
+	graph(&subGraph),
+	id(id),
+	superGraph(superGraph){
 
     }
-private:
-    std::vector<Vertex> getVerticesProperties(Container<GraphPolicyVertex> vertices){
-	std::vector<Vertex> properties;
-	for(GraphPolicyVertex v : vertices){
-	    properties.push_back(GraphPolicy::getVertexProperty(v));
+
+    std::vector<Vertex> getVerticesProperties(std::vector<BGLVertex> bglVertices){
+	std::vector<Vertex> vertices;
+	for(BGLVertex v : bglVertices){
+	    vertices.push_back(getVertex(v));
 	}
-	return properties;
+	return vertices;
+    }
+
+    void setVertexProperty(BGLVertex vertex, Vertex value){
+	(*graph)[vertex] = value;
+    }
+
+    void setEdgeProperty(BGLEdge edge, Edge value){
+	(*graph)[edge] = value;
+    }
+
+    /**
+     * @brief Returns the property of *vertex*.
+     *
+     */
+    Vertex getVertex(BGLVertex vertex){
+	return (*graph)[vertex];
+    }
+  
+    /**
+     * @brief Return the property of *edge*.
+     *
+     */
+    Edge getEdge(BGLEdge edge){
+	return (*graph)[edge];
+    }
+
+    /**
+     * @brief Return the vertex to which *edge* points to.
+     *
+     */
+    BGLVertex getEdgeTarget(BGLEdge edge){
+	return boost::target(edge, (*graph));
+    }
+
+    /**
+     * @brief Return the vertex to which *edge* points from.
+     *
+     */
+    BGLVertex getEdgeSource(BGLEdge edge){
+	return boost::source(edge, (*graph));
     }
 	      
 };

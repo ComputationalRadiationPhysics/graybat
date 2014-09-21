@@ -22,6 +22,14 @@
  * GRAPH AUXILARY
  *
  *******************************************************************************/
+struct NoProperty{
+    typedef unsigned ID;
+    NoProperty() : id(0){}
+    NoProperty(ID id) : id(id){}
+
+    ID id;
+};
+
 template<typename T_Vertex>
 std::vector<T_Vertex> generateVertices(const size_t numVertices){
     std::vector<T_Vertex> vertices;
@@ -482,9 +490,9 @@ void redistribution(MpiCommunicator& communicator){
     /***************************************************************************
      * Configuration
      ****************************************************************************/
-    typedef GraphPolicy::NoProperty                  NoProperty; 
-    typedef GraphPolicy::BGL<NoProperty, NoProperty> BGL;
-    typedef Graph<BGL>                               BGLGraph;
+    // typedef GraphPolicy::NoProperty                  NoProperty; 
+    // typedef GraphPolicy::BGL<NoProperty, NoProperty> BGL;
+    typedef Graph<NoProperty, NoProperty>            BGLGraph;
     typedef typename BGLGraph::Vertex                Vertex;
     typedef typename BGLGraph::EdgeDescriptor        EdgeDescriptor;
 
@@ -554,12 +562,12 @@ void redistribution(MpiCommunicator& communicator){
 
     // Write graph to dot file
     if(!myGraphVertices.empty()){
-    	graph.writeGraph(vertexIDWriter<BGLGraph, NS>(graph, nameService), edgeIDWriter<BGLGraph>(graph), graphWriter(), std::string("graph.dot"));
+    	//graph.writeGraph(vertexIDWriter<BGLGraph, NS>(graph, nameService), edgeIDWriter<BGLGraph>(graph), graphWriter(), std::string("graph.dot"));
     }
 
     // Write subgraph to dot file
     if(!mySubGraphVertices.empty()){
-    	subGraph.writeGraph(vertexIDWriter<BGLGraph, NS>(subGraph, nameService), edgeIDWriter<BGLGraph>(subGraph), graphWriter(), std::string("subgraph.dot"));
+    	//subGraph.writeGraph(vertexIDWriter<BGLGraph, NS>(subGraph, nameService), edgeIDWriter<BGLGraph>(subGraph), graphWriter(), std::string("subgraph.dot"));
     }
 
     // //Communication on graph level
@@ -630,9 +638,10 @@ void life(MpiCommunicator& communicator) {
     };
     
     // Graph
-    typedef GraphPolicy::NoProperty            NoProperty;
-    typedef GraphPolicy::BGL<Cell, NoProperty> BGL;
-    typedef Graph<BGL>                         LifeGraph;
+    //typedef GraphPolicy::NoProperty            NoProperty;
+    //typedef GraphPolicy::BGL<Cell, NoProperty> BGL;
+
+    typedef Graph<Cell, NoProperty>            LifeGraph;
     typedef typename LifeGraph::Vertex         Vertex;
     typedef typename LifeGraph::Edge           Edge;
     typedef typename LifeGraph::EdgeDescriptor EdgeDescriptor;

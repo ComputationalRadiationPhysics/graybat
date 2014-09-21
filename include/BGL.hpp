@@ -16,21 +16,6 @@
  */
 namespace GraphPolicy {
 
-    /************************************************************************//**
-     * @struct NoProperty
-     *
-     * @brief Dummy property for a GraphPolicy, 
-     *        that only contains the required id.
-     *
-     ***************************************************************************/
-    struct NoProperty{
-	typedef unsigned ID;
-	NoProperty() : id(0){}
-	NoProperty(ID id) : id(id){}
-
-	ID id;
-    };
-
 
     /***********************************************************************//**
      * @class BGL
@@ -42,7 +27,7 @@ namespace GraphPolicy {
      * a subgraph implementation was choosen to support subgraph creation.
      *
      ***************************************************************************/
-    template <typename T_VertexProperty = NoProperty, typename T_EdgeProperty = NoProperty>
+    template <typename T_VertexProperty, typename T_EdgeProperty>
     class BGL {
     protected:
 	typedef T_VertexProperty   VertexProperty;
