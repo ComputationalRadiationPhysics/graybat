@@ -23,7 +23,16 @@
  * the graph functionality.     
  *
  ***************************************************************************/
-template <class T_VertexProperty, class T_EdgeProperty>
+
+struct NoProperty{
+    typedef unsigned ID;
+    NoProperty() : id(0){}
+    NoProperty(ID id) : id(id){}
+
+    ID id;
+};
+
+template <class T_VertexProperty = NoProperty, class T_EdgeProperty = NoProperty>
 class Graph {
 
 public:
@@ -65,11 +74,12 @@ private:
 
     // Member
     BGLGraph* graph;
-    GraphID id;
-    Graph<Vertex, Edge>& superGraph;
     std::vector<Graph<Vertex, Edge>> subGraphs;
 
 public: 
+    GraphID id;
+    Graph<Vertex, Edge>& superGraph;
+
 
     /**
      * @brief The graph has to be described by *edges* (source Vertex ==Edge==> target Vertex) and
@@ -114,8 +124,6 @@ public:
 	return std::vector<Vertex>(vi, vi_end);
 
     }
-
-
 
     /**
      * @brief Returns all vertices, that are adjacent (connected) to *vertex*

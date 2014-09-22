@@ -22,13 +22,7 @@
  * GRAPH AUXILARY
  *
  *******************************************************************************/
-struct NoProperty{
-    typedef unsigned ID;
-    NoProperty() : id(0){}
-    NoProperty(ID id) : id(id){}
 
-    ID id;
-};
 
 template<typename T_Vertex>
 std::vector<T_Vertex> generateVertices(const size_t numVertices){
@@ -498,10 +492,7 @@ void redistribution(MpiCommunicator& communicator){
 
     // Communicator
     typedef typename MpiCommunicator::CommID  CommID;
-
     typedef NameService<BGLGraph, MpiCommunicator>           NS;
-    typedef GraphCommunicator<NS> GC;
-
 
     /***************************************************************************
      * Create graph
@@ -530,7 +521,6 @@ void redistribution(MpiCommunicator& communicator){
     CommID myCommID  = communicator.getGlobalContext().getCommID();
     unsigned commCount = communicator.getGlobalContext().size();
     NS nameService(communicator);
-    GC graphCommunicator(nameService);
 
 
     /***************************************************************************
@@ -539,13 +529,6 @@ void redistribution(MpiCommunicator& communicator){
 
     // Distribute vertices to communicators
     std::vector<Vertex> myGraphVertices    = distributeVerticesEvenly(myCommID, commCount, graph);
-
-
-    // TESTING BEGINN
-    // typename NS::TestVertex tv = nameService.testAnnounce(graph, myGraphVertices);
-    // tv.send();
-    // return;
-    // TESTING END
 
     std::vector<Vertex> mySubGraphVertices = distributeVerticesEvenly(myCommID, commCount, subGraph);
 
@@ -572,15 +555,15 @@ void redistribution(MpiCommunicator& communicator){
 
     // //Communication on graph level
     if(!myGraphVertices.empty()){
-    	nearestNeighborExchange(graphCommunicator, graph, myGraphVertices); 
-    	reduceVertexIDs(graphCommunicator, graph, myGraphVertices);
+    	nearestNeighborExchange(nameService, graph, myGraphVertices); 
+    	reduceVertexIDs(nameService, graph, myGraphVertices);
 
     }
 
     // Communication on subgraph level
     if(!mySubGraphVertices.empty()){
-	nearestNeighborExchange(graphCommunicator, subGraph, mySubGraphVertices);
-    	reduceVertexIDs(graphCommunicator, subGraph, mySubGraphVertices);
+	nearestNeighborExchange(nameService, subGraph, mySubGraphVertices);
+    	reduceVertexIDs(nameService, subGraph, mySubGraphVertices);
 
     }
 
@@ -601,8 +584,8 @@ void redistribution(MpiCommunicator& communicator){
     }
 
     if(!mySubGraphVertices.empty()){    
-    	nearestNeighborExchange(graphCommunicator, subGraph, mySubGraphVertices);
-    	reduceVertexIDs(graphCommunicator, subGraph, mySubGraphVertices);
+    	nearestNeighborExchange(nameService, subGraph, mySubGraphVertices);
+    	reduceVertexIDs(nameService, subGraph, mySubGraphVertices);
 
     }
 
@@ -648,10 +631,10 @@ void life(MpiCommunicator& communicator) {
 
     // Communicator
     typedef typename MpiCommunicator::CommID CommID;
+    typedef typename MpiCommunicator::Event  Event;
 
     typedef NameService<LifeGraph, MpiCommunicator> NS;
-    typedef GraphCommunicator<NS>                   GC;
-    typedef typename GC::Event                      Event;
+
 
     /***************************************************************************
      * Game logic
@@ -665,7 +648,6 @@ void life(MpiCommunicator& communicator) {
     LifeGraph graph (edges, graphVertices); //graph.print();
 
     NS nameService(communicator);
-    GC graphCommunicator(nameService);
 
     // Distribute work evenly
     CommID myCommID  = communicator.getGlobalContext().getCommID();
@@ -710,7 +692,7 @@ void life(MpiCommunicator& communicator) {
 	    std::vector<std::pair<Vertex, Edge> > outEdges = graph.getOutEdges(v); 
 	    for(std::pair<Vertex, Edge> edge : outEdges){
 		std::vector<unsigned> isAlive(1, v.isAlive);
-		events.push_back(graphCommunicator.asyncSend(graph, edge.first, edge.second, isAlive));
+		events.push_back(nameService.asyncSend(graph, edge.first, edge.second, isAlive));
 	    
 	    }
 
@@ -725,7 +707,7 @@ void life(MpiCommunicator& communicator) {
 	
 	    for(std::pair<Vertex, Edge> edge : inEdges){
 		std::vector<unsigned> isAlive(1, 0);
-		graphCommunicator.recv(graph, edge.first, edge.second, isAlive);
+		nameService.recv(graph, edge.first, edge.second, isAlive);
 		if(isAlive[0]) aliveCount.at(vertex_i)++;
 
 	    }
@@ -770,7 +752,7 @@ void life(MpiCommunicator& communicator) {
 
 	// Send alive information to host of vertex 0
 	for(Vertex v: myGraphVertices){
-	    graphCommunicator.gather(graph.getVertices().at(0), v, graph, unsigned(v.isAlive), aliveMap);
+	    nameService.gather(graph.getVertices().at(0), v, graph, unsigned(v.isAlive), aliveMap);
 	}
 
 	generation++;
