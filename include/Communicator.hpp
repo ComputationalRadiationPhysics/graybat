@@ -191,14 +191,15 @@ public:
      *       which Communicator.
      * @todo Give some nice name, just adding 2 is very stupid.
      *
-     * @param[in]  context  Set of Communicators that want to send Data
-     * @param[in]  sendData Data that every Communicator in the *context* sends with **varying** size 
-     * @param[out] recvData Data from all *context* members, that all Communicators* will receive.
+     * @param[in]  context    Set of Communicators that want to send Data
+     * @param[in]  sendData   Data that every Communicator in the *context* sends with **varying** size 
+     * @param[out] recvData   Data from all *context* members, that all Communicators* will receive.
+     * @param[out] recvCount  Number of elements each Communicator sends (can by varying).
      *
      */
     template <typename T>
-    void allGather2(const Context context, const std::vector<T>& sendData, std::vector<T>& recvData){
-    	CommunicationPolicy::allGather2(sendData.data(), sendData.size(), recvData, context);
+    void allGather2(const Context context, const std::vector<T>& sendData, std::vector<T>& recvData, std::vector<unsigned>& recvCount){
+    	CommunicationPolicy::allGather2(sendData.data(), sendData.size(), recvData, context, recvCount);
     }
 
 

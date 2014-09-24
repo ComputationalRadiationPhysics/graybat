@@ -273,15 +273,13 @@ namespace CommunicationPolicy {
 	    	offset += rcounts[i];
 		
 	    } 
+
 	    const T* recvDataCollective = (T*) malloc(sizeof(T) * offset);
 
 	    // Receive data with varying size
 	    MPI_Gatherv(const_cast<T*>(sendData), sendCount, MPIDatatypes<T>::type, 
 			const_cast<T*>(recvDataCollective), rcounts, rdispls, MPIDatatypes<T>::type, 
 			rootUri, contextMap[context.getID()]);
-
-
-	    //std::vector<T> recvDataTmp;
 
 	    if(rootCommID == context.getCommID()){
 		for(unsigned i = 0; i < offset; ++i){
@@ -292,8 +290,6 @@ namespace CommunicationPolicy {
 		    recvCount.push_back(rcounts[i]);
 		}
 	    }
-
-	    //recvData = recvDataTmp;
 
 	}
 
@@ -308,7 +304,7 @@ namespace CommunicationPolicy {
       // Equivalent to allGatherV
       // beautify
 	template <typename T, typename T_Context>
-	void allGather2(const T* sendData, const size_t sendCount, std::vector<T>& recvData, const T_Context context){
+	void allGather2(const T* sendData, const size_t sendCount, std::vector<T>& recvData, std::vector<unsigned>& recvCount ,const T_Context context){
 
 	    int rcounts[context.size()];
 	    int rdispls[context.size()];
@@ -323,7 +319,11 @@ namespace CommunicationPolicy {
 	    	rdispls[i] = offset; 
 	    	offset += rcounts[i];
 		
-	    } 
+	    }
+
+	    for(unsigned i = 0; i < context.size(); ++i){
+		recvCount.push_back(rcounts[i]);
+	    }
 	    
 	    const T* recvDataCollective = (T*) malloc(sizeof(T) * offset);
 	    

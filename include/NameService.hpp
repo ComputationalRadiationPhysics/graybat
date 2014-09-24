@@ -102,29 +102,50 @@ struct NameService {
 	assert(oldContext.valid());
 
 	// Create new context for communicators which host vertices
-	std::vector<unsigned> hasVertices(1, !vertices.empty());
+	std::vector<unsigned> hasVertices(1, vertices.size());
 	std::vector<unsigned> recvHasVertices(oldContext.size(), 0);
 	communicator.allGather(oldContext, hasVertices, recvHasVertices);
 
 	std::vector<CommID> commIDsWithVertices;
 	for(unsigned i = 0; i < recvHasVertices.size(); ++i){
-	    if(recvHasVertices[i] == 1){
+	    if(recvHasVertices[i] > 0){
 		commIDsWithVertices.push_back(i);
 	    }
 	}
 
 	Context newContext = communicator.createContext(commIDsWithVertices, oldContext); 
+
+	// Get IDs of hosted vertices
+	// std::vector<unsigned> myVertexIDs;
+	// for(Vertex v: vertices){
+	//     myVertexIDs.push_back(v.id);
+	// }
 	
-	// Each Communicator announces the vertices it hosts
+	// Each peer announces the vertices it hosts
 	if(newContext.valid()){
 	    
 	    contextMap[graph.id] = newContext;
 
+	    // std::vector<unsigned> recvCount(newContext.size());
+	    // std::vector<unsigned> vertexIDs(graph.getVertices().size(), 0);
+	    // communicator.allGather2(newContext, myVertexIDs, vertexIDs, recvCount);
+
+	    // unsigned offset = 0;
+	    // for(unsigned commID = 0; commID < newVertexMaps.size(); ++commID){
+	    // 	std::vector<Vertex> vertexMap;
+	    // 	unsigned nhostedVertices = recvCount[commID];
+		
+		
+	    // }
+
+
+	    // Retrieve maximum number of vertices per peer
 	    std::vector<unsigned> myVerticesCount(1,vertices.size());
 	    std::vector<unsigned> maxVerticesCount(1,  0);
 	    communicator.allReduce(newContext, op::maximum<unsigned>(), myVerticesCount, maxVerticesCount);
 
-	    std::vector<std::vector<Vertex> > newVertexMap (newContext.size(), std::vector<Vertex>());
+	    // Gather maxVerticesCount times vertex ids
+	    std::vector<std::vector<Vertex> > newVertexMaps (newContext.size(), std::vector<Vertex>());
 	    for(unsigned i = 0; i < maxVerticesCount[0]; ++i){
 		std::vector<int> vertexID(1, -1);
 	    	std::vector<int> recvData(newContext.size(), 0);
@@ -136,19 +157,19 @@ struct NameService {
 	    	communicator.allGather(newContext, vertexID, recvData);
 		
 		   
-	    	for(unsigned commID = 0; commID < newVertexMap.size(); ++commID){
+	    	for(unsigned commID = 0; commID < newVertexMaps.size(); ++commID){
 	    	    if(recvData[commID] != -1){
 	    		VertexID vertexID = (VertexID) recvData[commID];
 	    		Vertex v = graph.getVertices().at(vertexID);
 	    		commMap[graph.id][v.id] = commID; 
-	    		newVertexMap[commID].push_back(v);
+	    		newVertexMaps[commID].push_back(v);
 		    
 	    	    }
 
 	    	}
       
-	    	for(unsigned commID = 0; commID < newVertexMap.size(); ++commID){
-	    	    vertexMap[graph.id][commID] = newVertexMap[commID];
+	    	for(unsigned commID = 0; commID < newVertexMaps.size(); ++commID){
+	    	    vertexMap[graph.id][commID] = newVertexMaps[commID];
 
 	    	}
 
@@ -288,15 +309,12 @@ struct NameService {
 
     template <typename T>
     struct Reduce {
-	std::atomic<unsigned> count;
-	std::atomic<T> reduce;
+	unsigned count;
+	T reduce;
 	bool imRoot;
 	T* rootRecvData;
 	
-	
     };
-
-    std::mutex mtx;
 
     /**
      * @brief Collective reduction of sendData (here only sum). *rootVertex* will
@@ -328,7 +346,7 @@ struct NameService {
 	std::string reduceID = generateID(graph, srcVertex);
 
 	for(T data : sendData){
-	    reduces[reduceID].reduce.fetch_add(data);
+	    reduces[reduceID].reduce = op(reduces[reduceID].reduce, data);
 	}
 
 	// Remember pointer of recvData from rootVertex
@@ -337,7 +355,6 @@ struct NameService {
 	    reduces[reduceID].imRoot = true;
 	}
 
-	mtx.lock();
 	reduces[reduceID].count++;
 
 	// Finally start reduction
@@ -355,7 +372,6 @@ struct NameService {
 
 	}
 
-	mtx.unlock();
 
     }
 
@@ -403,7 +419,6 @@ struct NameService {
 	    std::vector<unsigned> recvCount;
 	    std::vector<T> recvDataCollective;
 	    communicator.gather2(rootCommID, context, gathers[gatherID].send, recvDataCollective, recvCount);
-
 
 	    // Reorder received elements in vertex order
 	    std::vector<T> recvReordered(recvDataCollective.size(), 0);

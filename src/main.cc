@@ -349,6 +349,7 @@ void occupyRandomVertex(T_Communicator& communicator, T_Graph& graph, T_NameServ
     typedef typename T_Communicator::CommID  CommID;
     typedef typename T_Communicator::Context Context;
 
+    // Determine master peer
     CommID masterCommID = randomHostCommID(communicator, nameService, graph);
     Context context = nameService.getGraphContext(graph);
 
