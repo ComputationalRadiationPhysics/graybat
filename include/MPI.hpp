@@ -86,18 +86,17 @@ namespace CommunicationPolicy {
     class MPI{
     protected:
 	typedef unsigned ContextID;
-	typedef unsigned CommID;
+	typedef unsigned VAddr;
 
 	/**
 	 * @brief A Context is a set of Communicators which are
 	 *        able to communicate with each other. This class
 	 *        stores meta information about the Context.
 	 *
-	 * @todo Move to some other place (own header maybe?).
 	 */
 	class Context {
 	    typedef unsigned ContextID;
-	    typedef unsigned CommID;
+	    typedef unsigned VAddr;
 	    
 	public:
 	    Context() :
@@ -105,14 +104,14 @@ namespace CommunicationPolicy {
 		commID(0),
 		contextSize(0){}
 
-	    Context(ContextID contextID, CommID id, size_t contextSize) : 
+	    Context(ContextID contextID, VAddr id, size_t contextSize) : 
 		id(contextID),
 		commID(id),
 		contextSize(contextSize){}
 
 	    Context& operator=(const Context& otherContext){
 		id          = otherContext.getID();
-		commID      = otherContext.getCommID();
+		commID      = otherContext.getVAddr();
 		contextSize = otherContext.size();
 		return *this;
 
@@ -122,7 +121,7 @@ namespace CommunicationPolicy {
 		return contextSize;
 	    }
 
-	    CommID getCommID() const {
+	    VAddr getVAddr() const {
 		return commID;
 	    }
 
@@ -137,7 +136,7 @@ namespace CommunicationPolicy {
 
 	private:
 	    ContextID id;
-	    CommID    commID;
+	    VAddr    commID;
 	    size_t    contextSize;
 	};
 
@@ -180,7 +179,7 @@ namespace CommunicationPolicy {
 	typedef int Uri;
 
 	ContextID contextCount;
-	std::map<ContextID, std::map<CommID, Uri> > uriMap;
+	std::map<ContextID, std::map<VAddr, Uri> > uriMap;
 	std::map<ContextID, MPI_Comm>               contextMap;
 
     protected:
@@ -188,15 +187,15 @@ namespace CommunicationPolicy {
 	// Member
 	Context initialContext;
 
-	MPI() : contextCount(1), initialContext(contextCount, initialCommID(), MPICommSize(MPI_COMM_WORLD)) {
+	MPI() : contextCount(1), initialContext(contextCount, initialVAddr(), MPICommSize(MPI_COMM_WORLD)) {
 	    contextMap[contextCount] = MPI_COMM_WORLD;
 
-	    // Create Map CommID -> uri
+	    // Create Map VAddr -> uri
 	    for(unsigned i = 0; i < initialContext.size(); ++i){
 	    	uriMap[initialContext.getID()][i] = i;
 	    }
 
-	    std::cout << "Init MPI " << initialContext.getCommID() << std::endl;
+	    std::cout << "Init MPI " << initialContext.getVAddr() << std::endl;
 	    
 	}
 
@@ -211,9 +210,9 @@ namespace CommunicationPolicy {
 	 *
 	 **************************************************************************/ 
 	template <typename T, typename T_Context>
-	Event asyncSendData(const T* const data, const size_t count, const CommID destCommID, const T_Context context, const MsgType msgType){
+	Event asyncSendData(const T* const data, const size_t count, const VAddr destVAddr, const T_Context context, const MsgType msgType){
 	    MPI_Request request;
-	    Uri destUri = getCommIDUri(context, destCommID);
+	    Uri destUri = getVAddrUri(context, destVAddr);
 	    MPI_Issend(const_cast<T*>(data), count, MPIDatatypes<T>::type, destUri, msgType, contextMap[context.getID()], &request);
 	    return Event(request);
 
@@ -221,9 +220,9 @@ namespace CommunicationPolicy {
 	}
 
 	template <typename T, typename T_Context>
-	Event asyncRecvData(const T*  data, const size_t count, const CommID srcCommID, const T_Context context, const MsgType msgType){
+	Event asyncRecvData(const T*  data, const size_t count, const VAddr srcVAddr, const T_Context context, const MsgType msgType){
 	    MPI_Request request;
-	    Uri srcUri = getCommIDUri(context, srcCommID);
+	    Uri srcUri = getVAddrUri(context, srcVAddr);
 	    MPI_Irecv(const_cast<T*>(data), count, MPIDatatypes<T>::type, srcUri, msgType, contextMap[context.getID()], &request);
 	    return Event(request);
 
@@ -236,9 +235,9 @@ namespace CommunicationPolicy {
 	 **************************************************************************/ 
 
 	template <typename T, typename Op, typename T_Context>
-	void reduce(const T* sendData, const T* recvData, const size_t count, Op op, const CommID rootCommID, const T_Context context){
+	void reduce(const T* sendData, const T* recvData, const size_t count, Op op, const VAddr rootVAddr, const T_Context context){
 	    userOperation<T, Op> mpiOp(op);
-	    Uri rootUri = getCommIDUri(context, rootCommID);
+	    Uri rootUri = getVAddrUri(context, rootVAddr);
 	    MPI_Reduce(const_cast<T*>(sendData), const_cast<T*>(recvData), count, MPIDatatypes<T>::type, mpiOp.getMpiOp(), rootUri, contextMap[context.getID()]);
 	}
 
@@ -250,8 +249,8 @@ namespace CommunicationPolicy {
 	}
 
 	template <typename T_Send, typename T_Recv, typename T_Context>
-	void gather(const T_Send* sendData, const size_t sendCount, const T_Recv* recvData, const size_t recvCount, const CommID rootCommID, const T_Context context){
-	    Uri rootUri = getCommIDUri(context, rootCommID);
+	void gather(const T_Send* sendData, const size_t sendCount, const T_Recv* recvData, const size_t recvCount, const VAddr rootVAddr, const T_Context context){
+	    Uri rootUri = getVAddrUri(context, rootVAddr);
 
 	    MPI_Gather(const_cast<T_Send*>(sendData), sendCount, MPIDatatypes<T_Send>::type, 
 		       const_cast<T_Recv*>(recvData), recvCount, MPIDatatypes<T_Recv>::type, 
@@ -259,8 +258,8 @@ namespace CommunicationPolicy {
 	}
 
 	template <typename T, typename T_Context>
-	void gather2(const T* sendData, const size_t sendCount, std::vector<T>& recvData, std::vector<unsigned>& recvCount, const CommID rootCommID, const T_Context context){
-	    Uri rootUri = getCommIDUri(context, rootCommID);
+	void gather2(const T* sendData, const size_t sendCount, std::vector<T>& recvData, std::vector<unsigned>& recvCount, const VAddr rootVAddr, const T_Context context){
+	    Uri rootUri = getVAddrUri(context, rootVAddr);
 	    int rcounts[context.size()];
 	    int rdispls[context.size()];
 
@@ -281,7 +280,7 @@ namespace CommunicationPolicy {
 			const_cast<T*>(recvDataCollective), rcounts, rdispls, MPIDatatypes<T>::type, 
 			rootUri, contextMap[context.getID()]);
 
-	    if(rootCommID == context.getCommID()){
+	    if(rootVAddr == context.getVAddr()){
 		for(unsigned i = 0; i < offset; ++i){
 		    recvData.push_back(recvDataCollective[i]);
 		}
@@ -343,7 +342,7 @@ namespace CommunicationPolicy {
 	}
 
 	template <typename T_Send, typename T_Recv, typename T_Context>
-	void scatter(const T_Send* sendData, const size_t sendCount, T_Recv* recvData, const size_t recvCount, const CommID root, const T_Context context){
+	void scatter(const T_Send* sendData, const size_t sendCount, T_Recv* recvData, const size_t recvCount, const VAddr root, const T_Context context){
 	    Uri rootUri = uriMap.at(context.getID()).at(root);
 	    MPI_Scatter(const_cast<T_Send*>(sendData), sendCount, MPIDatatypes<T_Send>::type, 
 			const_cast<T_Recv*>(recvData), recvCount, MPIDatatypes<T_Recv>::type, 
@@ -358,7 +357,7 @@ namespace CommunicationPolicy {
 	}
 	
 	template <typename T, typename T_Context>
-	void broadcast(const T* data, const size_t count, const CommID root, const T_Context context){
+	void broadcast(const T* data, const size_t count, const VAddr root, const T_Context context){
 	    Uri rootUri = uriMap.at(context.getID()).at(root);
 	    MPI_Bcast(const_cast<T*>(data), count, MPIDatatypes<T>::type, rootUri, contextMap[context.getID()]);
 	}
@@ -375,15 +374,15 @@ namespace CommunicationPolicy {
 	 *
 	 ***************************************************************************/
 	template <typename T_Context>
-	T_Context createContext(const std::vector<CommID> commIDs, const T_Context oldContext){
+	T_Context createContext(const std::vector<VAddr> commIDs, const T_Context oldContext){
 	    assert(commIDs.size() > 0);
 	    MPI_Comm  newMPIContext;
 	    MPI_Group oldGroup, newGroup;
 
 	    // Translate commIDs to uris
 	    std::vector<Uri> ranks;
-	    for(CommID commID : commIDs){
-	    	ranks.push_back(getCommIDUri(oldContext, commID));
+	    for(VAddr commID : commIDs){
+	    	ranks.push_back(getVAddrUri(oldContext, commID));
 	    }
 
 	    // Create new context	    
@@ -398,7 +397,7 @@ namespace CommunicationPolicy {
 	    	contextMap[newContext.getID()] = newMPIContext;
 
 	    	// Update UriMap
-	    	uriMap.insert(std::make_pair(newContext.getID(), std::map<CommID, Uri>()));
+	    	uriMap.insert(std::make_pair(newContext.getID(), std::map<VAddr, Uri>()));
 	    	Uri otherUris[newContext.size()];
 	    	allGather(&uri, 1, otherUris, newContext);
 
@@ -428,11 +427,11 @@ namespace CommunicationPolicy {
 	    }
 	}
 
-	CommID initialCommID(){
+	VAddr initialVAddr(){
 	    initMPI();
 	    Uri uriTmp;
 	    MPI_Comm_rank(MPI_COMM_WORLD, &uriTmp);
-	    return (CommID)uriTmp;
+	    return (VAddr)uriTmp;
 
 	}
 
@@ -443,7 +442,7 @@ namespace CommunicationPolicy {
 	    return n;
 	}
 
-	void error(CommID commID, std::string msg){
+	void error(VAddr commID, std::string msg){
 	    using namespace dout;
 	    Dout dout = Dout::getInstance();
 	    dout(Flags::ERROR) << "[" << commID << "] " << msg;
@@ -451,14 +450,14 @@ namespace CommunicationPolicy {
 	}
 
 	template <typename T_Context>
-	inline Uri getCommIDUri(T_Context context, CommID commID){
+	inline Uri getVAddrUri(T_Context context, VAddr commID){
 	    Uri uri;
 	    try {
 		uri = uriMap.at(context.getID()).at(commID);
 
 	    } catch(const std::out_of_range& e){
 		std::stringstream errorStream;
-		errorStream << "MPI::getCommIDUri::" << e.what()<< " : Communicator with ID " << commID << " is not part of the context " << context.getID() << std::endl;
+		errorStream << "MPI::getVAddrUri::" << e.what()<< " : Communicator with ID " << commID << " is not part of the context " << context.getID() << std::endl;
 		error(context.getID(), errorStream.str());
 		exit(1);
 	    }

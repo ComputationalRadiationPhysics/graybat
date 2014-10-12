@@ -1,10 +1,10 @@
 #include <types.hpp>
 #include <Graph.hpp>
 #include <BGL.hpp>
-#include <Communicator.hpp>
+#include <CommunicationAbstractionLayer.hpp>
 #include <GraphCommunicator.hpp>
 #include <MPI.hpp>
-#include <NameService.hpp>
+#include <VirtualOverlayNetwork.hpp>
 #include <dout.hpp>
 
 #include <iostream>   /* std::cout */
@@ -312,7 +312,7 @@ void reduceVertexIDs(T_Communicator &communicator, T_Graph &graph, std::vector<t
 // Collective
 template<typename T_Communicator>
 unsigned randomNumber(T_Communicator &communicator, const typename T_Communicator::Context &context){
-    srand (time(NULL) + context.getCommID());
+    srand (time(NULL) + context.getVAddr());
     std::vector<unsigned> ownRandom(1, rand());
     unsigned random = 0;
 
@@ -329,64 +329,64 @@ unsigned randomNumber(T_Communicator &communicator, const typename T_Communicato
 }
 
 // Collective
-template<typename T_Communicator, typename T_NameService, typename T_Graph>
-typename T_Communicator::CommID randomHostCommID(T_Communicator &communicator, T_NameService &nameService, T_Graph &graph){
-    typedef typename T_Communicator::CommID  CommID;
+template<typename T_Communicator, typename T_GVON, typename T_Graph>
+typename T_Communicator::VAddr randomHostVAddr(T_Communicator &communicator, T_GVON &gvon, T_Graph &graph){
+    typedef typename T_Communicator::VAddr  VAddr;
     typedef typename T_Communicator::Context Context;
 
-    std::vector<CommID> commIDs = nameService.getGraphHostCommIDs(graph);
-    Context context = nameService.getGraphContext(graph);
+    std::vector<VAddr> commIDs = gvon.getGraphHostVAddrs(graph);
+    Context context = gvon.getGraphContext(graph);
     unsigned random = randomNumber(communicator, context);
     return commIDs.at(random % commIDs.size());
 }
 
 
-template<typename T_Communicator, typename T_Graph, typename T_NameService>
-void occupyRandomVertex(T_Communicator& communicator, T_Graph& graph, T_NameService& nameService, std::vector<typename T_Graph::Vertex>& myVertices){
+template<typename T_Communicator, typename T_Graph, typename T_GVON>
+void occupyRandomVertex(T_Communicator& communicator, T_Graph& graph, T_GVON& gvon, std::vector<typename T_Graph::Vertex>& myVertices){
     typedef T_Graph Graph;
     typedef typename Graph::Vertex           Vertex;
     typedef typename Vertex::ID              VertexID;
-    typedef typename T_Communicator::CommID  CommID;
+    typedef typename T_Communicator::VAddr  VAddr;
     typedef typename T_Communicator::Context Context;
 
     // Determine master peer
-    CommID masterCommID = randomHostCommID(communicator, nameService, graph);
-    Context context = nameService.getGraphContext(graph);
+    VAddr masterVAddr = randomHostVAddr(communicator, gvon, graph);
+    Context context = gvon.getGraphContext(graph);
 
-    if(nameService.getHostedVertices(graph, masterCommID).empty()){
-	std::cout << "The masterCommID does not host any vertices of this graph" << std::endl;
+    if(gvon.getHostedVertices(graph, masterVAddr).empty()){
+	std::cout << "The masterVAddr does not host any vertices of this graph" << std::endl;
 	return;
     }
 
     if(context.valid()){
-     	CommID commID    = context.getCommID();
+     	VAddr commID    = context.getVAddr();
      	std::array<VertexID, 1> randomVertex{{0}};
 
      	bool haveVertex = false;
-     	if(commID == masterCommID){
+     	if(commID == masterVAddr){
 	    srand (time(NULL));
      	    randomVertex[0] = rand() % graph.getVertices().size();
 
-	    communicator.broadcast(masterCommID, context, randomVertex);
+	    communicator.broadcast(masterVAddr, context, randomVertex);
 
 	    VertexID vertexID = randomVertex[0];
 	    Vertex vertex     = graph.getVertices().at(vertexID);
 
      	    for(Vertex v : myVertices){
      	    	if(v.id == vertex.id){
-     	    	    std::cout << "[" << masterCommID << "] " << "Allready have random vertex: " << vertex.id << std::endl;
+     	    	    std::cout << "[" << masterVAddr << "] " << "Allready have random vertex: " << vertex.id << std::endl;
      	    	    haveVertex = true;
      	    	}
      	    }
 	
      	    if(!haveVertex){
-     	    	std::cout << "[" << masterCommID << "] " << "Occupy vertex: " << vertex.id << std::endl;
+     	    	std::cout << "[" << masterVAddr << "] " << "Occupy vertex: " << vertex.id << std::endl;
      	    	myVertices.push_back(vertex);
      	    }
 
      	}
      	else {
-	    communicator.broadcast(masterCommID, context, randomVertex);
+	    communicator.broadcast(masterVAddr, context, randomVertex);
      	    VertexID vertexID = randomVertex[0];
      	    Vertex vertex     = graph.getVertices().at(vertexID);
 
@@ -439,18 +439,18 @@ std::vector<typename T_Graph::Vertex> distributeVerticesEvenly(const unsigned pr
  *******************************************************************************/
 std::vector<std::string> colors {"red", "green", "cyan", "skyblue1", "magenta", "beige", "orange", "yellow", "lightgray", "lightcyan", "moccasin"};
 
-template<class Graph, class NameService>
+template<class Graph, class GVON>
 struct vertexIDWriter{
-    vertexIDWriter(Graph &graph, NameService &nameService) : graph(graph), nameService(nameService) {}
+    vertexIDWriter(Graph &graph, GVON &gvon) : graph(graph), gvon(gvon) {}
     void operator()(std::ostream& out, const typename Graph::GraphPolicyVertex& v) const {
 	unsigned i = (unsigned) v;
-	unsigned commID= nameService.locateVertex(graph, graph.getVertices().at(i));
+	unsigned commID= gvon.locateVertex(graph, graph.getVertices().at(i));
 	out << "[color=black fillcolor=" << colors[commID % colors.size()] << " fontsize=30 style=filled]";
 	out << "[label=\"" << graph.getVertices().at(i).id << "\"]";
     }
 private:
     Graph& graph;
-    NameService& nameService;
+    GVON& gvon;
 };
 
 template<class Graph>
@@ -479,21 +479,19 @@ struct graphWriter {
  *
  *******************************************************************************/
 
-template<typename MpiCommunicator>
-void redistribution(MpiCommunicator& communicator){
+template<typename CAL>
+void redistribution(CAL& cal){
 
     /***************************************************************************
      * Configuration
      ****************************************************************************/
-    // typedef GraphPolicy::NoProperty                  NoProperty; 
-    // typedef GraphPolicy::BGL<NoProperty, NoProperty> BGL;
-    typedef Graph<NoProperty, NoProperty>            BGLGraph;
-    typedef typename BGLGraph::Vertex                Vertex;
-    typedef typename BGLGraph::EdgeDescriptor        EdgeDescriptor;
+    typedef Graph<SimpleProperty, SimpleProperty> BGLGraph;
+    typedef typename BGLGraph::Vertex             Vertex;
+    typedef typename BGLGraph::EdgeDescriptor     EdgeDescriptor;
 
-    // Communicator
-    typedef typename MpiCommunicator::CommID  CommID;
-    typedef NameService<BGLGraph, MpiCommunicator>           NS;
+    // Cal
+    typedef typename CAL::VAddr                  VAddr;
+    typedef VirtualOverlayNetwork<BGLGraph, CAL> GVON;
 
     /***************************************************************************
      * Create graph
@@ -517,54 +515,44 @@ void redistribution(MpiCommunicator& communicator){
 
 
     /***************************************************************************
-     * Create communicator
+     * Create gvon
      ****************************************************************************/
-    CommID myCommID  = communicator.getGlobalContext().getCommID();
-    unsigned commCount = communicator.getGlobalContext().size();
-    NS nameService(communicator);
+    VAddr myVAddr  = cal.getGlobalContext().getVAddr();
+    unsigned commCount = cal.getGlobalContext().size();
+    GVON gvon(cal);
 
 
     /***************************************************************************
      * Examples communication schemas
      ****************************************************************************/
 
-    // Distribute vertices to communicators
-    std::vector<Vertex> myGraphVertices    = distributeVerticesEvenly(myCommID, commCount, graph);
+    // Distribute vertices to peers
+    std::vector<Vertex> myGraphVertices    = distributeVerticesEvenly(myVAddr, commCount, graph);
 
-    std::vector<Vertex> mySubGraphVertices = distributeVerticesEvenly(myCommID, commCount, subGraph);
+    std::vector<Vertex> mySubGraphVertices = distributeVerticesEvenly(myVAddr, commCount, subGraph);
 
     // Output vertex property
-    printVertexDistribution(myGraphVertices, graph, myCommID);
-    printVertexDistribution(mySubGraphVertices, subGraph, myCommID);
+    printVertexDistribution(myGraphVertices, graph, myVAddr);
+    printVertexDistribution(mySubGraphVertices, subGraph, myVAddr);
 
     // Synchronize after output
-    communicator.synchronize();
+    cal.synchronize();
 
     // Announce distribution on network
-    nameService.announce(graph, myGraphVertices);
-    nameService.announce(subGraph, mySubGraphVertices);
+    gvon.announce(graph, myGraphVertices);
+    gvon.announce(subGraph, mySubGraphVertices);
 
-    // Write graph to dot file
+    // Communication on graph level
     if(!myGraphVertices.empty()){
-    	//graph.writeGraph(vertexIDWriter<BGLGraph, NS>(graph, nameService), edgeIDWriter<BGLGraph>(graph), graphWriter(), std::string("graph.dot"));
-    }
-
-    // Write subgraph to dot file
-    if(!mySubGraphVertices.empty()){
-    	//subGraph.writeGraph(vertexIDWriter<BGLGraph, NS>(subGraph, nameService), edgeIDWriter<BGLGraph>(subGraph), graphWriter(), std::string("subgraph.dot"));
-    }
-
-    // //Communication on graph level
-    if(!myGraphVertices.empty()){
-    	nearestNeighborExchange(nameService, graph, myGraphVertices); 
-    	reduceVertexIDs(nameService, graph, myGraphVertices);
+    	nearestNeighborExchange(gvon, graph, myGraphVertices); 
+    	reduceVertexIDs(gvon, graph, myGraphVertices);
 
     }
 
     // Communication on subgraph level
     if(!mySubGraphVertices.empty()){
-	nearestNeighborExchange(nameService, subGraph, mySubGraphVertices);
-    	reduceVertexIDs(nameService, subGraph, mySubGraphVertices);
+	nearestNeighborExchange(gvon, subGraph, mySubGraphVertices);
+    	reduceVertexIDs(gvon, subGraph, mySubGraphVertices);
 
     }
 
@@ -573,20 +561,20 @@ void redistribution(MpiCommunicator& communicator){
      ****************************************************************************/
 
     // TODO
-    // Communicator which has no vertex of subgraph
+    // host which has no vertex of subgraph
     // can´t occupy vertex from this subgraph!
-    // Because this communicator is not part
+    // Because this host is not part
     // of the subgraph context!
     // Need to recreate context first!
     if(!mySubGraphVertices.empty()){
-    	occupyRandomVertex(communicator, subGraph, nameService, mySubGraphVertices);
-    	printVertexDistribution(mySubGraphVertices, subGraph, myCommID);
-    	nameService.announce(subGraph, mySubGraphVertices);
+    	occupyRandomVertex(cal, subGraph, gvon, mySubGraphVertices);
+    	printVertexDistribution(mySubGraphVertices, subGraph, myVAddr);
+    	gvon.announce(subGraph, mySubGraphVertices);
     }
 
     if(!mySubGraphVertices.empty()){    
-    	nearestNeighborExchange(nameService, subGraph, mySubGraphVertices);
-    	reduceVertexIDs(nameService, subGraph, mySubGraphVertices);
+    	nearestNeighborExchange(gvon, subGraph, mySubGraphVertices);
+    	reduceVertexIDs(gvon, subGraph, mySubGraphVertices);
 
     }
 
@@ -600,8 +588,8 @@ void redistribution(MpiCommunicator& communicator){
  *
  *******************************************************************************/
 
-template<typename MpiCommunicator>
-void life(MpiCommunicator& communicator) {
+template<typename CAL>
+void life(CAL& cal) {
     /***************************************************************************
      * Configuration
      ****************************************************************************/
@@ -622,19 +610,16 @@ void life(MpiCommunicator& communicator) {
     };
     
     // Graph
-    //typedef GraphPolicy::NoProperty            NoProperty;
-    //typedef GraphPolicy::BGL<Cell, NoProperty> BGL;
+    typedef Graph<Cell, SimpleProperty>            LifeGraph;
+    typedef typename LifeGraph::Vertex             Vertex;
+    typedef typename LifeGraph::Edge               Edge;
+    typedef typename LifeGraph::EdgeDescriptor     EdgeDescriptor;
 
-    typedef Graph<Cell, NoProperty>            LifeGraph;
-    typedef typename LifeGraph::Vertex         Vertex;
-    typedef typename LifeGraph::Edge           Edge;
-    typedef typename LifeGraph::EdgeDescriptor EdgeDescriptor;
+    // Cal
+    typedef typename CAL::VAddr VAddr;
+    typedef typename CAL::Event  Event;
 
-    // Communicator
-    typedef typename MpiCommunicator::CommID CommID;
-    typedef typename MpiCommunicator::Event  Event;
-
-    typedef NameService<LifeGraph, MpiCommunicator> NS;
+    typedef VirtualOverlayNetwork<LifeGraph, CAL> GVON;
 
 
     /***************************************************************************
@@ -648,15 +633,15 @@ void life(MpiCommunicator& communicator) {
 
     LifeGraph graph (edges, graphVertices); //graph.print();
 
-    NS nameService(communicator);
+    GVON gvon(cal);
 
     // Distribute work evenly
-    CommID myCommID  = communicator.getGlobalContext().getCommID();
-    unsigned commCount = communicator.getGlobalContext().size();
-    std::vector<Vertex> myGraphVertices = distributeVerticesEvenly(myCommID, commCount, graph);
+    VAddr myVAddr  = cal.getGlobalContext().getVAddr();
+    unsigned commCount = cal.getGlobalContext().size();
+    std::vector<Vertex> myGraphVertices = distributeVerticesEvenly(myVAddr, commCount, graph);
 
     // Announce work distribution 
-    nameService.announce(graph, myGraphVertices); 
+    gvon.announce(graph, myGraphVertices); 
     unsigned generation = 0;
 
 
@@ -667,7 +652,7 @@ void life(MpiCommunicator& communicator) {
     while(true){
 
 	// Print life field
-	if(myCommID == 0){
+	if(myVAddr == 0){
 
 	    for(unsigned i = 0; i < aliveMap.size(); ++i){
 		if((i % (width)) == 0){
@@ -693,7 +678,7 @@ void life(MpiCommunicator& communicator) {
 	    std::vector<std::pair<Vertex, Edge> > outEdges = graph.getOutEdges(v); 
 	    for(std::pair<Vertex, Edge> edge : outEdges){
 		std::vector<unsigned> isAlive(1, v.isAlive);
-		events.push_back(nameService.asyncSend(graph, edge.first, edge.second, isAlive));
+		events.push_back(gvon.asyncSend(graph, edge.first, edge.second, isAlive));
 	    
 	    }
 
@@ -708,7 +693,7 @@ void life(MpiCommunicator& communicator) {
 	
 	    for(std::pair<Vertex, Edge> edge : inEdges){
 		std::vector<unsigned> isAlive(1, 0);
-		nameService.recv(graph, edge.first, edge.second, isAlive);
+		gvon.recv(graph, edge.first, edge.second, isAlive);
 		if(isAlive[0]) aliveCount.at(vertex_i)++;
 
 	    }
@@ -753,7 +738,7 @@ void life(MpiCommunicator& communicator) {
 
 	// Send alive information to host of vertex 0
 	for(Vertex v: myGraphVertices){
-	    nameService.gather(graph.getVertices().at(0), v, graph, unsigned(v.isAlive), aliveMap);
+	    gvon.gather(graph.getVertices().at(0), v, graph, unsigned(v.isAlive), aliveMap);
 	}
 
 	generation++;
@@ -772,32 +757,31 @@ int main(){
     // Init random numbers
     srand(1234);
 
-    // Communicator
-    typedef CommunicationPolicy::MPI         Mpi;
-    typedef Communicator<Mpi>                MpiCommunicator;
+    // Cal
+    typedef CommunicationPolicy::MPI           Mpi;
+    typedef CommunicationAbstractionLayer<Mpi> MpiCAL;
 
-
-    MpiCommunicator communicator;
+    MpiCAL cal;
 
     /** Example 1
      *
-     *  1. Distribution of graph vertices to the available communicator
+     *  1. Distribution of graph vertices to the available peer
      *  2. Creation of subgraph (half of the vertices of the graph)
      *  3. Reduce und nearest neighbor communication
-     *  4. Redistribution of one vertex to a different host communicator
+     *  4. Redistribution of one vertex to a different host 
      *  5. Again reduce und nearest neighbor communication
      *
      */
-    //redistribution(communicator);
+    //redistribution(cal);
 
     /** Example 2
      *
-     *  Classic game of life. Each communicator manages
+     *  Classic game of life. Each peer manages
      *  several life cells / vertices and communicates
      *  to neighbor cells to update own cells status.
      *
      */
-    life(communicator);
+    life(cal);
 
 
     return 0;

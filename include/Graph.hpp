@@ -24,15 +24,15 @@
  *
  ***************************************************************************/
 
-struct NoProperty{
+struct SimpleProperty{
     typedef unsigned ID;
-    NoProperty() : id(0){}
-    NoProperty(ID id) : id(id){}
+    SimpleProperty() : id(0){}
+    SimpleProperty(ID id) : id(id){}
 
     ID id;
 };
 
-template <class T_VertexProperty = NoProperty, class T_EdgeProperty = NoProperty>
+template <class T_VertexProperty = SimpleProperty, class T_EdgeProperty = SimpleProperty>
 class Graph {
 
 public:
