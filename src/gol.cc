@@ -12,6 +12,7 @@
 #include <iostream>   /* std::cout */
 #include <tuple>      /* std::pair */
 #include <vector>     /* std::vector */
+#include <array>      /* std::array */
 #include <cmath>      /* sqrt */
 
 
@@ -44,19 +45,19 @@ void updateState(std::vector<T_Cell> &cells){
 
 	case 0:
 	case 1:
-	    v.isAlive = 0;
+	    v.isAlive[0] = 0;
 	    break;
 
 	case 2:
-	    v.isAlive = v.isAlive;
+	    v.isAlive[0] = v.isAlive[0];
 	    break;
 	    
 	case 3: 
-	    v.isAlive = 1;
+	    v.isAlive[0] = 1;
 	    break;
 
 	default: 
-	    v.isAlive = 0;
+	    v.isAlive[0] = 0;
 	    break;
 
 	}
@@ -71,17 +72,17 @@ void gol(const unsigned N) {
      ****************************************************************************/
     struct Cell {
 	typedef unsigned ID;
-	Cell() : id(0), isAlive(0), aliveNeighbors(0){}
-	Cell(ID id) : id(id), isAlive(0), aliveNeighbors(0){
+	Cell() : id(0), isAlive{{0}}, aliveNeighbors(0){}
+	Cell(ID id) : id(id), isAlive{{0}}, aliveNeighbors(0){
 	    unsigned random = rand() % 10000;
 	    if(random < 3125){
-		isAlive = 1;
+		isAlive[0] = 1;
 	    }
 
 	}
 	
 	unsigned id;
-	bool isAlive;
+	std::array<unsigned,1> isAlive;
 	unsigned aliveNeighbors;
 
     };
@@ -145,7 +146,6 @@ void gol(const unsigned N) {
 	// Send status to neighbor cells
 	for(Vertex v : myGraphVertices){
 	    for(std::pair<Vertex, Edge> edge : graph.getOutEdges(v)){
-		//std::vector<unsigned> isAlive(1, v.isAlive);
 		events.push_back(gvon.asyncSend(graph, edge.first, edge.second, v.isAlive));
 	    }
 	}
@@ -153,12 +153,8 @@ void gol(const unsigned N) {
 	// Recv status from neighbor cells
 	for(Vertex &v : myGraphVertices){
 	    for(std::pair<Vertex, Edge> edge : graph.getInEdges(v)){
-		std::vector<unsigned> isAlive(1, 0);
-		gvon.recv(graph, edge.first, edge.second, isAlive);
-		if(isAlive[0]){ 
-		    v.aliveNeighbors++;
-		}
-
+		gvon.recv(graph, edge.first, edge.second, edge.first.isAlive);
+		if(edge.first.isAlive[0]) v.aliveNeighbors++;
 	    }
 	}
 
@@ -174,7 +170,7 @@ void gol(const unsigned N) {
 	// Send alive information to host of vertex 0
 	for(Vertex &v: myGraphVertices){
 	    v.aliveNeighbors = 0;
-	    gvon.gather(graph.getVertices().at(0), v, graph, unsigned(v.isAlive), golDomain);
+	    gvon.gather(graph.getVertices().at(0), v, graph, v.isAlive[0], golDomain);
 	}
 
 	generation++;
@@ -184,7 +180,7 @@ void gol(const unsigned N) {
 
 int main(){
 
-    const unsigned N = 900;
+    const unsigned N = 400;
 
     gol(N);
 
