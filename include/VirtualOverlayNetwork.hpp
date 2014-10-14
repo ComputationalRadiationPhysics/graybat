@@ -264,6 +264,13 @@ struct VirtualOverlayNetwork {
 	return cal.asyncSend(destVAddr, edge.id, context, data);
     }
 
+    template <typename T>
+    Event asyncSend(Graph& graph, const Vertex destVertex, const Edge edge, const T data){
+	VAddr destVAddr = locateVertex(graph, destVertex);
+	Context context   = getGraphContext(graph);
+	return cal.asyncSend(destVAddr, edge.id, context, &data);
+    }
+
     /**
      * @brief Synchron receive of *data* from the *srcVertex* on *edge*.
      *

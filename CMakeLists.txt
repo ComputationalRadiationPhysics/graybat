@@ -38,10 +38,12 @@ endif(${CMAKE_COMPILER_IS_GNUCXX})
 ###############################################################################
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include 
 		   ${CMAKE_CURRENT_SOURCE_DIR}/include/dout/include )
-add_executable(Main src/main.cc)
+add_executable(Main EXCLUDE_FROM_ALL src/main.cc)
+add_executable(GoL EXCLUDE_FROM_ALL src/gol.cc )
 
 # add the libraries (Boost...) to this executable
 target_link_libraries(Main ${LIBS})
+target_link_libraries(GoL ${LIBS})
 
 ###############################################################################
 # Custom targets
@@ -58,8 +60,3 @@ if(DOXYGEN_FOUND)
     COMMENT "Generating API documentation with Doxygen" VERBATIM
     )
 endif(DOXYGEN_FOUND)
-
-# update
-add_custom_target(update
-	COMMAND fish -c "update make ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc"
-	COMMENT "Build project automatically on changes of source and header files")

@@ -107,6 +107,11 @@ public:
 	return Event(CommunicationPolicy::asyncSendData(sendData.data(), sendData.size(), destVAddr, context, tag));
     }
 
+    template <typename T>
+    Event asyncSend(const VAddr destVAddr, const Tag tag, const Context context, const T* sendData){
+	return Event(CommunicationPolicy::asyncSendData(sendData, 1, context, tag));
+    }
+
     /**
      * @brief Asyncron receive of a message *recvData" from peer with VAddr *srcVAddr*
      * 

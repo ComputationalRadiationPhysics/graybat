@@ -1,0 +1,32 @@
+#pragma once
+
+/*******************************************************************************
+ *
+ * VERTEX DISTRIBUTION
+ *
+ *******************************************************************************/
+
+namespace Distribute {
+
+    template<typename T_Graph>
+    std::vector<typename T_Graph::Vertex> roundRobin(const unsigned processID, const unsigned processCount, T_Graph &graph){
+	typedef typename T_Graph::Vertex Vertex;
+	// Distribute and announce vertices
+	unsigned vertexCount   = graph.getVertices().size();
+	unsigned maxVertex     = ceil((float)vertexCount / processCount);
+
+	std::vector<Vertex> myVertices;
+	for(unsigned i = 0; i < maxVertex; ++i){
+	    unsigned vertex_i = processID + (i * processCount);
+	    if(vertex_i >= vertexCount){
+		break;
+	    }
+	    else {
+		myVertices.push_back(graph.getVertices().at(vertex_i));
+	    }
+	
+	}
+	return myVertices;
+    }
+
+} /* Distribute */

@@ -1,8 +1,6 @@
 #include <types.hpp>
 #include <Graph.hpp>
-#include <BGL.hpp>
 #include <CommunicationAbstractionLayer.hpp>
-#include <GraphCommunicator.hpp>
 #include <MPI.hpp>
 #include <VirtualOverlayNetwork.hpp>
 #include <dout.hpp>
