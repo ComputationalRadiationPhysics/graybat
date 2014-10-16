@@ -40,10 +40,12 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include
 		   ${CMAKE_CURRENT_SOURCE_DIR}/include/dout/include )
 add_executable(Main EXCLUDE_FROM_ALL src/main.cc)
 add_executable(GoL EXCLUDE_FROM_ALL src/gol.cc )
+add_executable(NBody EXCLUDE_FROM_ALL src/nbody.cc )
 
 # add the libraries (Boost...) to this executable
 target_link_libraries(Main ${LIBS})
 target_link_libraries(GoL ${LIBS})
+target_link_libraries(NBody ${LIBS})
 
 ###############################################################################
 # Custom targets

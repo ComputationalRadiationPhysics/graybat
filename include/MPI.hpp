@@ -53,10 +53,21 @@ namespace CommunicationPolicy {
 
    
 
-    // Traits for typeconversion to MPI Types
+    // Type traits
+    // TODO add all types
     template<typename T>
     struct MPIDatatypes{
 	static constexpr MPI_Datatype type = MPI_CHAR;
+    };
+
+    template<>
+    struct MPIDatatypes<float>{
+    	static constexpr MPI_Datatype type = MPI_FLOAT;
+    };
+
+    template<>
+    struct MPIDatatypes<double>{
+    	static constexpr MPI_Datatype type = MPI_DOUBLE;
     };
 
     template<>
@@ -78,6 +89,8 @@ namespace CommunicationPolicy {
     struct MPIDatatypes<const bool>{
     	static constexpr MPI_Datatype type = MPI_CHAR;
     };
+
+
 
 
     // TODO
@@ -180,7 +193,7 @@ namespace CommunicationPolicy {
 
 	ContextID contextCount;
 	std::map<ContextID, std::map<VAddr, Uri> > uriMap;
-	std::map<ContextID, MPI_Comm>               contextMap;
+	std::map<ContextID, MPI_Comm>              contextMap;
 
     protected:
 
@@ -214,6 +227,7 @@ namespace CommunicationPolicy {
 	    MPI_Request request;
 	    Uri destUri = getVAddrUri(context, destVAddr);
 	    MPI_Issend(const_cast<T*>(data), count, MPIDatatypes<T>::type, destUri, msgType, contextMap[context.getID()], &request);
+	    //MPI_Issend(const_cast<T*>(data), count, MPI_FLOAT, destUri, msgType, contextMap[context.getID()], &request);
 	    return Event(request);
 
 
@@ -224,6 +238,7 @@ namespace CommunicationPolicy {
 	    MPI_Request request;
 	    Uri srcUri = getVAddrUri(context, srcVAddr);
 	    MPI_Irecv(const_cast<T*>(data), count, MPIDatatypes<T>::type, srcUri, msgType, contextMap[context.getID()], &request);
+	    //MPI_Irecv(const_cast<T*>(data), count, MPI_FLOAT, srcUri, msgType, contextMap[context.getID()], &request);
 	    return Event(request);
 
 	}

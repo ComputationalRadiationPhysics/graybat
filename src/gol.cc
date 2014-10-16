@@ -14,6 +14,8 @@
 #include <vector>     /* std::vector */
 #include <array>      /* std::array */
 #include <cmath>      /* sqrt */
+#include <cstdlib>    /* atoi */
+
 
 
 void printGolDomain(const std::vector<unsigned> domain, const unsigned width, const unsigned height, const unsigned generation){
@@ -70,10 +72,9 @@ void gol(const unsigned N) {
     /***************************************************************************
      * Configuration
      ****************************************************************************/
-    struct Cell {
-	typedef unsigned ID;
-	Cell() : id(0), isAlive{{0}}, aliveNeighbors(0){}
-	Cell(ID id) : id(id), isAlive{{0}}, aliveNeighbors(0){
+    struct Cell : public SimpleProperty{
+	Cell() : SimpleProperty(0), isAlive{{0}}, aliveNeighbors(0){}
+	Cell(ID id) : SimpleProperty(id), isAlive{{0}}, aliveNeighbors(0){
 	    unsigned random = rand() % 10000;
 	    if(random < 3125){
 		isAlive[0] = 1;
@@ -81,7 +82,6 @@ void gol(const unsigned N) {
 
 	}
 	
-	unsigned id;
 	std::array<unsigned,1> isAlive;
 	unsigned aliveNeighbors;
 
@@ -121,10 +121,10 @@ void gol(const unsigned N) {
     // Distribute work evenly
     VAddr myVAddr      = cal.getGlobalContext().getVAddr();
     unsigned commCount = cal.getGlobalContext().size();
-    std::vector<Vertex> myGraphVertices = Distribute::roundRobin(myVAddr, commCount, graph);
+    std::vector<Vertex> hostedVertices = Distribute::roundRobin(myVAddr, commCount, graph);
 
     // Announce vertices
-    gvon.announce(graph, myGraphVertices); 
+    gvon.announce(graph, hostedVertices); 
 
 
     /***************************************************************************
@@ -143,15 +143,15 @@ void gol(const unsigned N) {
 	    printGolDomain(golDomain, width, height, generation);
 	}
 
-	// Send status to neighbor cells
-	for(Vertex v : myGraphVertices){
+	// Send state to neighbor cells
+	for(Vertex v : hostedVertices){
 	    for(std::pair<Vertex, Edge> edge : graph.getOutEdges(v)){
 		events.push_back(gvon.asyncSend(graph, edge.first, edge.second, v.isAlive));
 	    }
 	}
 
-	// Recv status from neighbor cells
-	for(Vertex &v : myGraphVertices){
+	// Recv state from neighbor cells
+	for(Vertex &v : hostedVertices){
 	    for(std::pair<Vertex, Edge> edge : graph.getInEdges(v)){
 		gvon.recv(graph, edge.first, edge.second, edge.first.isAlive);
 		if(edge.first.isAlive[0]) v.aliveNeighbors++;
@@ -165,10 +165,10 @@ void gol(const unsigned N) {
 	}
 
 	// Calculate state for next generation
-	updateState(myGraphVertices);
+	updateState(hostedVertices);
 
-	// Send alive information to host of vertex 0
-	for(Vertex &v: myGraphVertices){
+	// Gather state by vertex with id = 0
+	for(Vertex &v: hostedVertices){
 	    v.aliveNeighbors = 0;
 	    gvon.gather(graph.getVertices().at(0), v, graph, v.isAlive[0], golDomain);
 	}
@@ -178,10 +178,13 @@ void gol(const unsigned N) {
     
 }
 
-int main(){
+int main(int argc, char** argv){
 
-    const unsigned N = 400;
+    if(argc < 1){
+	std::cout << "Usage ./gol [N]" << std::endl;
 
+    }
+    unsigned N = atoi(argv[1]);
     gol(N);
 
     return 0;

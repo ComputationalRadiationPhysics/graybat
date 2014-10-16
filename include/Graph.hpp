@@ -11,8 +11,6 @@
 #include <string>
 #include <fstream> /* std::fstream */
 
-#include <types.hpp>
-
 
 /************************************************************************//**
  * @class Graph
