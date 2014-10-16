@@ -17,16 +17,18 @@ namespace Topology {
 
     template<typename T_Graph>
     std::vector<typename T_Graph::EdgeDescriptor> fullyConnected(const unsigned verticesCount, std::vector<typename T_Graph::Vertex> &vertices){
-	typedef typename T_Graph::Vertex Vertex;
 	typedef typename T_Graph::Edge Edge;
 	typedef typename T_Graph::EdgeDescriptor EdgeDescriptor;
-	vertices = generateVertices<Vertex>(verticesCount);
+
+	assert(vertices.size() == verticesCount);
+
 	std::cout << "Create fully connected with " << vertices.size() << " cells" << std::endl;
 
 	unsigned edgeCount = 0;    
 	std::vector<EdgeDescriptor> edges;
 
 	for(unsigned i = 0; i < vertices.size(); ++i){
+	    vertices[i].id = i;
 	    for(unsigned j = 0; j < vertices.size(); ++j){
 		if(vertices[i].id == vertices[j].id){
 		    continue;

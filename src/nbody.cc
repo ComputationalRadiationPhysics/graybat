@@ -17,6 +17,7 @@
 #include <cmath>      /* sqrt, pow */
 #include <cstdlib>    /* atoi */
 #include <assert.h>   /* assert */
+#include <cstdlib>    /* rand */
 
 // Boost uBlas
 #include <boost/numeric/ublas/vector.hpp>
@@ -74,9 +75,29 @@ boost::numeric::ublas::vector<double> twoBodyForce(T_Body body1, T_Body body2){
 
 template <class T_Body>
 void printBody(T_Body body){
-    std::cout << "[" << body.id << "] = ";
-    std::cout << "[" << body.r[0] << "," << body.r[1] << "]";
+    std::cout << "[" << body.id << "] ";
+    std::cout << " m = " << body.m[0];
+    std::cout << " r = [" << body.r[0] << "," << body.r[1] << "]";
     std::cout << std::endl;
+
+}
+
+template <class T_Body>
+std::vector<T_Body> generateBodies(const unsigned N){
+    std::vector<T_Body> bodies(N);
+
+    for(unsigned i = 0; i < bodies.size(); ++i){
+	double m  = rand() % int(1e12) + 1;
+	double r1 = rand() % 100;
+	double r2 = rand() % 100;
+	double v1 = rand() % 10;
+	double v2 = rand() % 10;
+	
+
+	bodies[i] = T_Body(i, {{m}}, {{r1, r2}}, {{v1, v2}});
+
+    }
+    return bodies;
 
 }
 
@@ -86,10 +107,13 @@ void nbody(const unsigned N) {
      ****************************************************************************/
     struct Body : public SimpleProperty{
 	
-	Body() : SimpleProperty(0), m{{0}}, r{{0,0}}, v{{0,0}} { }
+	Body() : SimpleProperty(0), m{{1}}, r{{0,0}}, v{{0,0}} { }
 
        
-	Body(ID id) : SimpleProperty(id), m{{0}}, r{{0,0}}, v{{0,0}}{
+	Body(ID id, 
+	     std::array<double, 1> m, 
+	     std::array<double, 2> r, 
+	     std::array<double, 2> v ) : SimpleProperty(id), m(m), r(r), v(v){
 	    
 	}
 	
@@ -119,8 +143,10 @@ void nbody(const unsigned N) {
      * Init Communication
      ****************************************************************************/
     // Create Graph
-    std::cout << "Generate communication topology" << std::endl;
-    std::vector<Vertex> graphVertices;
+    Body b1(0, {{1e12}}, {{0,0}},{{0,0}});
+    Body b2(1, {{1}}, {{10,10}}, {{2.4,0}}); 
+
+    std::vector<Vertex> graphVertices = generateBodies<Vertex>(N);
     std::vector<EdgeDescriptor> edges = Topology::fullyConnected<NBodyGraph>(N, graphVertices);
     NBodyGraph graph (edges, graphVertices); 
 
@@ -142,28 +168,16 @@ void nbody(const unsigned N) {
     unsigned timestep = 0;
     std::vector<Event> events;   
 
-    // Init test
-    myGraphVertices[0].m[0] = 1e12;
-    myGraphVertices[0].r[0] = 0;
-    myGraphVertices[0].r[1] = 0;
-    myGraphVertices[0].v[0] = 0;
-    myGraphVertices[0].v[1] = 0;
-
-    myGraphVertices[1].m[0] = 1;
-    myGraphVertices[1].r[0] = 10;
-    myGraphVertices[1].r[1] = 10;
-    myGraphVertices[1].v[0] = 2.4;
-    myGraphVertices[1].v[1] = 0;
 
     // Simulate life forever
-    std::cout << "Start simulation" << std::endl;
     const double dt = 1;
-    while(timestep != 10){
+    while(true){
 
-	std::cout << "Time[s]: " << timestep * dt << std::endl;
+	if(myVAddr==0) std::cout << "Time[s]: " << timestep * dt << std::endl;
 
 	// Send body information to all other
 	for(Vertex v : myGraphVertices){
+	    //printBody(v);
 	    for(std::pair<Vertex, Edge> edge : graph.getOutEdges(v)){
 		events.push_back(gvon.asyncSend(graph, edge.first, edge.second, v.m)); 
 		events.push_back(gvon.asyncSend(graph, edge.first, edge.second, v.r)); 
@@ -181,7 +195,7 @@ void nbody(const unsigned N) {
 		F += twoBodyForce(v, edge.first);
 	    }
 	    updateBody(v, F, dt);
-	    std::cout << "[" << v.id << "] = " << "r = [" << v.r[0] << "," << v.r[1] << "] " << "F = [" << F[0] << "," << F[1] << "]" << std::endl;
+	    //std::cout << "[" << v.id << "] = " << "r = [" << v.r[0] << "," << v.r[1] << "] " << "F = [" << F[0] << "," << F[1] << "]" << std::endl;
 	}
 
 	// Wait to finish events

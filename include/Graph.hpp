@@ -119,7 +119,7 @@ public:
     std::vector<Vertex> getVertices(){
 	AllVertexIter vi, vi_end;
 	std::tie(vi, vi_end) =  boost::vertices((*graph));
-	return std::vector<Vertex>(vi, vi_end);
+	return getVerticesProperties(std::vector<BGLVertex>(vi, vi_end));
 
     }
 
@@ -148,7 +148,7 @@ public:
     	std::vector<std::pair<Vertex, Edge> > outEdges;
     	for(BGLEdge e : bglOutEdges){
     	    BGLVertex target = getEdgeTarget(e);
-	    Vertex vertex    = getVertex(target);
+	    Vertex vertex    = getVertexProperty(target);
     	    Edge   edge      = getEdge(e);
     	    outEdges.push_back(std::make_pair(vertex, edge));
     	}
@@ -167,7 +167,7 @@ public:
     	std::vector<std::pair<Vertex, Edge> > inEdges;
     	for(BGLEdge e : bglInEdges){
 	    BGLVertex source = getEdgeSource(e);
-	    Vertex vertex    = getVertex(source);
+	    Vertex vertex    = getVertexProperty(source);
 	    Edge edge        = getEdge(e);
 	    inEdges.push_back(std::make_pair(vertex, edge));
     	}
@@ -278,7 +278,7 @@ private:
     std::vector<Vertex> getVerticesProperties(std::vector<BGLVertex> bglVertices){
 	std::vector<Vertex> vertices;
 	for(BGLVertex v : bglVertices){
-	    vertices.push_back(getVertex(v));
+	    vertices.push_back(getVertexProperty(v));
 	}
 	return vertices;
     }
@@ -295,7 +295,7 @@ private:
      * @brief Returns the property of *vertex*.
      *
      */
-    Vertex getVertex(BGLVertex vertex){
+    Vertex getVertexProperty(BGLVertex vertex){
 	return (*graph)[vertex];
     }
   
