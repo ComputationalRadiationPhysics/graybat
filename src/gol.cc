@@ -107,7 +107,6 @@ void gol(const unsigned N) {
      * Init Communication
      ****************************************************************************/
     // Create Graph
-    std::cout << "Generate communication topology" << std::endl;
     const unsigned height = unsigned(sqrt(N));
     const unsigned width  = unsigned(sqrt(N));
     std::vector<Vertex> graphVertices;
@@ -120,8 +119,8 @@ void gol(const unsigned N) {
 
     // Distribute work evenly
     VAddr myVAddr      = cal.getGlobalContext().getVAddr();
-    unsigned commCount = cal.getGlobalContext().size();
-    std::vector<Vertex> hostedVertices = Distribute::roundRobin(myVAddr, commCount, graph);
+    unsigned nAddr = cal.getGlobalContext().size();
+    std::vector<Vertex> hostedVertices = Distribute::roundRobin(myVAddr, nAddr, graph);
 
     // Announce vertices
     gvon.announce(graph, hostedVertices); 
@@ -135,7 +134,6 @@ void gol(const unsigned N) {
     std::vector<unsigned> golDomain(graph.getVertices().size(), 0); 
 
     // Simulate life forever
-    std::cout << "Start simulation" << std::endl;
     while(true){
 
 	// Print life field

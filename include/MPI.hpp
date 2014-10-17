@@ -216,7 +216,7 @@ namespace CommunicationPolicy {
 	    	uriMap[initialContext.getID()][i] = i;
 	    }
 
-	    std::cout << "Init MPI " << initialContext.getVAddr() << std::endl;
+	    //std::cout << "Init MPI " << initialContext.getVAddr() << std::endl;
 	    
 	}
 
