@@ -115,30 +115,10 @@ struct VirtualOverlayNetwork {
 
 	Context newContext = cal.createContext(vAddrsWithVertices, oldContext); 
 
-	// Get IDs of hosted vertices
-	// std::vector<unsigned> myVertexIDs;
-	// for(Vertex v: vertices){
-	//     myVertexIDs.push_back(v.id);
-	// }
-	
 	// Each peer announces the vertices it hosts
 	if(newContext.valid()){
 	    
 	    graphMap[graph.id] = newContext;
-
-	    // std::vector<unsigned> recvCount(newContext.size());
-	    // std::vector<unsigned> vertexIDs(graph.getVertices().size(), 0);
-	    // cal.allGather2(newContext, myVertexIDs, vertexIDs, recvCount);
-
-	    // unsigned offset = 0;
-	    // for(unsigned vAddr = 0; vAddr < newVertexMaps.size(); ++vAddr){
-	    // 	std::vector<Vertex> vertexMap;
-	    // 	unsigned nhostedVertices = recvCount[vAddr];
-		
-		
-	    // }
-
-
 	    // Retrieve maximum number of vertices per peer
 	    std::vector<unsigned> myVerticesCount(1,vertices.size());
 	    std::vector<unsigned> maxVerticesCount(1,  0);
@@ -238,11 +218,12 @@ struct VirtualOverlayNetwork {
      */
     template <typename T>
     void send(Graph &graph, const Vertex destVertex, const Edge edge, const T& data){
-	VAddr destVAddr = locateVertex(graph, destVertex);
+	VAddr destVAddr   = locateVertex(graph, destVertex);
 	Context context   = getGraphContext(graph);
-	Event e = cal.asyncSend(destVAddr, edge.id, context, data);
-	e.wait();
+	cal.send(destVAddr, edge.id, context, data);
+
     }
+
 
     /**
      * @brief Asynchron transmission of *data* to the *destVertex* on *edge*.
@@ -275,10 +256,9 @@ struct VirtualOverlayNetwork {
      */
     template <typename T>
     void recv(Graph& graph, const Vertex srcVertex, const Edge edge, const T& data){
-	VAddr srcVAddr = locateVertex(graph, srcVertex);
+	VAddr srcVAddr   = locateVertex(graph, srcVertex);
 	Context context  = getGraphContext(graph);
-	Event e = cal.asyncRecv(srcVAddr, edge.id, context, data);
-	e.wait();
+	cal.recv(srcVAddr, edge.id, context, data);
 
     }
 

@@ -108,6 +108,7 @@ void nbody(const unsigned N) {
     struct Body : public SimpleProperty{
 	
 	Body() : SimpleProperty(0), m{{1}}, r{{0,0}}, v{{0,0}} { }
+	Body(ID id) : SimpleProperty(id), m{{1}}, r{{0,0}}, v{{0,0}} { }
 
        
 	Body(ID id, 
@@ -155,9 +156,9 @@ void nbody(const unsigned N) {
     GVON gvon(cal);
 
     // Distribute work evenly
-    VAddr myVAddr      = cal.getGlobalContext().getVAddr();
-    unsigned commCount = cal.getGlobalContext().size();
-    std::vector<Vertex> myGraphVertices = Distribute::roundRobin(myVAddr, commCount, graph);
+    VAddr myVAddr  = cal.getGlobalContext().getVAddr();
+    unsigned nAddr = cal.getGlobalContext().size();
+    std::vector<Vertex> myGraphVertices = Distribute::roundRobin(myVAddr, nAddr, graph);
 
     // Announce vertices
     gvon.announce(graph, myGraphVertices); 
@@ -177,7 +178,6 @@ void nbody(const unsigned N) {
 
 	// Send body information to all other
 	for(Vertex v : myGraphVertices){
-	    //printBody(v);
 	    for(std::pair<Vertex, Edge> edge : graph.getOutEdges(v)){
 		events.push_back(gvon.asyncSend(graph, edge.first, edge.second, v.m)); 
 		events.push_back(gvon.asyncSend(graph, edge.first, edge.second, v.r)); 
@@ -218,7 +218,7 @@ void nbody(const unsigned N) {
 int main(int argc, char** argv){
 
     if(argc < 1){
-	std::cout << "Usage ./gol [N]" << std::endl;
+	std::cout << "Usage ./NBody [N]" << std::endl;
 
     }
     unsigned N = atoi(argv[1]);

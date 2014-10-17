@@ -29,7 +29,7 @@ set (CMAKE_CXX_COMPILER "g++")
 if(${CMAKE_COMPILER_IS_GNUCXX})
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
-  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif(${CMAKE_COMPILER_IS_GNUCXX})
 
@@ -41,11 +41,13 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include
 add_executable(Main EXCLUDE_FROM_ALL src/main.cc)
 add_executable(GoL EXCLUDE_FROM_ALL src/gol.cc )
 add_executable(NBody EXCLUDE_FROM_ALL src/nbody.cc )
+add_executable(Synthetic EXCLUDE_FROM_ALL src/synthetic.cc )
 
 # add the libraries (Boost...) to this executable
 target_link_libraries(Main ${LIBS})
 target_link_libraries(GoL ${LIBS})
 target_link_libraries(NBody ${LIBS})
+target_link_libraries(Synthetic ${LIBS})
 
 ###############################################################################
 # Custom targets

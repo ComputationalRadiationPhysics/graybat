@@ -17,8 +17,14 @@ namespace Topology {
 
     template<typename T_Graph>
     std::vector<typename T_Graph::EdgeDescriptor> fullyConnected(const unsigned verticesCount, std::vector<typename T_Graph::Vertex> &vertices){
+	typedef typename T_Graph::Vertex Vertex;
 	typedef typename T_Graph::Edge Edge;
 	typedef typename T_Graph::EdgeDescriptor EdgeDescriptor;
+
+	if(vertices.empty()){
+	    vertices = generateVertices<Vertex>(verticesCount);
+
+	}
 
 	assert(vertices.size() == verticesCount);
 
