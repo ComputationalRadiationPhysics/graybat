@@ -50,28 +50,40 @@ int sendCAL(const unsigned N) {
     std::array<int, 1> dataSend {{1}};
     std::array<int, 1> dataRecv {{0}};
 
-    using namespace std::chrono;
-    high_resolution_clock::time_point t1 = high_resolution_clock::now();
+    const unsigned nRuns = 1000;
+    double timeSum = 0.0;
+  
+  
+    for(unsigned i = 0; i < nRuns; ++i){
+
+	using namespace std::chrono;
+	high_resolution_clock::time_point t1 = high_resolution_clock::now();
     
-    for(unsigned timestep = 0; timestep < N; ++timestep){
+	for(unsigned timestep = 0; timestep < N; ++timestep){
 
-	switch(myVAddr) {
-	case 0:
-	    cal.send(1, 0, context, dataSend);
-	    break;
-	case 1:
-	    cal.recv(0, 0, context, dataRecv);
-	    break;
+	    switch(myVAddr) {
+	    case 0:
+		cal.send(1, 0, context, dataSend);
+		break;
+	    case 1:
+		cal.recv(0, 0, context, dataRecv);
+		break;
 	    
-	default:
-	    break;
-	};
+	    default:
+		break;
+	    };
 
+	}
+
+
+	high_resolution_clock::time_point t2 = high_resolution_clock::now();
+	duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
+	timeSum += timeSpan.count();
     }
-
-    high_resolution_clock::time_point t2 = high_resolution_clock::now();
-    duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
-    if(myVAddr == 0) std::cout << "CAL Time[s]: " << time_span.count() << std::endl;
+  
+    double avgTime = timeSum / nRuns;
+  
+    if(myVAddr == 0) std::cout << "CAL Time[s]: " << avgTime << std::endl;
 
     return 0;
 }
@@ -123,28 +135,40 @@ int sendGVON(const unsigned N) {
     std::array<int, 1> dataSend {{1}};
     std::array<int, 1> dataRecv {{0}};
 
-    using namespace std::chrono;
-    high_resolution_clock::time_point t1 = high_resolution_clock::now();
+    const unsigned nRuns = 1000;
+    double timeSum = 0.0;
+  
+  
+    for(unsigned i = 0; i < nRuns; ++i){
+
+	using namespace std::chrono;
+	high_resolution_clock::time_point t1 = high_resolution_clock::now();
     
-    for(unsigned timestep = 0; timestep < N; ++timestep){
-	for(Vertex v : myGraphVertices){
-	    for(std::pair<Vertex, Edge> edge : graph.getOutEdges(v)){
-		gvon.send(graph, edge.first, edge.second, dataSend);
-	    }
-	}
-
-	for(Vertex v : myGraphVertices){
-	    for(std::pair<Vertex, Edge> edge : graph.getInEdges(v)){
-		gvon.recv(graph, edge.first, edge.second, dataRecv);
+	for(unsigned timestep = 0; timestep < N; ++timestep){
+	    for(Vertex v : myGraphVertices){
+		for(std::pair<Vertex, Edge> edge : graph.getOutEdges(v)){
+		    gvon.send(graph, edge.first, edge.second, dataSend);
+		}
 	    }
 
+	    for(Vertex v : myGraphVertices){
+		for(std::pair<Vertex, Edge> edge : graph.getInEdges(v)){
+		    gvon.recv(graph, edge.first, edge.second, dataRecv);
+		}
+
+	    }
+
 	}
 
+	high_resolution_clock::time_point t2 = high_resolution_clock::now();
+	duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
+	timeSum += timeSpan.count();
     }
+  
+    double avgTime = timeSum / nRuns;
+  
+    if(myVAddr == 0) std::cout << "GVON Time[s]: " << avgTime << std::endl;
 
-    high_resolution_clock::time_point t2 = high_resolution_clock::now();
-    duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
-    if(myVAddr == 0) std::cout << "GVON Time[s]: " << time_span.count() << std::endl;
 
     return 0;
 }
@@ -171,31 +195,42 @@ int sendMPI(const unsigned N){
   std::array<int, 1> dataSend {{1}};
   std::array<int, 1> dataRecv {{0}};
 
-  using namespace std::chrono;
-  high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
-
-  for(unsigned timestep = 0; timestep < N; ++timestep){
-      switch(rank) {
-
-      case 0 :
-	  MPI_Send(dataSend.data(), dataSend.size(), MPI_INT, 1, 0, MPI_COMM_WORLD);
-	  break;
-
-      case 1:
-	  MPI_Recv(dataRecv.data(), dataRecv.size(), MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
-	  break;
-
-      default:
-	  break;
-
-      };
-  }
-
+  const unsigned nRuns = 1000;
+  double timeSum = 0.0;
   
-  high_resolution_clock::time_point t2 = high_resolution_clock::now();
-  duration<double> time_span = duration_cast<duration<double>>(t2 - t1);
-  if(rank == 0) std::cout << "MPI Time[s]: " << time_span.count() << std::endl;
+  
+  for(unsigned i = 0; i < nRuns; ++i){
+
+      using namespace std::chrono;
+      high_resolution_clock::time_point t1 = high_resolution_clock::now();
+
+
+      for(unsigned timestep = 0; timestep < N; ++timestep){
+	  switch(rank) {
+
+	  case 0 :
+	      MPI_Send(dataSend.data(), dataSend.size(), MPI_INT, 1, 0, MPI_COMM_WORLD);
+	      break;
+
+	  case 1:
+	      MPI_Recv(dataRecv.data(), dataRecv.size(), MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
+	      break;
+
+	  default:
+	      break;
+
+	  };
+      }
+
+      high_resolution_clock::time_point t2 = high_resolution_clock::now();
+      duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
+      timeSum += timeSpan.count();
+  }
+  
+  double avgTime = timeSum / nRuns;
+  
+  if(rank == 0) std::cout << "MPI Time[s]: " << avgTime << std::endl;
 
   MPI_Barrier(MPI_COMM_WORLD);
   MPI_Finalize();
