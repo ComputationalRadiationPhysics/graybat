@@ -262,7 +262,7 @@ int main(int argc, char** argv){
 
     if(argc < 3){
 	std::cout << "Usage ./Synthetic [N] [nRuns] [0,1,2]" << std::endl;
-
+	return 0;
     }
 
     // Benchmark parameter
@@ -297,7 +297,10 @@ int main(int argc, char** argv){
     double medTime = median(runtimes);
 
     if(printTime){
-	std::cout << "Time[s]: " << avgTime << " Variance: " << varTime << " Deviation: " << devTime << " Median: " << medTime << std::endl;
+	//std::cerr << "Time[s]: " << avgTime << " Variance: " << varTime << " Deviation: " << devTime << " Median: " << medTime << std::endl;
+
+	// average, variance, deviation, median
+	std::cerr << avgTime << " " << varTime << " " << devTime << " " << medTime << std::endl;
     }
 
 
