@@ -47,7 +47,7 @@ T variance(const std::vector<T> values, const T avgValue){
 }
 
 
-void sendCAL(const unsigned N, std::vector<double>& times) {
+int sendCAL(const unsigned N, std::vector<double>& times) {
     /***************************************************************************
      * Configuration
      ****************************************************************************/
@@ -100,10 +100,15 @@ void sendCAL(const unsigned N, std::vector<double>& times) {
 	times[i] = timeSpan.count();
     }
 
+
+  if(myVAddr == 0){
+      return 1;
+  }
+  return 0;
 }
 
 
-void sendGVON(const unsigned N, std::vector<double>& times) {
+int sendGVON(const unsigned N, std::vector<double>& times) {
     /***************************************************************************
      * Configuration
      ****************************************************************************/
@@ -175,16 +180,21 @@ void sendGVON(const unsigned N, std::vector<double>& times) {
 	times[i] = timeSpan.count();
     }
   
+  if(myVAddr == 0){
+      return 1;
+  }
+  return 0;
+
 }
 
 
-void sendMPI(const unsigned N, std::vector<double>& times){
+int sendMPI(const unsigned N, std::vector<double>& times){
     // Init MPI
     int mpiError = MPI_Init(NULL,NULL);
     if(mpiError != MPI_SUCCESS){
 	std::cout << "Error starting MPI program." << std::endl;
 	MPI_Abort(MPI_COMM_WORLD,mpiError);
-	return;
+	return 0;
     }
 
   // Get size and rank
@@ -231,31 +241,39 @@ void sendMPI(const unsigned N, std::vector<double>& times){
   MPI_Barrier(MPI_COMM_WORLD);
   MPI_Finalize();
 
+  if(rank == 0){
+      return 1;
+  }
+  return 0;
+
 }
 
 
 int main(int argc, char** argv){
 
-    if(argc < 1){
-	std::cout << "Usage ./Synthetic [N] [0,1,2]" << std::endl;
+    if(argc < 3){
+	std::cout << "Usage ./Synthetic [N] [nRuns] [0,1,2]" << std::endl;
 
     }
 
-    unsigned mode = atoi(argv[2]);
-    unsigned N = atoi(argv[1]);
+    unsigned N     = atoi(argv[1]);
+    unsigned nRuns = atoi(argv[2]);
+    unsigned mode  = atoi(argv[3]);
 
-    std::vector<double> runtimes(10000, 0.0);
+    bool printTime = 0;
+
+    std::vector<double> runtimes(nRuns, 0.0);
 
 
     switch(mode){
     case 0:
-	sendMPI(N, runtimes);
+	printTime = sendMPI(N, runtimes);
 	break;
     case 1: 
-	sendCAL(N, runtimes);
+	printTime = sendCAL(N, runtimes);
        break;
     case 2: 
-	sendGVON(N, runtimes);
+	printTime = sendGVON(N, runtimes);
        break;
 
     default:
@@ -266,7 +284,9 @@ int main(int argc, char** argv){
     double varTime = variance(runtimes, avgTime);
     double devTime = sqrt(varTime);
 
-    std::cout << "Time[s]: " << avgTime << " Variance: " << varTime << " Deviation: " << devTime << std::endl;
+    if(printTime){
+	std::cout << "Time[s]: " << avgTime << " Variance: " << varTime << " Deviation: " << devTime << std::endl;
+    }
 
 
     return 0;
