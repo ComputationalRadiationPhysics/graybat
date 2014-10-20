@@ -28,7 +28,7 @@ namespace Topology {
 
 	assert(vertices.size() == verticesCount);
 
-	std::cout << "Create fully connected with " << vertices.size() << " cells" << std::endl;
+	//std::cout << "Create fully connected with " << vertices.size() << " cells" << std::endl;
 
 	unsigned edgeCount = 0;    
 	std::vector<EdgeDescriptor> edges;
