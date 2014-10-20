@@ -55,8 +55,8 @@ T median(const std::vector<T> values){
 
 }
 
-
-int sendCAL(const unsigned N, std::vector<double>& times) {
+template <typename T_Data>
+int sendCAL(const unsigned N, const unsigned nSend, std::vector<double>& times) {
     /***************************************************************************
      * Configuration
      ****************************************************************************/
@@ -79,8 +79,8 @@ int sendCAL(const unsigned N, std::vector<double>& times) {
      * Start Test
      ****************************************************************************/
 
-    std::array<int, 1> dataSend {{1}};
-    std::array<int, 1> dataRecv {{0}};
+    std::vector<T_Data> dataSend(nSend); 
+    std::vector<T_Data> dataRecv(nSend);
 
     for(unsigned i = 0; i < times.size(); ++i){
 
@@ -116,8 +116,8 @@ int sendCAL(const unsigned N, std::vector<double>& times) {
   return 0;
 }
 
-
-int sendGVON(const unsigned N, std::vector<double>& times) {
+template <typename T_Data>
+int sendGVON(const unsigned N, const unsigned nSend, std::vector<double>& times) {
     /***************************************************************************
      * Configuration
      ****************************************************************************/
@@ -160,8 +160,8 @@ int sendGVON(const unsigned N, std::vector<double>& times) {
      * Start Test
      ****************************************************************************/
 
-    std::array<int, 1> dataSend {{1}};
-    std::array<int, 1> dataRecv {{0}};
+    std::vector<T_Data> dataSend(nSend); 
+    std::vector<T_Data> dataRecv(nSend);
 
     for(unsigned i = 0; i < times.size(); ++i){
 
@@ -196,8 +196,8 @@ int sendGVON(const unsigned N, std::vector<double>& times) {
 
 }
 
-
-int sendMPI(const unsigned N, std::vector<double>& times){
+template <typename T_Data>
+int sendMPI(const unsigned N, const unsigned nSend, std::vector<double>& times){
     // Init MPI
     int mpiError = MPI_Init(NULL,NULL);
     if(mpiError != MPI_SUCCESS){
@@ -215,8 +215,8 @@ int sendMPI(const unsigned N, std::vector<double>& times){
 
 
   // Start Communication
-  std::array<int, 1> dataSend {{1}};
-  std::array<int, 1> dataRecv {{0}};
+  std::vector<T_Data> dataSend(nSend); 
+  std::vector<T_Data> dataRecv(nSend);
 
 
   for(unsigned i = 0; i < times.size(); ++i){
@@ -265,24 +265,26 @@ int main(int argc, char** argv){
 
     }
 
+    // Benchmark parameter
+    typedef int Data;
     unsigned N     = atoi(argv[1]);
     unsigned nRuns = atoi(argv[2]);
     unsigned mode  = atoi(argv[3]);
+    unsigned nSend = 10;
+
 
     bool printTime = 0;
-
     std::vector<double> runtimes(nRuns, 0.0);
-
 
     switch(mode){
     case 0:
-	printTime = sendMPI(N, runtimes);
+	printTime = sendMPI<Data>(N, nSend, runtimes);
 	break;
     case 1: 
-	printTime = sendCAL(N, runtimes);
+	printTime = sendCAL<Data>(N, nSend, runtimes);
        break;
     case 2: 
-	printTime = sendGVON(N, runtimes);
+	printTime = sendGVON<Data>(N, nSend, runtimes);
        break;
 
     default:
