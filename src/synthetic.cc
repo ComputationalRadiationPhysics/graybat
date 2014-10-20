@@ -46,6 +46,15 @@ T variance(const std::vector<T> values, const T avgValue){
 
 }
 
+template <typename T>
+T median(const std::vector<T> values){
+    unsigned mid_i = values.size() / 2;
+
+    return values[mid_i];
+
+
+}
+
 
 int sendCAL(const unsigned N, std::vector<double>& times) {
     /***************************************************************************
@@ -283,9 +292,10 @@ int main(int argc, char** argv){
     double avgTime = avg(runtimes);
     double varTime = variance(runtimes, avgTime);
     double devTime = sqrt(varTime);
+    double medTime = median(runtimes);
 
     if(printTime){
-	std::cout << "Time[s]: " << avgTime << " Variance: " << varTime << " Deviation: " << devTime << std::endl;
+	std::cout << "Time[s]: " << avgTime << " Variance: " << varTime << " Deviation: " << devTime << " Median: " << medTime << std::endl;
     }
 
 
