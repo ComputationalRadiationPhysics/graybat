@@ -7,6 +7,7 @@
 // Helpers
 #include <distribution.hpp> /* roundRobin */
 #include <topology.hpp>     /* meshDiagonal */
+#include <evals.hpp>        /* variance, median, avg */
 
 // STL
 #include <iostream>   /* std::cout */
@@ -15,7 +16,7 @@
 #include <array>      /* std::array */
 #include <algorithm>  /* std::copy */
 #include <functional> /* std::minus */
-#include <numeric>    /* std::accumulate */
+
 #include <chrono>     /* std::chrono::high_resolution_clock */
 
 // C Header
@@ -28,32 +29,7 @@
 // MPI
 #include <mpi.h>
 
-template <typename T>
-T avg(std::vector<T> values){
-    return std::accumulate(values.begin(), values.end(), 0.0, std::plus<T>()) / (T) values.size(); 
 
-
-}
-template <typename T>
-T variance(const std::vector<T> values, const T avgValue){
-
-    T sum = 0;
-    for(T value : values){
-	sum += pow(avgValue - value, 2);
-    }
-
-    return sum / values.size();
-
-}
-
-template <typename T>
-T median(const std::vector<T> values){
-    unsigned mid_i = values.size() / 2;
-
-    return values[mid_i];
-
-
-}
 
 template <typename T_Data>
 int sendCAL(const unsigned N, const unsigned nSend, std::vector<double>& times) {

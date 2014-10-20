@@ -7,6 +7,7 @@
 // Helpers
 #include <distribution.hpp> /* roundRobin */
 #include <topology.hpp>     /* meshDiagonal */
+#include <evals.hpp>        /* variance, median, avg */
 
 // STL
 #include <iostream>   /* std::cout */
@@ -18,9 +19,34 @@
 #include <cstdlib>    /* atoi */
 #include <assert.h>   /* assert */
 #include <cstdlib>    /* rand */
+#include <numeric>    /* std::accumulate */
+#include <chrono>     /* std::chrono::high_resolution_clock */
+
+// MPI
+#include <mpi.h>
 
 // Boost uBlas
 #include <boost/numeric/ublas/vector.hpp>
+
+// Body definition
+struct Body : public SimpleProperty{
+	
+    Body() : SimpleProperty(0), m{{1}}, r{{0,0}}, v{{0,0}} { }
+    Body(ID id) : SimpleProperty(id), m{{1}}, r{{0,0}}, v{{0,0}} { }
+
+       
+    Body(ID id, 
+	 std::array<double, 1> m, 
+	 std::array<double, 2> r, 
+	 std::array<double, 2> v ) : SimpleProperty(id), m(m), r(r), v(v){
+	    
+    }
+	
+    std::array<double, 1> m;
+    std::array<double, 2> r;	
+    std::array<double, 2> v;
+
+};
 
 template <class T_Body>
 void updateBody(T_Body &body, const boost::numeric::ublas::vector<double> F, const double dt){
@@ -78,6 +104,7 @@ void printBody(T_Body body){
     std::cout << "[" << body.id << "] ";
     std::cout << " m = " << body.m[0];
     std::cout << " r = [" << body.r[0] << "," << body.r[1] << "]";
+    std::cout << " v = [" << body.v[0] << "," << body.v[1] << "]";
     std::cout << std::endl;
 
 }
@@ -101,28 +128,11 @@ std::vector<T_Body> generateBodies(const unsigned N){
 
 }
 
-void nbody(const unsigned N) {
+int nBody(const unsigned N, std::vector<double>& times) {
     /***************************************************************************
      * Configuration
      ****************************************************************************/
-    struct Body : public SimpleProperty{
-	
-	Body() : SimpleProperty(0), m{{1}}, r{{0,0}}, v{{0,0}} { }
-	Body(ID id) : SimpleProperty(id), m{{1}}, r{{0,0}}, v{{0,0}} { }
 
-       
-	Body(ID id, 
-	     std::array<double, 1> m, 
-	     std::array<double, 2> r, 
-	     std::array<double, 2> v ) : SimpleProperty(id), m(m), r(r), v(v){
-	    
-	}
-	
-	std::array<double, 1> m;
-	std::array<double, 2> r;	
-	std::array<double, 2> v;
-
-    };
 
     // Graph
     typedef Graph<Body, SimpleProperty>         NBodyGraph;
@@ -147,6 +157,7 @@ void nbody(const unsigned N) {
     Body b1(0, {{1e12}}, {{0,0}},{{0,0}});
     Body b2(1, {{1}}, {{10,10}}, {{2.4,0}}); 
 
+    //std::vector<Vertex> graphVertices = {b1,b2};
     std::vector<Vertex> graphVertices = generateBodies<Vertex>(N);
     std::vector<EdgeDescriptor> edges = Topology::fullyConnected<NBodyGraph>(N, graphVertices);
     NBodyGraph graph (edges, graphVertices); 
@@ -166,15 +177,14 @@ void nbody(const unsigned N) {
     /***************************************************************************
      * Start Simulation
      ****************************************************************************/
-    unsigned timestep = 0;
-    std::vector<Event> events;   
 
+    std::vector<Event> events;   
 
     // Simulate life forever
     const double dt = 1;
-    while(true){
-
-	if(myVAddr==0) std::cout << "Time[s]: " << timestep * dt << std::endl;
+    for(unsigned timestep = 0; timestep < times.size(); ++timestep){
+	using namespace std::chrono;
+	high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
 	// Send body information to all other
 	for(Vertex v : myGraphVertices){
@@ -195,14 +205,15 @@ void nbody(const unsigned N) {
 		F += twoBodyForce(v, edge.first);
 	    }
 	    updateBody(v, F, dt);
+	    //printBody(v);
 	    //std::cout << "[" << v.id << "] = " << "r = [" << v.r[0] << "," << v.r[1] << "] " << "F = [" << F[0] << "," << F[1] << "]" << std::endl;
 	}
 
 	// Wait to finish events
-	for(unsigned i = 0; i < events.size(); ++i){
-	    events.back().wait();
-	    events.pop_back();
-	}
+	// for(unsigned i = 0; i < events.size(); ++i){
+	//     events.back().wait();
+	//     events.pop_back();
+	// }
 
 	// Send alive information to host of vertex 0
 	// for(Vertex &v: myGraphVertices){
@@ -210,19 +221,163 @@ void nbody(const unsigned N) {
 	//     gvon.gather(graph.getVertices().at(0), v, graph, v.r, golDomain);
 	// }
 
-	timestep++;
+	high_resolution_clock::time_point t2 = high_resolution_clock::now();
+	duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
+	times[timestep] = timeSpan.count();
+
     }
+
+
+    if(myVAddr == 0){
+	return 1;
+    }
+    return 0;
     
+}
+
+
+int nBodyMPI(unsigned nBodies, std::vector<double>& times){
+    // Init MPI
+    int mpiError = MPI_Init(NULL,NULL);
+    if(mpiError != MPI_SUCCESS){
+	std::cout << "Error starting MPI program." << std::endl;
+	MPI_Abort(MPI_COMM_WORLD,mpiError);
+	return 0;
+    }
+
+    // Get size and rank
+    int rank;
+    int size;
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+
+    std::vector<MPI_Request> requests;
+    Body b1(0, {{1e12}}, {{0,0}},{{0,0}});
+    Body b2(1, {{1}}, {{10,10}}, {{2.4,0}}); 
+
+    //std::vector<Body> bodies = {b1,b2};
+    std::vector<Body> bodies = generateBodies<Body>(1);
+
+    assert(nBodies == (unsigned)size);
+
+    Body myBody = bodies.at(0);
+
+    for(unsigned timestep = 0; timestep < times.size(); ++timestep){
+	using namespace std::chrono;
+	high_resolution_clock::time_point t1 = high_resolution_clock::now();
+
+
+	const double dt = 1;
+	
+	// Send body information to all other
+	for(unsigned i = 0; i < (unsigned)size; ++i){
+	    if((unsigned)rank == i)
+		continue;
+
+	    MPI_Request request1;
+	    MPI_Request request2;
+	    MPI_Request request3;
+
+	    MPI_Issend(myBody.m.data(), myBody.m.size(), MPI_DOUBLE, i, 0, MPI_COMM_WORLD, &request1);
+	    MPI_Issend(myBody.r.data(), myBody.r.size(), MPI_DOUBLE, i, 0, MPI_COMM_WORLD, &request1);
+	    MPI_Issend(myBody.v.data(), myBody.v.size(), MPI_DOUBLE, i, 0, MPI_COMM_WORLD, &request1);
+
+	    requests.push_back(request1);
+	    requests.push_back(request2);
+	    requests.push_back(request3);
+
+
+	}
+	
+
+	// Recv body information from all other
+	boost::numeric::ublas::vector<double> F(2,0);
+	for(unsigned i = 0; i < (unsigned)size; ++i){
+	    if((unsigned)rank == i)
+		continue;
+
+	    std::array<double, 1> m;
+	    std::array<double, 2> r;
+	    std::array<double, 2> v;
+
+	    MPI_Status status1;
+	    MPI_Status status2;
+	    MPI_Status status3;
+
+	    MPI_Recv(m.data(), m.size(), MPI_DOUBLE, i, 0, MPI_COMM_WORLD, &status1);
+	    MPI_Recv(r.data(), r.size(), MPI_DOUBLE, i, 0, MPI_COMM_WORLD, &status2);
+	    MPI_Recv(v.data(), v.size(), MPI_DOUBLE, i, 0, MPI_COMM_WORLD, &status3);
+
+	    Body otherBody(i, m, r, v);
+
+	    F += twoBodyForce(myBody, otherBody);
+
+	}
+
+	updateBody(myBody, F, dt);
+	//printBody(myBody);
+	
+	// Wait to finish events
+	// Segfaults
+	// for(unsigned i = 0; i < requests.size(); ++i){
+	//     MPI_Status status;
+	//     MPI_Wait(&(requests[i]), &status);
+
+	// }
+
+	high_resolution_clock::time_point t2 = high_resolution_clock::now();
+	duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
+	times[timestep] = timeSpan.count();
+
+    }
+
+
+    MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Finalize();
+
+    if(rank == 0){
+	return 1;
+    }
+    return 0;
+
+
 }
 
 int main(int argc, char** argv){
 
-    if(argc < 1){
-	std::cout << "Usage ./NBody [N]" << std::endl;
+    if(argc < 3){
+	std::cout << "Usage ./NBody [nBodies] [nTimeSteps] [0,1]" << std::endl;
 
     }
-    unsigned N = atoi(argv[1]);
-    nbody(N);
 
-    return 0;
+    // Benchmark parameter
+    unsigned nBodies    = atoi(argv[1]);
+    unsigned nTimesteps = atoi(argv[2]);
+    unsigned mode       = atoi(argv[3]);
+
+
+    bool printTime = 0;
+    std::vector<double> runtimes(nTimesteps, 0.0);
+
+    switch(mode){
+    case 0:
+	printTime = nBodyMPI(nBodies,  runtimes);
+	break;
+    case 1: 
+	printTime = nBody(nBodies, runtimes);
+       break;
+    default:
+	break;
+    };
+    
+    double avgTime = avg(runtimes);
+    double varTime = variance(runtimes, avgTime);
+    double devTime = sqrt(varTime);
+    double medTime = median(runtimes);
+
+    if(printTime){
+	std::cout << "Time[s]: " << avgTime << " Variance: " << varTime << " Deviation: " << devTime << " Median: " << medTime << std::endl;
+    }
+
 }
