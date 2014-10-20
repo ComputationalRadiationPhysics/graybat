@@ -14,17 +14,40 @@
 #include <vector>     /* std::vector */
 #include <array>      /* std::array */
 #include <algorithm>  /* std::copy */
+#include <functional> /* std::minus */
+#include <numeric>    /* std::accumulate */
+#include <chrono>     /* std::chrono::high_resolution_clock */
+
+// C Header
 #include <cmath>      /* sqrt, pow */
 #include <cstdlib>    /* atoi */
 #include <assert.h>   /* assert */
 #include <cstdlib>    /* rand */
-#include <chrono>     /* std::chrono::high_resolution_clock */
+
 
 // MPI
 #include <mpi.h>
 
+template <typename T>
+T avg(std::vector<T> values){
+    return std::accumulate(values.begin(), values.end(), 0.0, std::plus<T>()) / (T) values.size(); 
 
-int sendCAL(const unsigned N) {
+
+}
+template <typename T>
+T variance(const std::vector<T> values, const T avgValue){
+
+    T sum = 0;
+    for(T value : values){
+	sum += pow(avgValue - value, 2);
+    }
+
+    return sum / values.size();
+
+}
+
+
+void sendCAL(const unsigned N, std::vector<double>& times) {
     /***************************************************************************
      * Configuration
      ****************************************************************************/
@@ -50,11 +73,7 @@ int sendCAL(const unsigned N) {
     std::array<int, 1> dataSend {{1}};
     std::array<int, 1> dataRecv {{0}};
 
-    const unsigned nRuns = 1000;
-    double timeSum = 0.0;
-  
-  
-    for(unsigned i = 0; i < nRuns; ++i){
+    for(unsigned i = 0; i < times.size(); ++i){
 
 	using namespace std::chrono;
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
@@ -78,18 +97,13 @@ int sendCAL(const unsigned N) {
 
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 	duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
-	timeSum += timeSpan.count();
+	times[i] = timeSpan.count();
     }
-  
-    double avgTime = timeSum / nRuns;
-  
-    if(myVAddr == 0) std::cout << "CAL Time[s]: " << avgTime << std::endl;
 
-    return 0;
 }
 
 
-int sendGVON(const unsigned N) {
+void sendGVON(const unsigned N, std::vector<double>& times) {
     /***************************************************************************
      * Configuration
      ****************************************************************************/
@@ -135,11 +149,7 @@ int sendGVON(const unsigned N) {
     std::array<int, 1> dataSend {{1}};
     std::array<int, 1> dataRecv {{0}};
 
-    const unsigned nRuns = 1000;
-    double timeSum = 0.0;
-  
-  
-    for(unsigned i = 0; i < nRuns; ++i){
+    for(unsigned i = 0; i < times.size(); ++i){
 
 	using namespace std::chrono;
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
@@ -162,25 +172,19 @@ int sendGVON(const unsigned N) {
 
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 	duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
-	timeSum += timeSpan.count();
+	times[i] = timeSpan.count();
     }
   
-    double avgTime = timeSum / nRuns;
-  
-    if(myVAddr == 0) std::cout << "GVON Time[s]: " << avgTime << std::endl;
-
-
-    return 0;
 }
 
 
-int sendMPI(const unsigned N){
+void sendMPI(const unsigned N, std::vector<double>& times){
     // Init MPI
     int mpiError = MPI_Init(NULL,NULL);
     if(mpiError != MPI_SUCCESS){
 	std::cout << "Error starting MPI program." << std::endl;
 	MPI_Abort(MPI_COMM_WORLD,mpiError);
-	return 1;
+	return;
     }
 
   // Get size and rank
@@ -196,11 +200,7 @@ int sendMPI(const unsigned N){
   std::array<int, 1> dataRecv {{0}};
 
 
-  const unsigned nRuns = 1000;
-  double timeSum = 0.0;
-  
-  
-  for(unsigned i = 0; i < nRuns; ++i){
+  for(unsigned i = 0; i < times.size(); ++i){
 
       using namespace std::chrono;
       high_resolution_clock::time_point t1 = high_resolution_clock::now();
@@ -225,17 +225,11 @@ int sendMPI(const unsigned N){
 
       high_resolution_clock::time_point t2 = high_resolution_clock::now();
       duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
-      timeSum += timeSpan.count();
+      times[i] = timeSpan.count();
   }
   
-  double avgTime = timeSum / nRuns;
-  
-  if(rank == 0) std::cout << "MPI Time[s]: " << avgTime << std::endl;
-
   MPI_Barrier(MPI_COMM_WORLD);
   MPI_Finalize();
-
-  return 0;
 
 }
 
@@ -250,20 +244,30 @@ int main(int argc, char** argv){
     unsigned mode = atoi(argv[2]);
     unsigned N = atoi(argv[1]);
 
+    std::vector<double> runtimes(10000, 0.0);
+
+
     switch(mode){
     case 0:
-	sendMPI(N);
+	sendMPI(N, runtimes);
 	break;
     case 1: 
-       sendCAL(N);
+	sendCAL(N, runtimes);
        break;
     case 2: 
-       sendGVON(N);
+	sendGVON(N, runtimes);
        break;
 
     default:
 	break;
     };
+    
+    double avgTime = avg(runtimes);
+    double varTime = variance(runtimes, avgTime);
+    double devTime = sqrt(varTime);
+
+    std::cout << "Time[s]: " << avgTime << " Variance: " << varTime << " Deviation: " << devTime << std::endl;
+
 
     return 0;
 
