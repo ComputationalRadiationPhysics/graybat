@@ -236,17 +236,17 @@ int sendMPI(const unsigned N, const unsigned nSend, std::vector<double>& times){
 
 int main(int argc, char** argv){
 
-    if(argc < 3){
-	std::cout << "Usage ./Synthetic [N] [nRuns] [0,1,2]" << std::endl;
+    if(argc < 4){
+	std::cout << "Usage ./Synthetic [nSend] [nElements] [nRuns] [0,1,2]" << std::endl;
 	return 0;
     }
 
     // Benchmark parameter
     typedef int Data;
-    unsigned N     = atoi(argv[1]);
-    unsigned nRuns = atoi(argv[2]);
-    unsigned mode  = atoi(argv[3]);
-    unsigned nSend = 10;
+    unsigned nSend     = atoi(argv[1]);
+    unsigned nElements = atoi(argv[2]);
+    unsigned nRuns     = atoi(argv[3]);
+    unsigned mode      = atoi(argv[4]);
 
 
     bool printTime = 0;
@@ -254,13 +254,13 @@ int main(int argc, char** argv){
 
     switch(mode){
     case 0:
-	printTime = sendMPI<Data>(N, nSend, runtimes);
+	printTime = sendMPI<Data>(nSend, nElements, runtimes);
 	break;
     case 1: 
-	printTime = sendCAL<Data>(N, nSend, runtimes);
+	printTime = sendCAL<Data>(nSend, nElements, runtimes);
        break;
     case 2: 
-	printTime = sendGVON<Data>(N, nSend, runtimes);
+	printTime = sendGVON<Data>(nSend, nElements, runtimes);
        break;
 
     default:
