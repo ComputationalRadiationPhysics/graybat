@@ -377,7 +377,10 @@ int main(int argc, char** argv){
     double medTime = median(runtimes);
 
     if(printTime){
-	std::cout << "Time[s]: " << avgTime << " Variance: " << varTime << " Deviation: " << devTime << " Median: " << medTime << std::endl;
+	//std::cout << "Time[s]: " << avgTime << " Variance: " << varTime << " Deviation: " << devTime << " Median: " << medTime << std::endl;
+
+	// average, variance, deviation, median
+	std::cerr << avgTime << " " << varTime << " " << devTime << " " << medTime << std::endl;
     }
 
 }
