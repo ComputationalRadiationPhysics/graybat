@@ -42,12 +42,14 @@ add_executable(Main EXCLUDE_FROM_ALL src/main.cc)
 add_executable(GoL EXCLUDE_FROM_ALL src/gol.cc )
 add_executable(NBody EXCLUDE_FROM_ALL src/nbody.cc )
 add_executable(Synthetic EXCLUDE_FROM_ALL src/synthetic.cc )
+add_executable(SyntheticOneLookup EXCLUDE_FROM_ALL src/synthetic_one_lookup.cc )
 
 # add the libraries (Boost...) to this executable
 target_link_libraries(Main ${LIBS})
 target_link_libraries(GoL ${LIBS})
 target_link_libraries(NBody ${LIBS})
 target_link_libraries(Synthetic ${LIBS})
+target_link_libraries(SyntheticOneLookup ${LIBS})
 
 ###############################################################################
 # Custom targets
