@@ -236,7 +236,7 @@ int sendMPI(const unsigned N, const unsigned nSend, std::vector<double>& times){
 
 int main(int argc, char** argv){
 
-    if(argc < 4){
+    if(argc < 5){
 	std::cout << "Usage ./Synthetic [nSend] [nElements] [nRuns] [0,1,2]" << std::endl;
 	return 0;
     }
