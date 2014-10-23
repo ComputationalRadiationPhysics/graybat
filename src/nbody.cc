@@ -19,8 +19,7 @@
 #include <cstdlib>    /* atoi */
 #include <assert.h>   /* assert */
 #include <cstdlib>    /* rand */
-#include <numeric>    /* std::accumulate */
-#include <chrono>     /* std::chrono::high_resolution_clock */
+#include <chrono>     /* std::chrono::high_resolution_clock */ 
 
 // MPI
 #include <mpi.h>
@@ -210,10 +209,10 @@ int nBody(const unsigned N, std::vector<double>& times) {
 	}
 
 	// Wait to finish events
-	// for(unsigned i = 0; i < events.size(); ++i){
-	//     events.back().wait();
-	//     events.pop_back();
-	// }
+	for(unsigned i = 0; i < events.size(); ++i){
+	    events.back().wait();
+	    events.pop_back();
+	}
 
 	// Send alive information to host of vertex 0
 	// for(Vertex &v: myGraphVertices){
@@ -275,18 +274,13 @@ int nBodyMPI(unsigned nBodies, std::vector<double>& times){
 	    if((unsigned)rank == i)
 		continue;
 
-	    MPI_Request request1;
-	    MPI_Request request2;
-	    MPI_Request request3;
+	    MPI_Request request;
 
-	    MPI_Issend(myBody.m.data(), myBody.m.size(), MPI_DOUBLE, i, 0, MPI_COMM_WORLD, &request1);
-	    MPI_Issend(myBody.r.data(), myBody.r.size(), MPI_DOUBLE, i, 0, MPI_COMM_WORLD, &request1);
-	    MPI_Issend(myBody.v.data(), myBody.v.size(), MPI_DOUBLE, i, 0, MPI_COMM_WORLD, &request1);
+	    MPI_Issend(myBody.m.data(), myBody.m.size(), MPI_DOUBLE, i, 0, MPI_COMM_WORLD, &request);
+	    MPI_Issend(myBody.r.data(), myBody.r.size(), MPI_DOUBLE, i, 0, MPI_COMM_WORLD, &request);
+	    MPI_Issend(myBody.v.data(), myBody.v.size(), MPI_DOUBLE, i, 0, MPI_COMM_WORLD, &request);
 
-	    requests.push_back(request1);
-	    requests.push_back(request2);
-	    requests.push_back(request3);
-
+	    requests.push_back(request);
 
 	}
 	
@@ -318,13 +312,11 @@ int nBodyMPI(unsigned nBodies, std::vector<double>& times){
 	updateBody(myBody, F, dt);
 	//printBody(myBody);
 	
-	// Wait to finish events
-	// Segfaults
-	// for(unsigned i = 0; i < requests.size(); ++i){
-	//     MPI_Status status;
-	//     MPI_Wait(&(requests[i]), &status);
-
-	// }
+	// Wait for send
+	for(MPI_Request &r: requests){
+	    MPI_Status status;
+	    MPI_Wait(&r, &status);
+	}
 
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 	duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
@@ -348,9 +340,9 @@ int nBodyMPI(unsigned nBodies, std::vector<double>& times){
 
 int main(int argc, char** argv){
 
-    if(argc < 3){
+    if(argc < 4){
 	std::cout << "Usage ./NBody [nBodies] [nTimeSteps] [0,1]" << std::endl;
-
+	return 0;
     }
 
     // Benchmark parameter
@@ -384,5 +376,7 @@ int main(int argc, char** argv){
 	// average, variance, deviation, median
 	std::cerr << avgTime << " " << varTime << " " << devTime << " " << medTime << std::endl;
     }
+    
+    return 0;
 
 }
