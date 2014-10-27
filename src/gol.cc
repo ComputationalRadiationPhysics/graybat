@@ -161,8 +161,10 @@ int golMPI(const unsigned nCells, std::vector<double> &times){
 
     const unsigned width  = unsigned(sqrt(nCells));
     size = width * width;
+    unsigned ops = 0;
     if(rank < size) {
 
+	std::array<unsigned, 1> isAlive;
 	Cell myCell(rank);
 	std::vector<unsigned> neighbors = generateNeighborRanks(rank, width, size);
 	std::vector<MPI_Request> requests;
@@ -177,25 +179,26 @@ int golMPI(const unsigned nCells, std::vector<double> &times){
 		MPI_Request request;
 		MPI_Issend(myCell.isAlive.data(), myCell.isAlive.size(), MPI_UNSIGNED, neighbor, 0, MPI_COMM_WORLD, &request);
 		requests.push_back(request);
+		ops++;
 	    }
 	
 	
 	    // Recv state from neighbor cells
 	    for(unsigned neighbor : neighbors){
-		std::array<unsigned, 1> isAlive;
 		MPI_Status status;
 
 		MPI_Recv(isAlive.data(), isAlive.size(), MPI_UNSIGNED, neighbor, 0, MPI_COMM_WORLD, &status);
+		ops++;
 
 		if(isAlive[0]) myCell.aliveNeighbors++;
 
 	    } 
 	
 	    // Wait to finish events
-	    for(MPI_Request &r: requests){
-		MPI_Status status;
-		MPI_Wait(&r, &status);
-
+	    for(unsigned i = 0; i < requests.size(); ++i){
+	    	MPI_Status status;
+	    	MPI_Wait(&(requests.back()), &status);
+		requests.pop_back();
 	    }
 	
 	    // Calculate state for next generation
@@ -212,6 +215,7 @@ int golMPI(const unsigned nCells, std::vector<double> &times){
     MPI_Finalize();
 
     if(rank == 0){
+	std::cout << "Opeartions: " << ops << std::endl;
 	return 1;
     }
     return 0;
@@ -269,6 +273,10 @@ int gol(const unsigned nCells, std::vector<double> &times) {
     std::vector<Event> events;   
     std::vector<unsigned> golDomain(graph.getVertices().size(), 0); 
 
+    //unsigned generation = 0;
+
+    unsigned ops = 0;
+
     // Simulate life forever
     for(unsigned timestep = 0; timestep < times.size(); ++timestep){
 	using namespace std::chrono;
@@ -284,6 +292,7 @@ int gol(const unsigned nCells, std::vector<double> &times) {
 	for(Vertex v : hostedVertices){
 	    for(std::pair<Vertex, Edge> edge : graph.getOutEdges(v)){
 		events.push_back(gvon.asyncSend(graph, edge.first, edge.second, v.isAlive));
+		ops++;
 	    }
 	}
 
@@ -291,6 +300,7 @@ int gol(const unsigned nCells, std::vector<double> &times) {
 	for(Vertex &v : hostedVertices){
 	    for(std::pair<Vertex, Edge> edge : graph.getInEdges(v)){
 		gvon.recv(graph, edge.first, edge.second, edge.first.isAlive);
+		ops++;
 		if(edge.first.isAlive[0]) v.aliveNeighbors++;
 	    }
 	}
@@ -310,14 +320,17 @@ int gol(const unsigned nCells, std::vector<double> &times) {
 	//     gvon.gather(graph.getVertices().at(0), v, graph, v.isAlive[0], golDomain);
 	// }
 
-	// generation++;
+	//generation++;
 
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 	duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
 	times[timestep] = timeSpan.count();
     }
     
+    
+
     if(myVAddr == 0){
+	std::cout << "Operations: " << ops << std::endl;
 	return 1;
     }
     return 0;

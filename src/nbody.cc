@@ -320,7 +320,6 @@ int nBodyMPI(unsigned nBodies, std::vector<double>& times){
 
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 	duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
-	std::cout << timeSpan.cout() << std::endl;
 	times[timestep] = timeSpan.count();
 
 
