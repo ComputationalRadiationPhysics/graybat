@@ -313,9 +313,10 @@ int nBodyMPI(unsigned nBodies, std::vector<double>& times){
 	//printBody(myBody);
 	
 	// Wait for send
-	for(MPI_Request &r: requests){
+	for(unsigned i = 0; i < requests.size(); ++i){
 	    MPI_Status status;
-	    MPI_Wait(&r, &status);
+	    MPI_Wait(&(requests.back()), &status);
+	    requests.pop_back();
 	}
 
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
