@@ -159,8 +159,10 @@ int golMPI(const unsigned nCells, std::vector<double> &times){
 
     assert(nCells == (unsigned)size);
 
-    const unsigned width  = unsigned(sqrt(nCells));
-    size = width * width;
+    const unsigned height = 8;
+    const unsigned width  = unsigned(nCells / height);
+    
+    size = width * height;
     unsigned ops = 0;
     if(rank < size) {
 
@@ -247,8 +249,8 @@ int gol(const unsigned nCells, std::vector<double> &times) {
      * Init Communication
      ****************************************************************************/
     // Create Graph
-    const unsigned height = unsigned(sqrt(nCells));
-    const unsigned width  = unsigned(sqrt(nCells));
+    const unsigned height = 8;
+    const unsigned width  = unsigned(nCells / height);
     std::vector<Vertex> graphVertices;
     std::vector<EdgeDescriptor> edges = Topology::gridDiagonal<LifeGraph>(height, width, graphVertices);
     LifeGraph graph (edges, graphVertices); 

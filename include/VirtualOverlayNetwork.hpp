@@ -383,8 +383,6 @@ struct VirtualOverlayNetwork {
 	Context context   = getGraphContext(graph);
 	std::vector<Vertex> vertices = getHostedVertices(graph, srcVAddr);
 
-
-
 	std::string gatherID = generateID(graph, srcVertex);
 
 	// Temporily collect data to gather
@@ -421,6 +419,61 @@ struct VirtualOverlayNetwork {
 
 	    gathers.erase(gatherID);
 	    vertexCount.erase(graph.id);
+
+	}
+
+    }
+
+    template <typename T>
+    void gatherNew(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, const T sendData, std::vector<T>& recvData){
+	//static std::map<std::string, Collective<T>> gathers;
+	static std::vector<T> gather;
+	static std::vector<T>* rootRecvData;
+
+	VAddr srcVAddr  = locateVertex(graph, srcVertex);
+	VAddr rootVAddr = locateVertex(graph, rootVertex);
+	Context context   = getGraphContext(graph);
+	std::vector<Vertex> vertices = getHostedVertices(graph, srcVAddr);
+
+	//std::string gatherID = generateID(graph, srcVertex);
+
+	// Temporily collect data to gather
+	//gathers[gatherID].send.push_back(sendData);
+	gather.push_back(sendData);
+
+	if(rootVertex.id == srcVertex.id){
+	    //gathers[gatherID].rootRecvData = &recvData;
+	    rootRecvData = &recvData;
+	    //gathers[gatherID].isRoot = true;
+	}
+
+	if(gather.size() == vertices.size()){
+	    std::vector<unsigned> recvCount;
+	    // std::vector<T> recvDataCollective;
+	    //cal.gather2(rootVAddr, context, gather, *rootRecvData, recvCount);
+	    cal.gather(rootVAddr, context, gather[0], recvData);
+
+	    // Reorder received elements in vertex order
+	    // std::vector<T> recvReordered(recvDataCollective.size(), 0);
+	    // unsigned vAddr = 0;
+	    // for(unsigned recv_i = 0; recv_i < recvDataCollective.size(); ){
+	    // 	std::vector<Vertex> hostedVertices = getHostedVertices(graph, vAddr);
+	    // 	for(Vertex v: hostedVertices){
+	    // 	    T recvElement = recvDataCollective.at(recv_i);
+	    // 	    recvReordered.at(v.id) = recvElement;
+	    // 	    recv_i++;
+	    // 	}
+	    // 	vAddr++;
+	    
+	    // }
+	
+	    // Write received data to root cal pointer
+	    // if(gathers[gatherID].isRoot){
+	    // 	*(gathers[gatherID].rootRecvData) = recvReordered;
+	    // }
+
+	    // gathers.erase(gatherID);
+	    // vertexCount.erase(graph.id);
 
 	}
 

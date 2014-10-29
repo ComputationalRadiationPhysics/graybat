@@ -135,7 +135,7 @@ int gatherGVON(const unsigned nPeers, const unsigned nElements, std::vector<doub
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
     
 	for(Vertex v : myGraphVertices){
-	    gvon.gather(root, v, graph, dataSend, dataRecv);
+	    gvon.gatherNew(root, v, graph, dataSend, dataRecv);
 
 	}
 
