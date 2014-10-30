@@ -80,7 +80,7 @@ int gatherCAL(const unsigned nPeers, const unsigned nElements, std::vector<doubl
 }
 
 template <typename T_Data>
-int gatherGVON(const unsigned nPeers, const unsigned nElements, std::vector<double>& times) {
+int gatherGVON(const unsigned nPeers, unsigned nElements, std::vector<double>& times) {
     /***************************************************************************
      * Configuration
      ****************************************************************************/
@@ -152,7 +152,7 @@ int gatherGVON(const unsigned nPeers, const unsigned nElements, std::vector<doub
 }
 
 template <typename T_Data>
-int gatherMPI(const unsigned nPeers, const unsigned nElements, std::vector<double>& times){
+int gatherMPI(const unsigned nPeers, unsigned nElements, std::vector<double>& times){
     // Init MPI
     int mpiError = MPI_Init(NULL,NULL);
     if(mpiError != MPI_SUCCESS){
