@@ -45,6 +45,7 @@ add_executable(Synthetic EXCLUDE_FROM_ALL src/synthetic.cc )
 add_executable(SyntheticOneLookup EXCLUDE_FROM_ALL src/synthetic_one_lookup.cc )
 add_executable(SyntheticRandom EXCLUDE_FROM_ALL src/synthetic_random.cc )
 add_executable(SyntheticCollective EXCLUDE_FROM_ALL src/synthetic_collective.cc )
+add_executable(Reduce EXCLUDE_FROM_ALL src/reduce.cc )
 
 # add the libraries (Boost...) to this executable
 target_link_libraries(Main ${LIBS})
@@ -54,6 +55,7 @@ target_link_libraries(Synthetic ${LIBS})
 target_link_libraries(SyntheticOneLookup ${LIBS})
 target_link_libraries(SyntheticRandom ${LIBS})
 target_link_libraries(SyntheticCollective ${LIBS})
+target_link_libraries(Reduce ${LIBS})
 
 ###############################################################################
 # Custom targets

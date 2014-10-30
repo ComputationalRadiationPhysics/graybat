@@ -15,7 +15,7 @@
 #include <vector>     /* std::vector */
 #include <array>      /* std::array */
 #include <algorithm>  /* std::copy */
-#include <functional> /* std::minus */
+#include <functional> /* std::minus, std::plus*/
 
 #include <chrono>     /* std::chrono::high_resolution_clock */
 
@@ -30,7 +30,7 @@
 #include <mpi.h>
 
 template <typename T_Data>
-int gatherCAL(const unsigned nPeers, const unsigned nElements, std::vector<double>& times) {
+int reduceCAL(const unsigned nElements, std::vector<double>& times) {
     /***************************************************************************
      * Configuration
      ****************************************************************************/
@@ -54,8 +54,8 @@ int gatherCAL(const unsigned nPeers, const unsigned nElements, std::vector<doubl
      ****************************************************************************/
 
     //T_Data dataSend; 
-    std::vector<T_Data> dataSend(1);
-    std::vector<T_Data> dataRecv(nPeers * nElements);
+    std::vector<T_Data> dataSend(nElements, 1);
+    std::vector<T_Data> dataRecv(nElements, 0);
     std::vector<unsigned> recvCount;
 
     VAddr root = 0;
@@ -65,7 +65,7 @@ int gatherCAL(const unsigned nPeers, const unsigned nElements, std::vector<doubl
 	using namespace std::chrono;
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
     
-	cal.gather2(root, cal.getGlobalContext(), dataSend, dataRecv, recvCount);
+	cal.reduce(root, cal.getGlobalContext(), std::plus<T_Data>(), dataSend, dataRecv);
 
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 	duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
@@ -80,7 +80,7 @@ int gatherCAL(const unsigned nPeers, const unsigned nElements, std::vector<doubl
 }
 
 template <typename T_Data>
-int gatherGVON(const unsigned nPeers, const unsigned nElements, std::vector<double>& times) {
+int reduceGVON(const unsigned nPeers, const unsigned nElements, std::vector<double>& times) {
     /***************************************************************************
      * Configuration
      ****************************************************************************/
@@ -124,8 +124,8 @@ int gatherGVON(const unsigned nPeers, const unsigned nElements, std::vector<doub
      ****************************************************************************/
 
     //std::vector<T_Data> dataSend(nElements); 
-    T_Data dataSend = 0; 
-    std::vector<T_Data> dataRecv(nPeers * nElements);
+    std::vector<T_Data> dataSend(nElements, 0);
+    T_Data dataRecv;
 
     Vertex root = graph.getVertices().at(0);
 
@@ -135,7 +135,7 @@ int gatherGVON(const unsigned nPeers, const unsigned nElements, std::vector<doub
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
     
 	for(Vertex v : myGraphVertices){
-	    gvon.gatherNew(root, v, graph, dataSend, dataRecv);
+	    gvon.reduce(root, v, graph, std::plus<T_Data>(), dataSend, dataRecv);
 
 	}
 
@@ -152,7 +152,7 @@ int gatherGVON(const unsigned nPeers, const unsigned nElements, std::vector<doub
 }
 
 template <typename T_Data>
-int gatherMPI(const unsigned nPeers, unsigned nElements, std::vector<double>& times){
+int reduceMPI(unsigned nElements, std::vector<double>& times){
     // Init MPI
     int mpiError = MPI_Init(NULL,NULL);
     if(mpiError != MPI_SUCCESS){
@@ -168,10 +168,9 @@ int gatherMPI(const unsigned nPeers, unsigned nElements, std::vector<double>& ti
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-
   // Start Communication
-  std::vector<T_Data> dataSend(nElements); 
-  std::vector<T_Data> dataRecv(nElements * nPeers);
+  std::vector<T_Data> dataSend(nElements,1); 
+  std::vector<T_Data> dataRecv(nElements,0);
 
 
   for(unsigned i = 0; i < times.size(); ++i){
@@ -179,25 +178,9 @@ int gatherMPI(const unsigned nPeers, unsigned nElements, std::vector<double>& ti
       using namespace std::chrono;
       high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
-      int rcounts[size];
-      int rdispls[size];
-
-      // Create recv buffer with sendsize information of other ranks
-      MPI_Allgather(&nElements, 1, MPI_UNSIGNED, 
-		    &rcounts, 1, MPI_UNSIGNED, 
-		    MPI_COMM_WORLD);
-
-
-      unsigned offset  = 0;
-      for (int i=0; i < size; ++i) { 
-	  rdispls[i] = offset; 
-	  offset += rcounts[i];
-      } 
-
-      // Receive data with varying size
-      MPI_Gatherv(dataSend.data(), dataSend.size(), MPI_INT, 
-		  dataRecv.data(), rcounts, rdispls, MPI_INT, 
-		  root, MPI_COMM_WORLD);
+      MPI_Reduce(dataSend.data(), dataRecv.data(), dataSend.size(), 
+       		 MPI_INT, MPI_SUM, 
+		 root, MPI_COMM_WORLD);
 
       high_resolution_clock::time_point t2 = high_resolution_clock::now();
       duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
@@ -235,13 +218,13 @@ int main(int argc, char** argv){
 
     switch(mode){
     case 0:
-	printTime = gatherMPI<Data>(nPeers, nElements, runtimes);
+	printTime = reduceMPI<Data>(nElements, runtimes);
 	break;
     case 1: 
-	printTime = gatherCAL<Data>(nPeers, nElements, runtimes);
+	printTime = reduceCAL<Data>(nElements, runtimes);
        break;
     case 2: 
-	printTime = gatherGVON<Data>(nPeers, nElements, runtimes);
+	printTime = reduceGVON<Data>(nPeers, nElements, runtimes);
        break;
 
     default:
