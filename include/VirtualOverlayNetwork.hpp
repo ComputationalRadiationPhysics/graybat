@@ -339,12 +339,12 @@ struct VirtualOverlayNetwork {
 
 	// Finally start reduction
 	if(reduces[reduceID].count == vertices.size()){
-	    T recvDataCollctive;
+	    std::vector<T> recvDataCollctive(1,0);
 
 	    cal.reduce(rootVAddr, context, op, std::vector<T>(1 , reduces[reduceID].reduce), recvDataCollctive);
 
 	    if(reduces[reduceID].imRoot){
-		*(reduces[reduceID].rootRecvData) = recvDataCollctive;
+		*(reduces[reduceID].rootRecvData) = recvDataCollctive[0];
 	    }
 	    
 	    reduces.erase(reduceID);

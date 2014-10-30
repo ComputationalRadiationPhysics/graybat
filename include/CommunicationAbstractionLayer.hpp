@@ -257,8 +257,8 @@ public:
      *
      */
     template <typename T, typename Op>
-    void reduce(const VAddr rootVAddr, const Context context, const Op op, const std::vector<T>& sendData, const T& recvData){
-     	CommunicationPolicy::reduce(sendData.data(), &recvData, sendData.size(), op, rootVAddr, context);
+    void reduce(const VAddr rootVAddr, const Context context, const Op op, const std::vector<T>& sendData, const std::vector<T>& recvData){
+     	CommunicationPolicy::reduce(sendData.data(), recvData.data(), sendData.size(), op, rootVAddr, context);
     }
 
     /**
