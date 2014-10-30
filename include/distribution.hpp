@@ -9,7 +9,7 @@
 namespace Distribute {
 
     template<typename T_Graph>
-    std::vector<typename T_Graph::Vertex> roundRobin(const unsigned processID, const unsigned processCount, T_Graph &graph){
+    std::vector<typename T_Graph::Vertex> roundrobin(const unsigned processID, const unsigned processCount, T_Graph &graph){
 	typedef typename T_Graph::Vertex Vertex;
 	// Distribute and announce vertices
 	unsigned vertexCount   = graph.getVertices().size();
@@ -28,5 +28,36 @@ namespace Distribute {
 	}
 	return myVertices;
     }
+
+
+
+    template<typename T_Graph>
+    std::vector<typename T_Graph::Vertex> consecutive(const unsigned processID, const unsigned processCount, T_Graph &graph){
+
+	typedef typename T_Graph::Vertex Vertex;
+
+	unsigned vertexCount      = graph.getVertices().size();
+	unsigned vertexPerProcess = ceil((float)vertexCount / processCount);
+
+	// More processes than vertices
+	if(processID > vertexCount - 1){
+	    return std::vector<Vertex>(0);
+	}
+
+	unsigned minVertex = processID * vertexPerProcess;
+	unsigned maxVertex = minVertex + vertexPerProcess;
+
+	// Slice maxVertex of last process
+	if(maxVertex > vertexCount) {
+	    maxVertex = vertexCount;
+	}
+
+	std::vector<Vertex> vertices = graph.getVertices();
+	std::vector<Vertex> myVertices(vertices.begin() + minVertex, vertices.begin() + maxVertex);
+
+	return myVertices;
+
+    }
+
 
 } /* Distribute */
