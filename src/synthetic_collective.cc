@@ -29,8 +29,6 @@
 // MPI
 #include <mpi.h>
 
-
-
 template <typename T_Data>
 int gatherCAL(const unsigned nPeers, const unsigned nElements, std::vector<double>& times) {
     /***************************************************************************
@@ -55,8 +53,10 @@ int gatherCAL(const unsigned nPeers, const unsigned nElements, std::vector<doubl
      * Start Test
      ****************************************************************************/
 
-    T_Data dataSend; 
+    //T_Data dataSend; 
+    std::vector<T_Data> dataSend(1);
     std::vector<T_Data> dataRecv(nPeers * nElements);
+    std::vector<unsigned> recvCount;
 
     VAddr root = 0;
 
@@ -65,7 +65,7 @@ int gatherCAL(const unsigned nPeers, const unsigned nElements, std::vector<doubl
 	using namespace std::chrono;
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
     
-	cal.gather(root, cal.getGlobalContext(), dataSend, dataRecv);
+	cal.gather2(root, cal.getGlobalContext(), dataSend, dataRecv, recvCount);
 
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 	duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
@@ -164,6 +164,7 @@ int gatherMPI(const unsigned nPeers, const unsigned nElements, std::vector<doubl
   // Get size and rank
   int rank;
   int size;
+  int root = 0;
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
@@ -178,11 +179,25 @@ int gatherMPI(const unsigned nPeers, const unsigned nElements, std::vector<doubl
       using namespace std::chrono;
       high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
+      int rcounts[size];
+      int rdispls[size];
 
-      MPI_Gather(dataSend.data(), dataSend.size(), MPI_INT, 
-		 dataRecv.data(), nElements, MPI_INT, 
-		 0, MPI_COMM_WORLD);
+      // Create recv buffer with sendsize information of other ranks
+      MPI_Allgather(&nElements, 1, MPI_UNSIGNED, 
+		    &rcounts, 1, MPI_UNSIGNED, 
+		    MPI_COMM_WORLD);
 
+
+      unsigned offset  = 0;
+      for (int i=0; i < size; ++i) { 
+	  rdispls[i] = offset; 
+	  offset += rcounts[i];
+      } 
+
+      // Receive data with varying size
+      MPI_Gatherv(dataSend.data(), dataSend.size(), MPI_INT, 
+		  dataRecv.data(), rcounts, rdispls, MPI_INT, 
+		  root, MPI_COMM_WORLD);
 
       high_resolution_clock::time_point t2 = high_resolution_clock::now();
       duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);

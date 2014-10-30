@@ -442,16 +442,15 @@ struct VirtualOverlayNetwork {
 	gather.push_back(sendData);
 
 	if(rootVertex.id == srcVertex.id){
-	    //gathers[gatherID].rootRecvData = &recvData;
 	    rootRecvData = &recvData;
-	    //gathers[gatherID].isRoot = true;
+	    rootRecvData = &recvData;
 	}
 
 	if(gather.size() == vertices.size()){
 	    std::vector<unsigned> recvCount;
 	    // std::vector<T> recvDataCollective;
 	    //cal.gather2(rootVAddr, context, gather, *rootRecvData, recvCount);
-	    cal.gather(rootVAddr, context, gather[0], recvData);
+	    cal.gather2(rootVAddr, context, gather, *rootRecvData, recvCount);
 
 	    // Reorder received elements in vertex order
 	    // std::vector<T> recvReordered(recvDataCollective.size(), 0);
@@ -472,7 +471,7 @@ struct VirtualOverlayNetwork {
 	    // 	*(gathers[gatherID].rootRecvData) = recvReordered;
 	    // }
 
-	    // gathers.erase(gatherID);
+	    gather.clear();
 	    // vertexCount.erase(graph.id);
 
 	}
