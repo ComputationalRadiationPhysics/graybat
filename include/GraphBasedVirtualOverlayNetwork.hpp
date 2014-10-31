@@ -470,53 +470,49 @@ struct GraphBasedVirtualOverlayNetwork {
 
     template <typename T>
     void gatherNew(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, const T sendData, std::vector<T>& recvData){
-	//static std::map<std::string, Collective<T>> gathers;
 	static std::vector<T> gather;
 	static std::vector<T>* rootRecvData;
+	static bool hasRootVertex = false;
 
 	VAddr srcVAddr  = locateVertex(graph, srcVertex);
 	VAddr rootVAddr = locateVertex(graph, rootVertex);
 	Context context   = getGraphContext(graph);
 	std::vector<Vertex> vertices = getHostedVertices(graph, srcVAddr);
 
-	//std::string gatherID = generateID(graph, srcVertex);
-
-	// Temporily collect data to gather
-	//gathers[gatherID].send.push_back(sendData);
 	gather.push_back(sendData);
 
 	if(rootVertex.id == srcVertex.id){
 	    rootRecvData = &recvData;
-	    rootRecvData = &recvData;
+	    hasRootVertex = true;
 	}
 
 	if(gather.size() == vertices.size()){
 	    std::vector<unsigned> recvCount;
-	    // std::vector<T> recvDataCollective;
-	    //cal.gather2(rootVAddr, context, gather, *rootRecvData, recvCount);
-	    cal.gather2(rootVAddr, context, gather, *rootRecvData, recvCount);
 
-	    // Reorder received elements in vertex order
-	    // std::vector<T> recvReordered(recvDataCollective.size(), 0);
-	    // unsigned vAddr = 0;
-	    // for(unsigned recv_i = 0; recv_i < recvDataCollective.size(); ){
-	    // 	std::vector<Vertex> hostedVertices = getHostedVertices(graph, vAddr);
-	    // 	for(Vertex v: hostedVertices){
-	    // 	    T recvElement = recvDataCollective.at(recv_i);
-	    // 	    recvReordered.at(v.id) = recvElement;
-	    // 	    recv_i++;
-	    // 	}
-	    // 	vAddr++;
+	    if(hasRootVertex){
+		cal.gather2(rootVAddr, context, gather, *rootRecvData, recvCount);
+	    }
+	    else {
+		cal.gather2(rootVAddr, context, gather, recvData, recvCount);
+	    }
 	    
-	    // }
-	
-	    // Write received data to root cal pointer
-	    // if(gathers[gatherID].isRoot){
-	    // 	*(gathers[gatherID].rootRecvData) = recvReordered;
-	    // }
+	    /*
+	    // Reorder received elements in vertex order
+	    std::vector<T> recvReordered(recvDataCollective.size(), 0);
+	    unsigned vAddr = 0;
+	    for(unsigned recv_i = 0; recv_i < recvDataCollective.size(); ){
+	    	std::vector<Vertex> hostedVertices = getHostedVertices(graph, vAddr);
+	    	for(Vertex v: hostedVertices){
+	    	    T recvElement = recvDataCollective.at(recv_i);
+	    	    recvReordered.at(v.id) = recvElement;
+	    	    recv_i++;
+	    	}
+	    	vAddr++;
+	    }
+	    */
 
 	    gather.clear();
-	    // vertexCount.erase(graph.id);
+
 
 	}
 
