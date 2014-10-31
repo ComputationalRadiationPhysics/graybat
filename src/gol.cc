@@ -262,7 +262,7 @@ int gol(const unsigned nCells, std::vector<double> &times) {
     // Distribute work evenly
     VAddr myVAddr      = cal.getGlobalContext().getVAddr();
     unsigned nAddr = cal.getGlobalContext().size();
-    std::vector<Vertex> hostedVertices = Distribute::roundRobin(myVAddr, nAddr, graph);
+    std::vector<Vertex> hostedVertices = Distribute::consecutive(myVAddr, nAddr, graph);
 
     // Announce vertices
     gvon.announce(graph, hostedVertices); 

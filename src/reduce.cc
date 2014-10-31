@@ -1,8 +1,8 @@
 // Communication
-#include <Graph.hpp>                         /* Graph */
-#include <CommunicationAbstractionLayer.hpp> /* CommunicationAbstractionLayer */
-#include <MPI.hpp>                           /* CommunicationPolicy::MPI*/
-#include <VirtualOverlayNetwork.hpp>         /* VirtualOverlayNetwork */
+#include <Graph.hpp>                           /* Graph */
+#include <CommunicationAbstractionLayer.hpp>   /* CommunicationAbstractionLayer */
+#include <MPI.hpp>                             /* CommunicationPolicy::MPI*/
+#include <GraphBasedVirtualOverlayNetwork.hpp> /* GraphBasedVirtualOverlayNetwork */
 
 // Helpers
 #include <distribution.hpp> /* roundRobin */
@@ -96,7 +96,7 @@ int reduceGVON(const unsigned nPeers, const unsigned nElements, std::vector<doub
     typedef typename MpiCAL::VAddr              VAddr;
 
     // GVON
-    typedef VirtualOverlayNetwork<NBodyGraph, MpiCAL>  GVON;
+    typedef GraphBasedVirtualOverlayNetwork<NBodyGraph, MpiCAL>  GVON;
 
 
     /***************************************************************************
@@ -114,7 +114,7 @@ int reduceGVON(const unsigned nPeers, const unsigned nElements, std::vector<doub
     // // Distribute work evenly
     VAddr myVAddr      = cal.getGlobalContext().getVAddr();
     unsigned nAddr     = cal.getGlobalContext().size();
-    std::vector<Vertex> myGraphVertices = Distribute::roundRobin(myVAddr, nAddr, graph);
+    std::vector<Vertex> myGraphVertices = Distribute::roundrobin(myVAddr, nAddr, graph);
 
     // Announce vertices
     gvon.announce(graph, myGraphVertices); 
@@ -124,8 +124,8 @@ int reduceGVON(const unsigned nPeers, const unsigned nElements, std::vector<doub
      ****************************************************************************/
 
     //std::vector<T_Data> dataSend(nElements); 
-    std::vector<T_Data> dataSend(nElements, 0);
-    T_Data dataRecv;
+    std::vector<T_Data> dataSend(nElements, 1);
+    std::vector<T_Data> dataRecv(nElements, 0);
 
     Vertex root = graph.getVertices().at(0);
 
@@ -135,7 +135,7 @@ int reduceGVON(const unsigned nPeers, const unsigned nElements, std::vector<doub
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
     
 	for(Vertex v : myGraphVertices){
-	    gvon.reduce(root, v, graph, std::plus<T_Data>(), dataSend, dataRecv);
+	    gvon.reduceNew(root, v, graph, std::plus<T_Data>(), dataSend, dataRecv);
 
 	}
 
@@ -145,6 +145,7 @@ int reduceGVON(const unsigned nPeers, const unsigned nElements, std::vector<doub
     }
   
     if(myVAddr == 0){
+	std::cout << dataRecv[0] << std::endl;
 	return 1;
     }
     return 0;
@@ -201,7 +202,7 @@ int reduceMPI(unsigned nElements, std::vector<double>& times){
 int main(int argc, char** argv){
 
     if(argc < 5){
-	std::cout << "Usage ./SyntheticCollective [nPeers] [nElements] [nTimesteps] [0,1,2]" << std::endl;
+	std::cout << "Usage ./Reduce [nPeers] [nElements] [nTimesteps] [0,1,2]" << std::endl;
 	return 0;
     }
 

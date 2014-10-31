@@ -13,7 +13,7 @@
 #include <dout.hpp>            /* dout::Dout::getInstance() */
 
 /************************************************************************//**
- * @class VirtualOverlayNetwork
+ * @class GraphBasedVirtualOverlayNetwork
  *
  * @brief A central instance to locate the host 
  *        of vertices.
@@ -26,7 +26,7 @@
  *
  ***************************************************************************/
 template <typename T_Graph, typename T_CAL>
-struct VirtualOverlayNetwork {
+struct GraphBasedVirtualOverlayNetwork {
     typedef T_CAL                            CAL;
     typedef T_Graph                          Graph;
     typedef typename Graph::Vertex           Vertex;
@@ -46,7 +46,7 @@ struct VirtualOverlayNetwork {
      * MAPPING OPERATIONS
      *
      ***************************************************************************/
-    VirtualOverlayNetwork(CAL& cal) : 
+    GraphBasedVirtualOverlayNetwork(CAL& cal) : 
     	cal(cal){
 
     }
@@ -352,6 +352,50 @@ struct VirtualOverlayNetwork {
 
 	}
 
+
+    }
+
+
+    template <typename T, typename Op>
+    void reduceNew(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, Op op, const std::vector<T> sendData, std::vector<T>& recvData){
+	static std::vector<T> reduce;
+	static std::vector<T>* rootRecvData;
+	static unsigned vertexCount = 0;
+	static bool hasRootVertex = false;
+
+
+	VAddr rootVAddr = locateVertex(graph, rootVertex);
+	VAddr srcVAddr  = locateVertex(graph, srcVertex);
+	Context context   = getGraphContext(graph);
+	std::vector<Vertex> vertices = getHostedVertices(graph, srcVAddr); 
+
+	vertexCount++;
+
+	if(reduce.empty()){
+	    reduce = std::vector<T>(sendData.size(), 0);
+	}
+
+	// Reduce locally
+	std::transform(reduce.begin(), reduce.end(), sendData.begin(), reduce.begin(), op);
+
+	// Remember pointer of recvData from rootVertex
+	if(rootVertex.id == srcVertex.id){
+	    hasRootVertex = true;
+	    rootRecvData = &recvData;
+	}
+
+	// Finally start reduction
+	if(vertexCount == vertices.size()){
+	    if(hasRootVertex){
+		cal.reduce(rootVAddr, context, op, reduce, *rootRecvData);
+	    }
+	    else{
+		cal.reduce(rootVAddr, context, op, reduce, recvData);
+	    }
+
+	    reduce.clear();
+
+	}
 
     }
 
