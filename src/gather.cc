@@ -2,7 +2,7 @@
 #include <Graph.hpp>                         /* Graph */
 #include <CommunicationAbstractionLayer.hpp> /* CommunicationAbstractionLayer */
 #include <MPI.hpp>                           /* CommunicationPolicy::MPI*/
-#include <VirtualOverlayNetwork.hpp>         /* VirtualOverlayNetwork */
+#include <GraphBasedVirtualOverlayNetwork.hpp>         /* GraphBasedVirtualOverlayNetwork */
 
 // Helpers
 #include <distribution.hpp> /* roundRobin */
@@ -80,7 +80,7 @@ int gatherCAL(const unsigned nPeers, const unsigned nElements, std::vector<doubl
 }
 
 template <typename T_Data>
-int gatherGVON(const unsigned nPeers, const unsigned nElements, std::vector<double>& times) {
+int gatherGVON(const unsigned nPeers, unsigned nElements, std::vector<double>& times) {
     /***************************************************************************
      * Configuration
      ****************************************************************************/
@@ -96,7 +96,7 @@ int gatherGVON(const unsigned nPeers, const unsigned nElements, std::vector<doub
     typedef typename MpiCAL::VAddr              VAddr;
 
     // GVON
-    typedef VirtualOverlayNetwork<NBodyGraph, MpiCAL>  GVON;
+    typedef GraphBasedVirtualOverlayNetwork<NBodyGraph, MpiCAL>  GVON;
 
 
     /***************************************************************************
@@ -114,7 +114,7 @@ int gatherGVON(const unsigned nPeers, const unsigned nElements, std::vector<doub
     // // Distribute work evenly
     VAddr myVAddr      = cal.getGlobalContext().getVAddr();
     unsigned nAddr     = cal.getGlobalContext().size();
-    std::vector<Vertex> myGraphVertices = Distribute::roundRobin(myVAddr, nAddr, graph);
+    std::vector<Vertex> myGraphVertices = Distribute::roundrobin(myVAddr, nAddr, graph);
 
     // Announce vertices
     gvon.announce(graph, myGraphVertices); 

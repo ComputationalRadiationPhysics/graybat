@@ -2,7 +2,7 @@
 #include <Graph.hpp>                         /* Graph */
 #include <CommunicationAbstractionLayer.hpp> /* CommunicationAbstractionLayer */
 #include <MPI.hpp>                           /* CommunicationPolicy::MPI*/
-#include <VirtualOverlayNetwork.hpp>         /* VirtualOverlayNetwork */
+#include <GraphBasedVirtualOverlayNetwork.hpp>         /* GraphBasedVirtualOverlayNetwork */
 
 // Helpers
 #include <distribution.hpp> /* roundRobin */
@@ -109,7 +109,7 @@ int sendGVON(const unsigned N, const unsigned nSend, std::vector<double>& times)
     typedef typename MpiCAL::VAddr              VAddr;
 
     // GVON
-    typedef VirtualOverlayNetwork<NBodyGraph, MpiCAL>  GVON;
+    typedef GraphBasedVirtualOverlayNetwork<NBodyGraph, MpiCAL>  GVON;
 
 
     /***************************************************************************
