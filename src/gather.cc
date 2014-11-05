@@ -54,7 +54,7 @@ int gatherCAL(const unsigned nPeers, const unsigned nElements, std::vector<doubl
      ****************************************************************************/
 
     //T_Data dataSend; 
-    std::vector<T_Data> dataSend(1);
+    std::vector<T_Data> dataSend(nElements, myVAddr);
     std::vector<T_Data> dataRecv(nPeers * nElements);
     std::vector<unsigned> recvCount;
 
@@ -64,16 +64,18 @@ int gatherCAL(const unsigned nPeers, const unsigned nElements, std::vector<doubl
 
 	using namespace std::chrono;
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
-    
-	cal.gather2(root, cal.getGlobalContext(), dataSend, dataRecv, recvCount);
+
+	cal.gatherVar(root, cal.getGlobalContext(), dataSend, dataRecv, recvCount);
 
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 	duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
 	times[i] = timeSpan.count();
     }
 
-
-    if(myVAddr == 0){
+    if(myVAddr == 1){
+	for(T_Data d : dataRecv){
+	    std::cout << d << std::endl;
+	}
 	return 1;
     }
     return 0;

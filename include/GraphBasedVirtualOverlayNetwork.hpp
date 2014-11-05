@@ -72,7 +72,7 @@ struct GraphBasedVirtualOverlayNetwork {
      * @todo What happens when there already exist an context for *graph* ?
      * @todo What happens when not all *vertices* of a *graph* were announced ?
      * @todo Reduce communication from 2 steps (allReduce + allGather) to one
-     *       step (allGather2), could reduce communication.
+     *       step (allGatherVar), could reduce communication.
      *
      * @param[in] graph  Its vertices will be announced
      * @param[in] vertices A set of vertices, that will be hosted by this peer
@@ -440,7 +440,7 @@ struct GraphBasedVirtualOverlayNetwork {
 	if(gathers[gatherID].send.size() == vertices.size()){
 	    std::vector<unsigned> recvCount;
 	    std::vector<T> recvDataCollective;
-	    cal.gather2(rootVAddr, context, gathers[gatherID].send, recvDataCollective, recvCount);
+	    cal.gatherVar(rootVAddr, context, gathers[gatherID].send, recvDataCollective, recvCount);
 
 	    // Reorder received elements in vertex order
 	    std::vector<T> recvReordered(recvDataCollective.size(), 0);
@@ -490,10 +490,10 @@ struct GraphBasedVirtualOverlayNetwork {
 	    std::vector<unsigned> recvCount;
 
 	    if(hasRootVertex){
-		cal.gather2(rootVAddr, context, gather, *rootRecvData, recvCount);
+		cal.gatherVar(rootVAddr, context, gather, *rootRecvData, recvCount);
 	    }
 	    else {
-		cal.gather2(rootVAddr, context, gather, recvData, recvCount);
+		cal.gatherVar(rootVAddr, context, gather, recvData, recvCount);
 	    }
 	    
 	    /*
