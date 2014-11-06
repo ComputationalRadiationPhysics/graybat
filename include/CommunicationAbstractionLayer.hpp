@@ -310,7 +310,6 @@ public:
     template <typename T_Send, typename T_Recv>
     void scatter(const VAddr rootVAddr, const Context context, const T_Send& sendData, T_Recv& recvData){
 	CommunicationPolicy::scatter(sendData.data(), recvData.size(), recvData.data(), recvData.size(), rootVAddr, context);
-	std::cout << recvData[0] << std::endl;
     }
 
     /**
@@ -318,25 +317,34 @@ public:
      *        Every peer will receive data from every other peer (also the own data)
      *
      * @param[in]  context  Set of peers that want to receive Data
-     * @param[in]  sendData Data that each peer wants to send
+     * @param[in]  sendData Data that each peer wants to send. Each peer will receive 
+     *             same number of data elements, but not the same data elements. sendData
+     *             will be divided in equal chunks of data and is then distributed.
+     *             
      * @param[out] recvData Data from all peer.
      *
      */
     template <typename T_Send, typename T_Recv>
     void allToAll(const Context context, const T_Send& sendData, T_Recv& recvData){
-	CommunicationPolicy::allToAll(&sendData, sendData.size(), recvData.data(), sendData.size(), context);
+	unsigned elementsPerPeer = sendData.size() / context.size();
+	CommunicationPolicy::allToAll(sendData.data(), elementsPerPeer, recvData.data(), elementsPerPeer, context);
+
     }
 
     /**
-     * @brief Carry out a reduction with BinaryOperation *op* on all *sendData* elements from all peers
+     * @brief Performs a reduction with a binary operator *op* on all *sendData* elements from all peers
      *        whithin the *context*. The result will be received by the peer with *rootVAddr*.
+     *        Binary operations like std::plus, std::minus can be used. But, they can also be
+     *        defined as binary operator simular to std::plus etc.
      *        
      *
-     * @param[in] rootVAddr peer that will receive the result of reduction
-     * @param[in] context    Set of peers that 
-     * @param[in] op         BinaryOperation that should be used for reduction
-     * @param[in] sendData   Data that every peer contributes to the reduction
-     * @param[out] recvData  Reduced sendData that will be received by peer with *rootVAddr*
+     * @param[in]  rootVAddr peer that will receive the result of reduction
+     * @param[in]  context   Set of peers that 
+     * @param[in]  op        Binary operator that should be used for reduction
+     * @param[in]  sendData  Data that every peer contributes to the reduction
+     * @param[out] recvData  Reduced sendData that will be received by peer with *rootVAddr*.
+     *                       It will have same size of sendData and contains the ith
+     *                       reduced sendData values.
      *
      */
     template <typename T_Send, typename T_Recv, typename T_Op>
@@ -345,13 +353,15 @@ public:
     }
 
     /**
-     * @brief Carry out a reduction with BinaryOperation *op* on all *sendData* elements from all peers
-     *        whithin the *context*.The result will be received by all peers.
+     * @brief Performs a reduction with a binary operator *op* on all *sendData* elements from all peers
+     *        whithin the *context*. The result will be received by all peers.
      *        
      * @param[in] context    Set of peers that 
-     * @param[in] op         BinaryOperation that should be used for reduction
+     * @param[in] op         Binary operator that should be used for reduction
      * @param[in] sendData   Data that every peer contributes to the reduction
      * @param[out] recvData  Reduced sendData that will be received by all peers.
+     *                       It will have same size of sendData and contains the ith
+     *                       reduced sendData values.
      *
      */
     template <typename T_Send, typename T_Recv, typename T_Op>
