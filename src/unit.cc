@@ -256,7 +256,7 @@ void gvonUnitTest(){
      * Init Communication
      ****************************************************************************/
     // Create Graph
-    const unsigned height = 8;
+    const unsigned height = 10;
     const unsigned width  = height;
     std::vector<Vertex> graphVertices;
     std::vector<EdgeDescriptor> edges = Topology::gridDiagonal<MyGraph>(height, width, graphVertices);
@@ -267,10 +267,49 @@ void gvonUnitTest(){
     GVON gvon(cal);
 
     // Distribute work evenly
-    VAddr myVAddr      = cal.getGlobalContext().getVAddr();
+    VAddr myVAddr  = cal.getGlobalContext().getVAddr();
     unsigned nAddr = cal.getGlobalContext().size();
     std::vector<Vertex> hostedVertices = Distribute::consecutive(myVAddr, nAddr, graph);
 
+    // Announce vertices
+    gvon.announce(graph, hostedVertices);
+
+
+    
+    /***************************************************************************
+     * asyncSend/Recv Test
+     ****************************************************************************/
+    {
+	const unsigned testValue = 10;
+	
+	std::vector<unsigned> sendData(10, testValue);
+	std::vector<unsigned> recvData(10, 0);
+    
+	for(Vertex v : hostedVertices){
+	    for(std::pair<Vertex, Edge> edge : graph.getOutEdges(v)){
+		Vertex targetVertex = edge.first;
+		Edge   outEdge      = edge.second;
+		Event e = gvon.asyncSend(graph, targetVertex, outEdge, sendData);
+	    }
+
+	}
+
+	for(Vertex v : hostedVertices){
+	    for(std::pair<Vertex, Edge> edge : graph.getInEdges(v)){
+		Vertex sourceVertex = edge.first;
+		Edge   inEdge       = edge.second;
+		gvon.recv(graph, sourceVertex, inEdge, recvData);
+		for(unsigned d : recvData){
+		    assert(d == testValue);
+
+		}
+		
+	    }
+
+	}
+
+    }
+    
 }
 
 
@@ -278,7 +317,7 @@ void gvonUnitTest(){
 int main(){
 
     calUnitTest();
-    gvonUnitTest();
+    //gvonUnitTest();
     return 0;
 
 }

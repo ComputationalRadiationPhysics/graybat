@@ -27,13 +27,13 @@
  ***************************************************************************/
 template <typename T_Graph, typename T_CAL>
 struct GraphBasedVirtualOverlayNetwork {
-    typedef T_CAL                            CAL;
-    typedef T_Graph                          Graph;
-    typedef typename Graph::Vertex           Vertex;
-    typedef typename Graph::Edge             Edge;
-    typedef typename Graph::GraphID          GraphID;
-    typedef typename Vertex::ID              VertexID;
-    typedef typename CAL::VAddr    VAddr;
+    typedef T_CAL                   CAL;
+    typedef T_Graph                 Graph;
+    typedef typename Graph::Vertex  Vertex;
+    typedef typename Graph::Edge    Edge;
+    typedef typename Graph::GraphID GraphID;
+    typedef typename Vertex::ID     VertexID;
+    typedef typename CAL::VAddr     VAddr;
     typedef typename CAL::Event     Event;
     typedef typename CAL::Context   Context;
     typedef typename CAL::ContextID ContextID;
@@ -240,7 +240,7 @@ struct GraphBasedVirtualOverlayNetwork {
      */
     template <typename T>
     Event asyncSend(Graph& graph, const Vertex destVertex, const Edge edge, const T& data){
-	VAddr destVAddr = locateVertex(graph, destVertex);
+	VAddr destVAddr   = locateVertex(graph, destVertex);
 	Context context   = getGraphContext(graph);
 	return cal.asyncSend(destVAddr, edge.id, context, data);
     }
