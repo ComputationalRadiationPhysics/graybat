@@ -98,6 +98,8 @@ struct GraphBasedVirtualOverlayNetwork {
 
 	assert(oldContext.valid());
 
+	cal.allGatherVar(oldContext, vertices, 
+
 	// Create new context for peers which host vertices
 	std::vector<unsigned> hasVertices(1, vertices.size());
 	std::vector<unsigned> recvHasVertices(oldContext.size(), 0);
