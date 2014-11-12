@@ -115,23 +115,23 @@ namespace CommunicationPolicy {
 	    Context() :
 		id(0),
 		vAddr(0),
-		contextSize(0){
+		contextSize(0),
+		isValid(false){
 
-		isValid = false;
 	    }
 
 	    Context(ContextID contextID, VAddr id, size_t contextSize) : 
 		id(contextID),
 		vAddr(id),
-		contextSize(contextSize){
+		contextSize(contextSize),
+		isValid(true){
 		
-		isValid = true;
 	    }
 
 	    Context& operator=(const Context& otherContext){
-		id          = otherContext.getID();
-		vAddr      = otherContext.getVAddr();
-		contextSize = otherContext.size();
+		id            = otherContext.getID();
+		vAddr         = otherContext.getVAddr();
+		contextSize   = otherContext.size();
 		isValid       = otherContext.valid();
 		return *this;
 
@@ -201,19 +201,22 @@ namespace CommunicationPolicy {
 
 	ContextID contextCount;
 	std::vector<std::vector<Uri>> uriMap;
-	std::vector<MPI_Comm>                 contextMap;
+	std::vector<MPI_Comm>         contextMap;
 
     protected:
 
 	// Member
 	Context initialContext;
 
-	MPI() : contextCount(0), initialContext(contextCount, initialVAddr(), MPICommSize(MPI_COMM_WORLD)) {
+	MPI() : contextCount(0),
+		uriMap(0),
+		contextMap(0),
+		initialContext(contextCount, initialVAddr(), MPICommSize(MPI_COMM_WORLD)) {
 	    
 	    contextMap.push_back(MPI_COMM_WORLD);
-	    uriMap.push_back(std::vector<Uri>(initialContext.size()));
+	     uriMap.push_back(std::vector<Uri>());
 	    for(unsigned i = 0; i < initialContext.size(); ++i){
-	    	uriMap[initialContext.getID()][i] = i;
+	    	uriMap.back().push_back(i);
 	    }
 
 	    //std::cout << "Init MPI " << initialContext.getVAddr() << std::endl;
@@ -417,8 +420,8 @@ namespace CommunicationPolicy {
 
 	    }
 	    else {
-		// return invalid context
-		// for peers not anymore included
+	    	// return invalid context
+	    	// for peers not anymore included
 	    	return T_Context(Context());
 		
 	    }
@@ -461,16 +464,16 @@ namespace CommunicationPolicy {
 	template <typename T_Context>
 	inline Uri getVAddrUri(T_Context context, VAddr vAddr){
 	    Uri uri  = 0;
-	    //try {
+	    try {
 	    	//std::cerr << context.getID() << std::endl;
 	    uri = uriMap.at(context.getID()).at(vAddr);
 
-	     // } catch(const std::out_of_range& e){
-	     // 	std::stringstream errorStream;
-	     // 	errorStream << "MPI::getVAddrUri::" << e.what()<< " : Communicator with ID " << vAddr << " is not part of the context " << context.getID() << std::endl;
-	     // 	error(context.getID(), errorStream.str());
-	     // 	//exit(1);
-	     // }
+	     } catch(const std::out_of_range& e){
+	     	std::stringstream errorStream;
+	     	errorStream << "MPI::getVAddrUri::" << e.what()<< " : Communicator with ID " << vAddr << " is not part of the context " << context.getID() << std::endl;
+	     	error(context.getID(), errorStream.str());
+	     	exit(1);
+	     }
 
 	    return uri;
 	}

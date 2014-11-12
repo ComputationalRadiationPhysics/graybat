@@ -418,8 +418,8 @@ public:
      * @brief Creates a new context from peer *ids* of an *oldContext*
      *
      */
-    Context createContext(const std::vector<VAddr> ids, const Context oldContext){
-	return Context(CommunicationPolicy::createContext(ids, oldContext));
+    Context createContext(const std::vector<VAddr> vAddrs, const Context oldContext){
+	return Context(CommunicationPolicy::createContext(vAddrs, oldContext));
     }
 
     /**
