@@ -4,10 +4,7 @@
 #include <exception> /* std::out_of_range */
 #include <sstream>   /* std::stringstream */
 #include <assert.h>  /* assert */
-
-#include <atomic>  // std::atomic
-#include <mutex>   // std::mutex
-
+#include <cstddef>    /* nullptr_t */
 
 #include <binaryOperation.hpp> /* op::maximum */
 #include <dout.hpp>            /* dout::Dout::getInstance() */
@@ -468,10 +465,12 @@ struct GraphBasedVirtualOverlayNetwork {
 
     }
 
-    template <typename T>
-    void gatherNew(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, const T sendData, std::vector<T>& recvData){
-	static std::vector<T> gather;
-	static std::vector<T>* rootRecvData;
+    template <typename T_Send, typename T_Recv>
+    void gatherNew(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, T_Send sendData, T_Recv& recvData){
+	typedef typename T_Send::value_type T_Send_Container;
+	
+	static std::vector<T_Send_Container> gather;
+	static T_Recv* rootRecvData = NULL;
 	static bool hasRootVertex = false;
 
 	VAddr srcVAddr  = locateVertex(graph, srcVertex);
@@ -479,8 +478,8 @@ struct GraphBasedVirtualOverlayNetwork {
 	Context context   = getGraphContext(graph);
 	std::vector<Vertex> vertices = getHostedVertices(graph, srcVAddr);
 
-	gather.push_back(sendData);
-
+	gather.insert(gather.end(), sendData.begin(), sendData.end());
+	    
 	if(rootVertex.id == srcVertex.id){
 	    rootRecvData = &recvData;
 	    hasRootVertex = true;

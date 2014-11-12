@@ -2,7 +2,7 @@
 #include <Graph.hpp>                         /* Graph */
 #include <CommunicationAbstractionLayer.hpp> /* CommunicationAbstractionLayer */
 #include <MPI.hpp>                           /* CommunicationPolicy::MPI*/
-#include <VirtualOverlayNetwork.hpp>         /* VirtualOverlayNetwork */
+#include <GraphBasedVirtualOverlayNetwork.hpp>    /* GraphBasedVirtualOverlayNetwork */
 
 // Helpers
 #include <distribution.hpp> /* roundRobin */
@@ -94,138 +94,7 @@ void updateState(T_Cell &cell){
 
 }
 
-std::vector<unsigned> generateNeighborRanks(const unsigned rank, const unsigned width, const unsigned size){
-
-    std::vector<unsigned> neighbors;
-
-    // UP
-    if(rank >= width){
-	neighbors.push_back(rank - width);
-    }
-
-    // UP LEFT
-    if(rank >= width and (rank % width) != 0){
-	neighbors.push_back(rank - width - 1);
-    }
-
-    // UP RIGHT
-    if(rank >= width and (rank % width) != (width - 1)){
-	neighbors.push_back(rank - width + 1);
-    }
-
-    // DOWN
-    if(rank < (size - width)){
-	neighbors.push_back(rank + width);
-    }
-
-    // DOWN LEFT
-    if(rank < (size - width) and (rank % width) != 0){
-	neighbors.push_back(rank + width - 1);
-    }
-
-    // DOWN RIGHT
-    if(rank < (size - width) and (rank % width) != (width - 1)){
-	neighbors.push_back(rank + width + 1);
-    }
-
-    // RIGHT
-    if((rank % width) != (width - 1)){
-	neighbors.push_back(rank + 1);
-    }
-
-    // LEFT
-    if((rank % width) != 0){
-	neighbors.push_back(rank - 1);
-    }
-
-    return neighbors;
-}
-
-
-int golMPI(const unsigned nCells, std::vector<double> &times){
-    // Init MPI
-    int mpiError = MPI_Init(NULL,NULL);
-    if(mpiError != MPI_SUCCESS){
-	std::cout << "Error starting MPI program." << std::endl;
-	MPI_Abort(MPI_COMM_WORLD,mpiError);
-	return 0;
-    }
-
-    // Get size and rank
-    int rank;
-    int size;
-    MPI_Comm_size(MPI_COMM_WORLD, &size);
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-    assert(nCells == (unsigned)size);
-
-    const unsigned height = 8;
-    const unsigned width  = unsigned(nCells / height);
-    
-    size = width * height;
-    unsigned ops = 0;
-    if(rank < size) {
-
-	std::array<unsigned, 1> isAlive;
-	Cell myCell(rank);
-	std::vector<unsigned> neighbors = generateNeighborRanks(rank, width, size);
-	std::vector<MPI_Request> requests;
-
-
-	for(unsigned timestep = 0; timestep < times.size(); ++timestep){
-	    using namespace std::chrono;
-	    high_resolution_clock::time_point t1 = high_resolution_clock::now();
-
-	    // Send state to neighbor cells
-	    for(unsigned neighbor : neighbors){
-		MPI_Request request;
-		MPI_Issend(myCell.isAlive.data(), myCell.isAlive.size(), MPI_UNSIGNED, neighbor, 0, MPI_COMM_WORLD, &request);
-		requests.push_back(request);
-		ops++;
-	    }
-	
-	
-	    // Recv state from neighbor cells
-	    for(unsigned neighbor : neighbors){
-		MPI_Status status;
-
-		MPI_Recv(isAlive.data(), isAlive.size(), MPI_UNSIGNED, neighbor, 0, MPI_COMM_WORLD, &status);
-		ops++;
-
-		if(isAlive[0]) myCell.aliveNeighbors++;
-
-	    } 
-	
-	    // Wait to finish events
-	    for(unsigned i = 0; i < requests.size(); ++i){
-	    	MPI_Status status;
-	    	MPI_Wait(&(requests.back()), &status);
-		requests.pop_back();
-	    }
-	
-	    // Calculate state for next generation
-	    updateState(myCell);
-
-	    high_resolution_clock::time_point t2 = high_resolution_clock::now();
-	    duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
-	    times[timestep] = timeSpan.count();
-
-	}
-
-    }
-    MPI_Barrier(MPI_COMM_WORLD);
-    MPI_Finalize();
-
-    if(rank == 0){
-	std::cout << "Opeartions: " << ops << std::endl;
-	return 1;
-    }
-    return 0;
-
-}
-
-
-int gol(const unsigned nCells, std::vector<double> &times) {
+int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     /***************************************************************************
      * Configuration
      ****************************************************************************/
@@ -242,15 +111,15 @@ int gol(const unsigned nCells, std::vector<double> &times) {
     typedef typename MpiCAL::Event                    Event;
 
     // GVON
-    typedef VirtualOverlayNetwork<LifeGraph, MpiCAL>  GVON;
+    typedef GraphBasedVirtualOverlayNetwork<LifeGraph, MpiCAL>  GVON;
 
 
     /***************************************************************************
      * Init Communication
      ****************************************************************************/
     // Create Graph
-    const unsigned height = 8;
-    const unsigned width  = unsigned(nCells / height);
+    const unsigned height = sqrt(nCells);
+    const unsigned width  = height;
     std::vector<Vertex> graphVertices;
     std::vector<EdgeDescriptor> edges = Topology::gridDiagonal<LifeGraph>(height, width, graphVertices);
     LifeGraph graph (edges, graphVertices); 
@@ -271,30 +140,24 @@ int gol(const unsigned nCells, std::vector<double> &times) {
     /***************************************************************************
      * Start Simulation
      ****************************************************************************/
-    //unsigned generation = 0;
     std::vector<Event> events;   
     std::vector<unsigned> golDomain(graph.getVertices().size(), 0); 
 
-    //unsigned generation = 0;
-
-    unsigned ops = 0;
-
+    const Vertex root = graph.getVertices().at(0);
+    unsigned generation = 0;
+    
     // Simulate life forever
-    for(unsigned timestep = 0; timestep < times.size(); ++timestep){
-	using namespace std::chrono;
-	high_resolution_clock::time_point t1 = high_resolution_clock::now();
-
+    for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
 
 	// Print life field
-	// if(myVAddr == 0){
-	//     printGolDomain(golDomain, width, height, generation);
-	// }
+	 if(myVAddr == 0){
+	     printGolDomain(golDomain, width, height, generation);
+	 }
 
 	// Send state to neighbor cells
 	for(Vertex v : hostedVertices){
 	    for(std::pair<Vertex, Edge> edge : graph.getOutEdges(v)){
 		events.push_back(gvon.asyncSend(graph, edge.first, edge.second, v.isAlive));
-		ops++;
 	    }
 	}
 
@@ -302,7 +165,6 @@ int gol(const unsigned nCells, std::vector<double> &times) {
 	for(Vertex &v : hostedVertices){
 	    for(std::pair<Vertex, Edge> edge : graph.getInEdges(v)){
 		gvon.recv(graph, edge.first, edge.second, edge.first.isAlive);
-		ops++;
 		if(edge.first.isAlive[0]) v.aliveNeighbors++;
 	    }
 	}
@@ -317,70 +179,34 @@ int gol(const unsigned nCells, std::vector<double> &times) {
 	updateState(hostedVertices);
 
 	// Gather state by vertex with id = 0
-	// for(Vertex &v: hostedVertices){
-	//     v.aliveNeighbors = 0;
-	//     gvon.gather(graph.getVertices().at(0), v, graph, v.isAlive[0], golDomain);
-	// }
+	for(Vertex &v: hostedVertices){
+	    v.aliveNeighbors = 0;
+	    gvon.gatherNew(root, v, graph, v.isAlive, golDomain);
+	}
 
-	//generation++;
+	generation++;
 
-	high_resolution_clock::time_point t2 = high_resolution_clock::now();
-	duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
-	times[timestep] = timeSpan.count();
+
     }
     
     
-
-    if(myVAddr == 0){
-	std::cout << "Operations: " << ops << std::endl;
-	return 1;
-    }
     return 0;
 
 }
 
 int main(int argc, char** argv){
 
-    if(argc < 4){
-	std::cout << "Usage ./GoL [nCells] [nTimeSteps] [0,1]" << std::endl;
+    if(argc < 3){
+	std::cout << "Usage ./GoL [nCells] [nTimeteps]" << std::endl;
 	return 0;
     }
 
-    // Benchmark parameter
-    unsigned nCells     = atoi(argv[1]);
-    unsigned nTimesteps = atoi(argv[2]);
-    unsigned mode       = atoi(argv[3]);
-    
+    const unsigned nCells    = atoi(argv[1]);
+    const unsigned nTimeSteps = atoi(argv[1]);
 
-    bool printTime = 0;
-    std::vector<double> runtimes(nTimesteps, 0.0);
 
-    switch(mode){
+    gol(nCells, nTimeSteps);
 
-    case 0:
-	printTime = golMPI(nCells, runtimes);
-	break;
-
-    case 1:
-	printTime = gol(nCells, runtimes);
-	break;
-       
-    default:
-	break;
-
-    };
-
-    double avgTime = avg(runtimes);
-    double varTime = variance(runtimes, avgTime);
-    double devTime = sqrt(varTime);
-    double medTime = median(runtimes);
-
-    if(printTime){
-	//std::cout << "Time[s]: " << avgTime << " Variance: " << varTime << " Deviation: " << devTime << " Median: " << medTime << std::endl;
-
-	// average, variance, deviation, median
-	std::cerr << avgTime << " " << varTime << " " << devTime << " " << medTime << std::endl;
-    }
 
     return 0;
 }
