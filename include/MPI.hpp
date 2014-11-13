@@ -393,6 +393,7 @@ namespace CommunicationPolicy {
 
 	    // Translate vAddrs to uris
 	    std::vector<Uri> ranks;
+
 	    for(VAddr vAddr : vAddrs){
 	    	ranks.push_back(getVAddrUri(oldContext, vAddr));
 	    }
@@ -462,18 +463,17 @@ namespace CommunicationPolicy {
 	}
 
 	template <typename T_Context>
-	inline Uri getVAddrUri(T_Context context, VAddr vAddr){
+	inline Uri getVAddrUri(const T_Context context, const VAddr vAddr){
 	    Uri uri  = 0;
 	    try {
-	    	//std::cerr << context.getID() << std::endl;
-	    uri = uriMap.at(context.getID()).at(vAddr);
+		uri = uriMap.at(context.getID()).at(vAddr);
 
-	     } catch(const std::out_of_range& e){
+	    } catch(const std::out_of_range& e){
 	     	std::stringstream errorStream;
 	     	errorStream << "MPI::getVAddrUri::" << e.what()<< " : Communicator with ID " << vAddr << " is not part of the context " << context.getID() << std::endl;
 	     	error(context.getID(), errorStream.str());
 	     	exit(1);
-	     }
+	    }
 
 	    return uri;
 	}

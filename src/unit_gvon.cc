@@ -77,7 +77,7 @@ void test(){
 
     	}
 
-	for(Vertex v : hostedVertices){
+    	for(Vertex v : hostedVertices){
     	    for(std::pair<Vertex, Edge> edge : graph.getInEdges(v)){
     		Vertex sourceVertex = edge.first;
     		Edge   inEdge       = edge.second;
@@ -87,7 +87,7 @@ void test(){
 
     		}
 		
-	    }
+    	    }
 
     	}
 

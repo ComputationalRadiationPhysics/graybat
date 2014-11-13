@@ -113,7 +113,7 @@ struct GraphBasedVirtualOverlayNetwork {
 
 	Context newContext = cal.createContext(vAddrsWithVertices, oldContext); 
 
-	//Each peer announces the vertices it hosts
+	// Each peer announces the vertices it hosts
 	if(newContext.valid()){
 
 	    // Bound graph to new context
