@@ -116,7 +116,7 @@ int gatherGVON(const unsigned nPeers, unsigned nElements, std::vector<double>& t
     // // Distribute work evenly
     VAddr myVAddr      = cal.getGlobalContext().getVAddr();
     unsigned nAddr     = cal.getGlobalContext().size();
-    std::vector<Vertex> myGraphVertices = Distribute::roundrobin(myVAddr, nAddr, graph);
+    std::vector<Vertex> myGraphVertices = Distribute::consecutive(myVAddr, nAddr, graph);
 
     // Announce vertices
     gvon.announce(graph, myGraphVertices); 
@@ -125,8 +125,7 @@ int gatherGVON(const unsigned nPeers, unsigned nElements, std::vector<double>& t
      * Start Test
      ****************************************************************************/
 
-    //std::vector<T_Data> dataSend(nElements); 
-    std::vector<T_Data> dataSend(1,0); 
+    std::vector<T_Data> dataSend(nElements, myVAddr); 
     std::vector<T_Data> dataRecv(nPeers * nElements);
 
     Vertex root = graph.getVertices().at(0);
@@ -172,7 +171,7 @@ int gatherMPI(const unsigned nPeers, unsigned nElements, std::vector<double>& ti
 
 
   // Start Communication
-  std::vector<T_Data> dataSend(nElements); 
+  std::vector<T_Data> dataSend(nElements, rank); 
   std::vector<T_Data> dataRecv(nElements * nPeers);
 
 
