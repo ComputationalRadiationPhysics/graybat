@@ -69,22 +69,22 @@ void test(){
      * GatherVar Test
      ****************************************************************************/
     {
-	const VAddr root = 0;
-	const unsigned testValue = 10;
-	std::vector<unsigned> sendData(myVAddr+1, 0);
-	std::vector<unsigned> recvData;
-	std::vector<unsigned> recvCount;
+    	const VAddr root = 0;
+    	const unsigned testValue = 10;
+    	std::vector<unsigned> sendData(myVAddr+1, 0);
+    	std::vector<unsigned> recvData;
+    	std::vector<unsigned> recvCount;
 
-	std::fill(sendData.begin(), sendData.end(), testValue);
+    	std::fill(sendData.begin(), sendData.end(), testValue);
 	
-	cal.gatherVar(root, context, sendData, recvData, recvCount);
+    	cal.gatherVar(root, context, sendData, recvData, recvCount);
 
-	if(myVAddr == root){
-	    for(unsigned d: recvData){
-		assert(d == testValue);
+    	if(myVAddr == root){
+    	    for(unsigned d: recvData){
+    		assert(d == testValue);
 	    
-	    }
-	}
+    	    }
+    	}
 	
     }
 
@@ -92,18 +92,18 @@ void test(){
      * AllGather Test
      ****************************************************************************/
     {
-	const unsigned testValue = 10;
-	std::vector<unsigned> sendData(2, 0);
-	std::vector<unsigned> recvData(context.size() * 2, 0);
+    	const unsigned testValue = 10;
+    	std::vector<unsigned> sendData(2, 0);
+    	std::vector<unsigned> recvData(context.size() * 2, 0);
 
-	std::fill(sendData.begin(), sendData.end(), testValue);
+    	std::fill(sendData.begin(), sendData.end(), testValue);
 	
-	cal.allGather(context, sendData, recvData);
+    	cal.allGather(context, sendData, recvData);
 
-	for(unsigned d: recvData){
-	    assert(d == testValue);
+    	for(unsigned d: recvData){
+    	    assert(d == testValue);
 	    
-	}
+    	}
 	
     }
 
@@ -112,19 +112,19 @@ void test(){
      * AllGatherVar Test
      ****************************************************************************/
     {
-	const unsigned testValue = 10;
-	std::vector<unsigned> sendData(2, 0);
-	std::vector<unsigned> recvData;
-	std::vector<unsigned> recvCount;
+    	const unsigned testValue = 10;
+    	std::vector<unsigned> sendData(2, 0);
+    	std::vector<unsigned> recvData;
+    	std::vector<unsigned> recvCount;
 
-	std::fill(sendData.begin(), sendData.end(), testValue);
+    	std::fill(sendData.begin(), sendData.end(), testValue);
 	
-	cal.allGatherVar(context, sendData, recvData, recvCount);
+    	cal.allGatherVar(context, sendData, recvData, recvCount);
 
-	for(unsigned d: recvData){
-	    assert(d == testValue);
+    	for(unsigned d: recvData){
+    	    assert(d == testValue);
 	    
-	}
+    	}
 	
     }
 
@@ -134,21 +134,21 @@ void test(){
      * Scatter Test
      ****************************************************************************/
     {
-	const VAddr root = 0;
-	const unsigned testValue = 10;
-	std::vector<unsigned> sendData(context.size() * 2, 0);
-	std::vector<unsigned> recvData(2, 0);
+    	const VAddr root = 0;
+    	const unsigned testValue = 10;
+    	std::vector<unsigned> sendData(context.size() * 2, 0);
+    	std::vector<unsigned> recvData(2, 0);
 
-	if(myVAddr == root){
-	    std::fill(sendData.begin(), sendData.end(), testValue);
+    	if(myVAddr == root){
+    	    std::fill(sendData.begin(), sendData.end(), testValue);
 	
-	}
+    	}
 
-	cal.scatter(root, context, sendData, recvData);
-	for(unsigned d: recvData){
-	    assert(d == testValue);
+    	cal.scatter(root, context, sendData, recvData);
+    	for(unsigned d: recvData){
+    	    assert(d == testValue);
 	    
-	}
+    	}
 	
     }
 
@@ -161,7 +161,7 @@ void test(){
     	std::vector<unsigned> sendData(context.size() * 5, 0);
     	std::vector<unsigned> recvData(context.size() * 5, 0);
 
-	std::fill(sendData.begin(), sendData.end(), testValue);
+    	std::fill(sendData.begin(), sendData.end(), testValue);
 
     	cal.allToAll(context, sendData, recvData);
     	for(unsigned d: recvData){
@@ -176,18 +176,18 @@ void test(){
      * Reduce Test
      ****************************************************************************/
     {
-	const VAddr root = 0;
-	std::vector<unsigned> sendData(context.size(), 1);
-	std::vector<unsigned> recvData(context.size(), 0);
-	cal.reduce(root, context, std::plus<unsigned>(), sendData, recvData);
+    	const VAddr root = 0;
+    	std::vector<unsigned> sendData(context.size(), 1);
+    	std::vector<unsigned> recvData(context.size(), 0);
+    	cal.reduce(root, context, std::plus<unsigned>(), sendData, recvData);
 
-	if(myVAddr == root){
-	    for(unsigned d : recvData){
-		assert(d == context.size());
+    	if(myVAddr == root){
+    	    for(unsigned d : recvData){
+    		assert(d == context.size());
 	    
-	    }
+    	    }
 	    
-	}
+    	}
 	    
     }
 
@@ -196,14 +196,14 @@ void test(){
      * All Reduce Test
      ****************************************************************************/
     {
-	std::vector<unsigned> sendData(context.size(), 1);
-	std::vector<unsigned> recvData(context.size(), 0);
-	cal.allReduce(context, std::plus<unsigned>(), sendData, recvData);
+    	std::vector<unsigned> sendData(context.size(), 1);
+    	std::vector<unsigned> recvData(context.size(), 0);
+    	cal.allReduce(context, std::plus<unsigned>(), sendData, recvData);
 
-	for(unsigned d : recvData){
-	    assert(d == context.size());
+    	for(unsigned d : recvData){
+    	    assert(d == context.size());
 	    
-	}
+    	}
 	    
 	    
     }
@@ -213,21 +213,21 @@ void test(){
      * Broadcast Test
      ****************************************************************************/
     {
-	const VAddr root = 0;
-	unsigned testValue = 10;
-	std::vector<unsigned> data(context.size(), 0);
+    	const VAddr root = 0;
+    	unsigned testValue = 10;
+    	std::vector<unsigned> data(context.size(), 0);
 
-	if(myVAddr == root){
-	    std::fill(data.begin(), data.end(), testValue);
-	}
+    	if(myVAddr == root){
+    	    std::fill(data.begin(), data.end(), testValue);
+    	}
 
 	
-	cal.broadcast(root, context, data);
+    	cal.broadcast(root, context, data);
 
-	for(unsigned d : data){
-	    assert(d == testValue);
+    	for(unsigned d : data){
+    	    assert(d == testValue);
 	    
-	}
+    	}
 	    
 	    
     }

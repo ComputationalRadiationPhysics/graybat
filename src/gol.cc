@@ -170,7 +170,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     // Simulate life forever
     for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
 
-	Count Participants
+      //Count Participants
 	{
 	    std::vector<unsigned> participate(1,1);
 	    std::vector<unsigned> participants(wGraph.getVertices().size(), 0);

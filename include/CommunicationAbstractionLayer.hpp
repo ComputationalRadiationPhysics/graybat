@@ -254,9 +254,10 @@ public:
     void gatherVar(const VAddr rootVAddr, const Context context, const T_Send& sendData, T_Recv& recvData, std::vector<unsigned>& recvCount){
 	// Retrieve number of elements each peer sends
 	recvCount.resize(context.size());
-	allGather(context, std::array<unsigned, 1>{{(unsigned)sendData.size()}}, recvCount);
+	std::array<unsigned, 1> nElements{{(unsigned)sendData.size()}};
+	allGather(context, nElements, recvCount);
 	recvData.resize(std::accumulate(recvCount.begin(), recvCount.end(), 0U));
-	
+
 	CommunicationPolicy::gatherVar(sendData.data(), sendData.size(), recvData.data(), recvCount.data(), rootVAddr, context);
     }
 

@@ -1,5 +1,9 @@
 #pragma once
 
+#include <algorithm> /* std::min */
+#include <vector>    /* std::vector */
+#include <assert.h>  /* assert */
+
 /*******************************************************************************
  *
  * VERTEX DISTRIBUTION
@@ -50,13 +54,16 @@ namespace Distribute {
 	unsigned maxVertex = minVertex + vertexPerProcess;
 
 	// Slice maxVertex of last process
-	if(maxVertex > vertexCount) {
-	    maxVertex = vertexCount;
+	if(minVertex > vertexCount){
+	    return std::vector<Vertex>(0);
 	}
-
+	    
+	maxVertex = std::min(maxVertex, vertexCount);
+	
+	assert(minVertex <= maxVertex);
+	
 	std::vector<Vertex> vertices = graph.getVertices();
 	std::vector<Vertex> myVertices(vertices.begin() + minVertex, vertices.begin() + maxVertex);
-
 	return myVertices;
 
     }

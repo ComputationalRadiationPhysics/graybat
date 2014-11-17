@@ -54,7 +54,7 @@ void test(){
     // Distribute work evenly
     VAddr myVAddr  = cal.getGlobalContext().getVAddr();
     unsigned nAddr = cal.getGlobalContext().size();
-    std::vector<Vertex> hostedVertices = Distribute::roundrobin(myVAddr, nAddr, graph);
+    std::vector<Vertex> hostedVertices = Distribute::consecutive(myVAddr, nAddr, graph);
 
     // Announce vertices
     gvon.announce(graph, hostedVertices);
@@ -65,14 +65,16 @@ void test(){
     {
     	const unsigned testValue = 10;
 	
-    	std::vector<unsigned> sendData(10, testValue);
-    	std::vector<unsigned> recvData(10, 0);
-    
+    	const std::vector<unsigned> sendData(10, testValue);
+    	const std::vector<unsigned> recvData(10, 0);
+
+    	std::vector<Event> events;
+	
     	for(Vertex v : hostedVertices){
     	    for(std::pair<Vertex, Edge> edge : graph.getOutEdges(v)){
     	    	Vertex targetVertex = edge.first;
     	    	Edge   outEdge      = edge.second;
-    	    	Event e = gvon.asyncSend(graph, targetVertex, outEdge, sendData);
+    	    	events.push_back(gvon.asyncSend(graph, targetVertex, outEdge, sendData));
     	    }
 
     	}
@@ -90,6 +92,11 @@ void test(){
     	    }
 
     	}
+
+    	for(Event &e: events){
+    	    e.wait();
+    	}
+    	events.clear();
 
     }
     
