@@ -167,7 +167,7 @@ namespace CommunicationPolicy {
 	 *        Thus, events can be checked weather the the function has
 	 *        finished or not.
 	 *
-	 */					\
+	 */					
 	class Event {
 	public:
 	    Event(MPI_Request request) : request(request){
@@ -304,6 +304,7 @@ namespace CommunicationPolicy {
 
 	template <typename T_Send, typename T_Recv, typename T_Context>
 	void gatherVar(const T_Send* sendData, const size_t sendCount, T_Recv* recvData, const unsigned* recvCount, const VAddr rootVAddr, const T_Context context){
+	    
 	    Uri rootUri = getVAddrUri(context, rootVAddr);
 	    int rdispls[context.size()];
 
@@ -313,14 +314,14 @@ namespace CommunicationPolicy {
 	    	rdispls[i] = offset; 
 	    	offset += recvCount[i];
 		
-	    } 
-
+	    }
+	    
 	    // Gather data with varying size
 	    MPI_Gatherv(const_cast<T_Send*>(sendData), sendCount, MPIDatatypes<T_Send>::type, 
-			const_cast<T_Recv*>(recvData),
-			const_cast<int*>((int*)recvCount), rdispls,
-			MPIDatatypes<T_Recv>::type, 
-			rootUri, contextMap[context.getID()]);
+	    		const_cast<T_Recv*>(recvData),
+	    		const_cast<int*>((int*)recvCount), rdispls,
+	    		MPIDatatypes<T_Recv>::type, 
+	    		rootUri, contextMap[context.getID()]);
 	    
 	}
 
@@ -434,7 +435,7 @@ namespace CommunicationPolicy {
 	    int flag = 0;
 	    MPI_Initialized(&flag);
 	    if(!flag){
-		int argc;
+		int argc = 0;
 		char **argv;
 		MPI_Init(&argc, &argv);
 	    }
