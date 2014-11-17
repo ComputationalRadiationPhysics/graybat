@@ -496,9 +496,76 @@ struct GraphBasedVirtualOverlayNetwork {
 
 	    if(hasRootVertex){
 		cal.gatherVar(rootVAddr, context, gather, *rootRecvData, recvCount);
+		// Reordering code
+		// std::vector<typename T_Recv::value_type> recvReordered(recvData.size());
+		// unsigned vAddr = 0;
+		// for(unsigned recv_i = 0; recv_i < recvData.size(); ){
+		//     std::vector<Vertex> hostedVertices = getHostedVertices(graph, vAddr);
+		//     for(Vertex v: hostedVertices){
+		// 	recvReordered.at(v.id) = rootRecvData->data()[recv_i];
+		// 	recv_i++;
+		//     }
+		//     vAddr++;
+		// }
+
+		// for(unsigned i = 0; i < recvReordered.size(); ++i){
+		//     rootRecvData->data()[i] = recvReordered[i];
+		// }
+		
 	    }
 	    else {
 		cal.gatherVar(rootVAddr, context, gather, recvData, recvCount);
+	    }
+	    
+	    /*
+	    // Reorder received elements in vertex order
+	    std::vector<T> recvReordered(recvDataCollective.size(), 0);
+	    unsigned vAddr = 0;
+	    for(unsigned recv_i = 0; recv_i < recvDataCollective.size(); ){
+	    	std::vector<Vertex> hostedVertices = getHostedVertices(graph, vAddr);
+	    	for(Vertex v: hostedVertices){
+	    	    T recvElement = recvDataCollective.at(recv_i);
+	    	    recvReordered.at(v.id) = recvElement;
+	    	    recv_i++;
+	    	}
+	    	vAddr++;
+	    }
+	    */
+
+	    gather.clear();
+
+
+	}
+
+    }
+
+    template <typename T_Send, typename T_Recv>
+    void allGather(const Vertex srcVertex, Graph& graph, T_Send sendData, T_Recv& recvData){
+	typedef typename T_Send::value_type T_Send_Container;
+	
+	static std::vector<T_Send_Container> gather;
+	static std::vector<T_Recv*> recvDatas;
+
+	VAddr srcVAddr  = locateVertex(graph, srcVertex);
+	Context context = getGraphContext(graph);
+	std::vector<Vertex> vertices = getHostedVertices(graph, srcVAddr);
+
+	// TODO get rid of sendData.begin(), sendData.end()
+	gather.insert(gather.end(), sendData.begin(), sendData.end());
+	    
+	recvDatas.push_back(&recvData);
+
+
+	if(gather.size() == vertices.size()){
+	    std::vector<unsigned> recvCount;
+
+	    cal.allGatherVar(context, gather, *(recvDatas[0]), recvCount);
+
+	    // Distribute Received Data to Hosted Vertices
+	    //unsigned nElements = std::accumulate(recvCount.begin(), recvCount.end(), 0);
+	    for(unsigned i = 1; i < recvDatas.size(); ++i){
+		std::copy(recvDatas[0]->begin(), recvDatas[0]->end(), recvDatas[i]->begin());
+
 	    }
 	    
 	    /*

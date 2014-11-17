@@ -39,6 +39,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include
 		   ${CMAKE_CURRENT_SOURCE_DIR}/include/dout/include )
 add_executable(Main EXCLUDE_FROM_ALL src/main.cc)
 add_executable(GoL EXCLUDE_FROM_ALL src/gol.cc )
+add_executable(GoLBench EXCLUDE_FROM_ALL src/golBench.cc )
 add_executable(NBody EXCLUDE_FROM_ALL src/nbody.cc )
 add_executable(Synthetic EXCLUDE_FROM_ALL src/synthetic.cc )
 add_executable(SyntheticOneLookup EXCLUDE_FROM_ALL src/synthetic_one_lookup.cc )

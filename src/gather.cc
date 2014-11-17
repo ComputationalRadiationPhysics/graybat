@@ -73,9 +73,9 @@ int gatherCAL(const unsigned nPeers, const unsigned nElements, std::vector<doubl
     }
 
     if(myVAddr == 1){
-	for(T_Data d : dataRecv){
-	    std::cout << d << std::endl;
-	}
+	// for(T_Data d : dataRecv){
+	//     std::cout << d << std::endl;
+	// }
 	return 1;
     }
     return 0;
@@ -126,7 +126,7 @@ int gatherGVON(const unsigned nPeers, unsigned nElements, std::vector<double>& t
      ****************************************************************************/
 
     //std::vector<T_Data> dataSend(nElements); 
-    T_Data dataSend = 0; 
+    std::vector<T_Data> dataSend(1,0); 
     std::vector<T_Data> dataRecv(nPeers * nElements);
 
     Vertex root = graph.getVertices().at(0);

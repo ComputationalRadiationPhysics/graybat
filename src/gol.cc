@@ -32,9 +32,10 @@ struct Cell : public SimpleProperty{
 	    isAlive[0] = 1;
 	}
 
+
     }
 	
-    std::array<unsigned,1> isAlive;
+    std::array<unsigned, 1> isAlive;
     unsigned aliveNeighbors;
 
 };
@@ -99,19 +100,27 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
      * Configuration
      ****************************************************************************/
     // Graph
-    typedef Graph<Cell, SimpleProperty>               LifeGraph;
-    typedef typename LifeGraph::Vertex                Vertex;
-    typedef typename LifeGraph::Edge                  Edge;
-    typedef typename LifeGraph::EdgeDescriptor        EdgeDescriptor;
+    typedef Graph<Cell, SimpleProperty>            LifeGraph;
+    typedef typename LifeGraph::Vertex             Vertex;
+    typedef typename LifeGraph::Edge               Edge;
+    typedef typename LifeGraph::EdgeDescriptor     EdgeDescriptor;
+
+    // Watchdog Network
+    typedef Graph<SimpleProperty, SimpleProperty>  WatchdogGraph;
+    typedef typename WatchdogGraph::Vertex         WVertex;
+    typedef typename WatchdogGraph::Edge           WEdge;
+    typedef typename WatchdogGraph::EdgeDescriptor WEdgeDescriptor;
+
 
     // Cal
-    typedef CommunicationPolicy::MPI                  Mpi;
-    typedef CommunicationAbstractionLayer<Mpi>        MpiCAL;
-    typedef typename MpiCAL::VAddr                    VAddr;
-    typedef typename MpiCAL::Event                    Event;
+    typedef CommunicationPolicy::MPI               Mpi;
+    typedef CommunicationAbstractionLayer<Mpi>     MpiCAL;
+    typedef typename MpiCAL::VAddr                 VAddr;
+    typedef typename MpiCAL::Event                 Event;
 
     // GVON
     typedef GraphBasedVirtualOverlayNetwork<LifeGraph, MpiCAL>  GVON;
+    typedef GraphBasedVirtualOverlayNetwork<WatchdogGraph, MpiCAL>  WGVON;
 
 
     /***************************************************************************
@@ -122,20 +131,28 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     const unsigned width  = height;
     std::vector<Vertex> graphVertices;
     std::vector<EdgeDescriptor> edges = Topology::gridDiagonal<LifeGraph>(height, width, graphVertices);
-    LifeGraph graph (edges, graphVertices); 
+    LifeGraph graph (edges, graphVertices);
 
     // Inantiate communication objects
     MpiCAL cal;
     GVON gvon(cal);
+    WGVON wGvon(cal);
+
+    // Create Watchdog Graph
+    std::vector<WVertex> wGraphVertices;
+    std::vector<WEdgeDescriptor> wEdges = Topology::star<WatchdogGraph>(cal.getGlobalContext().size(), wGraphVertices);
+    WatchdogGraph wGraph(wEdges, wGraphVertices);
+
 
     // Distribute work evenly
     VAddr myVAddr      = cal.getGlobalContext().getVAddr();
-    unsigned nAddr = cal.getGlobalContext().size();
-    std::vector<Vertex> hostedVertices = Distribute::consecutive(myVAddr, nAddr, graph);
+    unsigned nVAddr = cal.getGlobalContext().size();
+    std::vector<Vertex> hostedVertices = Distribute::consecutive(myVAddr, nVAddr, graph);
+    std::vector<WVertex> dog(1, wGraph.getVertices().at(myVAddr));
 
     // Announce vertices
     gvon.announce(graph, hostedVertices); 
-
+    wGvon.announce(wGraph, dog);
 
     /***************************************************************************
      * Start Simulation
@@ -145,46 +162,78 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 
     const Vertex root = graph.getVertices().at(0);
     unsigned generation = 0;
+
+    for(Vertex v: hostedVertices){
+	std::cout << myVAddr << " " << v.id << std::endl;
+    }
     
     // Simulate life forever
     for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
 
-	// Print life field
-	 if(myVAddr == 0){
-	     printGolDomain(golDomain, width, height, generation);
-	 }
+	Count Participants
+	{
+	    std::vector<unsigned> participate(1,1);
+	    std::vector<unsigned> participants(wGraph.getVertices().size(), 0);
+	    wGvon.allGather(dog[0], wGraph, participate, participants);
+	    // if(generation == 100){
+	    // 	// Update graph
+	    // 	std::vector<Vertex> newHostedVertices = Distribute::roundrobin(myVAddr, nVAddr, graph);
+	    // 	gvon.announce(graph, hostedVertices); 
+	    // }
+	}
 
+	
+	// Print life field
+	if(myVAddr == 0){
+	    printGolDomain(golDomain, width, height, generation);
+	}
+
+	// for(Vertex v : hostedVertices){
+	//     assert(v.isAlive[0] == 1);
+	// }
+
+	
 	// Send state to neighbor cells
-	for(Vertex v : hostedVertices){
+	std::array<unsigned, 1> send {{1}};
+	for(Vertex &v : hostedVertices){
 	    for(std::pair<Vertex, Edge> edge : graph.getOutEdges(v)){
+		//std::cout << "send " << (v.isAlive)[0] << " to " << edge.first.id << " via " << edge.second.id << std::endl;
 		events.push_back(gvon.asyncSend(graph, edge.first, edge.second, v.isAlive));
+		//events.push_back(gvon.asyncSend(graph, edge.first, edge.second, send));
+		// assert(send[0] == 1);
+		// assert(v.isAlive[0] == 1);
 	    }
 	}
 
 	// Recv state from neighbor cells
+	std::array<unsigned, 1> recv {{0}};
 	for(Vertex &v : hostedVertices){
-	    for(std::pair<Vertex, Edge> edge : graph.getInEdges(v)){
-		gvon.recv(graph, edge.first, edge.second, edge.first.isAlive);
-		if(edge.first.isAlive[0]) v.aliveNeighbors++;
-	    }
-	}
+	     for(std::pair<Vertex, Edge> edge : graph.getInEdges(v)){
+		 //gvon.recv(graph, edge.first, edge.second, recv);
+		 //std::cout << "recv " << (recv)[0] << " from " << edge.first.id << " via " << edge.second.id << std::endl;
+		 gvon.recv(graph, edge.first, edge.second, edge.first.isAlive);
+		 if(edge.first.isAlive[0]) v.aliveNeighbors++;
+		 //assert(recv[0] == 1);
+	     }
+	 }
 
-	// Wait to finish events
-	for(unsigned i = 0; i < events.size(); ++i){
-	    events.back().wait();
-	    events.pop_back();
-	}
+	 // Wait to finish events
+	 for(unsigned i = 0; i < events.size(); ++i){
+	     events.back().wait();
+	     events.pop_back();
+	 }
 
-	// Calculate state for next generation
-	updateState(hostedVertices);
+	 // Calculate state for next generation
+	 updateState(hostedVertices);
 
-	// Gather state by vertex with id = 0
-	for(Vertex &v: hostedVertices){
-	    v.aliveNeighbors = 0;
-	    gvon.gatherNew(root, v, graph, v.isAlive, golDomain);
-	}
+	 // Gather state by vertex with id = 0
+	 for(Vertex &v: hostedVertices){
+	     v.aliveNeighbors = 0;
+	     //assert(v.isAlive[0] == 0);
+	     gvon.gatherNew(root, v, graph, v.isAlive, golDomain);
+	 }
 
-	generation++;
+	 generation++;
 
 
     }
@@ -202,7 +251,7 @@ int main(int argc, char** argv){
     }
 
     const unsigned nCells    = atoi(argv[1]);
-    const unsigned nTimeSteps = atoi(argv[1]);
+    const unsigned nTimeSteps = atoi(argv[2]);
 
 
     gol(nCells, nTimeSteps);
