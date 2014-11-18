@@ -127,7 +127,7 @@ int sendGVON(const unsigned N, const unsigned nSend, std::vector<double>& times)
     // // Distribute work evenly
     VAddr myVAddr      = cal.getGlobalContext().getVAddr();
     unsigned nAddr     = cal.getGlobalContext().size();
-    std::vector<Vertex> myGraphVertices = Distribute::roundRobin(myVAddr, nAddr, graph);
+    std::vector<Vertex> myGraphVertices = Distribute::consecutive(myVAddr, nAddr, graph);
 
     // Announce vertices
     gvon.announce(graph, myGraphVertices); 

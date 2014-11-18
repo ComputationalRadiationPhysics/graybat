@@ -219,7 +219,7 @@ struct GraphBasedVirtualOverlayNetwork {
      *
      */
     template <typename T>
-    void send(Graph &graph, const Vertex destVertex, const Edge edge, const T& data){
+    inline void send(Graph &graph, const Vertex destVertex, const Edge edge, const T& data){
 	VAddr destVAddr   = locateVertex(graph, destVertex);
 	Context context   = getGraphContext(graph);
 	cal.send(destVAddr, edge.id, context, data);
@@ -258,7 +258,7 @@ struct GraphBasedVirtualOverlayNetwork {
      *
      */
     template <typename T>
-    void recv(Graph& graph, const Vertex srcVertex, const Edge edge, const T& data){
+    inline void recv(Graph& graph, const Vertex srcVertex, const Edge edge, const T& data){
 	VAddr srcVAddr   = locateVertex(graph, srcVertex);
 	Context context  = getGraphContext(graph);
 	cal.recv(srcVAddr, edge.id, context, data);

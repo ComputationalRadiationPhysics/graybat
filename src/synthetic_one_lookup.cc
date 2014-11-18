@@ -1,8 +1,8 @@
 // Communication
-#include <Graph.hpp>                         /* Graph */
-#include <CommunicationAbstractionLayer.hpp> /* CommunicationAbstractionLayer */
-#include <MPI.hpp>                           /* CommunicationPolicy::MPI*/
-#include <VirtualOverlayNetwork.hpp>         /* VirtualOverlayNetwork */
+#include <Graph.hpp>                           /* Graph */
+#include <CommunicationAbstractionLayer.hpp>   /* CommunicationAbstractionLayer */
+#include <MPI.hpp>                             /* CommunicationPolicy::MPI*/
+#include <GraphBasedVirtualOverlayNetwork.hpp> /* GraphBasedVirtualOverlayNetwork */
 
 // Helpers
 #include <distribution.hpp> /* roundRobin */
@@ -29,6 +29,66 @@
 // MPI
 #include <mpi.h>
 
+template <typename T_Data>
+int sendMPI(const unsigned N, const unsigned nSend, std::vector<double>& times){
+    // Init MPI
+    int mpiError = MPI_Init(NULL,NULL);
+    if(mpiError != MPI_SUCCESS){
+	std::cout << "Error starting MPI program." << std::endl;
+	MPI_Abort(MPI_COMM_WORLD,mpiError);
+	return 0;
+    }
+
+  // Get size and rank
+  int rank;
+  int size;
+  MPI_Status status;
+  MPI_Comm_size(MPI_COMM_WORLD, &size);
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+
+  // Start Communication
+  std::vector<T_Data> dataSend(nSend); 
+  std::vector<T_Data> dataRecv(nSend);
+
+
+  for(unsigned i = 0; i < times.size(); ++i){
+
+      using namespace std::chrono;
+      high_resolution_clock::time_point t1 = high_resolution_clock::now();
+
+
+      for(unsigned timestep = 0; timestep < N; ++timestep){
+	  switch(rank) {
+
+	  case 0 :
+	      MPI_Recv(dataRecv.data(), dataRecv.size(), MPI_INT, 1, 0, MPI_COMM_WORLD, &status);
+	      break;
+
+	  case 1:
+	      MPI_Send(dataSend.data(), dataSend.size(), MPI_INT, 0, 0, MPI_COMM_WORLD);
+	      break;
+
+	  default:
+	      break;
+
+	  };
+      }
+
+      high_resolution_clock::time_point t2 = high_resolution_clock::now();
+      duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
+      times[i] = timeSpan.count();
+  }
+  
+  MPI_Barrier(MPI_COMM_WORLD);
+  MPI_Finalize();
+
+  if(rank == 0){
+      return 1;
+  }
+  return 0;
+
+}
 
 
 template <typename T_Data>
@@ -67,10 +127,10 @@ int sendCAL(const unsigned N, const unsigned nSend, std::vector<double>& times) 
 
 	    switch(myVAddr) {
 	    case 0:
-		cal.send(1, 0, context, dataSend);
+		cal.recv(1, 0, context, dataRecv);
 		break;
 	    case 1:
-		cal.recv(0, 0, context, dataRecv);
+		cal.send(0, 0, context, dataSend);
 		break;
 	    
 	    default:
@@ -92,16 +152,18 @@ int sendCAL(const unsigned N, const unsigned nSend, std::vector<double>& times) 
   return 0;
 }
 
+
+
 template <typename T_Data>
 int sendGVON(const unsigned N, const unsigned nSend, std::vector<double>& times) {
     /***************************************************************************
      * Configuration
      ****************************************************************************/
     // Graph
-    typedef Graph<SimpleProperty, SimpleProperty> NBodyGraph;
-    typedef typename NBodyGraph::Vertex           Vertex;
-    typedef typename NBodyGraph::Edge             Edge;
-    typedef typename NBodyGraph::EdgeDescriptor   EdgeDescriptor;
+    typedef Graph<SimpleProperty, SimpleProperty> MyGraph;
+    typedef typename MyGraph::Vertex              Vertex;
+    typedef typename MyGraph::Edge                Edge;
+    typedef typename MyGraph::EdgeDescriptor      EdgeDescriptor;
 
     // Cal
     typedef CommunicationPolicy::MPI            Mpi;
@@ -109,7 +171,7 @@ int sendGVON(const unsigned N, const unsigned nSend, std::vector<double>& times)
     typedef typename MpiCAL::VAddr              VAddr;
 
     // GVON
-    typedef VirtualOverlayNetwork<NBodyGraph, MpiCAL>  GVON;
+    typedef GraphBasedVirtualOverlayNetwork<MyGraph, MpiCAL>  GVON;
 
 
     /***************************************************************************
@@ -117,8 +179,8 @@ int sendGVON(const unsigned N, const unsigned nSend, std::vector<double>& times)
      ****************************************************************************/
     // Create Graph
     std::vector<Vertex> graphVertices;
-    std::vector<EdgeDescriptor> edges = Topology::star<NBodyGraph>(2, graphVertices);
-    NBodyGraph graph (edges, graphVertices); 
+    std::vector<EdgeDescriptor> edges = Topology::star<MyGraph>(2, graphVertices);
+    MyGraph graph (edges, graphVertices); 
 
     // Inantiate communication objects
     MpiCAL cal;
@@ -127,7 +189,7 @@ int sendGVON(const unsigned N, const unsigned nSend, std::vector<double>& times)
     // // Distribute work evenly
     VAddr myVAddr      = cal.getGlobalContext().getVAddr();
     unsigned nAddr     = cal.getGlobalContext().size();
-    std::vector<Vertex> myGraphVertices = Distribute::roundRobin(myVAddr, nAddr, graph);
+    std::vector<Vertex> myGraphVertices = Distribute::roundrobin(myVAddr, nAddr, graph);
 
     // Announce vertices
     gvon.announce(graph, myGraphVertices); 
@@ -148,13 +210,14 @@ int sendGVON(const unsigned N, const unsigned nSend, std::vector<double>& times)
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
     
 	for(unsigned timestep = 0; timestep < N; ++timestep){
-	    for(std::pair<Vertex, Edge> edge : outEdges){
-		gvon.send(graph, edge.first, edge.second, dataSend);
+	    for(std::pair<Vertex, Edge> outEdge : outEdges){
+	    	gvon.send(graph, outEdge.first, outEdge.second, dataSend);
 	    }
 
-	    for(std::pair<Vertex, Edge> edge : inEdges){
-		gvon.recv(graph, edge.first, edge.second, dataRecv);
+	    for(std::pair<Vertex, Edge> inEdge : inEdges){
+	    	gvon.recv(graph, inEdge.first, inEdge.second, dataRecv);
 	    }
+
 
 	}
 
@@ -169,68 +232,6 @@ int sendGVON(const unsigned N, const unsigned nSend, std::vector<double>& times)
   return 0;
 
 }
-
-template <typename T_Data>
-int sendMPI(const unsigned N, const unsigned nSend, std::vector<double>& times){
-    // Init MPI
-    int mpiError = MPI_Init(NULL,NULL);
-    if(mpiError != MPI_SUCCESS){
-	std::cout << "Error starting MPI program." << std::endl;
-	MPI_Abort(MPI_COMM_WORLD,mpiError);
-	return 0;
-    }
-
-  // Get size and rank
-  int rank;
-  int size;
-  MPI_Status status;
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-
-  // Start Communication
-  std::vector<T_Data> dataSend(nSend); 
-  std::vector<T_Data> dataRecv(nSend);
-
-
-  for(unsigned i = 0; i < times.size(); ++i){
-
-      using namespace std::chrono;
-      high_resolution_clock::time_point t1 = high_resolution_clock::now();
-
-
-      for(unsigned timestep = 0; timestep < N; ++timestep){
-	  switch(rank) {
-
-	  case 0 :
-	      MPI_Send(dataSend.data(), dataSend.size(), MPI_INT, 1, 0, MPI_COMM_WORLD);
-	      break;
-
-	  case 1:
-	      MPI_Recv(dataRecv.data(), dataRecv.size(), MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
-	      break;
-
-	  default:
-	      break;
-
-	  };
-      }
-
-      high_resolution_clock::time_point t2 = high_resolution_clock::now();
-      duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
-      times[i] = timeSpan.count();
-  }
-  
-  MPI_Barrier(MPI_COMM_WORLD);
-  MPI_Finalize();
-
-  if(rank == 0){
-      return 1;
-  }
-  return 0;
-
-}
-
 
 
 int main(int argc, char** argv){
