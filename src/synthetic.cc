@@ -29,6 +29,66 @@
 // MPI
 #include <mpi.h>
 
+template <typename T_Data>
+int sendMPI(const unsigned N, const unsigned nSend, std::vector<double>& times){
+    // Init MPI
+    int mpiError = MPI_Init(NULL,NULL);
+    if(mpiError != MPI_SUCCESS){
+	std::cout << "Error starting MPI program." << std::endl;
+	MPI_Abort(MPI_COMM_WORLD,mpiError);
+	return 0;
+    }
+
+  // Get size and rank
+  int rank;
+  int size;
+  MPI_Status status;
+  MPI_Comm_size(MPI_COMM_WORLD, &size);
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+
+  // Start Communication
+  std::vector<T_Data> dataSend(nSend); 
+  std::vector<T_Data> dataRecv(nSend);
+
+
+  for(unsigned i = 0; i < times.size(); ++i){
+
+      using namespace std::chrono;
+      high_resolution_clock::time_point t1 = high_resolution_clock::now();
+
+
+      for(unsigned timestep = 0; timestep < N; ++timestep){
+	  switch(rank) {
+
+	  case 0 :
+	      MPI_Recv(dataRecv.data(), dataRecv.size(), MPI_INT, 1, 0, MPI_COMM_WORLD, &status);
+	      break;
+
+	  case 1:
+	      MPI_Send(dataSend.data(), dataSend.size(), MPI_INT, 0, 0, MPI_COMM_WORLD);
+	      break;
+
+	  default:
+	      break;
+
+	  };
+      }
+
+      high_resolution_clock::time_point t2 = high_resolution_clock::now();
+      duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
+      times[i] = timeSpan.count();
+  }
+  
+  MPI_Barrier(MPI_COMM_WORLD);
+  MPI_Finalize();
+
+  if(rank == 0){
+      return 1;
+  }
+  return 0;
+
+}
 
 
 template <typename T_Data>
@@ -67,10 +127,10 @@ int sendCAL(const unsigned N, const unsigned nSend, std::vector<double>& times) 
 
 	    switch(myVAddr) {
 	    case 0:
-		cal.send(1, 0, context, dataSend);
+		cal.recv(1, 0, context, dataRecv);
 		break;
 	    case 1:
-		cal.recv(0, 0, context, dataRecv);
+		cal.send(0, 0, context, dataSend);
 		break;
 	    
 	    default:
@@ -172,66 +232,7 @@ int sendGVON(const unsigned N, const unsigned nSend, std::vector<double>& times)
 
 }
 
-template <typename T_Data>
-int sendMPI(const unsigned N, const unsigned nSend, std::vector<double>& times){
-    // Init MPI
-    int mpiError = MPI_Init(NULL,NULL);
-    if(mpiError != MPI_SUCCESS){
-	std::cout << "Error starting MPI program." << std::endl;
-	MPI_Abort(MPI_COMM_WORLD,mpiError);
-	return 0;
-    }
 
-  // Get size and rank
-  int rank;
-  int size;
-  MPI_Status status;
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-
-  // Start Communication
-  std::vector<T_Data> dataSend(nSend); 
-  std::vector<T_Data> dataRecv(nSend);
-
-
-  for(unsigned i = 0; i < times.size(); ++i){
-
-      using namespace std::chrono;
-      high_resolution_clock::time_point t1 = high_resolution_clock::now();
-
-
-      for(unsigned timestep = 0; timestep < N; ++timestep){
-	  switch(rank) {
-
-	  case 0 :
-	      MPI_Send(dataSend.data(), dataSend.size(), MPI_INT, 1, 0, MPI_COMM_WORLD);
-	      break;
-
-	  case 1:
-	      MPI_Recv(dataRecv.data(), dataRecv.size(), MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
-	      break;
-
-	  default:
-	      break;
-
-	  };
-      }
-
-      high_resolution_clock::time_point t2 = high_resolution_clock::now();
-      duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
-      times[i] = timeSpan.count();
-  }
-  
-  MPI_Barrier(MPI_COMM_WORLD);
-  MPI_Finalize();
-
-  if(rank == 0){
-      return 1;
-  }
-  return 0;
-
-}
 
 
 int main(int argc, char** argv){
