@@ -111,13 +111,15 @@ struct GraphBasedVirtualOverlayNetwork {
 	    }
 	}
 
-	Context newContext = cal.createContext(vAddrsWithVertices, oldContext); 
-
+	Context newContext = cal.createContext(vAddrsWithVertices, oldContext);
+	graphMap[graph.id] = newContext;
+	// std::cout << "context size: " << newContext.size() << std::endl;
+	
 	// Each peer announces the vertices it hosts
 	if(newContext.valid()){
 
 	    // Bound graph to new context
-	    graphMap[graph.id] = newContext;
+
 	    
 	    // Retrieve maximum number of vertices per peer
 	    std::vector<unsigned> myVerticesCount(1,vertices.size());
@@ -405,6 +407,47 @@ struct GraphBasedVirtualOverlayNetwork {
 
     }
 
+    template <typename T_Data, typename T_Recv, typename Op>
+    void allReduce(const Vertex srcVertex, Graph& graph, Op op, const std::vector<T_Data> sendData, T_Recv& recvData){
+
+	static std::vector<T_Data> reduce;
+	static unsigned vertexCount = 0;
+	static std::vector<T_Recv*> recvDatas;
+
+	VAddr srcVAddr    = locateVertex(graph, srcVertex);
+	Context context   = getGraphContext(graph);
+	std::vector<Vertex> vertices = getHostedVertices(graph, srcVAddr);
+
+	recvDatas.push_back(&recvData);
+	
+	vertexCount++;
+
+	if(reduce.empty()){
+	    reduce = std::vector<T_Data>(sendData.size(), 0);
+	}
+
+	// Reduce locally
+	std::transform(reduce.begin(), reduce.end(), sendData.begin(), reduce.begin(), op);
+
+	// Finally start reduction
+	if(vertexCount == vertices.size()){
+
+	    cal.allReduce(context, op, reduce, *(recvDatas[0]));
+
+	    // Distribute Received Data to Hosted Vertices
+	    for(unsigned i = 1; i < recvDatas.size(); ++i){
+		std::copy(recvDatas[0]->begin(), recvDatas[0]->end(), recvDatas[i]->begin());
+
+	    }
+	    
+
+	    reduce.clear();
+	    vertexCount = 0;
+	}
+	assert(vertexCount <= vertices.size());
+
+    }
+    
 
     template <typename T>
     struct Collective {
