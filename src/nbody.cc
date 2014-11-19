@@ -2,7 +2,7 @@
 #include <Graph.hpp>                         /* Graph */
 #include <CommunicationAbstractionLayer.hpp> /* CommunicationAbstractionLayer */
 #include <MPI.hpp>                           /* CommunicationPolicy::MPI*/
-#include <VirtualOverlayNetwork.hpp>         /* VirtualOverlayNetwork */
+#include <GraphBasedVirtualOverlayNetwork.hpp>         /* GraphBasedVirtualOverlayNetwork */
 
 // Helpers
 #include <distribution.hpp> /* roundRobin */
@@ -146,7 +146,7 @@ int nBody(const unsigned N, std::vector<double>& times) {
     typedef typename MpiCAL::Event              Event;
 
     // GVON
-    typedef VirtualOverlayNetwork<NBodyGraph, MpiCAL>  GVON;
+    typedef GraphBasedVirtualOverlayNetwork<NBodyGraph, MpiCAL>  GVON;
 
 
     /***************************************************************************
@@ -168,7 +168,7 @@ int nBody(const unsigned N, std::vector<double>& times) {
     // Distribute work evenly
     VAddr myVAddr  = cal.getGlobalContext().getVAddr();
     unsigned nAddr = cal.getGlobalContext().size();
-    std::vector<Vertex> myGraphVertices = Distribute::roundRobin(myVAddr, nAddr, graph);
+    std::vector<Vertex> myGraphVertices = Distribute::consecutive(myVAddr, nAddr, graph);
 
     // Announce vertices
     gvon.announce(graph, myGraphVertices); 

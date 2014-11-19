@@ -52,6 +52,7 @@ add_executable(UnitGVON EXCLUDE_FROM_ALL src/unit_gvon.cc )
 # add the libraries (Boost...) to this executable
 target_link_libraries(Main ${LIBS})
 target_link_libraries(GoL ${LIBS})
+target_link_libraries(GoLBench ${LIBS})
 target_link_libraries(NBody ${LIBS})
 target_link_libraries(Synthetic ${LIBS})
 target_link_libraries(SyntheticOneLookup ${LIBS})
