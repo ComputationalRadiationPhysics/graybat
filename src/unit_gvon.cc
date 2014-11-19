@@ -65,8 +65,8 @@ void test(){
     {
     	const unsigned testValue = 10;
 	
-    	const std::vector<unsigned> sendData(10, testValue);
-    	const std::vector<unsigned> recvData(10, 0);
+	std::vector<unsigned> sendData(10, testValue);
+	std::vector<unsigned> recvData(10, 0);
 
     	std::vector<Event> events;
 	
@@ -97,6 +97,34 @@ void test(){
     	    e.wait();
     	}
     	events.clear();
+
+    }
+
+    /***************************************************************************
+     * Reduce test
+     ****************************************************************************/
+    {
+    	const unsigned testValue = 13;
+	const Vertex root = graph.getVertices().at(0);
+	
+	std::vector<unsigned> sendData(10, testValue);
+	std::vector<unsigned> recvData(10, 0);
+
+    	std::vector<Event> events;
+	
+    	for(Vertex v : hostedVertices){
+	    gvon.reduceNew(root, v, graph, std::plus<unsigned>(), sendData, recvData);
+
+    	}
+	
+
+	if(myVAddr == gvon.locateVertex(graph, root)){
+	    for(unsigned d : recvData){
+		assert(d == testValue * graph.getVertices().size());
+
+	    }
+
+	}
 
     }
     

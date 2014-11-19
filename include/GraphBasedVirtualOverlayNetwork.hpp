@@ -391,7 +391,6 @@ struct GraphBasedVirtualOverlayNetwork {
 	if(vertexCount == vertices.size()){
 
 	    if(hasRootVertex){
-		std::cout << "Now reduce! " <<   reduce.size() << std::endl;
 		cal.reduce(rootVAddr, context, op, reduce, *rootRecvData);
 	    }
 	    else{
