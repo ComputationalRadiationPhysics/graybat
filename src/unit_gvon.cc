@@ -41,7 +41,7 @@ void test(){
      * Init Communication
      ****************************************************************************/
     // Create Graph
-    const unsigned height = 10;
+    const unsigned height = 100;
     const unsigned width  = height;
     std::vector<Vertex> graphVertices;
     std::vector<EdgeDescriptor> edges = Topology::grid<MyGraph>(height, width, graphVertices);
@@ -56,8 +56,14 @@ void test(){
     unsigned nAddr = cal.getGlobalContext().size();
     std::vector<Vertex> hostedVertices = Distribute::consecutive(myVAddr, nAddr, graph);
 
+    // Peers without vertices can do something else
+    if(hostedVertices.empty())
+	return;
+    
     // Announce vertices
     gvon.announce(graph, hostedVertices);
+
+ 
 
     /***************************************************************************
      * asyncSend/Recv Test
@@ -117,7 +123,7 @@ void test(){
 
     	}
 	
-
+	
 	if(myVAddr == gvon.locateVertex(graph, root)){
 	    for(unsigned d : recvData){
 		assert(d == testValue * graph.getVertices().size());

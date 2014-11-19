@@ -370,7 +370,7 @@ struct GraphBasedVirtualOverlayNetwork {
 	VAddr rootVAddr   = locateVertex(graph, rootVertex);
 	VAddr srcVAddr    = locateVertex(graph, srcVertex);
 	Context context   = getGraphContext(graph);
-	std::vector<Vertex> vertices = getHostedVertices(graph, srcVAddr); 
+	std::vector<Vertex> vertices = getHostedVertices(graph, srcVAddr);
 
 	vertexCount++;
 
@@ -391,15 +391,17 @@ struct GraphBasedVirtualOverlayNetwork {
 	if(vertexCount == vertices.size()){
 
 	    if(hasRootVertex){
-		cal.reduce(rootVAddr, context, op, reduce, *rootRecvData);
+	    	cal.reduce(rootVAddr, context, op, reduce, *rootRecvData);
 	    }
 	    else{
-		cal.reduce(rootVAddr, context, op, reduce, recvData);
+	    	cal.reduce(rootVAddr, context, op, reduce, recvData);
+
 	    }
 
 	    reduce.clear();
-
+	    vertexCount = 0;
 	}
+	assert(vertexCount <= vertices.size());
 
     }
 

@@ -46,8 +46,8 @@ int reduceMPI(unsigned nElements, std::vector<double>& times){
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
   // Start Communication
-  std::vector<T_Data> dataSend(nElements,1); 
-  std::vector<T_Data> dataRecv(nElements,0);
+  std::vector<T_Data> dataSend(nElements, 1); 
+  std::vector<T_Data> dataRecv(nElements, 0);
 
 
   for(unsigned i = 0; i < times.size(); ++i){
@@ -63,6 +63,12 @@ int reduceMPI(unsigned nElements, std::vector<double>& times){
       duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
       times[i] = timeSpan.count();
   }
+
+  // if(rank == root){
+  //     for(T_Data d : dataRecv){
+  // 	  assert(d == size);
+  //     }
+  // }
   
   MPI_Barrier(MPI_COMM_WORLD);
   MPI_Finalize();
@@ -126,7 +132,7 @@ int reduceCAL(const unsigned nElements, std::vector<double>& times) {
 }
 
 template <typename T_Data>
-int reduceGVON(const unsigned nPeers, const unsigned nElements, std::vector<double>& times) {
+int reduceGVON(const unsigned nElements, std::vector<double>& times) {
     /***************************************************************************
      * Configuration
      ****************************************************************************/
@@ -148,20 +154,23 @@ int reduceGVON(const unsigned nPeers, const unsigned nElements, std::vector<doub
     /***************************************************************************
      * Init Communication
      ****************************************************************************/
-    // Create Graph
-    std::vector<Vertex> graphVertices;
-    std::vector<EdgeDescriptor> edges = Topology::star<NBodyGraph>(nPeers, graphVertices);
-    NBodyGraph graph (edges, graphVertices); 
-
     // Inantiate communication objects
     MpiCAL cal;
     GVON gvon(cal);
+
+    // Create Graph
+    std::vector<Vertex> graphVertices;
+    std::vector<EdgeDescriptor> edges = Topology::star<NBodyGraph>(cal.getGlobalContext().size(), graphVertices);
+    NBodyGraph graph (edges, graphVertices); 
+
 
     // // Distribute work evenly
     VAddr myVAddr      = cal.getGlobalContext().getVAddr();
     unsigned nAddr     = cal.getGlobalContext().size();
     std::vector<Vertex> myGraphVertices = Distribute::consecutive(myVAddr, nAddr, graph);
 
+    assert(myGraphVertices.size() == 1);
+    
     // Announce vertices
     gvon.announce(graph, myGraphVertices); 
 
@@ -190,10 +199,13 @@ int reduceGVON(const unsigned nPeers, const unsigned nElements, std::vector<doub
 	times[i] = timeSpan.count();
     }
 
-    for(T_Data d : dataRecv){
-	assert(d == cal.getGlobalContext().size());
+    // if(myVAddr == gvon.locateVertex(graph, root)){
+    // 	for(T_Data d : dataRecv){
+    // 	    //std::cout << d << std::endl;
+    // 	    assert(d == cal.getGlobalContext().size());
 
-    }
+    // 	}
+    // }
   
     if(myVAddr == 0){
 	return 1;
@@ -207,13 +219,12 @@ int reduceGVON(const unsigned nPeers, const unsigned nElements, std::vector<doub
 int main(int argc, char** argv){
 
     if(argc < 5){
-	std::cout << "Usage ./Reduce [nPeers] [nElements] [nTimesteps] [0,1,2]" << std::endl;
+	std::cout << "Usage ./Reduce [nElements] [nTimesteps] [0,1,2]" << std::endl;
 	return 0;
     }
 
     // Benchmark parameter
     typedef int Data;
-    unsigned nPeers      = atoi(argv[1]);
     unsigned nElements  = atoi(argv[2]);
     unsigned nTimesteps = atoi(argv[3]);
     unsigned mode       = atoi(argv[4]);
@@ -230,7 +241,7 @@ int main(int argc, char** argv){
 	printTime = reduceCAL<Data>(nElements, runtimes);
        break;
     case 2: 
-	printTime = reduceGVON<Data>(nPeers, nElements, runtimes);
+	printTime = reduceGVON<Data>(nElements, runtimes);
        break;
 
     default:
