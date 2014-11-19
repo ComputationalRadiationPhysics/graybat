@@ -28,6 +28,52 @@
 
 // MPI
 #include <mpi.h>
+template <typename T_Data>
+int reduceMPI(unsigned nElements, std::vector<double>& times){
+    // Init MPI
+    int mpiError = MPI_Init(NULL,NULL);
+    if(mpiError != MPI_SUCCESS){
+	std::cout << "Error starting MPI program." << std::endl;
+	MPI_Abort(MPI_COMM_WORLD,mpiError);
+	return 0;
+    }
+
+  // Get size and rank
+  int rank;
+  int size;
+  int root = 0;
+  MPI_Comm_size(MPI_COMM_WORLD, &size);
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+  // Start Communication
+  std::vector<T_Data> dataSend(nElements,1); 
+  std::vector<T_Data> dataRecv(nElements,0);
+
+
+  for(unsigned i = 0; i < times.size(); ++i){
+
+      using namespace std::chrono;
+      high_resolution_clock::time_point t1 = high_resolution_clock::now();
+
+      MPI_Reduce(dataSend.data(), dataRecv.data(), dataSend.size(), 
+       		 MPI_INT, MPI_SUM, 
+		 root, MPI_COMM_WORLD);
+
+      high_resolution_clock::time_point t2 = high_resolution_clock::now();
+      duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
+      times[i] = timeSpan.count();
+  }
+  
+  MPI_Barrier(MPI_COMM_WORLD);
+  MPI_Finalize();
+
+  if(rank == 0){
+      return 1;
+  }
+  return 0;
+
+}
+
 
 template <typename T_Data>
 int reduceCAL(const unsigned nElements, std::vector<double>& times) {
@@ -114,7 +160,7 @@ int reduceGVON(const unsigned nPeers, const unsigned nElements, std::vector<doub
     // // Distribute work evenly
     VAddr myVAddr      = cal.getGlobalContext().getVAddr();
     unsigned nAddr     = cal.getGlobalContext().size();
-    std::vector<Vertex> myGraphVertices = Distribute::roundrobin(myVAddr, nAddr, graph);
+    std::vector<Vertex> myGraphVertices = Distribute::consecutive(myVAddr, nAddr, graph);
 
     // Announce vertices
     gvon.announce(graph, myGraphVertices); 
@@ -143,60 +189,19 @@ int reduceGVON(const unsigned nPeers, const unsigned nElements, std::vector<doub
 	duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
 	times[i] = timeSpan.count();
     }
+
+    for(T_Data d : dataRecv){
+	assert(d == cal.getGlobalContext().size());
+
+    }
   
     if(myVAddr == 0){
-	std::cout << dataRecv[0] << std::endl;
 	return 1;
     }
     return 0;
 
 }
 
-template <typename T_Data>
-int reduceMPI(unsigned nElements, std::vector<double>& times){
-    // Init MPI
-    int mpiError = MPI_Init(NULL,NULL);
-    if(mpiError != MPI_SUCCESS){
-	std::cout << "Error starting MPI program." << std::endl;
-	MPI_Abort(MPI_COMM_WORLD,mpiError);
-	return 0;
-    }
-
-  // Get size and rank
-  int rank;
-  int size;
-  int root = 0;
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-  // Start Communication
-  std::vector<T_Data> dataSend(nElements,1); 
-  std::vector<T_Data> dataRecv(nElements,0);
-
-
-  for(unsigned i = 0; i < times.size(); ++i){
-
-      using namespace std::chrono;
-      high_resolution_clock::time_point t1 = high_resolution_clock::now();
-
-      MPI_Reduce(dataSend.data(), dataRecv.data(), dataSend.size(), 
-       		 MPI_INT, MPI_SUM, 
-		 root, MPI_COMM_WORLD);
-
-      high_resolution_clock::time_point t2 = high_resolution_clock::now();
-      duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
-      times[i] = timeSpan.count();
-  }
-  
-  MPI_Barrier(MPI_COMM_WORLD);
-  MPI_Finalize();
-
-  if(rank == 0){
-      return 1;
-  }
-  return 0;
-
-}
 
 
 int main(int argc, char** argv){

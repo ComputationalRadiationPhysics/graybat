@@ -359,23 +359,23 @@ struct GraphBasedVirtualOverlayNetwork {
     }
 
 
-    template <typename T, typename Op>
-    void reduceNew(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, Op op, const std::vector<T> sendData, std::vector<T>& recvData){
-	static std::vector<T> reduce;
-	static std::vector<T>* rootRecvData;
+    template <typename T_Data, typename Op>
+    void reduceNew(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, Op op, const std::vector<T_Data> sendData, std::vector<T_Data>& recvData){
+	static std::vector<T_Data> reduce;
+	static std::vector<T_Data>* rootRecvData;
 	static unsigned vertexCount = 0;
 	static bool hasRootVertex = false;
 
 
-	VAddr rootVAddr = locateVertex(graph, rootVertex);
-	VAddr srcVAddr  = locateVertex(graph, srcVertex);
+	VAddr rootVAddr   = locateVertex(graph, rootVertex);
+	VAddr srcVAddr    = locateVertex(graph, srcVertex);
 	Context context   = getGraphContext(graph);
 	std::vector<Vertex> vertices = getHostedVertices(graph, srcVAddr); 
 
 	vertexCount++;
 
 	if(reduce.empty()){
-	    reduce = std::vector<T>(sendData.size(), 0);
+	    reduce = std::vector<T_Data>(sendData.size(), 0);
 	}
 
 	// Reduce locally
@@ -389,7 +389,9 @@ struct GraphBasedVirtualOverlayNetwork {
 
 	// Finally start reduction
 	if(vertexCount == vertices.size()){
+
 	    if(hasRootVertex){
+		std::cout << "Now reduce! " <<   reduce.size() << std::endl;
 		cal.reduce(rootVAddr, context, op, reduce, *rootRecvData);
 	    }
 	    else{

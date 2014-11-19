@@ -30,6 +30,69 @@
 #include <mpi.h>
 
 template <typename T_Data>
+int gatherMPI(const unsigned nPeers, unsigned nElements, std::vector<double>& times){
+    // Init MPI
+    int mpiError = MPI_Init(NULL,NULL);
+    if(mpiError != MPI_SUCCESS){
+	std::cout << "Error starting MPI program." << std::endl;
+	MPI_Abort(MPI_COMM_WORLD,mpiError);
+	return 0;
+    }
+
+  // Get size and rank
+  int rank;
+  int size;
+  int root = 0;
+  MPI_Comm_size(MPI_COMM_WORLD, &size);
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+
+  // Start Communication
+  std::vector<T_Data> dataSend(nElements, rank); 
+  std::vector<T_Data> dataRecv(nElements * nPeers);
+
+
+  for(unsigned i = 0; i < times.size(); ++i){
+
+      using namespace std::chrono;
+      high_resolution_clock::time_point t1 = high_resolution_clock::now();
+
+      int rcounts[size];
+      int rdispls[size];
+
+      // Create recv buffer with sendsize information of other ranks
+      MPI_Allgather(&nElements, 1, MPI_UNSIGNED, 
+		    &rcounts, 1, MPI_UNSIGNED, 
+		    MPI_COMM_WORLD);
+
+
+      unsigned offset  = 0;
+      for (int i=0; i < size; ++i) { 
+	  rdispls[i] = offset; 
+	  offset += rcounts[i];
+      } 
+
+      // Receive data with varying size
+      MPI_Gatherv(dataSend.data(), dataSend.size(), MPI_INT, 
+		  dataRecv.data(), rcounts, rdispls, MPI_INT, 
+		  root, MPI_COMM_WORLD);
+
+      high_resolution_clock::time_point t2 = high_resolution_clock::now();
+      duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
+      times[i] = timeSpan.count();
+  }
+  
+  MPI_Barrier(MPI_COMM_WORLD);
+  MPI_Finalize();
+
+  if(rank == 0){
+      return 1;
+  }
+  return 0;
+
+}
+
+template <typename T_Data>
 int gatherCAL(const unsigned nPeers, const unsigned nElements, std::vector<double>& times) {
     /***************************************************************************
      * Configuration
@@ -152,68 +215,7 @@ int gatherGVON(const unsigned nPeers, unsigned nElements, std::vector<double>& t
 
 }
 
-template <typename T_Data>
-int gatherMPI(const unsigned nPeers, unsigned nElements, std::vector<double>& times){
-    // Init MPI
-    int mpiError = MPI_Init(NULL,NULL);
-    if(mpiError != MPI_SUCCESS){
-	std::cout << "Error starting MPI program." << std::endl;
-	MPI_Abort(MPI_COMM_WORLD,mpiError);
-	return 0;
-    }
 
-  // Get size and rank
-  int rank;
-  int size;
-  int root = 0;
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-
-  // Start Communication
-  std::vector<T_Data> dataSend(nElements, rank); 
-  std::vector<T_Data> dataRecv(nElements * nPeers);
-
-
-  for(unsigned i = 0; i < times.size(); ++i){
-
-      using namespace std::chrono;
-      high_resolution_clock::time_point t1 = high_resolution_clock::now();
-
-      int rcounts[size];
-      int rdispls[size];
-
-      // Create recv buffer with sendsize information of other ranks
-      MPI_Allgather(&nElements, 1, MPI_UNSIGNED, 
-		    &rcounts, 1, MPI_UNSIGNED, 
-		    MPI_COMM_WORLD);
-
-
-      unsigned offset  = 0;
-      for (int i=0; i < size; ++i) { 
-	  rdispls[i] = offset; 
-	  offset += rcounts[i];
-      } 
-
-      // Receive data with varying size
-      MPI_Gatherv(dataSend.data(), dataSend.size(), MPI_INT, 
-		  dataRecv.data(), rcounts, rdispls, MPI_INT, 
-		  root, MPI_COMM_WORLD);
-
-      high_resolution_clock::time_point t2 = high_resolution_clock::now();
-      duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
-      times[i] = timeSpan.count();
-  }
-  
-  MPI_Barrier(MPI_COMM_WORLD);
-  MPI_Finalize();
-
-  if(rank == 0){
-      return 1;
-  }
-  return 0;
-
-}
 
 
 int main(int argc, char** argv){
