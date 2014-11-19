@@ -218,16 +218,16 @@ int reduceGVON(const unsigned nElements, std::vector<double>& times) {
 
 int main(int argc, char** argv){
 
-    if(argc < 5){
+    if(argc < 4){
 	std::cout << "Usage ./Reduce [nElements] [nTimesteps] [0,1,2]" << std::endl;
 	return 0;
     }
 
     // Benchmark parameter
     typedef int Data;
-    unsigned nElements  = atoi(argv[2]);
-    unsigned nTimesteps = atoi(argv[3]);
-    unsigned mode       = atoi(argv[4]);
+    unsigned nElements  = atoi(argv[1]);
+    unsigned nTimesteps = atoi(argv[2]);
+    unsigned mode       = atoi(argv[3]);
 
 
     bool printTime = 0;
