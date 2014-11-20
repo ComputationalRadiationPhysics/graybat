@@ -176,9 +176,9 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 	{
 
 	    
-	    // if(participants[0] == 1){
-	    //  	direction = 1;
-	    // }
+	    if(participants[0] == 1){
+	     	direction = 1;
+	    }
 
 	    if(hostedVertices.empty()){
 		participate[0] = 0;

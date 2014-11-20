@@ -75,10 +75,12 @@ struct GraphBasedVirtualOverlayNetwork {
      * @param[in] vertices A set of vertices, that will be hosted by this peer
      *
      */
-    void announce(Graph& graph, const std::vector<Vertex> vertices){
+    void announce(Graph& graph, const std::vector<Vertex> vertices, const bool global=true){
 	// Get old context from graph
-	//Context oldContext = getGraphContext(graph);
-	Context oldContext = cal.getGlobalContext();
+	Context oldContext = getGraphContext(graph);
+
+	if(global)
+	    oldContext = cal.getGlobalContext();
 
 	if(!oldContext.valid()){
 	    if(graph.hasSuperGraph()){
