@@ -147,7 +147,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     // Distribute work evenly
     VAddr myVAddr      = cal.getGlobalContext().getVAddr();
     unsigned nVAddr = cal.getGlobalContext().size();
-    std::vector<Vertex> hostedVertices = Distribute::consecutive(myVAddr, nVAddr, graph);
+    std::vector<Vertex> hostedVertices = Distribute::roundrobin(myVAddr, nVAddr, graph);
     std::vector<WVertex> dog(1, wGraph.getVertices().at(myVAddr));
 
     // Announce vertices
@@ -223,9 +223,13 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 
 	    const unsigned tmpParticipants = participants[0];
 	    wGvon.allReduce(dog[0], wGraph, std::plus<unsigned>(), participate, participants);
+
+	    // if(myVAddr == 0){
+	    // 	std::cout << participants[0] << std::endl;
+	    // }
 	    
 	    if(tmpParticipants != participants[0]){
-		hostedVertices = Distribute::consecutive(myVAddr, participants[0], graph);
+		hostedVertices = Distribute::roundrobin(myVAddr, participants[0], graph);
 		gvon.announce(graph, hostedVertices);
 	    }
 
@@ -260,7 +264,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 	 // Calculate state for next generation
 	 updateState(hostedVertices);
 
-	 // Gather state by vertex with id = 0
+	//  // Gather state by vertex with id = 0
 	 for(Vertex &v: hostedVertices){
 	     v.aliveNeighbors = 0;
 	     gvon.gatherNew(root, v, graph, v.isAlive, golDomain);
