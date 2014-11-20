@@ -77,7 +77,8 @@ struct GraphBasedVirtualOverlayNetwork {
      */
     void announce(Graph& graph, const std::vector<Vertex> vertices){
 	// Get old context from graph
-	Context oldContext = getGraphContext(graph);
+	//Context oldContext = getGraphContext(graph);
+	Context oldContext = cal.getGlobalContext();
 
 	if(!oldContext.valid()){
 	    if(graph.hasSuperGraph()){

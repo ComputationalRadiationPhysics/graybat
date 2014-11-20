@@ -40,23 +40,23 @@ struct Cell : public SimpleProperty{
 
 };
 
-void printGolDomain(const std::vector<unsigned> domain, const unsigned width, const unsigned height, const unsigned generation){
+void printGolDomain(const std::vector<unsigned> domain, const unsigned width, const unsigned height, const unsigned generation, const unsigned nPeers){
     for(unsigned i = 0; i < domain.size(); ++i){
-	if((i % (width)) == 0){
-	    std::cerr << std::endl;
-	}
+    	if((i % (width)) == 0){
+    	    std::cerr << std::endl;
+    	}
 
-	if(domain.at(i)){
-	    std::cerr << "#";
-	}
-	else {
-	    std::cerr << " ";
-	}
+    	if(domain.at(i)){
+    	    std::cerr << "#";
+    	}
+    	else {
+    	    std::cerr << " ";
+    	}
 
     }
-    std::cerr << "Generation: " << generation << std::endl;
+    std::cerr << "Generation: " << generation <<  " nPeers: " << nPeers << std::endl;
     for(unsigned i = 0; i < height+1; ++i){
-	std::cerr << "\033[F";
+    	std::cerr << "\033[F";
     }
 
 }
@@ -163,73 +163,76 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     const Vertex root = graph.getVertices().at(0);
     unsigned generation = 1;
 
-    // for(Vertex v: hostedVertices){
-    // 	std::cout << myVAddr << " " << v.id << std::endl;
-    // }
-
-    std::vector<unsigned> participate(1,1);
+    // Load balancing variables
     std::vector<unsigned> participants(1, 0);
-    
+    std::vector<unsigned> participate(1, !hostedVertices.empty());
+    wGvon.allReduce(dog[0], wGraph, std::plus<unsigned>(), participate, participants);
+    unsigned direction = 0;
+
     // Simulate life forever
     for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
 
 	// Count Participants
 	{
 
+	    
+	    // if(participants[0] == 1){
+	    //  	direction = 1;
+	    // }
 
-	    if((myVAddr == gvon.getGraphContext(graph).size() - 1) && (gvon.getGraphContext(graph).size() > 1)){
-		if(generation % 50 == 0){
-		    participate[0] = 0;
+	    if(hostedVertices.empty()){
+		participate[0] = 0;
+	    }
+	    
+	    if(direction == 0){
+		if((myVAddr == participants[0] - 1) && (participants[0] > 1)){
+		    if((generation % 10) == 0){
+			participate[0] = 0;
+		    }
 		}
 	    }
+	    else {
+		if(myVAddr == participants[0]){
+		    if((generation % 10) == 0){
+			participate[0] = 1;
+		    }
+		}
 
-	    wGvon.allReduce(dog[0], wGraph, std::plus<unsigned>(), participate, participants);
-	    //std::cout << participants[0] << std::endl;
-	    
-	    if(participants[0] < gvon.getGraphContext(graph).size()){
-		hostedVertices = Distribute::consecutive(myVAddr, participants[0], graph);
-		// std::cout << myVAddr << " " << hostedVertices.size() << std::endl;
-		gvon.announce(graph, hostedVertices);
-		// std::cout << gvon.getGraphContext(graph).size() << std::endl;
 	    }
+
+	    const unsigned tmpParticipants = participants[0];
+	    wGvon.allReduce(dog[0], wGraph, std::plus<unsigned>(), participate, participants);
+	    //std::cout << tmpParticipants << " " << participants[0] << std::endl;
+
 	    
+	    if(tmpParticipants != participants[0]){
+		//std::cout << myVAddr << " " << tmpParticipants << " " << participants[0] << std::endl;
+		hostedVertices = Distribute::consecutive(myVAddr, participants[0], graph);
+		gvon.announce(graph, hostedVertices);
+	    }
+	     // else{
+	     // 	 std::cout << myVAddr << " " << tmpParticipants << " " << participants[0] << " nono" << std::endl;
+	     // }
 
 	}
-
-	// if(hostedVertices.size() == 0){
-	//     return 0;
-	// }
-
 	
 	// Print life field
 	if(myVAddr == 0){
-	    printGolDomain(golDomain, width, height, generation);
+	    printGolDomain(golDomain, width, height, generation, participants[0]);
 	}
 
-	// for(Vertex v : hostedVertices){
-	//     assert(v.isAlive[0] == 1);
-	// }
-
-	
 	// Send state to neighbor cells
 	for(Vertex &v : hostedVertices){
 	    for(std::pair<Vertex, Edge> edge : graph.getOutEdges(v)){
-		//std::cout << "send " << (v.isAlive)[0] << " to " << edge.first.id << " via " << edge.second.id << std::endl;
 		events.push_back(gvon.asyncSend(graph, edge.first, edge.second, v.isAlive));
-		//events.push_back(gvon.asyncSend(graph, edge.first, edge.second, send));
-		// assert(send[0] == 1);
-		// assert(v.isAlive[0] == 1);
 	    }
 	}
 
 	// Recv state from neighbor cells
 	for(Vertex &v : hostedVertices){
 	     for(std::pair<Vertex, Edge> edge : graph.getInEdges(v)){
-		 //gvon.recv(graph, edge.first, edge.second, recv);
-		 //std::cout << "recv " << (recv)[0] << " from " << edge.first.id << " via " << edge.second.id << std::endl;
 		 gvon.recv(graph, edge.first, edge.second, edge.first.isAlive);
 		 if(edge.first.isAlive[0]) v.aliveNeighbors++;
-		 //assert(recv[0] == 1);
 	     }
 	 }
 
@@ -245,12 +248,10 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 	 // Gather state by vertex with id = 0
 	 for(Vertex &v: hostedVertices){
 	     v.aliveNeighbors = 0;
-	     //assert(v.isAlive[0] == 0);
 	     gvon.gatherNew(root, v, graph, v.isAlive, golDomain);
 	 }
 
 	 generation++;
-
 
     }
     
