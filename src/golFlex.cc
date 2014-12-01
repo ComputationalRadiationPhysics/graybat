@@ -41,23 +41,23 @@ struct Cell : public SimpleProperty{
 };
 
 void printGolDomain(const std::vector<unsigned> domain, const unsigned width, const unsigned height, const unsigned generation, const unsigned nPeers){
-    // for(unsigned i = 0; i < domain.size(); ++i){
-    // 	if((i % (width)) == 0){
-    // 	    std::cerr << std::endl;
-    // 	}
+    for(unsigned i = 0; i < domain.size(); ++i){
+    	if((i % (width)) == 0){
+    	    std::cerr << std::endl;
+    	}
 
-    // 	if(domain.at(i)){
-    // 	    std::cerr << "#";
-    // 	}
-    // 	else {
-    // 	    std::cerr << " ";
-    // 	}
+    	if(domain.at(i)){
+    	    std::cerr << "#";
+    	}
+    	else {
+    	    std::cerr << " ";
+    	}
 
-    // }
+    }
     std::cerr << "Generation: " << generation <<  " nPeers: " << nPeers << std::endl;
-    // for(unsigned i = 0; i < height+1; ++i){
-    // 	std::cerr << "\033[F";
-    // }
+    for(unsigned i = 0; i < height+1; ++i){
+    	std::cerr << "\033[F";
+    }
 
 }
 
@@ -108,7 +108,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     // Watchdog Network
     typedef Graph<SimpleProperty, SimpleProperty>  WatchdogGraph;
     typedef typename WatchdogGraph::Vertex         WVertex;
-    typedef typename WatchdogGraph::Edge           WEdge;
+    //typedef typename WatchdogGraph::Edge           WEdge;
     typedef typename WatchdogGraph::EdgeDescriptor WEdgeDescriptor;
 
 
@@ -147,7 +147,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     // Distribute work evenly
     VAddr myVAddr      = cal.getGlobalContext().getVAddr();
     unsigned nVAddr = cal.getGlobalContext().size();
-    std::vector<Vertex> hostedVertices = Distribute::roundrobin(myVAddr, nVAddr, graph);
+    std::vector<Vertex> hostedVertices = Distribute::consecutive(myVAddr, nVAddr, graph);
     std::vector<WVertex> dog(1, wGraph.getVertices().at(myVAddr));
 
     // Announce vertices
@@ -170,27 +170,27 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     unsigned direction = 0;
 
     // Meassurement variables
-    using namespace std::chrono;
+    // using namespace std::chrono;
     unsigned period = 10;
-    unsigned timestep_begin = 0;
-    unsigned timestep_end = timestep_begin + period;
-    high_resolution_clock::time_point t1 = high_resolution_clock::now();;
+    // unsigned timestep_begin = 0;
+    // unsigned timestep_end = timestep_begin + period;
+    // high_resolution_clock::time_point t1 = high_resolution_clock::now();;
     
     
     // Simulate life forever
     for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
 
 	// Meassurement
-	if(myVAddr == 0){
-	    if(timestep == timestep_end){
-		high_resolution_clock::time_point t2 = high_resolution_clock::now();
-		duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
-		std::cerr << generation << " " << participants[0] << " " << timeSpan.count() << std::endl;
+	// if(myVAddr == 0){
+	//     if(timestep == timestep_end){
+	// 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
+	// 	duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
+	// 	std::cerr << generation << " " << participants[0] << " " << timeSpan.count() << std::endl;
 	    
-		t1 = high_resolution_clock::now();
-		timestep_end += period;
-	    }
-	}
+	// 	t1 = high_resolution_clock::now();
+	// 	timestep_end += period;
+	//     }
+	// }
 
 
 	
@@ -229,16 +229,16 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 	    // }
 	    
 	    if(tmpParticipants != participants[0]){
-		hostedVertices = Distribute::roundrobin(myVAddr, participants[0], graph);
+		hostedVertices = Distribute::consecutive(myVAddr, participants[0], graph);
 		gvon.announce(graph, hostedVertices);
 	    }
 
 	}
 	
 	// Print life field
-	// if(myVAddr == 0){
-	//     printGolDomain(golDomain, width, height, generation, participants[0]);
-	// }
+	if(myVAddr == 0){
+	    printGolDomain(golDomain, width, height, generation, participants[0]);
+	}
 
 	// Send state to neighbor cells
 	for(Vertex &v : hostedVertices){

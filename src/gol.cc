@@ -105,13 +105,6 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     typedef typename LifeGraph::Edge               Edge;
     typedef typename LifeGraph::EdgeDescriptor     EdgeDescriptor;
 
-    // Watchdog Network
-    typedef Graph<SimpleProperty, SimpleProperty>  WatchdogGraph;
-    typedef typename WatchdogGraph::Vertex         WVertex;
-    typedef typename WatchdogGraph::Edge           WEdge;
-    typedef typename WatchdogGraph::EdgeDescriptor WEdgeDescriptor;
-
-
     // Cal
     typedef CommunicationPolicy::MPI               Mpi;
     typedef CommunicationAbstractionLayer<Mpi>     MpiCAL;
@@ -120,8 +113,6 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 
     // GVON
     typedef GraphBasedVirtualOverlayNetwork<LifeGraph, MpiCAL>  GVON;
-    typedef GraphBasedVirtualOverlayNetwork<WatchdogGraph, MpiCAL>  WGVON;
-
 
     /***************************************************************************
      * Init Communication
@@ -136,23 +127,14 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     // Inantiate communication objects
     MpiCAL cal;
     GVON gvon(cal);
-    WGVON wGvon(cal);
-
-    // Create Watchdog Graph
-    std::vector<WVertex> wGraphVertices;
-    std::vector<WEdgeDescriptor> wEdges = Topology::star<WatchdogGraph>(cal.getGlobalContext().size(), wGraphVertices);
-    WatchdogGraph wGraph(wEdges, wGraphVertices);
-
 
     // Distribute work evenly
     VAddr myVAddr      = cal.getGlobalContext().getVAddr();
     unsigned nVAddr = cal.getGlobalContext().size();
     std::vector<Vertex> hostedVertices = Distribute::consecutive(myVAddr, nVAddr, graph);
-    std::vector<WVertex> dog(1, wGraph.getVertices().at(myVAddr));
 
     // Announce vertices
     gvon.announce(graph, hostedVertices); 
-    wGvon.announce(wGraph, dog);
 
     /***************************************************************************
      * Start Simulation

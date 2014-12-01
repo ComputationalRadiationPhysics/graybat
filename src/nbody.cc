@@ -21,9 +21,6 @@
 #include <cstdlib>    /* rand */
 #include <chrono>     /* std::chrono::high_resolution_clock */ 
 
-// MPI
-#include <mpi.h>
-
 // Boost uBlas
 #include <boost/numeric/ublas/vector.hpp>
 
@@ -127,11 +124,10 @@ std::vector<T_Body> generateBodies(const unsigned N){
 
 }
 
-int nBody(const unsigned N, std::vector<double>& times) {
+int nBody(const unsigned nBodies, const unsigned timesteps){
     /***************************************************************************
      * Configuration
      ****************************************************************************/
-
 
     // Graph
     typedef Graph<Body, SimpleProperty>         NBodyGraph;
@@ -153,15 +149,11 @@ int nBody(const unsigned N, std::vector<double>& times) {
      * Init Communication
      ****************************************************************************/
     // Create Graph
-    Body b1(0, {{1e12}}, {{0,0}},{{0,0}});
-    Body b2(1, {{1}}, {{10,10}}, {{2.4,0}}); 
-
-    //std::vector<Vertex> graphVertices = {b1,b2};
-    std::vector<Vertex> graphVertices = generateBodies<Vertex>(N);
-    std::vector<EdgeDescriptor> edges = Topology::fullyConnected<NBodyGraph>(N, graphVertices);
+    std::vector<Vertex> graphVertices = generateBodies<Vertex>(nBodies);
+    std::vector<EdgeDescriptor> edges = Topology::fullyConnected<NBodyGraph>(nBodies, graphVertices);
     NBodyGraph graph (edges, graphVertices); 
 
-    // Inantiate communication objects
+    // Initiate communication objects
     MpiCAL cal;
     GVON gvon(cal);
 
@@ -181,9 +173,7 @@ int nBody(const unsigned N, std::vector<double>& times) {
 
     // Simulate life forever
     const double dt = 1;
-    for(unsigned timestep = 0; timestep < times.size(); ++timestep){
-	using namespace std::chrono;
-	high_resolution_clock::time_point t1 = high_resolution_clock::now();
+    for(unsigned timestep = 0; timestep < timesteps; ++timestep){
 
 	// Send body information to all other
 	for(Vertex v : myGraphVertices){
@@ -204,8 +194,7 @@ int nBody(const unsigned N, std::vector<double>& times) {
 		F += twoBodyForce(v, edge.first);
 	    }
 	    updateBody(v, F, dt);
-	    //printBody(v);
-	    //std::cout << "[" << v.id << "] = " << "r = [" << v.r[0] << "," << v.r[1] << "] " << "F = [" << F[0] << "," << F[1] << "]" << std::endl;
+
 	}
 
 	// Wait to finish events
@@ -214,169 +203,29 @@ int nBody(const unsigned N, std::vector<double>& times) {
 	    events.pop_back();
 	}
 
-	// Send alive information to host of vertex 0
-	// for(Vertex &v: myGraphVertices){
-	//     v.aliveNeighbors = 0;
-	//     gvon.gather(graph.getVertices().at(0), v, graph, v.r, golDomain);
-	// }
 
-	high_resolution_clock::time_point t2 = high_resolution_clock::now();
-	duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
-	times[timestep] = timeSpan.count();
 
     }
 
-
-    if(myVAddr == 0){
-	return 1;
-    }
     return 0;
     
 }
 
 
-int nBodyMPI(unsigned nBodies, std::vector<double>& times){
-    // Init MPI
-    int mpiError = MPI_Init(NULL,NULL);
-    if(mpiError != MPI_SUCCESS){
-	std::cout << "Error starting MPI program." << std::endl;
-	MPI_Abort(MPI_COMM_WORLD,mpiError);
-	return 0;
-    }
 
-    // Get size and rank
-    int rank;
-    int size;
-    MPI_Comm_size(MPI_COMM_WORLD, &size);
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-
-    std::vector<MPI_Request> requests;
-    Body b1(0, {{1e12}}, {{0,0}},{{0,0}});
-    Body b2(1, {{1}}, {{10,10}}, {{2.4,0}}); 
-
-    //std::vector<Body> bodies = {b1,b2};
-    std::vector<Body> bodies = generateBodies<Body>(1);
-
-    assert(nBodies == (unsigned)size);
-
-    Body myBody = bodies.at(0);
-
-    for(unsigned timestep = 0; timestep < times.size(); ++timestep){
-	using namespace std::chrono;
-	high_resolution_clock::time_point t1 = high_resolution_clock::now();
-
-
-	const double dt = 1;
-	
-	// Send body information to all other
-	for(unsigned i = 0; i < (unsigned)size; ++i){
-	    if((unsigned)rank == i)
-		continue;
-
-	    MPI_Request request;
-
-	    MPI_Issend(myBody.m.data(), myBody.m.size(), MPI_DOUBLE, i, 0, MPI_COMM_WORLD, &request);
-	    MPI_Issend(myBody.r.data(), myBody.r.size(), MPI_DOUBLE, i, 0, MPI_COMM_WORLD, &request);
-	    MPI_Issend(myBody.v.data(), myBody.v.size(), MPI_DOUBLE, i, 0, MPI_COMM_WORLD, &request);
-
-	    requests.push_back(request);
-
-	}
-	
-
-	// Recv body information from all other
-	boost::numeric::ublas::vector<double> F(2,0);
-	for(unsigned i = 0; i < (unsigned)size; ++i){
-	    if((unsigned)rank == i)
-		continue;
-
-	    std::array<double, 1> m;
-	    std::array<double, 2> r;
-	    std::array<double, 2> v;
-
-	    MPI_Status status1;
-	    MPI_Status status2;
-	    MPI_Status status3;
-
-	    MPI_Recv(m.data(), m.size(), MPI_DOUBLE, i, 0, MPI_COMM_WORLD, &status1);
-	    MPI_Recv(r.data(), r.size(), MPI_DOUBLE, i, 0, MPI_COMM_WORLD, &status2);
-	    MPI_Recv(v.data(), v.size(), MPI_DOUBLE, i, 0, MPI_COMM_WORLD, &status3);
-
-	    Body otherBody(i, m, r, v);
-
-	    F += twoBodyForce(myBody, otherBody);
-
-	}
-
-	updateBody(myBody, F, dt);
-	//printBody(myBody);
-	
-	// Wait for send
-	for(unsigned i = 0; i < requests.size(); ++i){
-	    MPI_Status status;
-	    MPI_Wait(&(requests.back()), &status);
-	    requests.pop_back();
-	}
-
-	high_resolution_clock::time_point t2 = high_resolution_clock::now();
-	duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
-	times[timestep] = timeSpan.count();
-
-
-    }
-
-
-    MPI_Barrier(MPI_COMM_WORLD);
-    MPI_Finalize();
-
-    if(rank == 0){
-	return 1;
-    }
-    return 0;
-
-
-}
 
 int main(int argc, char** argv){
 
-    if(argc < 4){
-	std::cout << "Usage ./NBody [nBodies] [nTimeSteps] [0,1]" << std::endl;
+    if(argc < 3){
+	std::cout << "Usage ./NBody [nBodies] [nTimeSteps]" << std::endl;
 	return 0;
     }
 
-    // Benchmark parameter
+    // Parameter
     unsigned nBodies    = atoi(argv[1]);
     unsigned nTimesteps = atoi(argv[2]);
-    unsigned mode       = atoi(argv[3]);
 
-
-    bool printTime = 0;
-    std::vector<double> runtimes(nTimesteps, 0.0);
-
-    switch(mode){
-    case 0:
-	printTime = nBodyMPI(nBodies,  runtimes);
-	break;
-    case 1: 
-	printTime = nBody(nBodies, runtimes);
-       break;
-    default:
-	break;
-    };
-    
-    double avgTime = avg(runtimes);
-    double varTime = variance(runtimes, avgTime);
-    double devTime = sqrt(varTime);
-    double medTime = median(runtimes);
-
-    if(printTime){
-	//std::cout << "Time[s]: " << avgTime << " Variance: " << varTime << " Deviation: " << devTime << " Median: " << medTime << std::endl;
-
-	// average, variance, deviation, median
-	std::cerr << avgTime << " " << varTime << " " << devTime << " " << medTime << std::endl;
-    }
-    
+    nBody(nBodies, nTimesteps);
     return 0;
 
 }

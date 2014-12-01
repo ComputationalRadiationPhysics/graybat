@@ -23,13 +23,21 @@ Build
 Targets
 =======
 
+All targets provide the synopthis of their executables!
+
  * GoL: Game of Life simulation
 
  * NBody: N-Body simulation
 
+ * UnitCAL: CAL unit tests
+
+ * UnitGVON: GVON unit tests
+
  * doc: Build documentation in ../doc/
 
  * clean: Cleanup build directory
+
+
 
 Authors
 =======
