@@ -295,77 +295,8 @@ struct GraphBasedVirtualOverlayNetwork {
      *
      **************************************************************************/ 
 
-    template <typename T>
-    struct Reduce {
-	unsigned count;
-	T reduce;
-	bool imRoot;
-	T* rootRecvData;
-	
-    };
-
-    /**
-     * @brief Collective reduction of sendData (here only sum). *rootVertex* will
-     *        receive the reduced value. Data of vertices from the same host
-     *        peer will be reduced locally first. The reduction of
-     *        a graph has to be finished til new reduction can be performed.
-     *
-     * @todo Do I have to return an Event because its partly non blocking ?
-     * @todo By collecting data first you could get rid of Reduce.count !
-     *
-     * @remark This function should be thread safe (not tested)!
-     *
-     * @param[in]  rootVertex Vertex that will receive the reduced value.
-     * @param[in]  srcVertex  Vertex that provides *sendData* to be reduced.
-     * @param[in]  graph      Vertices of this *graph* take part in the reduction.
-     * @param[in]  sendData   Data that will be reduced.
-     * @param[out] recvData   Reduced value, that will be received by *rootVertex*
-     *
-     */
-    template <typename T, typename Op>
-    void reduce(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, Op op, const std::vector<T> sendData, T& recvData){
-	static std::map<std::string, Reduce<T>> reduces;
-
-	VAddr rootVAddr = locateVertex(graph, rootVertex);
-	VAddr srcVAddr  = locateVertex(graph, srcVertex);
-	Context context   = getGraphContext(graph);
-	std::vector<Vertex> vertices = getHostedVertices(graph, srcVAddr); 
-
-	std::string reduceID = generateID(graph, srcVertex);
-
-	for(T data : sendData){
-	    reduces[reduceID].reduce = op(reduces[reduceID].reduce, data);
-	}
-
-	// Remember pointer of recvData from rootVertex
-	if(rootVertex.id == srcVertex.id){
-	    reduces[reduceID].rootRecvData = &recvData;
-	    reduces[reduceID].imRoot = true;
-	}
-
-	reduces[reduceID].count++;
-
-	// Finally start reduction
-	if(reduces[reduceID].count == vertices.size()){
-	    std::vector<T> recvDataCollctive(1,0);
-
-	    cal.reduce(rootVAddr, context, op, std::vector<T>(1 , reduces[reduceID].reduce), recvDataCollctive);
-
-	    if(reduces[reduceID].imRoot){
-		*(reduces[reduceID].rootRecvData) = recvDataCollctive[0];
-	    }
-	    
-	    reduces.erase(reduceID);
-	    vertexCount.erase(graph.id);
-
-	}
-
-
-    }
-
-
     template <typename T_Data, typename Op>
-    void reduceNew(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, Op op, const std::vector<T_Data> sendData, std::vector<T_Data>& recvData){
+    void reduce(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, Op op, const std::vector<T_Data> sendData, std::vector<T_Data>& recvData){
 	static std::vector<T_Data> reduce;
 	static std::vector<T_Data>* rootRecvData;
 	static unsigned vertexCount = 0;
@@ -452,76 +383,8 @@ struct GraphBasedVirtualOverlayNetwork {
     }
     
 
-    template <typename T>
-    struct Collective {
-	std::vector<T> send;
-	bool isRoot;
-	std::vector<T>* rootRecvData;
-	
-    };
-
-    /**
-     * @brief Collective operation that collects data from all vertices of the *graph* and sends this *recvData*
-     *        the *rootVertex*.The gather of a graph has to be finished til new gather can be performed.
-     *
-     * @param[in]  rootVertex Vetex that will receive the collected Data.
-     * @param[in]  srcVertex  One of the vertices that send his data *sendData*.
-     * @param[in]  graph      Vertices of this *graph* take part on the collective operation.
-     * @param[in]  sendData   Data that each *srcVertex* sends (each Vertex send one element).
-     * @param[out] recvData   Data that *rootVertex* will receive from each srcVertex in local vertex.id order.
-     */
-    template <typename T>
-    void gather(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, const T sendData, std::vector<T>& recvData){
-	static std::map<std::string, Collective<T>> gathers;
-
-	VAddr srcVAddr  = locateVertex(graph, srcVertex);
-	VAddr rootVAddr = locateVertex(graph, rootVertex);
-	Context context   = getGraphContext(graph);
-	std::vector<Vertex> vertices = getHostedVertices(graph, srcVAddr);
-
-	std::string gatherID = generateID(graph, srcVertex);
-
-	// Temporily collect data to gather
-	gathers[gatherID].send.push_back(sendData);
-
-	if(rootVertex.id == srcVertex.id){
-	    gathers[gatherID].rootRecvData = &recvData;
-	    gathers[gatherID].isRoot = true;
-	}
-
-	if(gathers[gatherID].send.size() == vertices.size()){
-	    std::vector<unsigned> recvCount;
-	    std::vector<T> recvDataCollective;
-	    cal.gatherVar(rootVAddr, context, gathers[gatherID].send, recvDataCollective, recvCount);
-
-	    // Reorder received elements in vertex order
-	    std::vector<T> recvReordered(recvDataCollective.size(), 0);
-	    unsigned vAddr = 0;
-	    for(unsigned recv_i = 0; recv_i < recvDataCollective.size(); ){
-		std::vector<Vertex> hostedVertices = getHostedVertices(graph, vAddr);
-		for(Vertex v: hostedVertices){
-		    T recvElement = recvDataCollective.at(recv_i);
-		    recvReordered.at(v.id) = recvElement;
-		    recv_i++;
-		}
-		vAddr++;
-	    
-	    }
-	
-	    // Write received data to root cal pointer
-	    if(gathers[gatherID].isRoot){
-		*(gathers[gatherID].rootRecvData) = recvReordered;
-	    }
-
-	    gathers.erase(gatherID);
-	    vertexCount.erase(graph.id);
-
-	}
-
-    }
-
-    template <typename T_Send, typename T_Recv>
-    void gatherNew(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, T_Send sendData, T_Recv& recvData){
+  template <typename T_Send, typename T_Recv>
+  void gather(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, T_Send sendData, T_Recv& recvData, const bool reorder){
 	typedef typename T_Send::value_type T_Send_Container;
 	
 	static std::vector<T_Send_Container> gather;
@@ -545,42 +408,30 @@ struct GraphBasedVirtualOverlayNetwork {
 
 	    if(hasRootVertex){
 		cal.gatherVar(rootVAddr, context, gather, *rootRecvData, recvCount);
-		// Reordering code
-		// std::vector<typename T_Recv::value_type> recvReordered(recvData.size());
-		// unsigned vAddr = 0;
-		// for(unsigned recv_i = 0; recv_i < recvData.size(); ){
-		//     std::vector<Vertex> hostedVertices = getHostedVertices(graph, vAddr);
-		//     for(Vertex v: hostedVertices){
-		// 	recvReordered.at(v.id) = rootRecvData->data()[recv_i];
-		// 	recv_i++;
-		//     }
-		//     vAddr++;
-		// }
 
-		// for(unsigned i = 0; i < recvReordered.size(); ++i){
-		//     rootRecvData->data()[i] = recvReordered[i];
-		// }
+		// Reordering code
+		if(reorder){
+		  std::vector<typename T_Recv::value_type> recvDataReordered(recvData.size());
+		  unsigned vAddr = 0;
+		  for(unsigned recv_i = 0; recv_i < recvData.size(); ){
+		    std::vector<Vertex> hostedVertices = getHostedVertices(graph, vAddr);
+		    for(Vertex v: hostedVertices){
+		      recvDataReordered.at(v.id) = rootRecvData->data()[recv_i];
+		      recv_i++;
+		    }
+		    vAddr++;
+		  }
+
+		  for(unsigned i = 0; i < recvDataReordered.size(); ++i){
+		    rootRecvData->data()[i] = recvDataReordered[i];
+		  }
+		}
 		
 	    }
 	    else {
 		cal.gatherVar(rootVAddr, context, gather, recvData, recvCount);
 	    }
 	    
-	    /*
-	    // Reorder received elements in vertex order
-	    std::vector<T> recvReordered(recvDataCollective.size(), 0);
-	    unsigned vAddr = 0;
-	    for(unsigned recv_i = 0; recv_i < recvDataCollective.size(); ){
-	    	std::vector<Vertex> hostedVertices = getHostedVertices(graph, vAddr);
-	    	for(Vertex v: hostedVertices){
-	    	    T recvElement = recvDataCollective.at(recv_i);
-	    	    recvReordered.at(v.id) = recvElement;
-	    	    recv_i++;
-	    	}
-	    	vAddr++;
-	    }
-	    */
-
 	    gather.clear();
 
 
@@ -588,6 +439,14 @@ struct GraphBasedVirtualOverlayNetwork {
 
     }
 
+
+  /**
+   *  @todo get rid of sendData.begin(), sendData.end()
+   *        T_Data should only use .size() and .data()
+   *
+   *  @todo reorder received data in vertex order
+   *
+   **/
     template <typename T_Send, typename T_Recv>
     void allGather(const Vertex srcVertex, Graph& graph, T_Send sendData, T_Recv& recvData){
 	typedef typename T_Send::value_type T_Send_Container;
@@ -599,9 +458,7 @@ struct GraphBasedVirtualOverlayNetwork {
 	Context context = getGraphContext(graph);
 	std::vector<Vertex> vertices = getHostedVertices(graph, srcVAddr);
 
-	// TODO get rid of sendData.begin(), sendData.end()
 	gather.insert(gather.end(), sendData.begin(), sendData.end());
-	    
 	recvDatas.push_back(&recvData);
 
 
@@ -617,21 +474,6 @@ struct GraphBasedVirtualOverlayNetwork {
 
 	    }
 	    
-	    /*
-	    // Reorder received elements in vertex order
-	    std::vector<T> recvReordered(recvDataCollective.size(), 0);
-	    unsigned vAddr = 0;
-	    for(unsigned recv_i = 0; recv_i < recvDataCollective.size(); ){
-	    	std::vector<Vertex> hostedVertices = getHostedVertices(graph, vAddr);
-	    	for(Vertex v: hostedVertices){
-	    	    T recvElement = recvDataCollective.at(recv_i);
-	    	    recvReordered.at(v.id) = recvElement;
-	    	    recv_i++;
-	    	}
-	    	vAddr++;
-	    }
-	    */
-
 	    gather.clear();
 
 
