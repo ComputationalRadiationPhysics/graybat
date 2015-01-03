@@ -27,11 +27,10 @@
 struct Cell : public SimpleProperty{
     Cell() : SimpleProperty(0), isAlive{{0}}, aliveNeighbors(0){}
     Cell(ID id) : SimpleProperty(id), isAlive{{0}}, aliveNeighbors(0){
-	unsigned random = rand() % 10000;
-	if(random < 3125){
-	    isAlive[0] = 1;
-	}
-
+      unsigned random = rand() % 10000;
+      if(random < 3125){
+	isAlive[0] = 1;
+      }
 
     }
 	
@@ -131,7 +130,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     // Distribute work evenly
     VAddr myVAddr      = cal.getGlobalContext().getVAddr();
     unsigned nVAddr = cal.getGlobalContext().size();
-    std::vector<Vertex> hostedVertices = Distribute::consecutive(myVAddr, nVAddr, graph);
+    std::vector<Vertex> hostedVertices = Distribute::roundrobin(myVAddr, nVAddr, graph);
 
     // Announce vertices
     gvon.announce(graph, hostedVertices); 
@@ -143,14 +142,13 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     std::vector<unsigned> golDomain(graph.getVertices().size(), 0); 
 
     const Vertex root = graph.getVertices().at(0);
-    unsigned generation = 1;
 
     // Simulate life forever
     for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
 
 	// Print life field
 	if(myVAddr == 0){
-	    printGolDomain(golDomain, width, height, generation);
+	  printGolDomain(golDomain, width, height, timestep);
 	}
 	
 	// Send state to neighbor cells
@@ -180,10 +178,9 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 	 // Gather state by vertex with id = 0
 	 for(Vertex &v: hostedVertices){
 	     v.aliveNeighbors = 0;
-	     gvon.gatherNew(root, v, graph, v.isAlive, golDomain);
+	     gvon.gather(root, v, graph, v.isAlive, golDomain, true);
 	 }
 
-	 generation++;
 
     }
     
