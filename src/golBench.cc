@@ -1,4 +1,4 @@
-// Communication
+123// Communication
 #include <Graph.hpp>                         /* Graph */
 #include <CommunicationAbstractionLayer.hpp> /* CommunicationAbstractionLayer */
 #include <MPI.hpp>                           /* CommunicationPolicy::MPI*/
@@ -203,6 +203,8 @@ int golMPI(const unsigned nCells, std::vector<double> &times){
 	    // Calculate state for next generation
 	    updateState(myCell);
 
+	    MPI_Barrier(MPI_COMM_WORLD);
+
 	    high_resolution_clock::time_point t2 = high_resolution_clock::now();
 	    duration<double> timeSpan = duration_cast<duration<double>>(t2 - t1);
 	    times[timestep] = timeSpan.count();
@@ -210,7 +212,7 @@ int golMPI(const unsigned nCells, std::vector<double> &times){
 	}
 
     }
-    MPI_Barrier(MPI_COMM_WORLD);
+
     MPI_Finalize();
 
     if(rank == 0){
