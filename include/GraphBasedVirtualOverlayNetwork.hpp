@@ -206,6 +206,23 @@ struct GraphBasedVirtualOverlayNetwork {
     }
 
 
+    /**
+     * @brief Returns true if the *vertex* is hosted by the
+     *        calling peer otherwise false.
+     *
+     */
+    bool peerHostsVertex(Vertex vertex, Graph& graph){
+	Context context = getGraphContext(graph);
+	VAddr vaddr     = context.getVAddr();
+
+	for(Vertex &v : getHostedVertices(graph, vaddr)){
+	    if(vertex.id == v.id)
+		return true;
+	}
+	return false;
+	
+
+    }
 
     /***************************************************************************
      *
