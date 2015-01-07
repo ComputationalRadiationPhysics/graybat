@@ -5,9 +5,8 @@
 #include <GraphBasedVirtualOverlayNetwork.hpp> /* GraphBasedVirtualOverlayNetwork */
 
 // Helpers
-#include <distribution.hpp> /* roundRobin */
+#include <distribution.hpp> /* consecutive, roundRobin */
 #include <topology.hpp>     /* meshDiagonal */
-#include <evals.hpp>
 
 // STL
 #include <iostream>   /* std::cout */
@@ -16,13 +15,7 @@
 #include <array>      /* std::array */
 #include <cmath>      /* sqrt */
 #include <cstdlib>    /* atoi */
-#include <chrono>     /* std::chrono::high_resolution_clock */ 
 #include <assert.h>   /* assert */
-
-
-// MPI
-#include <mpi.h>
-
 
 struct Cell : public SimpleProperty{
     Cell() : SimpleProperty(0), isAlive{{0}}, aliveNeighbors(0){}
@@ -107,7 +100,6 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     // Cal
     typedef CommunicationPolicy::MPI               Mpi;
     typedef CommunicationAbstractionLayer<Mpi>     MpiCAL;
-    typedef typename MpiCAL::VAddr                 VAddr;
     typedef typename MpiCAL::Event                 Event;
 
     // GVON
@@ -128,9 +120,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     GVON gvon(cal);
 
     // Distribute work evenly
-    VAddr myVAddr      = cal.getGlobalContext().getVAddr();
-    unsigned nVAddr = cal.getGlobalContext().size();
-    std::vector<Vertex> hostedVertices = Distribute::roundrobin(myVAddr, nVAddr, graph);
+    std::vector<Vertex> hostedVertices = distribute::consecutive(cal.getGlobalContext(), graph);
 
     // Announce vertices
     gvon.announce(graph, hostedVertices); 
@@ -146,8 +136,8 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     // Simulate life forever
     for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
 
-	// Print life field
-	if(myVAddr == 0){
+	// Print life field by owner of vertex 0
+	if(gvon.peerHostsVertex(root, graph)){
 	  printGolDomain(golDomain, width, height, timestep);
 	}
 	
@@ -183,7 +173,6 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 
 
     }
-    
     
     return 0;
 
