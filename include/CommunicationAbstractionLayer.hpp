@@ -82,6 +82,7 @@ public:
      *
      ***************************************************************************/
     struct Context : protected CommunicationPolicy::Context {
+	typedef CommunicationAbstractionLayer<CommunicationPolicy>::VAddr VAddr;
     	typedef unsigned ContextID;
 
 	Context() : CommunicationPolicy::Context(){
