@@ -34,9 +34,10 @@ GrayBat  is licensed under the **GPLv3+**. Please refer to our [LICENSE.md](LICE
  * Doxygen 1.8.8
 
 
-
 ##Compiling##
 
+ * git submodule init
+ * git submodule update
  * mkdir build
  * cd build
  * cmake ..
