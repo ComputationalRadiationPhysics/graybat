@@ -2,16 +2,17 @@
 
 ##Description##
 
-GrayBat is a C++ library that presents the graph-based virtual overlay
-network, a flexible description which enables a mapping of algorithms
-to communication patterns and further a mapping of these communication
-patterns onto the available hardware topologies. These mappings were
-established as an intermediate layer between an application and
-communication libraries. This approach provides a dynamic remapping at
-run-time, which will allow to address load balancing and fault
-tolerance for upcoming exascale systems. The [Game of Life](src/gol.cc) example
-provides a full demonstration of utilizing GrayBat in a scientific
-simulation.
+**GrayBat** is a C++ library that presents the **graph-based virtual
+overlay network**, a flexible description which enables a mapping of
+algorithms to communication patterns and further a mapping of these
+communication patterns onto the available hardware topologies. These
+mappings were established as an intermediate layer between an
+application and communication libraries. This approach provides a
+dynamic remapping at run-time, which will allow to address load
+balancing and fault tolerance for upcoming exascale systems. The
+[Game of Life](src/gol.cc) and [N Body](src/nbody.cc) example
+simulations provide full demonstrations of utilizing GrayBat in a
+scientific simulations.
 
 
 ##Referencing##
