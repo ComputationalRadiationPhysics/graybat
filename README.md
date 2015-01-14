@@ -1,5 +1,3 @@
-
-
 #GrayBat#
 
 ##Description##
@@ -11,7 +9,9 @@ patterns onto the available hardware topologies. These mappings were
 established as an intermediate layer between an application and
 communication libraries. This approach provides a dynamic remapping at
 run-time, which will allow to address load balancing and fault
-tolerance for upcoming exascale systems.
+tolerance for upcoming exascale systems. The [Game of Life](src/gol.cc) example
+provides a full demonstration of utilizing GrayBat in a scientific
+simulation.
 
 
 ##Referencing##
@@ -20,7 +20,7 @@ GrayBat is a scientific project. If you **present and/or publish** scientific
 results that used GrayBat, you should set this as a **reference**.
 
 
-##Softeware License##
+##Software License##
 
 GrayBat  is licensed under the **GPLv3+**. Please refer to our [LICENSE.md](LICENSE.md)
 
