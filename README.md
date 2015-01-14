@@ -1,8 +1,8 @@
-GrayBat
-=======
 
-Description
-===========
+
+#GrayBat#
+
+##Description##
 
 GrayBat is a C++ library that presents the graph-based virtual overlay
 network, a flexible description which enables a mapping of algorithms
@@ -14,21 +14,18 @@ run-time, which will allow to address load balancing and fault
 tolerance for upcoming exascale systems.
 
 
-Referencing
-===========
+##Referencing##
 
 GrayBat is a scientific project. If you **present and/or publish** scientific
 results that used GrayBat, you should set this as a **reference**.
 
 
-Softeware License
-=================
+##Softeware License##
 
 GrayBat  is licensed under the **GPLv3+**. Please refer to our [LICENSE.md](LICENSE.md)
 
 
-Dependencies
-============
+##Dependencies##
 
  * cmake 3.0.2
  * Boost 1.57.0
@@ -38,16 +35,14 @@ Dependencies
 
 
 
-Compiling
-=========
+##Compiling##
 
  * mkdir build
  * cd build
  * cmake ..
  * make [target]
 
-Example Targets
-===============
+##Example Targets##
 
 GrayBat is a library, but some examples are provided to demonstrate
 the usage. All targets provide the synopthis of their executables.
@@ -66,7 +61,6 @@ the usage. All targets provide the synopthis of their executables.
 
 
 
-Authors
-=======
+##Authors##
 
  * Erik Zenker (erikzenker@hotmail.com)
