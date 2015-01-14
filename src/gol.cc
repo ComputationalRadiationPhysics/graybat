@@ -1,5 +1,6 @@
 // Communication
 #include <graybat.h>
+
 // Helpers
 #include <distribution.hpp> /* consecutive, roundRobin */
 #include <topology.hpp>     /* meshDiagonal */
