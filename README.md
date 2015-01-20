@@ -30,7 +30,7 @@ GrayBat  is licensed under the **GPLv3+**. Please refer to our [LICENSE.md](LICE
 
  * cmake 3.0.2
  * Boost 1.57.0
- * MPI 1.8.0
+ * OpenMPI 1.8.0
  * g++ 4.9.2
  * Doxygen 1.8.8
 
