@@ -37,12 +37,11 @@ GrayBat  is licensed under the **GPLv3+**. Please refer to our [LICENSE.md](LICE
 
 ##Compiling##
 
- * git submodule init
- * git submodule update
- * mkdir build
- * cd build
- * cmake ..
- * make [target]
+ * clone the repository: `git clone https://github.com/computationalradiationphysics/GrayBat.git`
+ * create the build directory: `mkdir -p GrayBat/build`
+ * go to build directory: `cd GrayBat/build`
+ * create Makefile `cmake ..`
+ * build project : `make [target]`
 
 ##Example Targets##
 
@@ -51,11 +50,7 @@ the usage. All targets provide the synopthis of their executables.
 
  * GoL: Game of Life simulation
 
- * NBody: N-Body simulation
-
- * UnitCAL: CAL unit tests
-
- * UnitGVON: GVON unit tests
+ * NBody: N Body simulation
 
  * doc: Build documentation in ../doc/
 
