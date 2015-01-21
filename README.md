@@ -1,6 +1,5 @@
 #GrayBat#
 
-
 ##Description##
 
 **GrayBat** is a C++ library that presents the **graph-based virtual
