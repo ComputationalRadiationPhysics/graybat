@@ -1,5 +1,8 @@
 // Communication
-#include <graybat.h>
+#include <Graph.hpp>                           /* Graph */
+#include <CommunicationAbstractionLayer.hpp>   /* CommunicationAbstractionLayer */
+#include <MPI.hpp>                             /* CommunicationPolicy::MPI*/
+#include <GraphBasedVirtualOverlayNetwork.hpp> /* GraphBasedVirtualOverlayNetwork */
 
 // Helpers
 #include <distribution.hpp> /* consecutive, roundRobin */
