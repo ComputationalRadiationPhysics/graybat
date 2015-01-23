@@ -17,7 +17,7 @@
 #include <cstdlib>    /* atoi */
 #include <assert.h>   /* assert */
 
-struct Cell : public SimpleProperty{
+struct Cell : public graybat::SimpleProperty{
     Cell() : SimpleProperty(0), isAlive{{0}}, aliveNeighbors(0){}
     Cell(ID id) : SimpleProperty(id), isAlive{{0}}, aliveNeighbors(0){
       unsigned random = rand() % 10000;
@@ -92,18 +92,18 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
      * Configuration
      ****************************************************************************/
     // Graph
-    typedef Graph<Cell, SimpleProperty>            LifeGraph;
-    typedef typename LifeGraph::Vertex             Vertex;
-    typedef typename LifeGraph::Edge               Edge;
-    typedef typename LifeGraph::EdgeDescriptor     EdgeDescriptor;
+    typedef graybat::Graph<Cell, graybat::SimpleProperty> LifeGraph;
+    typedef typename LifeGraph::Vertex                    Vertex;
+    typedef typename LifeGraph::Edge                      Edge;
+    typedef typename LifeGraph::EdgeDescriptor            EdgeDescriptor;
 
     // Cal
-    typedef CommunicationPolicy::MPI               Mpi;
-    typedef CommunicationAbstractionLayer<Mpi>     MpiCAL;
-    typedef typename MpiCAL::Event                 Event;
+    typedef graybat::communicationPolicy::MPI             Mpi;
+    typedef graybat::CommunicationAbstractionLayer<Mpi>   MpiCAL;
+    typedef typename MpiCAL::Event                        Event;
 
     // GVON
-    typedef GraphBasedVirtualOverlayNetwork<LifeGraph, MpiCAL>  GVON;
+    typedef graybat::GraphBasedVirtualOverlayNetwork<LifeGraph, MpiCAL>  GVON;
 
     /***************************************************************************
      * Init Communication
@@ -112,7 +112,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     const unsigned height = sqrt(nCells);
     const unsigned width  = height;
     std::vector<Vertex> graphVertices;
-    std::vector<EdgeDescriptor> edges = Topology::gridDiagonal<LifeGraph>(height, width, graphVertices);
+    std::vector<EdgeDescriptor> edges = topology::gridDiagonal<LifeGraph>(height, width, graphVertices);
     LifeGraph graph (edges, graphVertices);
 
     // Inantiate communication objects

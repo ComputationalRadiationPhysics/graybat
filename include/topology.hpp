@@ -4,7 +4,7 @@
  *
  *******************************************************************************/
 
-namespace Topology {
+namespace topology {
 
     template<typename T_Vertex>
     std::vector<T_Vertex> generateVertices(const size_t numVertices){
