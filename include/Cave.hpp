@@ -11,10 +11,12 @@ namespace graybat {
 	typedef T_CommunicationPolicy CommunicationPolicy;
 	
 
-	Cave(){
-	    std::cout << "Welcome in the cave" << std::endl;
+	static int createGraph(){
+	    
+	    return 3;
 	}
-
+	
+	
     };
 
 }

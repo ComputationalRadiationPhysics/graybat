@@ -106,17 +106,19 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     /***************************************************************************
      * Init Communication
      ****************************************************************************/
-    graybat::Cave<LifeGraph, Mpi> cave;
+    std::cout << graybat::Cave<LifeGraph, Mpi>::createGraph() << std::endl;
+
+
 
     
-    // Create Graph
+    // //Create Graph
     // const unsigned height = sqrt(nCells);
     // const unsigned width  = height;
     // std::vector<Vertex> graphVertices;
     // std::vector<EdgeDescriptor> edges = topology::gridDiagonal<LifeGraph>(height, width, graphVertices);
     // LifeGraph graph (edges, graphVertices);
 
-    // Inantiate communication objects
+    // // Inantiate communication objects
     // MpiCAL cal;
     // GVON gvon(cal);
 
@@ -126,9 +128,9 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     // // Announce vertices
     // gvon.announce(graph, hostedVertices); 
 
-    // /***************************************************************************
-    //  * Start Simulation
-    //  ****************************************************************************/
+    /***************************************************************************
+     * Start Simulation
+     ****************************************************************************/
     // std::vector<Event> events;   
     // std::vector<unsigned> golDomain(graph.getVertices().size(), 0); 
 
@@ -144,16 +146,20 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 	
     // 	// Send state to neighbor cells
     // 	for(Vertex &v : hostedVertices){
-    // 	    for(std::pair<Vertex, Edge> edge : graph.getOutEdges(v)){
-    // 		events.push_back(gvon.asyncSend(graph, edge.first, edge.second, v.isAlive));
+    // 	    for(std::pair<Vertex, Edge> link : graph.getOutEdges(v)){
+    // 		Vertex destVertex = link.first;
+    // 		Edge   destEdge   = link.second;
+    // 		events.push_back(gvon.asyncSend(graph, destVertex, destEdge, v.isAlive));
     // 	    }
     // 	}
 
     // 	// Recv state from neighbor cells
     // 	for(Vertex &v : hostedVertices){
-    // 	     for(std::pair<Vertex, Edge> edge : graph.getInEdges(v)){
-    // 		 gvon.recv(graph, edge.first, edge.second, edge.first.isAlive);
-    // 		 if(edge.first.isAlive[0]) v.aliveNeighbors++;
+    // 	     for(std::pair<Vertex, Edge> link : graph.getInEdges(v)){
+    // 		 Vertex srcVertex = link.first;
+    // 		 Edge   srcEdge   = link.second;
+    // 		 gvon.recv(graph, srcVertex, srcEdge, srcVertex.isAlive);
+    // 		 if(srcVertex.isAlive[0]) v.aliveNeighbors++;
     // 	     }
     // 	 }
 
