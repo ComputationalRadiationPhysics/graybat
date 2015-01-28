@@ -1,5 +1,6 @@
 // Communication
 #include <graybat.h>
+#include <Cave.hpp>
 
 // Helpers
 #include <distribution.hpp> /* consecutive, roundRobin */
@@ -105,71 +106,74 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     /***************************************************************************
      * Init Communication
      ****************************************************************************/
+    graybat::Cave<LifeGraph, Mpi> cave;
+
+    
     // Create Graph
-    const unsigned height = sqrt(nCells);
-    const unsigned width  = height;
-    std::vector<Vertex> graphVertices;
-    std::vector<EdgeDescriptor> edges = topology::gridDiagonal<LifeGraph>(height, width, graphVertices);
-    LifeGraph graph (edges, graphVertices);
+    // const unsigned height = sqrt(nCells);
+    // const unsigned width  = height;
+    // std::vector<Vertex> graphVertices;
+    // std::vector<EdgeDescriptor> edges = topology::gridDiagonal<LifeGraph>(height, width, graphVertices);
+    // LifeGraph graph (edges, graphVertices);
 
     // Inantiate communication objects
-    MpiCAL cal;
-    GVON gvon(cal);
+    // MpiCAL cal;
+    // GVON gvon(cal);
 
-    // Distribute work evenly
-    std::vector<Vertex> hostedVertices = distribute::consecutive(cal.getGlobalContext(), graph);
+    // // Distribute work evenly
+    // std::vector<Vertex> hostedVertices = distribute::consecutive(cal.getGlobalContext(), graph);
 
-    // Announce vertices
-    gvon.announce(graph, hostedVertices); 
+    // // Announce vertices
+    // gvon.announce(graph, hostedVertices); 
 
-    /***************************************************************************
-     * Start Simulation
-     ****************************************************************************/
-    std::vector<Event> events;   
-    std::vector<unsigned> golDomain(graph.getVertices().size(), 0); 
+    // /***************************************************************************
+    //  * Start Simulation
+    //  ****************************************************************************/
+    // std::vector<Event> events;   
+    // std::vector<unsigned> golDomain(graph.getVertices().size(), 0); 
 
-    const Vertex root = graph.getVertices().at(0);
+    // const Vertex root = graph.getVertices().at(0);
 
-    // Simulate life forever
-    for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
+    // // Simulate life forever
+    // for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
 
-	// Print life field by owner of vertex 0
-	if(gvon.peerHostsVertex(root, graph)){
-	  printGolDomain(golDomain, width, height, timestep);
-	}
+    // 	// Print life field by owner of vertex 0
+    // 	if(gvon.peerHostsVertex(root, graph)){
+    // 	  printGolDomain(golDomain, width, height, timestep);
+    // 	}
 	
-	// Send state to neighbor cells
-	for(Vertex &v : hostedVertices){
-	    for(std::pair<Vertex, Edge> edge : graph.getOutEdges(v)){
-		events.push_back(gvon.asyncSend(graph, edge.first, edge.second, v.isAlive));
-	    }
-	}
+    // 	// Send state to neighbor cells
+    // 	for(Vertex &v : hostedVertices){
+    // 	    for(std::pair<Vertex, Edge> edge : graph.getOutEdges(v)){
+    // 		events.push_back(gvon.asyncSend(graph, edge.first, edge.second, v.isAlive));
+    // 	    }
+    // 	}
 
-	// Recv state from neighbor cells
-	for(Vertex &v : hostedVertices){
-	     for(std::pair<Vertex, Edge> edge : graph.getInEdges(v)){
-		 gvon.recv(graph, edge.first, edge.second, edge.first.isAlive);
-		 if(edge.first.isAlive[0]) v.aliveNeighbors++;
-	     }
-	 }
+    // 	// Recv state from neighbor cells
+    // 	for(Vertex &v : hostedVertices){
+    // 	     for(std::pair<Vertex, Edge> edge : graph.getInEdges(v)){
+    // 		 gvon.recv(graph, edge.first, edge.second, edge.first.isAlive);
+    // 		 if(edge.first.isAlive[0]) v.aliveNeighbors++;
+    // 	     }
+    // 	 }
 
-	 // Wait to finish events
-	 for(unsigned i = 0; i < events.size(); ++i){
-	     events.back().wait();
-	     events.pop_back();
-	 }
+    // 	 // Wait to finish events
+    // 	 for(unsigned i = 0; i < events.size(); ++i){
+    // 	     events.back().wait();
+    // 	     events.pop_back();
+    // 	 }
 
-	 // Calculate state for next generation
-	 updateState(hostedVertices);
+    // 	 // Calculate state for next generation
+    // 	 updateState(hostedVertices);
 
-	 // Gather state by vertex with id = 0
-	 for(Vertex &v: hostedVertices){
-	     v.aliveNeighbors = 0;
-	     gvon.gather(root, v, graph, v.isAlive, golDomain, true);
-	 }
+    // 	 // Gather state by vertex with id = 0
+    // 	 for(Vertex &v: hostedVertices){
+    // 	     v.aliveNeighbors = 0;
+    // 	     gvon.gather(root, v, graph, v.isAlive, golDomain, true);
+    // 	 }
 
 
-    }
+    // }
     
     return 0;
 
