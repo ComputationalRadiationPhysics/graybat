@@ -14,7 +14,7 @@ script:
   - cd build
   - cmake ..
   - make GoL
-  - mpirun ./GoL 90 1
+  - mpiexec --allow-run-as-root ./GoL 90 1 
 
 before_script:
   - echo "# BEFORE SCRIPT"
