@@ -1,5 +1,5 @@
 // Communication
-#include <graybat.h>
+#include <graybat.hpp>
 #include <Cave.hpp>
 
 // Helpers
@@ -91,24 +91,14 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
      ****************************************************************************/
     // Graph
     typedef graybat::Graph<Cell, graybat::SimpleProperty> LifeGraph;
-    typedef typename LifeGraph::Vertex                    Vertex;
-    typedef typename LifeGraph::Edge                      Edge;
-    typedef typename LifeGraph::EdgeDescriptor            EdgeDescriptor;
-
-    // Cal
     typedef graybat::communicationPolicy::MPI             Mpi;
-    typedef graybat::CommunicationAbstractionLayer<Mpi>   MpiCAL;
-    typedef typename MpiCAL::Event                        Event;
 
-    // GVON
-    typedef graybat::GraphBasedVirtualOverlayNetwork<LifeGraph, MpiCAL>  GVON;
+
 
     /***************************************************************************
      * Init Communication
      ****************************************************************************/
-    std::cout << graybat::Cave<LifeGraph, Mpi>::createGraph() << std::endl;
-
-
+    graybat::Cave<LifeGraph, Mpi>::createGraph();
 
     
     // //Create Graph
