@@ -14,6 +14,7 @@
 #include <cmath>      /* sqrt */
 #include <cstdlib>    /* atoi */
 #include <assert.h>   /* assert */
+#include <functional> /* std::bind */
 
 struct Cell : public graybat::SimpleProperty{
     Cell() : SimpleProperty(0), isAlive{{0}}, aliveNeighbors(0){}
@@ -85,6 +86,14 @@ void updateState(T_Cell &cell){
 
 }
 
+std::pair<unsigned, unsigned> foo(unsigned a, unsigned b){
+
+
+    return std::make_pair(a,b);
+}
+
+
+
 int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     /***************************************************************************
      * Configuration
@@ -98,7 +107,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     /***************************************************************************
      * Init Communication
      ****************************************************************************/
-    graybat::Cave<LifeGraph, Mpi>::createGraph();
+    graybat::Cave<LifeGraph, Mpi>::createGraph(std::bind(foo, 1, 2));
 
     
     // //Create Graph
