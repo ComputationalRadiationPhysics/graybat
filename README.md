@@ -44,6 +44,14 @@ GrayBat  is licensed under the **GPLv3+**. Please refer to our [LICENSE.md](LICE
  * go to build directory: `cd GrayBat/build`
  * create Makefile `cmake ..`
  * build project : `make [target]`
+ 
+
+### Current Compilation Status:
+
+| *branch* | *state* | *description* |
+| -------- | --------| ------------- |
+| **master** | [![Build Status](http://haseongpu.mooo.com/api/badge/github.com/erikzenker/GrayBat/status.svg?branch=master)](http://haseongpu.mooo.com/github.com/erikzenker/GrayBat) |  stable releases |
+| **dev**  | [![Build Status](http://haseongpu.mooo.com/api/badge/github.com/erikzenker/GrayBat/status.svg?branch=dev)](http://haseongpu.mooo.com/github.com/erikzenker/GrayBat) |development branch |
 
 ##Example Targets##
 
