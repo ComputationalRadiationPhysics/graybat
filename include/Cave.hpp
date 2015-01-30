@@ -24,21 +24,16 @@ namespace graybat {
 	// How to specify graph ?
 	// * function pointer
 	// * functor
-	static void createGraph(std::function<GraphDescription()> f){
-	    CAL cal;
-	    GVON graph(cal);
+	static void createGraph(std::function<GraphDescription()> foo){
+	    std::cout << foo().first << " " << foo().second << std::endl;
 
-	    std::cout << f().first << " " << f().second << std::endl;
-	    // std::vector<Vertex> graphVertices;
-	    // std::vector<EdgeDescriptor> edges = topology::gridDiagonal<LifeGraph>(height, width, graphVertices);
-
-	    
-	    
-	    //GraphPolicy graph(edges, graphVertices);
-	    
-	    
-	    return;
 	}
+
+      template <typename FOO>
+      static void createGraph0(FOO foo){
+	std::cout << foo().first << " " << foo().second << std::endl;
+
+      }
 	
 	
     };

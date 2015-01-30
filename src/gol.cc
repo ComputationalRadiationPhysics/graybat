@@ -92,6 +92,21 @@ std::pair<unsigned, unsigned> foo(unsigned a, unsigned b){
     return std::make_pair(a,b);
 }
 
+struct Foo {
+  Foo(unsigned a, unsigned b) : a(a),b(b){
+
+
+  }
+
+  std::pair<unsigned, unsigned> operator()(){
+
+    return std::make_pair(a,b);
+  }
+
+  unsigned a;
+  unsigned b;
+};
+
 
 
 int gol(const unsigned nCells, const unsigned nTimeSteps ) {
@@ -108,6 +123,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
      * Init Communication
      ****************************************************************************/
     graybat::Cave<LifeGraph, Mpi>::createGraph(std::bind(foo, 1, 2));
+    graybat::Cave<LifeGraph, Mpi>::createGraph0<Foo>(Foo(3,4));
 
     
     // //Create Graph
