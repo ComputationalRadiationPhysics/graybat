@@ -15,6 +15,8 @@
 #include <cstdlib>    /* atoi */
 #include <assert.h>   /* assert */
 #include <functional> /* std::bind */
+#include <algorithm>  /* std::generate */
+
 
 struct Cell : public graybat::SimpleProperty{
     Cell() : SimpleProperty(0), isAlive{{0}}, aliveNeighbors(0){}
@@ -86,26 +88,36 @@ void updateState(T_Cell &cell){
 
 }
 
-std::pair<unsigned, unsigned> foo(unsigned a, unsigned b){
+
+typedef unsigned                                  Vertex;
+typedef std::vector<Vertex>                       VertexContainer;
+typedef std::vector<std::pair<Vertex, Vertex> >   EdgeContainer;
+typedef std::pair<VertexContainer, EdgeContainer> GraphDescription;
+
+std::pair<VertexContainer, EdgeContainer> star(unsigned nVertices, Vertex centerVertex){
+  
+  VertexContainer vertices(nVertices);
+  EdgeContainer   edges(nVertices - 1);
 
 
-    return std::make_pair(a,b);
+  // Fill vertices
+  //std::generate(vertices.begin(), vertices.end(), 
+  
+  // Vertex sourceVertex = 0;
+  
+  // for(Edge &e: edges){
+
+  //   if(sourceVertex == centerVertex){
+  //     sourceVertex++;
+  //   }
+
+  //   e = std::make_pair(sourceVertex++, centerVertex);
+
+  // }
+  
+  return std::make_pair(vertices, edges);
 }
 
-struct Foo {
-  Foo(unsigned a, unsigned b) : a(a),b(b){
-
-
-  }
-
-  std::pair<unsigned, unsigned> operator()(){
-
-    return std::make_pair(a,b);
-  }
-
-  unsigned a;
-  unsigned b;
-};
 
 
 
@@ -122,8 +134,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     /***************************************************************************
      * Init Communication
      ****************************************************************************/
-    graybat::Cave<LifeGraph, Mpi>::createGraph(std::bind(foo, 1, 2));
-    graybat::Cave<LifeGraph, Mpi>::createGraph0<Foo>(Foo(3,4));
+    graybat::Cave<LifeGraph, Mpi>::createGraph(std::bind(star, 10, 0));
 
     
     // //Create Graph

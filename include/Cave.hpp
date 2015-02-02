@@ -18,23 +18,22 @@ namespace graybat {
 	typedef graybat::CommunicationAbstractionLayer<CommunicationPolicy> CAL;
 	typedef graybat::GraphBasedVirtualOverlayNetwork<GraphPolicy, CAL>  GVON;
 
-	typedef std::pair<unsigned, unsigned> GraphDescription;
+      typedef unsigned                                  Vertex;
+      typedef std::vector<Vertex>                       VertexContainer;
+      typedef std::vector<std::pair<Vertex, Vertex> >   EdgeContainer;
+      typedef std::pair<VertexContainer, EdgeContainer> GraphDescription;
 	
 
 	// How to specify graph ?
 	// * function pointer
 	// * functor
 	static void createGraph(std::function<GraphDescription()> foo){
-	    std::cout << foo().first << " " << foo().second << std::endl;
 
+
+	    
+	    
 	}
 
-      template <typename FOO>
-      static void createGraph0(FOO foo){
-	std::cout << foo().first << " " << foo().second << std::endl;
-
-      }
-	
 	
     };
 
