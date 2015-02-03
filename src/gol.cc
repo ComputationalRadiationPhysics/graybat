@@ -89,32 +89,27 @@ void updateState(T_Cell &cell){
 }
 
 
-typedef unsigned                                  Vertex;
-typedef std::vector<Vertex>                       VertexContainer;
-typedef std::vector<std::pair<Vertex, Vertex> >   EdgeContainer;
-typedef std::pair<VertexContainer, EdgeContainer> GraphDescription;
 
-std::pair<VertexContainer, EdgeContainer> star(unsigned nVertices, Vertex centerVertex){
+typedef unsigned                                  Vertex;
+typedef std::pair<Vertex, Vertex>                 Edge;
+typedef std::vector<Vertex>                       VertexContainer;
+typedef std::vector<Edge>                         EdgeContainer;
+typedef std::pair<VertexContainer, EdgeContainer> Graph;
+
+Graph star(unsigned nVertices, Vertex centerVertex){
   
   VertexContainer vertices(nVertices);
-  EdgeContainer   edges(nVertices - 1);
+  EdgeContainer   edges;
 
 
-  // Fill vertices
-  //std::generate(vertices.begin(), vertices.end(), 
-  
-  // Vertex sourceVertex = 0;
-  
-  // for(Edge &e: edges){
+  for(unsigned i = 0; i < nVertices; ++i){
+      vertices.at(i) = i;
+      if(i == centerVertex){
+	  continue;
+      }
+      edges.push_back(Edge(i, centerVertex));
 
-  //   if(sourceVertex == centerVertex){
-  //     sourceVertex++;
-  //   }
-
-  //   e = std::make_pair(sourceVertex++, centerVertex);
-
-  // }
-  
+  }
   return std::make_pair(vertices, edges);
 }
 
