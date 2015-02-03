@@ -129,7 +129,39 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     /***************************************************************************
      * Init Communication
      ****************************************************************************/
-    graybat::Cave<LifeGraph, Mpi>::createGraph(std::bind(star, 10, 0));
+    graybat::Cave<LifeGraph, Mpi>(std::bind(star, 10, 0));
+
+
+    /*
+      // How the workflow should look like:
+
+
+      graybat::Cave<GraphPolicy, CommunicationPolicy> cave(std::bind(star, 10, 0));
+
+      cave.distribute(roundrobin);
+      
+      std::vector<Vertex> hostedVertices = cave.getHostedVertices():
+
+      for(Vertex v: hostedVertices){
+        cave.send(cave.neighbors(v), v.isAlive);
+      
+      }
+
+      for(Vertex v:hostedVertices){
+        std::array<unsigned, 1> isAlive;
+        cave.recv(graph.neighbors(v), isAlive):
+      
+      }
+
+      updateState(hostedVertices);
+
+      for(Vertex v:hostedVertices){
+        cave.gather(root, v, v.isAlive, golDomain, true);
+
+      }
+
+
+     */
 
     
     // //Create Graph
