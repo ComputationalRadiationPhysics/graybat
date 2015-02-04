@@ -24,7 +24,7 @@
  ***************************************************************************/
 namespace graybat {
 
-    template <typename T_Graph, typename T_CAL>
+    template <typename T_CAL, typename T_Graph>
     struct GraphBasedVirtualOverlayNetwork {
 	typedef T_CAL                   CAL;
 	typedef T_Graph                 Graph;
@@ -37,19 +37,24 @@ namespace graybat {
 	typedef typename CAL::Context   Context;
 	typedef typename CAL::ContextID ContextID;
 
-	// References
-	CAL& cal;
+	// Member
+	CAL cal;
 
 	/***************************************************************************
 	 *
 	 * MAPPING OPERATIONS
 	 *
 	 ***************************************************************************/
-	GraphBasedVirtualOverlayNetwork(CAL& cal) : 
-	    cal(cal){
+	GraphBasedVirtualOverlayNetwork(){
 
 	}
 
+	void distribute(std::function<std::vector<Vertex>(unsigned, unsigned, T_Graph)> distFunctor){
+	    
+
+	    
+	}
+	
 
 	/**
 	 * @brief Announces *vertices* of a *graph* to the network, so that other peers

@@ -90,28 +90,28 @@ void updateState(T_Cell &cell){
 
 
 
-typedef unsigned                                  Vertex;
-typedef std::pair<Vertex, Vertex>                 Edge;
-typedef std::vector<Vertex>                       VertexContainer;
-typedef std::vector<Edge>                         EdgeContainer;
-typedef std::pair<VertexContainer, EdgeContainer> Graph;
+// typedef unsigned                                  Vertex;
+// typedef std::pair<Vertex, Vertex>                 Edge;
+// typedef std::vector<Vertex>                       VertexContainer;
+// typedef std::vector<Edge>                         EdgeContainer;
+// typedef std::pair<VertexContainer, EdgeContainer> Graph;
 
-Graph star(unsigned nVertices, Vertex centerVertex){
+// Graph star(unsigned nVertices, Vertex centerVertex){
   
-  VertexContainer vertices(nVertices);
-  EdgeContainer   edges;
+//   VertexContainer vertices(nVertices);
+//   EdgeContainer   edges;
 
 
-  for(unsigned i = 0; i < nVertices; ++i){
-      vertices.at(i) = i;
-      if(i == centerVertex){
-	  continue;
-      }
-      edges.push_back(Edge(i, centerVertex));
+//   for(unsigned i = 0; i < nVertices; ++i){
+//       vertices.at(i) = i;
+//       if(i == centerVertex){
+// 	  continue;
+//       }
+//       edges.push_back(Edge(i, centerVertex));
 
-  }
-  return std::make_pair(vertices, edges);
-}
+//   }
+//   return std::make_pair(vertices, edges);
+// }
 
 
 
@@ -120,16 +120,21 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     /***************************************************************************
      * Configuration
      ****************************************************************************/
+    
     // Graph
     typedef graybat::Graph<Cell, graybat::SimpleProperty> GoLGraph;
-    typedef graybat::communicationPolicy::MPI             Mpi;
+    typedef typename GoLGraph::Vertex                     Vertex;
+    typedef typename GoLGraph::EdgeDescriptor             EdgeDescriptor;
+    
+    typedef graybat::communicationPolicy::MPI             MPICP;
+    typedef graybat::CommunicationAbstractionLayer<MPICP> CAL;
 
 
 
     /***************************************************************************
      * Init Communication
      ****************************************************************************/
-    graybat::Cave<GoLGraph, Mpi> cave(std::bind(star, 10, 0));
+    //graybat::Cave<GoLGraph, Mpi> cave(std::bind(star, 10, 0));
 
 
     /*
@@ -164,22 +169,23 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
      */
 
     
-    // //Create Graph
-    // const unsigned height = sqrt(nCells);
-    // const unsigned width  = height;
-    // std::vector<Vertex> graphVertices;
-    // std::vector<EdgeDescriptor> edges = topology::gridDiagonal<LifeGraph>(height, width, graphVertices);
-    // LifeGraph graph (edges, graphVertices);
+    //Create Graph
+    const unsigned height = sqrt(nCells);
+    const unsigned width  = height;
+    std::vector<Vertex> graphVertices;
+    std::vector<EdgeDescriptor> edges = topology::gridDiagonal<GoLGraph>(height, width, graphVertices);
+    GoLGraph graph (edges, graphVertices);
 
-    // // Inantiate communication objects
-    // MpiCAL cal;
-    // GVON gvon(cal);
+    // Inantiate communication objects
+    graybat::GraphBasedVirtualOverlayNetwork<CAL, GoLGraph> gvon;
 
-    // // Distribute work evenly
-    // std::vector<Vertex> hostedVertices = distribute::consecutive(cal.getGlobalContext(), graph);
+    // Distribute work evenly
+    std::vector<Vertex> hostedVertices;// = distribute::consecutive(cal.getGlobalContext(), graph);
 
-    // // Announce vertices
-    // gvon.announce(graph, hostedVertices); 
+    // Announce vertices
+    gvon.distribute(distribute::consecutive);
+    
+    //gvon.announce(graph, hostedVertices); 
 
     /***************************************************************************
      * Start Simulation

@@ -38,15 +38,15 @@ namespace graybat {
 
     
 	/***********************************************************************//**
-										  * @class Event
-										  *
-										  * @brief Interface defintion for Event class. Event's are
-										  *        returned by non blocking
-										  *        functions. CommunicationPolicy has to implement the
-										  *        Event interface according to the used communciation
-										  *        library.
-										  *
-										  ***************************************************************************/
+	 * @class Event
+	 *
+	 * @brief Interface defintion for Event class. Event's are
+	 *        returned by non blocking
+	 *        functions. CommunicationPolicy has to implement the
+	 *        Event interface according to the used communciation
+	 *        library.
+	 *
+	 ***************************************************************************/
 	struct Event : protected CommunicationPolicy::Event {
 	    Event(typename CommunicationPolicy::Event event) : CommunicationPolicy::Event(event){
 
@@ -75,15 +75,15 @@ namespace graybat {
 
 
 	/***********************************************************************//**
-										  * @class Context
-										  * 
-										  * @brief Interface definition for Context class. A Context is
-										  *        a set of peers that are able to communicate with each
-										  *        other. A Context is for every communication operation
-										  *        necessary. A particular Context has to be implemented
-										  *        by the CommunicationyPolicy.
-										  *
-										  ***************************************************************************/
+	* @class Context
+	* 
+	* @brief Interface definition for Context class. A Context is
+	*        a set of peers that are able to communicate with each
+	*        other. A Context is for every communication operation
+	*        necessary. A particular Context has to be implemented
+	*        by the CommunicationyPolicy.
+	*
+	***************************************************************************/
 	struct Context : protected CommunicationPolicy::Context {
 	    typedef CommunicationAbstractionLayer<CommunicationPolicy>::VAddr VAddr;
 	    typedef unsigned ContextID;
