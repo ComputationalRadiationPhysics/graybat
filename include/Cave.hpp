@@ -11,37 +11,43 @@ namespace graybat {
     template <typename T_GraphPolicy, typename T_CommunicationPolicy>
     class Cave {
     public:
+
+	// Typedefs
+	typedef T_GraphPolicy         GraphPolicy;
+	typedef T_CommunicationPolicy CommunicationPolicy;
+      
+	typedef graybat::CommunicationAbstractionLayer<CommunicationPolicy> CAL;
+	typedef graybat::GraphBasedVirtualOverlayNetwork<GraphPolicy, CAL>  GVON;
+      
+	typedef unsigned                                  Vertex;
+	typedef std::vector<Vertex>                       VertexContainer;
+	typedef std::vector<std::pair<Vertex, Vertex> >   EdgeContainer;
+	typedef std::pair<VertexContainer, EdgeContainer> GraphDescription;
 	
-      typedef T_GraphPolicy         GraphPolicy;
-      typedef T_CommunicationPolicy CommunicationPolicy;
-      
-      typedef graybat::CommunicationAbstractionLayer<CommunicationPolicy> CAL;
-      typedef graybat::GraphBasedVirtualOverlayNetwork<GraphPolicy, CAL>  GVON;
-      
-      typedef unsigned                                  Vertex;
-      typedef std::vector<Vertex>                       VertexContainer;
-      typedef std::vector<std::pair<Vertex, Vertex> >   EdgeContainer;
-      typedef std::pair<VertexContainer, EdgeContainer> GraphDescription;
-	
+	// Members
+	GraphPolicy graph;
+	CAL  cal;
+	GVON gvon;
 
 
-      void Cave(std::function<GraphDescription> graphFunctor) {
-	
+	// Constructor / Destructor
+	Cave(std::function<GraphDescription()> graphFunctor) : gvon(cal){
+	    std::cout << cal.getGlobalContext().getVAddr() << std::endl;
+	    
+	}
 
-	
+	~Cave(){
 
-      }
+	}
 
 
-      
-	// How to specify graph ?
-	// * function pointer
-	// * functor
-      // static void createGraph(std::function<GraphDescription()> foo){
-      // }
-      
-      
+	// Management Member Methods
+	std::vector<Vertex> distribute(std::function<void()> distributionFunctor){
+	    std::vector<Vertex> hostedVertices;
 
+	    gvon.announce(graph, hostedVertices);
+
+	}    
 	
     };
 

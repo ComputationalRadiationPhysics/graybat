@@ -121,7 +121,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
      * Configuration
      ****************************************************************************/
     // Graph
-    typedef graybat::Graph<Cell, graybat::SimpleProperty> LifeGraph;
+    typedef graybat::Graph<Cell, graybat::SimpleProperty> GoLGraph;
     typedef graybat::communicationPolicy::MPI             Mpi;
 
 
@@ -129,7 +129,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     /***************************************************************************
      * Init Communication
      ****************************************************************************/
-    graybat::Cave<LifeGraph, Mpi>(std::bind(star, 10, 0));
+    graybat::Cave<GoLGraph, Mpi> cave(std::bind(star, 10, 0));
 
 
     /*
