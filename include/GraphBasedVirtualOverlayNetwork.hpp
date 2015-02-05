@@ -38,23 +38,36 @@ namespace graybat {
 	typedef typename CAL::ContextID ContextID;
 
 	// Member
-	CAL cal;
+      CAL cal;
+      Graph graph;
+      std::vector<Vertex> hostedVertices;
+
+      GraphBasedVirtualOverlayNetwork(Graph graph) : graph(graph){
+
+      }
+
+      void distribute(std::function<std::vector<Vertex>(unsigned, unsigned, T_Graph&)> distFunctor){
+	hostedVertices = distFunctor(cal.getGlobalContext().getVAddr(), cal.getGlobalContext().size(), graph);
+	announce(graph, hostedVertices);
+
+	    
+      }
+	/***************************************************************************
+	 *
+	 * GRAPH OPERATIONS
+	 *
+	 ***************************************************************************/
+
+      
+
+      
 
 	/***************************************************************************
 	 *
 	 * MAPPING OPERATIONS
 	 *
 	 ***************************************************************************/
-	GraphBasedVirtualOverlayNetwork(){
-
-	}
-
-	void distribute(std::function<std::vector<Vertex>(unsigned, unsigned, T_Graph)> distFunctor){
-	    
-
-	    
-	}
-	
+      
 
 	/**
 	 * @brief Announces *vertices* of a *graph* to the network, so that other peers

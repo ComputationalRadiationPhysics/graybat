@@ -122,13 +122,15 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
      ****************************************************************************/
     
     // Graph
-    typedef graybat::Graph<Cell, graybat::SimpleProperty> GoLGraph;
-    typedef typename GoLGraph::Vertex                     Vertex;
-    typedef typename GoLGraph::EdgeDescriptor             EdgeDescriptor;
+    typedef graybat::Graph<Cell, graybat::SimpleProperty>           GoLGraph;
+    typedef typename GoLGraph::Vertex                               Vertex;
+    typedef typename GoLGraph::EdgeDescriptor                       EdgeDescriptor;
     
-    typedef graybat::communicationPolicy::MPI             MPICP;
-    typedef graybat::CommunicationAbstractionLayer<MPICP> CAL;
-
+    typedef graybat::communicationPolicy::MPI                       MPICP;
+    typedef graybat::CommunicationAbstractionLayer<MPICP>           CAL;
+    
+    typedef graybat::GraphBasedVirtualOverlayNetwork<CAL, GoLGraph> Cave;
+    typedef typename Cave::Event                                    Event;
 
 
     /***************************************************************************
@@ -170,6 +172,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 
     
     //Create Graph
+    // TODO: Replace this by Graph generation function!
     const unsigned height = sqrt(nCells);
     const unsigned width  = height;
     std::vector<Vertex> graphVertices;
@@ -177,40 +180,37 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     GoLGraph graph (edges, graphVertices);
 
     // Inantiate communication objects
-    graybat::GraphBasedVirtualOverlayNetwork<CAL, GoLGraph> gvon;
+    // TODO: Define graph by graph generation function!
+    Cave cave(graph);
 
-    // Distribute work evenly
-    std::vector<Vertex> hostedVertices;// = distribute::consecutive(cal.getGlobalContext(), graph);
-
-    // Announce vertices
-    gvon.distribute(distribute::consecutive);
+    // Distribute vertices
+    // TODO: Get rid of GoLGraph template argument!
+    cave.distribute(distribute::consecutive<GoLGraph>);
     
-    //gvon.announce(graph, hostedVertices); 
-
     /***************************************************************************
      * Start Simulation
      ****************************************************************************/
-    // std::vector<Event> events;   
+    std::vector<Event> events;   
     // std::vector<unsigned> golDomain(graph.getVertices().size(), 0); 
-
     // const Vertex root = graph.getVertices().at(0);
 
-    // // Simulate life forever
-    // for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
+    // Simulate life forever
+    for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
 
     // 	// Print life field by owner of vertex 0
     // 	if(gvon.peerHostsVertex(root, graph)){
     // 	  printGolDomain(golDomain, width, height, timestep);
     // 	}
 	
-    // 	// Send state to neighbor cells
-    // 	for(Vertex &v : hostedVertices){
-    // 	    for(std::pair<Vertex, Edge> link : graph.getOutEdges(v)){
-    // 		Vertex destVertex = link.first;
-    // 		Edge   destEdge   = link.second;
-    // 		events.push_back(gvon.asyncSend(graph, destVertex, destEdge, v.isAlive));
-    // 	    }
-    // 	}
+      // // Send state to neighbor cells
+       for(Vertex &v : cave.hostedVertices){
+	 std::cout << v.id << std::endl;
+      // 	for(std::pair<Vertex, Edge> link : graph.getOutEdges(v)){
+      // 	  Vertex destVertex = link.first;
+      // 	  Edge   destEdge   = link.second;
+      // 	  events.push_back(cave.asyncSend(graph, destVertex, destEdge, v.isAlive));
+      // 	}
+       }
 
     // 	// Recv state from neighbor cells
     // 	for(Vertex &v : hostedVertices){
@@ -238,7 +238,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     // 	 }
 
 
-    // }
+    }
     
     return 0;
 

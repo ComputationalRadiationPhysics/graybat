@@ -57,44 +57,44 @@ namespace distribute {
     }
 
 
-    template<typename T_Graph, typename T_Context>
-    std::vector<typename T_Graph::Vertex> consecutive(const T_Context context, T_Graph &graph){
+    // template<typename T_Graph, typename T_Context>
+    // std::vector<typename T_Graph::Vertex> consecutive(const T_Context context, T_Graph &graph){
 
-	typedef T_Graph Graph;
-	typedef typename Graph::Vertex Vertex;
+    // 	typedef T_Graph Graph;
+    // 	typedef typename Graph::Vertex Vertex;
 	
 	
-	typedef T_Context Context;
-	typedef typename Context::VAddr VAddr;
+    // 	typedef T_Context Context;
+    // 	typedef typename Context::VAddr VAddr;
 
-	VAddr vaddr     = context.getVAddr();
-	unsigned nVaddr = context.size();
+    // 	VAddr vaddr     = context.getVAddr();
+    // 	unsigned nVaddr = context.size();
 
-	unsigned vertexCount      = graph.getVertices().size();
-	unsigned vertexPerProcess = ceil((float)vertexCount / nVaddr);
+    // 	unsigned vertexCount      = graph.getVertices().size();
+    // 	unsigned vertexPerProcess = ceil((float)vertexCount / nVaddr);
 
-	// More processes than vertices
-	if(vaddr > vertexCount - 1){
-	    return std::vector<Vertex>(0);
-	}
+    // 	// More processes than vertices
+    // 	if(vaddr > vertexCount - 1){
+    // 	    return std::vector<Vertex>(0);
+    // 	}
 
-	unsigned minVertex = vaddr * vertexPerProcess;
-	unsigned maxVertex = minVertex + vertexPerProcess;
+    // 	unsigned minVertex = vaddr * vertexPerProcess;
+    // 	unsigned maxVertex = minVertex + vertexPerProcess;
 
-	// Slice maxVertex of last process
-	if(minVertex > vertexCount){
-	    return std::vector<Vertex>(0);
-	}
+    // 	// Slice maxVertex of last process
+    // 	if(minVertex > vertexCount){
+    // 	    return std::vector<Vertex>(0);
+    // 	}
 	    
-	maxVertex = std::min(maxVertex, vertexCount);
+    // 	maxVertex = std::min(maxVertex, vertexCount);
 	
-	assert(minVertex <= maxVertex);
+    // 	assert(minVertex <= maxVertex);
 	
-	std::vector<Vertex> vertices = graph.getVertices();
-	std::vector<Vertex> myVertices(vertices.begin() + minVertex, vertices.begin() + maxVertex);
-	return myVertices;
+    // 	std::vector<Vertex> vertices = graph.getVertices();
+    // 	std::vector<Vertex> myVertices(vertices.begin() + minVertex, vertices.begin() + maxVertex);
+    // 	return myVertices;
 
-    }
+    // }
 
 
     template<typename T_Graph>
