@@ -90,58 +90,33 @@ void updateState(T_Cell &cell){
 
 
 
-// typedef unsigned                                  Vertex;
-// typedef std::pair<Vertex, Vertex>                 Edge;
-// typedef std::vector<Vertex>                       VertexContainer;
-// typedef std::vector<Edge>                         EdgeContainer;
-// typedef std::pair<VertexContainer, EdgeContainer> Graph;
-
-// Graph star(unsigned nVertices, Vertex centerVertex){
-  
-//   VertexContainer vertices(nVertices);
-//   EdgeContainer   edges;
-
-
-//   for(unsigned i = 0; i < nVertices; ++i){
-//       vertices.at(i) = i;
-//       if(i == centerVertex){
-// 	  continue;
-//       }
-//       edges.push_back(Edge(i, centerVertex));
-
-//   }
-//   return std::make_pair(vertices, edges);
-// }
-
-
-
 
 int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     /***************************************************************************
      * Configuration
      ****************************************************************************/
     
-    // Graph
+    // GraphPolicy
     typedef graybat::Graph<Cell, graybat::SimpleProperty>           GoLGraph;
-    typedef typename GoLGraph::Vertex                               Vertex;
-    typedef typename GoLGraph::Edge                                 Edge;
-    typedef typename GoLGraph::EdgeDescriptor                       EdgeDescriptor;
-    
+
+    // CommunicationPolicy
     typedef graybat::communicationPolicy::MPI                       MPICP;
     typedef graybat::CommunicationAbstractionLayer<MPICP>           CAL;
-    
+
+    // Cave
     typedef graybat::GraphBasedVirtualOverlayNetwork<CAL, GoLGraph> Cave;
     typedef typename Cave::Event                                    Event;
+    typedef typename Cave::Vertex                                   Vertex;
+    typedef typename Cave::Edge                                     Edge;
+    typedef typename Cave::EdgeDescriptor                           EdgeDescriptor;
 
 
     /***************************************************************************
      * Init Communication
      ****************************************************************************/
     //Create Graph
-
     const unsigned height = sqrt(nCells);
     const unsigned width  = height;
-
 
     Cave cave(std::bind(topology::gridDiagonal<GoLGraph>, height, width));
 
@@ -156,7 +131,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     std::vector<unsigned> golDomain(cave.getVertices().size(), 0); 
     const Vertex root = cave.getVertex(0);
 
-    // Simulate life forever
+    // Simulate life 
     for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
 
 	// Print life field by owner of vertex 0
@@ -165,8 +140,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 	}
 	
 	// Send state to neighbor cells
-	for(Vertex &v : cave.hostedVertices){
-	    //std::cout << v.id << std::endl;
+	for(Vertex v : cave.hostedVertices){
 	    for(std::pair<Vertex, Edge> link : cave.getOutEdges(v)){
 		Vertex destVertex = link.first;
 		Edge   destEdge   = link.second;
@@ -194,7 +168,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 	updateState(cave.hostedVertices);
 
 	// Gather state by vertex with id = 0
-	for(Vertex &v: cave.hostedVertices){
+	for(Vertex v: cave.hostedVertices){
 	    v.aliveNeighbors = 0;
 	    cave.gather(root, v, v.isAlive, golDomain, true);
 	}
