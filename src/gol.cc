@@ -124,6 +124,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     // Graph
     typedef graybat::Graph<Cell, graybat::SimpleProperty>           GoLGraph;
     typedef typename GoLGraph::Vertex                               Vertex;
+    typedef typename GoLGraph::Edge                                 Edge;
     typedef typename GoLGraph::EdgeDescriptor                       EdgeDescriptor;
     
     typedef graybat::communicationPolicy::MPI                       MPICP;
@@ -136,52 +137,13 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     /***************************************************************************
      * Init Communication
      ****************************************************************************/
-    //graybat::Cave<GoLGraph, Mpi> cave(std::bind(star, 10, 0));
-
-
-    /*
-      // How the workflow should look like:
-
-
-      graybat::Cave<GraphPolicy, CommunicationPolicy> cave(std::bind(star, 10, 0));
-
-      cave.distribute(roundrobin);
-      
-      std::vector<Vertex> hostedVertices = cave.getHostedVertices():
-
-      for(Vertex v: hostedVertices){
-        cave.send(cave.neighbors(v), v.isAlive);
-      
-      }
-
-      for(Vertex v:hostedVertices){
-        std::array<unsigned, 1> isAlive;
-        cave.recv(graph.neighbors(v), isAlive):
-      
-      }
-
-      updateState(hostedVertices);
-
-      for(Vertex v:hostedVertices){
-        cave.gather(root, v, v.isAlive, golDomain, true);
-
-      }
-
-
-     */
-
-    
     //Create Graph
-    // TODO: Replace this by Graph generation function!
+
     const unsigned height = sqrt(nCells);
     const unsigned width  = height;
-    std::vector<Vertex> graphVertices;
-    std::vector<EdgeDescriptor> edges = topology::gridDiagonal<GoLGraph>(height, width, graphVertices);
-    GoLGraph graph (edges, graphVertices);
 
-    // Inantiate communication objects
-    // TODO: Define graph by graph generation function!
-    Cave cave(graph);
+
+    Cave cave(std::bind(topology::gridDiagonal<GoLGraph>, height, width));
 
     // Distribute vertices
     // TODO: Get rid of GoLGraph template argument!
@@ -191,51 +153,51 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
      * Start Simulation
      ****************************************************************************/
     std::vector<Event> events;   
-    // std::vector<unsigned> golDomain(graph.getVertices().size(), 0); 
-    // const Vertex root = graph.getVertices().at(0);
+    std::vector<unsigned> golDomain(cave.getVertices().size(), 0); 
+    const Vertex root = cave.getVertex(0);
 
     // Simulate life forever
     for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
 
-    // 	// Print life field by owner of vertex 0
-    // 	if(gvon.peerHostsVertex(root, graph)){
-    // 	  printGolDomain(golDomain, width, height, timestep);
-    // 	}
+	// Print life field by owner of vertex 0
+	if(cave.peerHostsVertex(root)){
+	    printGolDomain(golDomain, width, height, timestep);
+	}
 	
-      // // Send state to neighbor cells
-       for(Vertex &v : cave.hostedVertices){
-	 std::cout << v.id << std::endl;
-      // 	for(std::pair<Vertex, Edge> link : graph.getOutEdges(v)){
-      // 	  Vertex destVertex = link.first;
-      // 	  Edge   destEdge   = link.second;
-      // 	  events.push_back(cave.asyncSend(graph, destVertex, destEdge, v.isAlive));
-      // 	}
-       }
+	// Send state to neighbor cells
+	for(Vertex &v : cave.hostedVertices){
+	    //std::cout << v.id << std::endl;
+	    for(std::pair<Vertex, Edge> link : cave.getOutEdges(v)){
+		Vertex destVertex = link.first;
+		Edge   destEdge   = link.second;
+		events.push_back(cave.asyncSend(destVertex, destEdge, v.isAlive));
+	    }
+	}
 
-    // 	// Recv state from neighbor cells
-    // 	for(Vertex &v : hostedVertices){
-    // 	     for(std::pair<Vertex, Edge> link : graph.getInEdges(v)){
-    // 		 Vertex srcVertex = link.first;
-    // 		 Edge   srcEdge   = link.second;
-    // 		 gvon.recv(graph, srcVertex, srcEdge, srcVertex.isAlive);
-    // 		 if(srcVertex.isAlive[0]) v.aliveNeighbors++;
-    // 	     }
-    // 	 }
+     	// Recv state from neighbor cells
+     	for(Vertex &v : cave.hostedVertices){
+	    for(std::pair<Vertex, Edge> link : cave.getInEdges(v)){
+		Vertex srcVertex = link.first;
+		Edge   srcEdge   = link.second;
+		cave.recv(srcVertex, srcEdge, srcVertex.isAlive);
+		if(srcVertex.isAlive[0]) v.aliveNeighbors++;
+	    }
+	}
 
-    // 	 // Wait to finish events
-    // 	 for(unsigned i = 0; i < events.size(); ++i){
-    // 	     events.back().wait();
-    // 	     events.pop_back();
-    // 	 }
+	// Wait to finish events
+	for(unsigned i = 0; i < events.size(); ++i){
+	    events.back().wait();
+	    events.pop_back();
+	}
 
-    // 	 // Calculate state for next generation
-    // 	 updateState(hostedVertices);
+	// Calculate state for next generation
+	updateState(cave.hostedVertices);
 
-    // 	 // Gather state by vertex with id = 0
-    // 	 for(Vertex &v: hostedVertices){
-    // 	     v.aliveNeighbors = 0;
-    // 	     gvon.gather(root, v, graph, v.isAlive, golDomain, true);
-    // 	 }
+	// Gather state by vertex with id = 0
+	for(Vertex &v: cave.hostedVertices){
+	    v.aliveNeighbors = 0;
+	    cave.gather(root, v, v.isAlive, golDomain, true);
+	}
 
 
     }

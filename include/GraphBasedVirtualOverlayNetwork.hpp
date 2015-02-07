@@ -26,41 +26,61 @@ namespace graybat {
 
     template <typename T_CAL, typename T_Graph>
     struct GraphBasedVirtualOverlayNetwork {
-	typedef T_CAL                   CAL;
-	typedef T_Graph                 Graph;
-	typedef typename Graph::Vertex  Vertex;
-	typedef typename Graph::Edge    Edge;
-	typedef typename Graph::GraphID GraphID;
-	typedef typename Vertex::ID     VertexID;
-	typedef typename CAL::VAddr     VAddr;
-	typedef typename CAL::Event     Event;
-	typedef typename CAL::Context   Context;
-	typedef typename CAL::ContextID ContextID;
+	typedef T_CAL                           CAL;
+	typedef T_Graph                         Graph;
+	typedef typename Graph::Vertex          Vertex;
+	typedef typename Graph::Edge            Edge;
+	typedef typename Graph::GraphID         GraphID;
+	typedef typename Graph::EdgeDescriptor  EdgeDescriptor;
+	typedef typename Graph::GraphDescriptor GraphDescriptor;
+	typedef typename Vertex::ID             VertexID;
+	typedef typename CAL::VAddr             VAddr;
+	typedef typename CAL::Event             Event;
+	typedef typename CAL::Context           Context;
+	typedef typename CAL::ContextID         ContextID;
 
 	// Member
-      CAL cal;
-      Graph graph;
-      std::vector<Vertex> hostedVertices;
+	CAL cal;
+	Graph graph;
+	std::vector<Vertex> hostedVertices;
 
-      GraphBasedVirtualOverlayNetwork(Graph graph) : graph(graph){
+	GraphBasedVirtualOverlayNetwork(std::function<GraphDescriptor()> graphFunctor) : graph(Graph(graphFunctor())){
 
-      }
+	}
 
-      void distribute(std::function<std::vector<Vertex>(unsigned, unsigned, T_Graph&)> distFunctor){
-	hostedVertices = distFunctor(cal.getGlobalContext().getVAddr(), cal.getGlobalContext().size(), graph);
-	announce(graph, hostedVertices);
-
+	void distribute(std::function<std::vector<Vertex>(unsigned, unsigned, T_Graph&)> distFunctor){
+	    hostedVertices = distFunctor(cal.getGlobalContext().getVAddr(), cal.getGlobalContext().size(), graph);
+	    announce(graph, hostedVertices);
 	    
-      }
+	}
 	/***************************************************************************
 	 *
 	 * GRAPH OPERATIONS
 	 *
 	 ***************************************************************************/
+	std::vector<Vertex> getVertices(){
+	    return graph.getVertices();
+	}
+	
+	Vertex getVertex(VertexID vertexID){
+	    return graph.getVertices().at(vertexID);
+	}
+	
+	std::vector<std::pair<Vertex, Edge>> getOutEdges(Vertex v){
+	    return graph.getOutEdges(v);
+	}
 
-      
+	std::vector<std::pair<Vertex, Edge>> getInEdges(Vertex v){
+	    return graph.getInEdges(v);
+	}
 
-      
+	/***************************************************************************
+	 *
+	 * COMMUNICATION OPERATIONS
+	 *
+	 ***************************************************************************/
+	
+            
 
 	/***************************************************************************
 	 *
@@ -231,7 +251,7 @@ namespace graybat {
 	 *        calling peer otherwise false.
 	 *
 	 */
-	bool peerHostsVertex(Vertex vertex, Graph& graph){
+	bool peerHostsVertex(Vertex vertex){
 	    Context context = getGraphContext(graph);
 	    VAddr vaddr     = context.getVAddr();
 
@@ -283,7 +303,7 @@ namespace graybat {
 	 *
 	 */
 	template <typename T>
-	Event asyncSend(Graph& graph, const Vertex destVertex, const Edge edge, const T& data){
+	Event asyncSend(const Vertex destVertex, const Edge edge, const T& data){
 	    VAddr destVAddr  = locateVertex(graph, destVertex);
 	    Context context  = getGraphContext(graph);
 	    return cal.asyncSend(destVAddr, edge.id, context, data);
@@ -300,7 +320,7 @@ namespace graybat {
 	 *
 	 */
 	template <typename T>
-	inline void recv(Graph& graph, const Vertex srcVertex, const Edge edge, const T& data){
+	inline void recv(const Vertex srcVertex, const Edge edge, const T& data){
 	    VAddr srcVAddr   = locateVertex(graph, srcVertex);
 	    Context context  = getGraphContext(graph);
 	    cal.recv(srcVAddr, edge.id, context, data);
@@ -421,7 +441,7 @@ namespace graybat {
     
 
 	template <typename T_Send, typename T_Recv>
-	void gather(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, T_Send sendData, T_Recv& recvData, const bool reorder){
+	void gather(const Vertex rootVertex, const Vertex srcVertex, T_Send sendData, T_Recv& recvData, const bool reorder){
 	    typedef typename T_Send::value_type T_Send_Container;
 	
 	    static std::vector<T_Send_Container> gather;

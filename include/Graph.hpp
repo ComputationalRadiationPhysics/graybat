@@ -35,11 +35,12 @@ namespace graybat {
 
     public:
 	// Public typedefs
-	typedef T_VertexProperty                     Vertex;
-	typedef typename Vertex::ID                  VertexID;
-	typedef T_EdgeProperty                       Edge;
-	typedef std::tuple<Vertex, Vertex, Edge>     EdgeDescriptor;
-	typedef unsigned                             GraphID;
+	typedef T_VertexProperty                                            Vertex;
+	typedef typename Vertex::ID                                         VertexID;
+	typedef T_EdgeProperty                                              Edge;
+	typedef std::tuple<Vertex, Vertex, Edge>                            EdgeDescriptor;
+	typedef std::pair<std::vector<Vertex>, std::vector<EdgeDescriptor>> GraphDescriptor;
+	typedef unsigned                                                    GraphID;
 
 
 	// typedef typename GraphPolicy::Vertex         GraphPolicyVertex;
@@ -84,10 +85,13 @@ namespace graybat {
 	 *        the *vertices* of this graph.
 	 *
 	 */
-	Graph(std::vector<EdgeDescriptor> edges, std::vector<Vertex> vertices) :
+	Graph(GraphDescriptor graphDesc) :
 	    id(0),
 	    superGraph(*this){
 
+	    std::vector<Vertex> vertices = graphDesc.first;
+	    std::vector<EdgeDescriptor> edges = graphDesc.second;
+	    
 	    graph = new BGLGraph(vertices.size());
 	    
 	    for(EdgeDescriptor edgeDescriptor: edges){

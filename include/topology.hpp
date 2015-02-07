@@ -141,12 +141,12 @@ namespace topology {
     }
 
     template<typename T_Graph>
-    std::vector<typename T_Graph::EdgeDescriptor> gridDiagonal(const unsigned height, const unsigned width, std::vector<typename T_Graph::Vertex> &vertices){
+    std::pair<std::vector<typename T_Graph::Vertex>, std::vector<typename T_Graph::EdgeDescriptor>> gridDiagonal(const unsigned height, const unsigned width){
 	typedef typename T_Graph::Vertex Vertex;
 	typedef typename T_Graph::Edge Edge;
 	typedef typename T_Graph::EdgeDescriptor EdgeDescriptor;
 	const unsigned verticesCount = height * width;
-	vertices = generateVertices<Vertex>(verticesCount);
+	std::vector<Vertex> vertices = generateVertices<Vertex>(verticesCount);
 	std::vector<EdgeDescriptor> edges;
 
 	unsigned edgeCount = 0;
@@ -211,7 +211,7 @@ namespace topology {
 	}
     
 
-	return edges;
+	return std::make_pair(vertices,edges);
     }
 
     template <typename T_Graph>
