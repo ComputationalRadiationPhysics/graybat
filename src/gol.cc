@@ -104,7 +104,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     typedef graybat::CommunicationAbstractionLayer<MPICP> CAL;
 
     // Cave
-    typedef graybat::Cave<CAL, GoLGraph> MyCave;
+    typedef graybat::Cave<CAL, GoLGraph>                  MyCave;
     typedef typename MyCave::Event                        Event;
     typedef typename MyCave::Vertex                       Vertex;
     typedef typename MyCave::Edge                         Edge;
@@ -120,8 +120,8 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     // TODO: Separate properties from graph description
     MyCave cave(std::bind(topology::gridDiagonal<GoLGraph>, height, width));
 
-    //
-    cave.
+    // TODO set vertex properties seperatly
+    //cave.
 
     // Distribute vertices
     // TODO: Get rid of GoLGraph template argument!
