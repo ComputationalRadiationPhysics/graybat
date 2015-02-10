@@ -6,7 +6,7 @@
  *
  */
 
-#include <Graph.hpp>                           /* Graph */
+#include <BGL.hpp>                             /* CommunicationPolicy::BGL */
 #include <CommunicationAbstractionLayer.hpp>   /* CommunicationAbstractionLayer */
 #include <MPI.hpp>                             /* CommunicationPolicy::MPI*/
-#include <GraphBasedVirtualOverlayNetwork.hpp> /* GraphBasedVirtualOverlayNetwork */
+#include <Cave.hpp>                            /* Cave */

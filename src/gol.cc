@@ -1,6 +1,5 @@
 // Communication
 #include <graybat.hpp>
-#include <Cave.hpp>
 
 // Helpers
 #include <distribution.hpp> /* consecutive, roundRobin */
@@ -18,7 +17,7 @@
 #include <algorithm>  /* std::generate */
 
 
-struct Cell : public graybat::SimpleProperty{
+struct Cell : public graybat::graphPolicy::SimpleProperty{
     Cell() : SimpleProperty(0), isAlive{{0}}, aliveNeighbors(0){}
     Cell(ID id) : SimpleProperty(id), isAlive{{0}}, aliveNeighbors(0){
       unsigned random = rand() % 10000;
@@ -32,6 +31,7 @@ struct Cell : public graybat::SimpleProperty{
     unsigned aliveNeighbors;
 
 };
+
 
 void printGolDomain(const std::vector<unsigned> domain, const unsigned width, const unsigned height, const unsigned generation){
     for(unsigned i = 0; i < domain.size(); ++i){
@@ -54,6 +54,7 @@ void printGolDomain(const std::vector<unsigned> domain, const unsigned width, co
 
 }
 
+
 template <class T_Cell>
 void updateState(std::vector<T_Cell> &cells){
     for(T_Cell &cell : cells){
@@ -62,6 +63,7 @@ void updateState(std::vector<T_Cell> &cells){
     }
 
 }
+
 
 template <class T_Cell>
 void updateState(T_Cell &cell){
@@ -89,26 +91,24 @@ void updateState(T_Cell &cell){
 }
 
 
-
-
 int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     /***************************************************************************
      * Configuration
      ****************************************************************************/
     
     // GraphPolicy
-    typedef graybat::Graph<Cell, graybat::SimpleProperty>           GoLGraph;
+    typedef graybat::graphPolicy::BGL<Cell, graybat::graphPolicy::SimpleProperty> GoLGraph;
 
     // CommunicationPolicy
-    typedef graybat::communicationPolicy::MPI                       MPICP;
-    typedef graybat::CommunicationAbstractionLayer<MPICP>           CAL;
+    typedef graybat::communicationPolicy::MPI             MPICP;
+    typedef graybat::CommunicationAbstractionLayer<MPICP> CAL;
 
     // Cave
-    typedef graybat::GraphBasedVirtualOverlayNetwork<CAL, GoLGraph> Cave;
-    typedef typename Cave::Event                                    Event;
-    typedef typename Cave::Vertex                                   Vertex;
-    typedef typename Cave::Edge                                     Edge;
-    typedef typename Cave::EdgeDescriptor                           EdgeDescriptor;
+    typedef graybat::Cave<CAL, GoLGraph> MyCave;
+    typedef typename MyCave::Event                        Event;
+    typedef typename MyCave::Vertex                       Vertex;
+    typedef typename MyCave::Edge                         Edge;
+    typedef typename MyCave::EdgeDescriptor               EdgeDescriptor;
 
 
     /***************************************************************************
@@ -118,7 +118,8 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     const unsigned height = sqrt(nCells);
     const unsigned width  = height;
 
-    Cave cave(std::bind(topology::gridDiagonal<GoLGraph>, height, width));
+    // Create GoL Graph
+    MyCave cave(std::bind(topology::gridDiagonal<GoLGraph>, height, width));
 
     // Distribute vertices
     // TODO: Get rid of GoLGraph template argument!
