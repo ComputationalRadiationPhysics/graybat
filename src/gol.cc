@@ -108,8 +108,6 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     typedef typename MyCave::Event                        Event;
     typedef typename MyCave::Vertex                       Vertex;
     typedef typename MyCave::Edge                         Edge;
-    typedef typename MyCave::EdgeDescriptor               EdgeDescriptor;
-
 
     /***************************************************************************
      * Init Communication
@@ -119,7 +117,11 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     const unsigned width  = height;
 
     // Create GoL Graph
+    // TODO: Separate properties from graph description
     MyCave cave(std::bind(topology::gridDiagonal<GoLGraph>, height, width));
+
+    //
+    cave.
 
     // Distribute vertices
     // TODO: Get rid of GoLGraph template argument!
@@ -169,7 +171,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 	updateState(cave.hostedVertices);
 
 	// Gather state by vertex with id = 0
-	for(Vertex v: cave.hostedVertices){
+	for(Vertex &v: cave.hostedVertices){
 	    v.aliveNeighbors = 0;
 	    cave.gather(root, v, v.isAlive, golDomain, true);
 	}

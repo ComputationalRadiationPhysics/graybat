@@ -48,11 +48,7 @@ namespace graybat {
 
 	}
 
-	void distribute(std::function<std::vector<Vertex>(unsigned, unsigned, T_Graph&)> distFunctor){
-	    hostedVertices = distFunctor(cal.getGlobalContext().getVAddr(), cal.getGlobalContext().size(), graph);
-	    announce(graph, hostedVertices);
-	    
-	}
+
 	/***************************************************************************
 	 *
 	 * GRAPH OPERATIONS
@@ -60,35 +56,53 @@ namespace graybat {
 	 ***************************************************************************/
 	std::vector<Vertex> getVertices(){
 	    return graph.getVertices();
+	    
 	}
 	
 	Vertex getVertex(VertexID vertexID){
 	    return graph.getVertices().at(vertexID);
+	    
+	}
+
+	std::vector<Vertex> getAdjacentVertices(const Vertex v){
+	    return graph.getAdjacentVertices(v);
+	    
 	}
 	
-	std::vector<std::pair<Vertex, Edge>> getOutEdges(Vertex v){
+	std::vector<std::pair<Vertex, Edge>> getOutEdges(const Vertex v){
 	    return graph.getOutEdges(v);
+	    
 	}
 
-	std::vector<std::pair<Vertex, Edge>> getInEdges(Vertex v){
+	std::vector<std::pair<Vertex, Edge>> getInEdges(const Vertex v){
 	    return graph.getInEdges(v);
+	    
 	}
 
-	/***************************************************************************
-	 *
-	 * COMMUNICATION OPERATIONS
-	 *
-	 ***************************************************************************/
-	
-            
 
 	/***************************************************************************
 	 *
 	 * MAPPING OPERATIONS
 	 *
 	 ***************************************************************************/
-      
 
+	/**
+	 * @brief Distribution of the graph vertices to the peers of 
+	 *        the global context. The distFunctor it the function
+	 *        responsible for this distribution.
+	 *
+	 * @param distFunctor Function for vertex distribution 
+	 *                    with the following interface:
+	 *                    distFunctor(OwnVAddr, ContextSize, Graph)
+	 *
+	 */
+	void distribute(std::function<std::vector<Vertex>(unsigned, unsigned, T_Graph&)> distFunctor){
+	    hostedVertices = distFunctor(cal.getGlobalContext().getVAddr(), cal.getGlobalContext().size(), graph);
+	    announce(graph, hostedVertices);
+	    
+	}
+
+	
 	/**
 	 * @brief Announces *vertices* of a *graph* to the network, so that other peers
 	 *        know that these *vertices* are hosted by this peer.

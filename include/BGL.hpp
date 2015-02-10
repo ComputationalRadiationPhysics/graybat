@@ -256,12 +256,7 @@ namespace graybat {
 		return (*graph).global_to_local(vertex.id);
 	    }
 	    
-    
-	    // template<typename VertexWriter, typename EdgeWriter, typename GraphWriter>
-	    // void writeGraph(VertexWriter vertexWriter, EdgeWriter edgeWriter, GraphWriter graphWriter, std::string fileName){
-	    // 	GraphPolicy::writeGraph(vertexWriter, edgeWriter, graphWriter, fileName);
-
-	    // }
+   
 	private:
 
 	    BGL(BGL<Vertex, Edge>& superGraph, BGL& subGraph, unsigned id) : 
