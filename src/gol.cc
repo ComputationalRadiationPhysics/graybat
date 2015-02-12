@@ -96,18 +96,18 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     /***************************************************************************
      * Configuration
      ****************************************************************************/
-    
-    // GraphPolicy
-    typedef graybat::graphPolicy::BGL<Cell, graybat::graphPolicy::SimpleProperty> GoLGraph;
 
     // CommunicationPolicy
-    typedef graybat::communicationPolicy::MPI MPI_T;
+    typedef graybat::communicationPolicy::MPI CP;
+    
+    // GraphPolicy
+    typedef graybat::graphPolicy::BGL<Cell>   GP;
 
     // Cave
-    typedef graybat::Cave<MPI_T, GoLGraph>    MyCave;
-    typedef typename MyCave::Event            Event;
-    typedef typename MyCave::Vertex           Vertex;
-    typedef typename MyCave::Edge             Edge;
+    typedef graybat::Cave<CP, GP>   MyCave;
+    typedef typename MyCave::Event  Event;
+    typedef typename MyCave::Vertex Vertex;
+    typedef typename MyCave::Edge   Edge;
 
     /***************************************************************************
      * Init Communication
@@ -117,15 +117,16 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     const unsigned width  = height;
 
     // Create GoL Graph
+    // TODO: Only define pure graph here
     // TODO: Separate properties from graph description
-    MyCave cave(std::bind(topology::gridDiagonal<GoLGraph>, height, width));
+    MyCave cave(std::bind(topology::gridDiagonal<GP>, height, width));
     
     // TODO set vertex properties seperatly
     //cave.
 
     // Distribute vertices
     // TODO: Get rid of GoLGraph template argument!
-    cave.distribute(distribute::consecutive<GoLGraph>);
+    cave.distribute(distribute::consecutive<GP>);
     
     /***************************************************************************
      * Start Simulation
