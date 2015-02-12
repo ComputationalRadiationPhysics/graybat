@@ -101,11 +101,10 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     typedef graybat::graphPolicy::BGL<Cell, graybat::graphPolicy::SimpleProperty> GoLGraph;
 
     // CommunicationPolicy
-    typedef graybat::communicationPolicy::MPI             MPICP;
-    typedef graybat::CommunicationAbstractionLayer<MPICP> CAL;
+    typedef graybat::communicationPolicy::MPI MPI_T;
 
     // Cave
-    typedef graybat::Cave<CAL, GoLGraph>                  MyCave;
+    typedef graybat::Cave<MPI_T, GoLGraph>                MyCave;
     typedef typename MyCave::Event                        Event;
     typedef typename MyCave::Vertex                       Vertex;
     typedef typename MyCave::Edge                         Edge;

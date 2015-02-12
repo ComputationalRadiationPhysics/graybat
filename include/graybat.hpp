@@ -6,7 +6,6 @@
  *
  */
 
-#include <BGL.hpp>                             /* CommunicationPolicy::BGL */
-#include <CommunicationAbstractionLayer.hpp>   /* CommunicationAbstractionLayer */
-#include <MPI.hpp>                             /* CommunicationPolicy::MPI*/
-#include <Cave.hpp>                            /* Cave */
+#include <BGL.hpp>   /* graybat::graphPolicy::BGL */
+#include <MPI.hpp>   /* graybat::communicationPolicy::MPI */
+#include <Cave.hpp>  /* graybat::Cave */
