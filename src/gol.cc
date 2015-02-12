@@ -30,6 +30,7 @@ struct Cell : public graybat::graphPolicy::SimpleProperty{
     std::array<unsigned, 1> isAlive;
     unsigned aliveNeighbors;
 
+
 };
 
 
@@ -119,7 +120,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     // Create GoL Graph
     // TODO: Separate properties from graph description
     MyCave cave(std::bind(topology::gridDiagonal<GoLGraph>, height, width));
-
+    
     // TODO set vertex properties seperatly
     //cave.
 
@@ -144,7 +145,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 	
 	// Send state to neighbor cells
 	for(Vertex v : cave.hostedVertices){
-	    for(std::pair<Vertex, Edge> link : cave.getOutEdges(v)){
+	    for(auto link : cave.getOutEdges(v)){
 		Vertex destVertex = link.first;
 		Edge   destEdge   = link.second;
 		events.push_back(cave.asyncSend(destVertex, destEdge, v.isAlive));
@@ -153,7 +154,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 
      	// Recv state from neighbor cells
      	for(Vertex &v : cave.hostedVertices){
-	    for(std::pair<Vertex, Edge> link : cave.getInEdges(v)){
+	    for(auto link : cave.getInEdges(v)){
 		Vertex srcVertex = link.first;
 		Edge   srcEdge   = link.second;
 		cave.recv(srcVertex, srcEdge, srcVertex.isAlive);
