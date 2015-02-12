@@ -3,15 +3,12 @@
 #include <array>      /* array */
 #include <numeric>    /* std::accumulate */
 
-// TEMP MPI STUFF
-#include <iostream>     /* std::cout */
 #include <map>          /* std::map */
 #include <exception>    /* std::out_of_range */
 #include <sstream>      /* std::stringstream */
 #include <algorithm>    /* std::transform */
 #include <mpi.h>        /* MPI_* */
 #include <dout.hpp>     /* dout */
-
 
 
 namespace graybat {
@@ -54,7 +51,11 @@ namespace graybat {
 
     template<typename T, typename Op> Op* UserOperation<T, Op>::_op = 0;
     
-    // Type traits
+    /**
+     * @brief Type traits for transformation of primitive
+     *        C++ data types to MPI data types.
+     *
+     */
     template<typename T>
     struct MPIDatatypes{
 	static constexpr MPI_Datatype type = MPI_CHAR;
@@ -90,7 +91,11 @@ namespace graybat {
 	static constexpr MPI_Datatype type = MPI_CHAR;
     };
 
-    
+    /**
+     * @brief A context represents a set of peers
+     *        which are able to communicate with each other.
+     *
+     */
     class Context {
 	typedef unsigned ContextID;
 	typedef unsigned VAddr;
@@ -145,7 +150,14 @@ namespace graybat {
 	bool      isValid;
     };
 
-    
+    /**
+     * @brief An event is returned by non-blocking 
+     *        communication operations and can be 
+     *        asked whether an operation has finished
+     *        or it can be waited for this operation to
+     *        be finished.
+     *
+     */
     class Event {
     public:
 	Event(MPI_Request request) : request(request){
@@ -197,7 +209,7 @@ namespace graybat {
 	 ***************************************************************************/
 	struct MPI {
 
-	public:
+	    // Type defs
 	    typedef unsigned         Tag;                                            
 	    typedef unsigned         ContextID;
 	    typedef unsigned         VAddr;
@@ -209,13 +221,7 @@ namespace graybat {
 	    typedef int Uri;
 
 
-	    // Member Variables
-	    ContextID                     contextCount;
-	    std::vector<std::vector<Uri>> uriMap;
-	    std::vector<MPI_Comm>         contextMap;
-	    Context                       initialContext;
-
-	
+	    // Constructor
 	    MPI() :contextCount(0),
 		   uriMap(0),
 		   contextMap(0),
@@ -230,10 +236,19 @@ namespace graybat {
 
 	    }
 
+	    // Destructor
 	    ~MPI(){
 		MPI_Barrier(MPI_COMM_WORLD);
 		MPI_Finalize();
 	    }
+
+	    // Member Variables
+	    ContextID                     contextCount;
+	    std::vector<std::vector<Uri>> uriMap;
+	    std::vector<MPI_Comm>         contextMap;
+	    Context                       initialContext;
+
+	
 
 
 	    /***************************************************************************
@@ -339,9 +354,10 @@ namespace graybat {
     
 	    /**************************************************************************
 	     *
-	     * COLLECTIVE OPERATIONS INTERFACE
+	     * COLLECTIVE COMMUNICATION INTERFACE
 	     *
 	     **************************************************************************/
+	    
 	    /**
 	     * @brief Collects *sendData* from all peers of the *context* and
 	     *        transmits it as a list to the peer with
@@ -683,6 +699,11 @@ namespace graybat {
 	     *
 	     ***************************************************************************/
 
+	    /**
+	     * @brief Initilizes MPI if it was not initialized
+	     *        before.
+	     *
+	     */
 	    void initMPI(){
 		int flag = 0;
 		MPI_Initialized(&flag);
@@ -693,6 +714,13 @@ namespace graybat {
 		}
 	    }
 
+	    /**
+	     * @brief Returns the initial VAddr of the peer
+	     *        in the global context. This is the
+	     *        rank of the MPI process in the global
+	     *        communicator.
+	     *
+	     */
 	    VAddr initialVAddr(){
 		initMPI();
 		Uri uriTmp;
@@ -701,6 +729,12 @@ namespace graybat {
 
 	    }
 
+	    /**
+	     * @brief Returns the number of processes
+	     *        in a communicator and ensures
+	     *        that MPI is initialized.
+	     *
+	     */
 	    size_t MPICommSize(MPI_Comm comm){
 		initMPI();
 		int n;
@@ -715,6 +749,11 @@ namespace graybat {
 
 	    }
 
+	    /**
+	     * @brief Returns the uri of a vAddr in a
+	     *        specific context.
+	     *
+	     */
 	    template <typename T_Context>
 	    inline Uri getVAddrUri(const T_Context context, const VAddr vAddr){
 		Uri uri  = 0;

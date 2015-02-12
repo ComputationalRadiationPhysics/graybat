@@ -104,10 +104,10 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     typedef graybat::communicationPolicy::MPI MPI_T;
 
     // Cave
-    typedef graybat::Cave<MPI_T, GoLGraph>                MyCave;
-    typedef typename MyCave::Event                        Event;
-    typedef typename MyCave::Vertex                       Vertex;
-    typedef typename MyCave::Edge                         Edge;
+    typedef graybat::Cave<MPI_T, GoLGraph>    MyCave;
+    typedef typename MyCave::Event            Event;
+    typedef typename MyCave::Vertex           Vertex;
+    typedef typename MyCave::Edge             Edge;
 
     /***************************************************************************
      * Init Communication
