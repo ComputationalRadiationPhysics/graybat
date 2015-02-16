@@ -33,6 +33,11 @@ namespace graybat {
 	typedef typename Graph::GraphID         GraphID;
 	typedef typename Graph::EdgeDescriptor  EdgeDescriptor;
 	typedef typename Graph::GraphDescriptor GraphDescriptor;
+
+	typedef typename Graph::EdgeDescription  EdgeDescription;
+	typedef typename Graph::GraphDescription GraphDescription;
+
+	
 	typedef typename Vertex::ID             VertexID;
 	typedef typename CAL::VAddr             VAddr;
 	typedef typename CAL::Event             Event;
@@ -48,6 +53,10 @@ namespace graybat {
 
 	}
 
+	Cave(std::function<GraphDescription()> graphFunctor) : graph(Graph(graphFunctor())){
+
+	}
+	
 
 	/***************************************************************************
 	 *
