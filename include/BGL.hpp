@@ -85,19 +85,22 @@ namespace graybat {
 		std::vector<EdgeDescriptor> edges = graphDesc.second;
 	    
 		graph = new BGLGraph(vertices.size());
-	    
+
+		unsigned edgeCount = 0;
+		
 		for(EdgeDescriptor edgeDescriptor: edges){
 		    Vertex srcVertex    = std::get<0>(edgeDescriptor);
 		    Vertex targetVertex = std::get<1>(edgeDescriptor);
-		    Edge edge           = std::get<2>(edgeDescriptor);
+		    //Edge edge           = std::get<2>(edgeDescriptor);
 		    BGLEdge edgeID = boost::add_edge(srcVertex.id, targetVertex.id, (*graph)).first;
-		    setEdgeProperty(edgeID, edge);
+		    //setEdgeProperty(edgeID, edge);
+		    setEdgeProperty(edgeID, edgeCount++);
 	    
 		}
 
 		// Bind vertex_descriptor and VertexProperty;
-		for(unsigned i = 0; i < boost::num_vertices((*graph)); ++i){
-		    setVertexProperty(boost::vertex(vertices.at(i).id, (*graph)), vertices.at(i));
+		for(unsigned vertexID = 0; vertexID < vertices.size(); ++vertexID){
+		    setVertexProperty(vertexID, Vertex(vertexID));
 		}
 	
 	    }
