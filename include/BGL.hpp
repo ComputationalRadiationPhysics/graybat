@@ -37,17 +37,14 @@ namespace graybat {
 
 	public:
 	    // Public typedefs
-	    typedef T_VertexProperty                                            Vertex;
-	    typedef typename Vertex::ID                                         VertexID;
-	    typedef T_EdgeProperty                                              Edge;
-	    typedef typename Edge::ID                                           EdgeID;
-	    typedef std::tuple<Vertex, Vertex, Edge>                            EdgeDescriptor;
-	    typedef std::pair<std::vector<Vertex>, std::vector<EdgeDescriptor>> GraphDescriptor;
-
+	    typedef T_VertexProperty                                                Vertex;
+	    typedef typename Vertex::ID                                             VertexID;
+	    typedef T_EdgeProperty                                                  Edge;
+	    typedef typename Edge::ID                                               EdgeID;
 	    typedef std::pair<VertexID, VertexID>                                   EdgeDescription;
 	    typedef std::pair<std::vector<VertexID>, std::vector<EdgeDescription> > GraphDescription;
 
-	    typedef unsigned                                                    GraphID;
+	    typedef unsigned                                                        GraphID;
 
 	private:
 
@@ -56,7 +53,7 @@ namespace graybat {
 					  boost::vecS, 
 					  boost::bidirectionalS, 
 					  boost::property<boost::vertex_index_t, size_t, Vertex>,
-					  boost::property<boost::edge_index_t, size_t, Edge>> GraphType;
+					  boost::property<boost::edge_index_t, size_t, Edge> > GraphType;
 
 	    typedef boost::subgraph<GraphType> BGLGraph;
 	    typedef typename BGLGraph::vertex_descriptor BGLVertex;
@@ -78,59 +75,30 @@ namespace graybat {
 
 
 	    /**
-	     * @brief The graph has to be described by *edges* (source Vertex ==Edge==> target Vertex) and
-	     *        the *vertices* of this graph.
-	     *
-	     */
-	    BGL(GraphDescriptor graphDesc) :
-		id(0),
-		superGraph(*this){
-
-		std::vector<Vertex> vertices = graphDesc.first;
-		std::vector<EdgeDescriptor> edges = graphDesc.second;
-	    
-		graph = new BGLGraph(vertices.size());
-
-		unsigned edgeCount = 0;
-		
-		for(EdgeDescriptor edgeDescriptor: edges){
-		    Vertex srcVertex    = std::get<0>(edgeDescriptor);
-		    Vertex targetVertex = std::get<1>(edgeDescriptor);
-		    //Edge edge           = std::get<2>(edgeDescriptor);
-		    BGLEdge edgeID = boost::add_edge(srcVertex.id, targetVertex.id, (*graph)).first;
-		    //setEdgeProperty(edgeID, edge);
-		    setEdgeProperty(edgeID, edgeCount++);
-	    
-		}
-
-		// Bind vertex_descriptor and VertexProperty;
-		for(unsigned vertexID = 0; vertexID < vertices.size(); ++vertexID){
-		    setVertexProperty(vertexID, Vertex(vertexID));
-		}
-	
-	    }
-
-	    /**
 	     * @brief The graph has to be described by *edges* 
 	     * (source Vertex ==> target Vertex) and
 	     * the *vertices* of this graph.
 	     *
 	     */
-	    BGL(GraphDescription desc) :
+	    BGL(GraphDescription graphDesc) :
 		id(0),
 		superGraph(*this){
 
-		std::vector<VertexID> vertices     = desc.first;
-		std::vector<EdgeDescription> edges = desc.second;
-		EdgeID edgeCount = 0;
-		
+		std::vector<VertexID> vertices     = graphDesc.first;
+		std::vector<EdgeDescription> edges = graphDesc.second;
+
 		graph = new BGLGraph(vertices.size());
 
+		EdgeID edgeCount = 0;
+
 		for(EdgeDescription edge: edges){
-		    BGLEdge edgeID = boost::add_edge(edge.first, edge.second, (*graph)).first;
+		    VertexID srcVertex    = std::get<0>(edge);
+		    VertexID targetVertex = std::get<1>(edge);
+		    BGLEdge edgeID = boost::add_edge(srcVertex, targetVertex, (*graph)).first;
 		    setEdgeProperty(edgeID, Edge(edgeCount++));
 		}
-		
+
+		// Bind vertex_descriptor and VertexProperty;
 		for(unsigned vertexID = 0; vertexID < vertices.size(); ++vertexID){
 		    setVertexProperty(vertexID, Vertex(vertexID));
 		}

@@ -57,45 +57,6 @@ namespace distribute {
     }
 
 
-    // template<typename T_Graph, typename T_Context>
-    // std::vector<typename T_Graph::Vertex> consecutive(const T_Context context, T_Graph &graph){
-
-    // 	typedef T_Graph Graph;
-    // 	typedef typename Graph::Vertex Vertex;
-	
-	
-    // 	typedef T_Context Context;
-    // 	typedef typename Context::VAddr VAddr;
-
-    // 	VAddr vaddr     = context.getVAddr();
-    // 	unsigned nVaddr = context.size();
-
-    // 	unsigned vertexCount      = graph.getVertices().size();
-    // 	unsigned vertexPerProcess = ceil((float)vertexCount / nVaddr);
-
-    // 	// More processes than vertices
-    // 	if(vaddr > vertexCount - 1){
-    // 	    return std::vector<Vertex>(0);
-    // 	}
-
-    // 	unsigned minVertex = vaddr * vertexPerProcess;
-    // 	unsigned maxVertex = minVertex + vertexPerProcess;
-
-    // 	// Slice maxVertex of last process
-    // 	if(minVertex > vertexCount){
-    // 	    return std::vector<Vertex>(0);
-    // 	}
-	    
-    // 	maxVertex = std::min(maxVertex, vertexCount);
-	
-    // 	assert(minVertex <= maxVertex);
-	
-    // 	std::vector<Vertex> vertices = graph.getVertices();
-    // 	std::vector<Vertex> myVertices(vertices.begin() + minVertex, vertices.begin() + maxVertex);
-    // 	return myVertices;
-
-    // }
-
 
     template<typename T_Graph>
     std::vector<typename T_Graph::Vertex> consecutive(const unsigned processID, const unsigned processCount, T_Graph &graph){
@@ -129,4 +90,4 @@ namespace distribute {
     }
 
 
-} /* Distribute */
+} /* distribute */

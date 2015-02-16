@@ -117,12 +117,9 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     const unsigned width  = height;
 
     // Create GoL Graph
-    // TODO: Only define pure graph here
-    // TODO: Separate properties from graph description
-    MyCave cave(std::bind(topology::gridDiagonal<GP>, height, width));
+    MyCave cave(std::bind(topology::gridDiagonal, height, width));
     
-    // TODO set vertex properties seperatly
-    //cave.
+    // TODO Give possibility to set properties
 
     // Distribute vertices
     // TODO: Get rid of GoLGraph template argument!

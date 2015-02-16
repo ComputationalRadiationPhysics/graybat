@@ -26,32 +26,27 @@ namespace graybat {
 
     template <typename T_CAL, typename T_Graph>
     struct Cave {
-	typedef T_CAL                           CAL;
-	typedef T_Graph                         Graph;
-	typedef typename Graph::Vertex          Vertex;
-	typedef typename Graph::Edge            Edge;
-	typedef typename Graph::GraphID         GraphID;
-	typedef typename Graph::EdgeDescriptor  EdgeDescriptor;
-	typedef typename Graph::GraphDescriptor GraphDescriptor;
-
+	typedef T_CAL                            CAL;
+	typedef T_Graph                          Graph;
+	typedef typename Graph::Vertex           Vertex;
+	typedef typename Graph::Edge             Edge;
+	typedef typename Graph::GraphID          GraphID;
 	typedef typename Graph::EdgeDescription  EdgeDescription;
 	typedef typename Graph::GraphDescription GraphDescription;
-
-	
-	typedef typename Vertex::ID             VertexID;
-	typedef typename CAL::VAddr             VAddr;
-	typedef typename CAL::Event             Event;
-	typedef typename CAL::Context           Context;
-	typedef typename CAL::ContextID         ContextID;
+	typedef typename Vertex::ID              VertexID;
+	typedef typename CAL::VAddr              VAddr;
+	typedef typename CAL::Event              Event;
+	typedef typename CAL::Context            Context;
+	typedef typename CAL::ContextID          ContextID;
 
 	// Member
 	CAL cal;
 	Graph graph;
 	std::vector<Vertex> hostedVertices;
 
-	Cave(std::function<GraphDescriptor()> graphFunctor) : graph(Graph(graphFunctor())){
+	// Cave(std::function<GraphDescriptor()> graphFunctor) : graph(Graph(graphFunctor())){
 
-	}
+	// }
 
 	Cave(std::function<GraphDescription()> graphFunctor) : graph(Graph(graphFunctor())){
 
