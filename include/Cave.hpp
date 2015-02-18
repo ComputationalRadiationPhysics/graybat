@@ -44,15 +44,11 @@ namespace graybat {
 	Graph graph;
 	std::vector<Vertex> hostedVertices;
 
-	// Cave(std::function<GraphDescriptor()> graphFunctor) : graph(Graph(graphFunctor())){
-
-	// }
-
-	Cave(std::function<GraphDescription()> graphFunctor) : graph(Graph(graphFunctor())){
+	template <class T_Functor>
+	Cave(T_Functor graphFunctor) : graph(Graph(graphFunctor())){
 
 	}
 	
-
 	/***************************************************************************
 	 *
 	 * GRAPH OPERATIONS
@@ -100,10 +96,16 @@ namespace graybat {
 	 *                    distFunctor(OwnVAddr, ContextSize, Graph)
 	 *
 	 */
-	void distribute(std::function<std::vector<Vertex>(unsigned, unsigned, T_Graph&)> distFunctor){
+	// void distribute(std::function<std::vector<Vertex>(unsigned, unsigned, T_Graph&)> distFunctor){
+	//     hostedVertices = distFunctor(cal.getGlobalContext().getVAddr(), cal.getGlobalContext().size(), graph);
+	//     announce(graph, hostedVertices);
+	    
+	// }
+
+	template<class T_Functor>
+	void distribute(T_Functor distFunctor){
 	    hostedVertices = distFunctor(cal.getGlobalContext().getVAddr(), cal.getGlobalContext().size(), graph);
 	    announce(graph, hostedVertices);
-	    
 	}
 
 	

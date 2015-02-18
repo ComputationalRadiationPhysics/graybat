@@ -109,6 +109,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     typedef typename MyCave::Vertex Vertex;
     typedef typename MyCave::Edge   Edge;
 
+
     /***************************************************************************
      * Init Communication
      ****************************************************************************/
@@ -117,14 +118,13 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     const unsigned width  = height;
 
     // Create GoL Graph
-    MyCave cave(std::bind(topology::gridDiagonal, height, width));
+    MyCave cave(graybat::GridDiagonal(height, width));
     
     // TODO Give possibility to set properties
 
     // Distribute vertices
-    // TODO: Get rid of GoLGraph template argument!
-    cave.distribute(distribute::consecutive<GP>);
-    
+    cave.distribute(graybat::Consecutive());
+
     /***************************************************************************
      * Start Simulation
      ****************************************************************************/
