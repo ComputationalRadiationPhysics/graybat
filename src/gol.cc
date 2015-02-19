@@ -1,20 +1,12 @@
 // Communication
 #include <graybat.hpp>
 
-// Helpers
-#include <distribution.hpp> /* consecutive, roundRobin */
-#include <topology.hpp>     /* meshDiagonal */
-
 // STL
 #include <iostream>   /* std::cout */
-#include <tuple>      /* std::pair */
 #include <vector>     /* std::vector */
 #include <array>      /* std::array */
 #include <cmath>      /* sqrt */
 #include <cstdlib>    /* atoi */
-#include <assert.h>   /* assert */
-#include <functional> /* std::bind */
-#include <algorithm>  /* std::generate */
 
 
 struct Cell : public graybat::graphPolicy::SimpleProperty{
@@ -109,7 +101,6 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     typedef typename MyCave::Vertex Vertex;
     typedef typename MyCave::Edge   Edge;
 
-
     /***************************************************************************
      * Init Communication
      ****************************************************************************/
@@ -118,12 +109,10 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     const unsigned width  = height;
 
     // Create GoL Graph
-    MyCave cave(graybat::GridDiagonal(height, width));
+    MyCave cave(graybat::pattern::GridDiagonal(height, width));
     
-    // TODO Give possibility to set properties
-
     // Distribute vertices
-    cave.distribute(graybat::Consecutive());
+    cave.distribute(graybat::mapping::Consecutive());
 
     /***************************************************************************
      * Start Simulation

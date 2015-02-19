@@ -6,6 +6,8 @@
 
 namespace graybat {
 
+  namespace pattern {
+
     typedef unsigned                                                        VertexID;
     typedef std::pair<VertexID, VertexID>                                   EdgeDescription;
     typedef std::pair<std::vector<VertexID>, std::vector<EdgeDescription> > GraphDescription;
@@ -248,5 +250,7 @@ namespace graybat {
 	    return std::make_pair(vertices,edges);
 	}
     };
+
+  } /* pattern */
 
 } /* graybat */

@@ -12,6 +12,8 @@
 
 namespace graybat {
 
+  namespace mapping {
+  
     struct Roundrobin {
     
 	template<typename T_Graph>
@@ -79,5 +81,6 @@ namespace graybat {
 
     };
 
-
+  } /* mapping */
+    
 } /* graybat */
