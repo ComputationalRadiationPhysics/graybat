@@ -75,10 +75,6 @@ namespace graybat {
 	return std::make_pair(vertices,edges);
       }
 
-      unsigned hammingDistance(unsigned a, unsigned b){
-	unsigned abXor = a xor b;
-	return (unsigned) __builtin_popcount(abXor);
-      }
 
     };
 
@@ -91,6 +87,11 @@ namespace graybat {
       HyperCube(const unsigned dimension) :
 	dimension(dimension){
 
+      }
+      
+      unsigned hammingDistance(unsigned a, unsigned b){
+	unsigned abXor = a xor b;
+	return (unsigned) __builtin_popcount(abXor);
       }
 
       GraphDescription operator()(){
@@ -127,7 +128,7 @@ namespace graybat {
 
       }
     
-      Graph operator()(){
+      GraphDescription operator()(){
 
 	const unsigned verticesCount = height * width;
 	std::vector<unsigned> vertices(verticesCount);

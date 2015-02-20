@@ -96,12 +96,6 @@ namespace graybat {
 	 *                    distFunctor(OwnVAddr, ContextSize, Graph)
 	 *
 	 */
-	// void distribute(std::function<std::vector<Vertex>(unsigned, unsigned, T_Graph&)> distFunctor){
-	//     hostedVertices = distFunctor(cal.getGlobalContext().getVAddr(), cal.getGlobalContext().size(), graph);
-	//     announce(graph, hostedVertices);
-	    
-	// }
-
 	template<class T_Functor>
 	void distribute(T_Functor distFunctor){
 	    hostedVertices = distFunctor(cal.getGlobalContext().getVAddr(), cal.getGlobalContext().size(), graph);
@@ -460,6 +454,9 @@ namespace graybat {
 	}
     
 
+        // This function is the hell
+        // TODO: Simplify !!!
+        // TODO: Better software design required !!!
 	template <typename T_Send, typename T_Recv>
 	void gather(const Vertex rootVertex, const Vertex srcVertex, T_Send sendData, T_Recv& recvData, const bool reorder){
 	    typedef typename T_Send::value_type T_Send_Container;

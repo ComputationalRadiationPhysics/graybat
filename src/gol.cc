@@ -33,7 +33,7 @@ void printGolDomain(const std::vector<unsigned> domain, const unsigned width, co
 	}
 
 	if(domain.at(i)){
-	    std::cerr << "#";
+	  std::cerr << "#";
 	}
 	else {
 	    std::cerr << " ";
@@ -102,7 +102,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     typedef typename MyCave::Edge   Edge;
 
     /***************************************************************************
-     * Init Communication
+     * Initialize Communication
      ****************************************************************************/
     //Create Graph
     const unsigned height = sqrt(nCells);
@@ -112,10 +112,10 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     MyCave cave(graybat::pattern::GridDiagonal(height, width));
     
     // Distribute vertices
-    cave.distribute(graybat::mapping::Consecutive());
-
+    cave.distribute(graybat::mapping::Roundrobin());
+    
     /***************************************************************************
-     * Start Simulation
+     * Run Simulation
      ****************************************************************************/
     std::vector<Event> events;   
     std::vector<unsigned> golDomain(cave.getVertices().size(), 0); 
@@ -162,8 +162,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 	    v.aliveNeighbors = 0;
 	    cave.gather(root, v, v.isAlive, golDomain, true);
 	}
-
-
+	
     }
     
     return 0;

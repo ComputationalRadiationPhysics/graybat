@@ -13,7 +13,9 @@
 namespace graybat {
 
   namespace mapping {
-  
+
+
+    // TODO: There is some bug with GoL and roundrobin distribution
     struct Roundrobin {
     
 	template<typename T_Graph>
