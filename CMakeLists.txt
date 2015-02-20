@@ -50,7 +50,6 @@ add_executable(Gather EXCLUDE_FROM_ALL src/gather.cc )
 add_executable(Reduce EXCLUDE_FROM_ALL src/reduce.cc )
 add_executable(UnitCAL EXCLUDE_FROM_ALL src/unit_cal.cc )
 add_executable(UnitGVON EXCLUDE_FROM_ALL src/unit_gvon.cc )
-add_executable(Unit EXCLUDE_FROM_ALL src/unit.cc)
 
 # add the libraries (Boost...) to this executable
 #target_link_libraries(Main ${LIBS})
@@ -66,7 +65,6 @@ target_link_libraries(Gather ${LIBS})
 target_link_libraries(Reduce ${LIBS})
 target_link_libraries(UnitCAL ${LIBS})
 target_link_libraries(UnitGVON ${LIBS})
-target_link_libraries(Unit ${LIBS})
 
 ###############################################################################
 # Custom targets
