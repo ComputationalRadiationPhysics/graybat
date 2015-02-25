@@ -70,4 +70,4 @@ the usage. All targets provide the synopthis of their executables.
 
 ##Authors##
 
- * Erik Zenker (erikzenker@hotmail.com)
+ * Erik Zenker (erikzenker@posteo.de)
