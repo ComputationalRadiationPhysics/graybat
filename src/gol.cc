@@ -130,7 +130,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 	}
 	
 	// Send state to neighbor cells
-	for(Vertex v : cave.hostedVertices){
+	for(Vertex &v : cave.hostedVertices){
 	    for(auto link : cave.getOutEdges(v)){
 		Vertex destVertex = link.first;
 		Edge   destEdge   = link.second;
