@@ -15,7 +15,6 @@ namespace graybat {
   namespace mapping {
 
 
-    // TODO: There is some bug with GoL and roundrobin distribution
     struct Roundrobin {
     
 	template<typename T_Graph>
@@ -29,8 +28,6 @@ namespace graybat {
 
 	    std::vector<Vertex> myVertices;
 	    if(processID < processCount){
-	    
-	
 		for(unsigned i = 0; i < maxVertex; ++i){
 		    unsigned vertex_i = processID + (i * processCount);
 		    if(vertex_i >= vertexCount){
