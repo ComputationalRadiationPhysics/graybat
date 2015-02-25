@@ -458,7 +458,7 @@ namespace graybat {
         // TODO: Simplify !!!
         // TODO: Better software design required !!!
 	template <typename T_Send, typename T_Recv>
-	void gather(const Vertex rootVertex, const Vertex srcVertex, T_Send sendData, T_Recv& recvData, const bool reorder){
+	void gather(const Vertex rootVertex, const Vertex srcVertex, const T_Send sendData, T_Recv& recvData, const bool reorder){
 	    typedef typename T_Send::value_type T_Send_Container;
 	
 	    static std::vector<T_Send_Container> gather;
@@ -518,11 +518,9 @@ namespace graybat {
 	 *  @todo get rid of sendData.begin(), sendData.end()
 	 *        T_Data should only use .size() and .data()
 	 *
-	 *  @todo reorder received data in vertex order
-	 *
 	 **/
 	template <typename T_Send, typename T_Recv>
-	void allGather(const Vertex srcVertex, Graph& graph, T_Send sendData, T_Recv& recvData){
+	void allGather(const Vertex srcVertex, Graph& graph, T_Send sendData, T_Recv& recvData, const bool reorder){
 	    typedef typename T_Send::value_type T_Send_Container;
 	
 	    static std::vector<T_Send_Container> gather;
@@ -540,6 +538,23 @@ namespace graybat {
 		std::vector<unsigned> recvCount;
 
 		cal.allGatherVar(context, gather, *(recvDatas[0]), recvCount);
+
+		if(reorder){
+		    std::vector<typename T_Recv::value_type> recvDataReordered(recvData.size());
+		    unsigned vAddr = 0;
+		    for(unsigned recv_i = 0; recv_i < recvData.size(); ){
+			std::vector<Vertex> hostedVertices = getHostedVertices(graph, vAddr);
+			for(Vertex v: hostedVertices){
+			    recvDataReordered.at(v.id) = recvDatas[0]->data()[recv_i];
+			    recv_i++;
+			}
+			vAddr++;
+		    }
+		    for(unsigned i = 0; i < recvDataReordered.size(); ++i){
+			recvDatas[0]->data()[i] = recvDataReordered[i];
+		    }
+		    
+		}
 
 		// Distribute Received Data to Hosted Vertices
 		//unsigned nElements = std::accumulate(recvCount.begin(), recvCount.end(), 0);
