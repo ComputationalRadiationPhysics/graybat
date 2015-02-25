@@ -1,23 +1,15 @@
 // Communication
-#include <Graph.hpp>                           /* Graph */
-#include <CommunicationAbstractionLayer.hpp>   /* CommunicationAbstractionLayer */
-#include <MPI.hpp>                             /* CommunicationPolicy::MPI*/
-#include <GraphBasedVirtualOverlayNetwork.hpp> /* GraphBasedVirtualOverlayNetwork */
-
-// Helpers
-#include <distribution.hpp> /* consecutive, roundRobin */
-#include <topology.hpp>     /* meshDiagonal */
+#include <graybat.hpp>
 
 // STL
 #include <iostream>   /* std::cout */
-#include <tuple>      /* std::pair */
 #include <vector>     /* std::vector */
 #include <array>      /* std::array */
 #include <cmath>      /* sqrt */
 #include <cstdlib>    /* atoi */
-#include <assert.h>   /* assert */
 
-struct Cell : public SimpleProperty{
+
+struct Cell : public graybat::graphPolicy::SimpleProperty{
     Cell() : SimpleProperty(0), isAlive{{0}}, aliveNeighbors(0){}
     Cell(ID id) : SimpleProperty(id), isAlive{{0}}, aliveNeighbors(0){
       unsigned random = rand() % 10000;
@@ -30,7 +22,9 @@ struct Cell : public SimpleProperty{
     std::array<unsigned, 1> isAlive;
     unsigned aliveNeighbors;
 
+
 };
+
 
 void printGolDomain(const std::vector<unsigned> domain, const unsigned width, const unsigned height, const unsigned generation){
     for(unsigned i = 0; i < domain.size(); ++i){
@@ -39,7 +33,7 @@ void printGolDomain(const std::vector<unsigned> domain, const unsigned width, co
 	}
 
 	if(domain.at(i)){
-	    std::cerr << "#";
+	  std::cerr << "#";
 	}
 	else {
 	    std::cerr << " ";
@@ -53,6 +47,7 @@ void printGolDomain(const std::vector<unsigned> domain, const unsigned width, co
 
 }
 
+
 template <class T_Cell>
 void updateState(std::vector<T_Cell> &cells){
     for(T_Cell &cell : cells){
@@ -61,6 +56,7 @@ void updateState(std::vector<T_Cell> &cells){
     }
 
 }
+
 
 template <class T_Cell>
 void updateState(T_Cell &cell){
@@ -87,91 +83,86 @@ void updateState(T_Cell &cell){
 
 }
 
+
 int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     /***************************************************************************
      * Configuration
      ****************************************************************************/
-    // Graph
-    typedef Graph<Cell, SimpleProperty>            LifeGraph;
-    typedef typename LifeGraph::Vertex             Vertex;
-    typedef typename LifeGraph::Edge               Edge;
-    typedef typename LifeGraph::EdgeDescriptor     EdgeDescriptor;
 
-    // Cal
-    typedef CommunicationPolicy::MPI               Mpi;
-    typedef CommunicationAbstractionLayer<Mpi>     MpiCAL;
-    typedef typename MpiCAL::Event                 Event;
+    // CommunicationPolicy
+    typedef graybat::communicationPolicy::MPI CP;
+    
+    // GraphPolicy
+    typedef graybat::graphPolicy::BGL<Cell>   GP;
 
-    // GVON
-    typedef GraphBasedVirtualOverlayNetwork<LifeGraph, MpiCAL>  GVON;
+    // Cave
+    typedef graybat::Cave<CP, GP>   MyCave;
+    typedef typename MyCave::Event  Event;
+    typedef typename MyCave::Vertex Vertex;
+    typedef typename MyCave::Edge   Edge;
 
     /***************************************************************************
-     * Init Communication
+     * Initialize Communication
      ****************************************************************************/
-    // Create Graph
+    //Create Graph
     const unsigned height = sqrt(nCells);
     const unsigned width  = height;
-    std::vector<Vertex> graphVertices;
-    std::vector<EdgeDescriptor> edges = Topology::gridDiagonal<LifeGraph>(height, width, graphVertices);
-    LifeGraph graph (edges, graphVertices);
 
-    // Inantiate communication objects
-    MpiCAL cal;
-    GVON gvon(cal);
-
-    // Distribute work evenly
-    std::vector<Vertex> hostedVertices = distribute::consecutive(cal.getGlobalContext(), graph);
-
-    // Announce vertices
-    gvon.announce(graph, hostedVertices); 
-
+    // Create GoL Graph
+    MyCave cave(graybat::pattern::GridDiagonal(height, width));
+    
+    // Distribute vertices
+    cave.distribute(graybat::mapping::Roundrobin());
+    
     /***************************************************************************
-     * Start Simulation
+     * Run Simulation
      ****************************************************************************/
     std::vector<Event> events;   
-    std::vector<unsigned> golDomain(graph.getVertices().size(), 0); 
+    std::vector<unsigned> golDomain(cave.getVertices().size(), 0); 
+    const Vertex root = cave.getVertex(0);
 
-    const Vertex root = graph.getVertices().at(0);
-
-    // Simulate life forever
+    // Simulate life 
     for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
 
 	// Print life field by owner of vertex 0
-	if(gvon.peerHostsVertex(root, graph)){
-	  printGolDomain(golDomain, width, height, timestep);
+	if(cave.peerHostsVertex(root)){
+	    printGolDomain(golDomain, width, height, timestep);
 	}
 	
 	// Send state to neighbor cells
-	for(Vertex &v : hostedVertices){
-	    for(std::pair<Vertex, Edge> edge : graph.getOutEdges(v)){
-		events.push_back(gvon.asyncSend(graph, edge.first, edge.second, v.isAlive));
+	for(Vertex v : cave.hostedVertices){
+	    for(auto link : cave.getOutEdges(v)){
+		Vertex destVertex = link.first;
+		Edge   destEdge   = link.second;
+		events.push_back(cave.asyncSend(destVertex, destEdge, v.isAlive));
 	    }
 	}
 
-	// Recv state from neighbor cells
-	for(Vertex &v : hostedVertices){
-	     for(std::pair<Vertex, Edge> edge : graph.getInEdges(v)){
-		 gvon.recv(graph, edge.first, edge.second, edge.first.isAlive);
-		 if(edge.first.isAlive[0]) v.aliveNeighbors++;
-	     }
-	 }
+     	// Recv state from neighbor cells
+     	for(Vertex &v : cave.hostedVertices){
+	    for(auto link : cave.getInEdges(v)){
+		Vertex srcVertex = link.first;
+		Edge   srcEdge   = link.second;
+		cave.recv(srcVertex, srcEdge, srcVertex.isAlive);
+		if(srcVertex.isAlive[0]) v.aliveNeighbors++;
+	    }
+	}
 
-	 // Wait to finish events
-	 for(unsigned i = 0; i < events.size(); ++i){
-	     events.back().wait();
-	     events.pop_back();
-	 }
+	// Wait to finish events
+	for(unsigned i = 0; i < events.size(); ++i){
+	    events.back().wait();
+	    events.pop_back();
+	}
 
-	 // Calculate state for next generation
-	 updateState(hostedVertices);
+	// Calculate state for next generation
+	updateState(cave.hostedVertices);
 
-	 // Gather state by vertex with id = 0
-	 for(Vertex &v: hostedVertices){
-	     v.aliveNeighbors = 0;
-	     gvon.gather(root, v, graph, v.isAlive, golDomain, true);
-	 }
-
-
+	// Gather state by vertex with id = 0
+	for(Vertex &v: cave.hostedVertices){
+	    v.aliveNeighbors = 0;
+	    cave.gather(root, v, v.isAlive, golDomain, true);
+	}
+	
     }
     
     return 0;
