@@ -334,7 +334,7 @@ namespace graybat {
 	 *
 	 */
 	template <typename T>
-	inline void recv(const Vertex srcVertex, const Edge edge, const T& data){
+	inline void recv(const Vertex srcVertex, const Edge edge, T& data){
 	    VAddr srcVAddr   = locateVertex(graph, srcVertex);
 	    Context context  = getGraphContext(graph);
 	    cal.recv(srcVAddr, edge.id, context, data);
@@ -353,7 +353,7 @@ namespace graybat {
 	 *
 	 */
 	template <typename T>
-	Event asyncRecv(Graph& graph, const Vertex srcVertex, const Edge edge, const T& data){
+	Event asyncRecv(Graph& graph, const Vertex srcVertex, const Edge edge, T& data){
 	    VAddr srcVAddr = locateVertex(graph, srcVertex);
 	    Context context  = getGraphContext(graph);
 	    return cal.asyncRecv(srcVAddr, edge.id, context, data);
