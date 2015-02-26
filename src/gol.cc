@@ -91,6 +91,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 
     // CommunicationPolicy
     typedef graybat::communicationPolicy::MPI CP;
+    typedef graybat::communicationPolicy::BMPI CP2;
     
     // GraphPolicy
     typedef graybat::graphPolicy::BGL<Cell>   GP;
@@ -112,7 +113,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     MyCave cave(graybat::pattern::GridDiagonal(height, width));
     
     // Distribute vertices
-    cave.distribute(graybat::mapping::Roundrobin());
+    cave.distribute(graybat::mapping::Consecutive());
     
     /***************************************************************************
      * Run Simulation
