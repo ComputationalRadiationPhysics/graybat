@@ -22,7 +22,6 @@ struct Cell : public graybat::graphPolicy::SimpleProperty{
     std::array<unsigned, 1> isAlive;
     unsigned aliveNeighbors;
 
-
 };
 
 
@@ -112,7 +111,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     MyCave cave(graybat::pattern::GridDiagonal(height, width));
     
     // Distribute vertices
-    cave.distribute(graybat::mapping::Random(1234));
+    cave.distribute(graybat::mapping::Consecutive());
 
     
     /***************************************************************************
