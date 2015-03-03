@@ -334,7 +334,7 @@ namespace graybat {
 	 *
 	 */
 	template <typename T>
-	inline void recv(const Vertex srcVertex, const Edge edge, const T& data){
+	inline void recv(const Vertex srcVertex, const Edge edge, T& data){
 	    VAddr srcVAddr   = locateVertex(graph, srcVertex);
 	    Context context  = getGraphContext(graph);
 	    cal.recv(srcVAddr, edge.id, context, data);
@@ -353,7 +353,7 @@ namespace graybat {
 	 *
 	 */
 	template <typename T>
-	Event asyncRecv(Graph& graph, const Vertex srcVertex, const Edge edge, const T& data){
+	Event asyncRecv(Graph& graph, const Vertex srcVertex, const Edge edge, T& data){
 	    VAddr srcVAddr = locateVertex(graph, srcVertex);
 	    Context context  = getGraphContext(graph);
 	    return cal.asyncRecv(srcVAddr, edge.id, context, data);
@@ -458,47 +458,47 @@ namespace graybat {
         // TODO: Simplify !!!
         // TODO: Better software design required !!!
 	template <typename T_Send, typename T_Recv>
-	void gather(const Vertex rootVertex, const Vertex srcVertex, T_Send sendData, T_Recv& recvData, const bool reorder){
-	    typedef typename T_Send::value_type T_Send_Container;
+	void gather(const Vertex rootVertex, const Vertex srcVertex, const T_Send sendData, T_Recv& recvData, const bool reorder){
+	    typedef typename T_Send::value_type SendValueType;
+	    typedef typename T_Recv::value_type RecvValueType;
 	
-	    static std::vector<T_Send_Container> gather;
-	    static T_Recv* rootRecvData = NULL;
-	    static bool hasRootVertex = false;
+	    static std::vector<SendValueType> gather;
+	    static T_Recv* rootRecvData     = NULL;
+	    static bool peerHostsRootVertex = false;
 
-	    VAddr srcVAddr  = locateVertex(graph, srcVertex);
-	    VAddr rootVAddr = locateVertex(graph, rootVertex);
-	    Context context   = getGraphContext(graph);
-	    std::vector<Vertex> vertices = getHostedVertices(graph, srcVAddr);
-
-	    gather.insert(gather.end(), sendData.begin(), sendData.end());
+	    VAddr rootVAddr  = locateVertex(graph, rootVertex);
+	    Context context  = getGraphContext(graph);
 	    
-	    if(rootVertex.id == srcVertex.id){
+	    // Insert data of srcVertex to the end of the gather vector
+	    gather.insert(gather.end(), sendData.begin(), sendData.end());
+
+	    // Store recv pointer of rootVertex
+	    if(srcVertex.id == rootVertex.id){
 		rootRecvData = &recvData;
-		hasRootVertex = true;
+		peerHostsRootVertex = true;
 	    }
 
-	    if(gather.size() == vertices.size()){
+	    if(gather.size() == hostedVertices.size()){
 		std::vector<unsigned> recvCount;
 
-		if(hasRootVertex){
+		if(peerHostsRootVertex){
 		    cal.gatherVar(rootVAddr, context, gather, *rootRecvData, recvCount);
 
 		    // Reordering code
 		    if(reorder){
-			std::vector<typename T_Recv::value_type> recvDataReordered(recvData.size());
-			unsigned vAddr = 0;
-			for(unsigned recv_i = 0; recv_i < recvData.size(); ){
+			std::vector<RecvValueType> recvDataReordered(recvData.size());
+			unsigned recv_i = 0;
+			for(unsigned vAddr = 0; vAddr < context.size(); vAddr++){
 			    std::vector<Vertex> hostedVertices = getHostedVertices(graph, vAddr);
 			    for(Vertex v: hostedVertices){
-				recvDataReordered.at(v.id) = rootRecvData->data()[recv_i];
+				assert(recv_i < recvData.size());
+				recvDataReordered.at(v.id) = rootRecvData->at(recv_i);
 				recv_i++;
 			    }
-			    vAddr++;
+			    
 			}
+			std::copy(recvDataReordered.begin(), recvDataReordered.end(), rootRecvData->begin());
 
-			for(unsigned i = 0; i < recvDataReordered.size(); ++i){
-			    rootRecvData->data()[i] = recvDataReordered[i];
-			}
 		    }
 		
 		}
@@ -507,7 +507,6 @@ namespace graybat {
 		}
 	    
 		gather.clear();
-
 
 	    }
 
@@ -518,11 +517,9 @@ namespace graybat {
 	 *  @todo get rid of sendData.begin(), sendData.end()
 	 *        T_Data should only use .size() and .data()
 	 *
-	 *  @todo reorder received data in vertex order
-	 *
 	 **/
 	template <typename T_Send, typename T_Recv>
-	void allGather(const Vertex srcVertex, Graph& graph, T_Send sendData, T_Recv& recvData){
+	void allGather(const Vertex srcVertex, Graph& graph, T_Send sendData, T_Recv& recvData, const bool reorder){
 	    typedef typename T_Send::value_type T_Send_Container;
 	
 	    static std::vector<T_Send_Container> gather;
@@ -540,6 +537,23 @@ namespace graybat {
 		std::vector<unsigned> recvCount;
 
 		cal.allGatherVar(context, gather, *(recvDatas[0]), recvCount);
+
+		if(reorder){
+		    std::vector<typename T_Recv::value_type> recvDataReordered(recvData.size());
+		    unsigned vAddr = 0;
+		    for(unsigned recv_i = 0; recv_i < recvData.size(); ){
+			std::vector<Vertex> hostedVertices = getHostedVertices(graph, vAddr);
+			for(Vertex v: hostedVertices){
+			    recvDataReordered.at(v.id) = recvDatas[0]->data()[recv_i];
+			    recv_i++;
+			}
+			vAddr++;
+		    }
+		    for(unsigned i = 0; i < recvDataReordered.size(); ++i){
+			recvDatas[0]->data()[i] = recvDataReordered[i];
+		    }
+		    
+		}
 
 		// Distribute Received Data to Hosted Vertices
 		//unsigned nElements = std::accumulate(recvCount.begin(), recvCount.end(), 0);

@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 2.8.5)
 ###############################################################################
 # Boost
 ###############################################################################
-find_package(Boost 1.46.0 REQUIRED)
+find_package(Boost 1.46.0 COMPONENTS mpi REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${Boost_LIBRARIES})
 
