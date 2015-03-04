@@ -7,7 +7,7 @@
 #include <exception>    /* std::out_of_range */
 #include <sstream>      /* std::stringstream */
 #include <algorithm>    /* std::transform */
-// #include <mpi.h>        /* MPI_* */
+ #include <mpi.h>        /* MPI_* */
 #include <dout.hpp>     /* dout */
 
 // Boost mpi stuff
@@ -285,7 +285,7 @@ namespace graybat {
 	     */
 	    template <typename T_Send, typename T_Recv>
 	    void gather(const VAddr rootVAddr, const Context context, const T_Send& sendData, T_Recv& recvData){	    Uri rootUri = getVAddrUri(context, rootVAddr);
-		mpi::gather(context.comm, sendData.data(), sendData.size(), recvData, rootUri);
+	    	mpi::gather(context.comm, sendData.data(), sendData.size(), recvData, rootUri);
 	    }
 
 	
@@ -311,7 +311,7 @@ namespace graybat {
 	    template <typename T_Send, typename T_Recv>
 	    void gatherVar(const VAddr rootVAddr, const Context context, const T_Send& sendData, T_Recv& recvData, std::vector<unsigned>& recvCount){
 	    	Uri rootUri = getVAddrUri(context, rootVAddr);
-		mpi::gather(context.comm, sendData.data(), sendData.size(), recvData, rootUri);
+		mpi::gather(context.comm, sendData.data(), sendData.size(), recvData.data(), rootUri);
 	    }
 
 	
