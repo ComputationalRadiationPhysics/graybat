@@ -90,7 +90,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
      ****************************************************************************/
 
     // CommunicationPolicy
-    typedef graybat::communicationPolicy::MPI CP;
+    typedef graybat::communicationPolicy::BMPI CP;
     
     // GraphPolicy
     typedef graybat::graphPolicy::BGL<Cell>    GP;
