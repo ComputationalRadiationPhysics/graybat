@@ -195,7 +195,8 @@ namespace graybat {
 	     * @return Event
 	     */
 	    template <typename T_Send>
-	    Event asyncSend(const VAddr destVAddr, const Tag tag, const Context context, const T_Send& sendData){	    Uri destUri = getVAddrUri(context, destVAddr);
+	    Event asyncSend(const VAddr destVAddr, const Tag tag, const Context context, const T_Send& sendData){
+		Uri destUri = getVAddrUri(context, destVAddr);
 		mpi::request request = context.comm.isend(destUri, tag, sendData.data(), sendData.size());
 	    	return Event(request);
 
