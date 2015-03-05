@@ -93,7 +93,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     typedef graybat::communicationPolicy::BMPI CP;
     
     // GraphPolicy
-    typedef graybat::graphPolicy::BGL<Cell>   GP;
+    typedef graybat::graphPolicy::BGL<Cell>    GP;
     
     // Cave
     typedef graybat::Cave<CP, GP>   MyCave;
@@ -112,7 +112,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     MyCave cave(graybat::pattern::GridDiagonal(height, width));
     
     // Distribute vertices
-    cave.distribute(graybat::mapping::Random(1234));
+    cave.distribute(graybat::mapping::Random(1));
 
     
     /***************************************************************************
@@ -122,7 +122,8 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
      std::vector<unsigned> golDomain(cave.getVertices().size(), 0); 
      const Vertex root = cave.getVertex(0);
 
-    // // Simulate life 
+
+     // Simulate life 
      for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
 
     	// Print life field by owner of vertex 0

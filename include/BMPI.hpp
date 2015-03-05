@@ -7,14 +7,16 @@
 #include <exception>    /* std::out_of_range */
 #include <sstream>      /* std::stringstream */
 #include <algorithm>    /* std::transform */
-// #include <mpi.h>        /* MPI_* */
+ #include <mpi.h>        /* MPI_* */
 #include <dout.hpp>     /* dout */
 
 // Boost mpi stuff
 #include <boost/mpi/environment.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/collectives.hpp>
+#include <boost/mpi/datatype.hpp>
 #include <boost/optional.hpp>
+
 
 namespace mpi = boost::mpi;
 
@@ -193,7 +195,8 @@ namespace graybat {
 	     * @return Event
 	     */
 	    template <typename T_Send>
-	    Event asyncSend(const VAddr destVAddr, const Tag tag, const Context context, const T_Send& sendData){	    Uri destUri = getVAddrUri(context, destVAddr);
+	    Event asyncSend(const VAddr destVAddr, const Tag tag, const Context context, const T_Send& sendData){
+		Uri destUri = getVAddrUri(context, destVAddr);
 		mpi::request request = context.comm.isend(destUri, tag, sendData.data(), sendData.size());
 	    	return Event(request);
 
@@ -284,8 +287,9 @@ namespace graybat {
 	     *                        *context* will be empty.
 	     */
 	    template <typename T_Send, typename T_Recv>
-	    void gather(const VAddr rootVAddr, const Context context, const T_Send& sendData, T_Recv& recvData){	    Uri rootUri = getVAddrUri(context, rootVAddr);
-		mpi::gather(context.comm, sendData.data(), sendData.size(), recvData, rootUri);
+	    void gather(const VAddr rootVAddr, const Context context, const T_Send& sendData, T_Recv& recvData){
+		Uri rootUri = getVAddrUri(context, rootVAddr);
+	    	mpi::gather(context.comm, sendData.data(), sendData.size(), recvData, rootUri);
 	    }
 
 	
@@ -299,6 +303,9 @@ namespace graybat {
 	     *       of every peer is a further gather operation and therefore extra
 	     *       overhead.
 	     *
+	     * @todo Replace by boost gatherv version when available.
+	     *       Patches are already submited
+	     *
 	     * @param[in]  rootVAddr  Peer that will receive collcted data from *context* members
 	     * @param[in]  context    Set of peers that want to send Data
 	     * @param[in]  sendData   Data that every peer in the *context* sends. The Data can have **varying** size
@@ -310,8 +317,32 @@ namespace graybat {
 	     */
 	    template <typename T_Send, typename T_Recv>
 	    void gatherVar(const VAddr rootVAddr, const Context context, const T_Send& sendData, T_Recv& recvData, std::vector<unsigned>& recvCount){
-	    	Uri rootUri = getVAddrUri(context, rootVAddr);
-		mpi::gather(context.comm, sendData.data(), sendData.size(), recvData, rootUri);
+		// Retrieve number of elements each peer sends
+		recvCount.resize(context.size());
+		std::array<unsigned, 1> nElements{{(unsigned)sendData.size()}};
+		allGather(context, nElements, recvCount);
+		recvData.resize(std::accumulate(recvCount.begin(), recvCount.end(), 0U));
+
+		Uri rootUri = getVAddrUri(context, rootVAddr);
+		int rdispls[context.size()];
+
+		// Create offset map 
+		unsigned offset  = 0;
+		for (unsigned i=0; i < context.size(); ++i) { 
+		    rdispls[i] = offset; 
+		    offset += recvCount[i];
+		
+		}
+	    
+		// Gather data with varying size
+		MPI_Gatherv(const_cast<typename T_Send::value_type*>(sendData.data()), sendData.size(),
+			    mpi::get_mpi_datatype<typename T_Send::value_type>(*(sendData.data())),
+			    const_cast<typename T_Recv::value_type*>(recvData.data()),
+			    const_cast<int*>((int*)recvCount.data()), rdispls,
+			    mpi::get_mpi_datatype<typename T_Recv::value_type>(*(recvData.data())), 
+			    rootUri, context.comm);
+		
+		
 	    }
 
 	
@@ -343,7 +374,29 @@ namespace graybat {
 	     */
 	     template <typename T_Send, typename T_Recv>
 	     void allGatherVar(const Context context, const T_Send& sendData, T_Recv& recvData, std::vector<unsigned>& recvCount){
-		 mpi::all_gather(context.comm, sendData.data(), sendData.size(), recvData.data());
+	         // Retrieve number of elements each peer sends
+	         recvCount.resize(context.size());
+	         allGather(context, std::array<unsigned, 1>{{(unsigned)sendData.size()}}, recvCount);
+	         recvData.resize(std::accumulate(recvCount.begin(), recvCount.end(), 0U));
+
+		 int rdispls[context.size()];
+
+		 // Create offset map
+		 unsigned offset  = 0;
+		 for (unsigned i=0; i < context.size(); ++i) { 
+		     rdispls[i] = offset; 
+		     offset += recvCount[i];
+		
+		 }
+	    
+		 // Gather data with varying size
+		 MPI_Allgatherv(const_cast<typename T_Send::value_type*>(sendData.data()), sendData.size(),
+				mpi::get_mpi_datatype<typename T_Send::value_type>(*(sendData.data())),
+				const_cast<typename T_Recv::value_type*>(recvData.data()),
+				const_cast<int*>((int*)recvCount.data()), rdispls,
+				mpi::get_mpi_datatype<typename T_Recv::value_type>(*(recvData.data())), 
+				context.comm);
+		 
 		 
 	     }
 
