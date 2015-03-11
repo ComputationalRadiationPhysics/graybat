@@ -4,7 +4,7 @@
 #include <vector>    /* std::vector */
 #include <assert.h>  /* assert */
 #include <stdlib.h>  /* srand, rand */
-#include <metis.h>   
+#include <metis.h>   /* idx_t, METIS_PartGraphKway */
 
 /*******************************************************************************
  *
@@ -19,10 +19,14 @@ namespace graybat {
 
 	/**
 	 * Partitioning of the communication graph
-	 * into k parts.
+	 * into k parts. k is set either to the 
+	 * number of peers that want to take
+	 * part in communication or is given
+	 * as an input parameter.
 	 *
+	 * @param  nParts number of parts to partition
+	 * @return set of vertices that belong "together"
 	 */
-	
 	struct GraphPartition {
 
 	    GraphPartition() : GraphPartition(0){
@@ -34,9 +38,15 @@ namespace graybat {
 
 	    }
 
-	    // Compressed Row Storage format
+	    /**
+	     * @Brief Translates the graph into the compressed row storage
+	     *        format (CSR) which can be parsed by Metis.
+	     *
+	     * @See http://en.wikipedia.org/wiki/Sparse_matrix#Compressed_row_Storage_.28CRS_or_CSR.29
+	     *
+	     */
 	    template<typename T_Graph>
-	    std::pair<std::vector<idx_t>, std::vector<idx_t> > CSR(T_Graph &graph) {
+	    std::pair<std::vector<idx_t>, std::vector<idx_t> > toCompressedRowStorage(T_Graph &graph) {
 		
 		typedef typename T_Graph::Vertex Vertex;
 		typedef typename T_Graph::Edge   Edge;
@@ -68,7 +78,7 @@ namespace graybat {
 
 		typedef typename T_Graph::Vertex Vertex;
 		std::vector<Vertex> myVertices;
-		auto csr = CSR(graph);
+		auto csr = toCompressedRowStorage(graph);
 
 		if(nParts == 0){
 		    nParts = processCount;
