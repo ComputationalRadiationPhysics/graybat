@@ -4,6 +4,7 @@
 #include <vector>    /* std::vector */
 #include <assert.h>  /* assert */
 #include <stdlib.h>  /* srand, rand */
+#include <metis.h>   
 
 /*******************************************************************************
  *
@@ -15,6 +16,87 @@ namespace graybat {
 
     namespace mapping {
 
+
+	/**
+	 * Partitioning of the communication graph
+	 * into k parts.
+	 *
+	 */
+	
+	struct PartitionKWay {
+
+	    PartitionKWay(unsigned nParts)
+		: nParts(nParts){
+
+	    }
+
+	    // Compressed Row Storage format
+	    template<typename T_Graph>
+	    std::pair<std::vector<idx_t>, std::vector<idx_t> > CSR(T_Graph &graph) {
+		
+		typedef typename T_Graph::Vertex Vertex;
+		typedef typename T_Graph::Edge   Edge;
+
+		unsigned i = 0;
+
+		std::vector<idx_t> xadj(1,i);
+		std::vector<idx_t> adjncy;
+
+		
+		for(Vertex v : graph.getVertices()){
+		    for(auto link : graph.getOutEdges(v)){
+			Vertex destVertex = link.first;
+			Edge   destEdge   = link.second;
+
+			adjncy.push_back(destVertex.id);
+			i++;
+			
+		    }
+		    xadj.push_back(i);
+
+		}
+		
+		return std::make_pair(xadj, adjncy);
+	    }
+
+	    template<typename T_Graph>
+	    std::vector<typename T_Graph::Vertex> operator()(const unsigned processID, const unsigned processCount, T_Graph &graph){
+
+		typedef typename T_Graph::Vertex Vertex;
+		std::vector<Vertex> myVertices;
+		auto csr = CSR(graph);
+
+		
+		idx_t nVertices = graph.getVertices().size();
+		idx_t nWeights  = 1;
+		idx_t objval;
+		std::vector<idx_t> part(nVertices, 0);
+		
+		int ret = METIS_PartGraphKway(&nVertices, &nWeights,
+					      csr.first.data(), csr.second.data(),
+					      NULL, NULL, NULL, &nParts, NULL,
+					      NULL, NULL,
+					      &objval,
+					      part.data());
+
+		
+		for(unsigned part_i = 0; part_i < part.size(); part_i++){
+		    if(part[part_i] == processID){
+			myVertices.push_back(graph.getVertices().at(part_i));
+		    }
+		    
+		    std::cout << part_i << " " << part[part_i] << std::endl;
+		} 
+		
+		return myVertices;
+	    }
+
+	private:
+	    idx_t nParts;
+
+	};
+
+	
 
 	/**
 	 * Random distribution of vertices of the *graph* to the
