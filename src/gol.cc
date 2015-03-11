@@ -112,7 +112,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     MyCave cave(graybat::pattern::GridDiagonal(height, width));
     
     // Distribute vertices
-    cave.distribute(graybat::mapping::PartitionKWay(2));
+    cave.distribute(graybat::mapping::GraphPartition());
 
     
     /***************************************************************************

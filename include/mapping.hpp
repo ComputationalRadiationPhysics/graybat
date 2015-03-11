@@ -23,9 +23,13 @@ namespace graybat {
 	 *
 	 */
 	
-	struct PartitionKWay {
+	struct GraphPartition {
 
-	    PartitionKWay(unsigned nParts)
+	    GraphPartition() : GraphPartition(0){
+
+	    }
+	    
+	    GraphPartition(unsigned nParts)
 		: nParts(nParts){
 
 	    }
@@ -66,26 +70,29 @@ namespace graybat {
 		std::vector<Vertex> myVertices;
 		auto csr = CSR(graph);
 
+		if(nParts == 0){
+		    nParts = processCount;
+		}
 		
 		idx_t nVertices = graph.getVertices().size();
 		idx_t nWeights  = 1;
 		idx_t objval;
 		std::vector<idx_t> part(nVertices, 0);
 		
-		int ret = METIS_PartGraphKway(&nVertices, &nWeights,
-					      csr.first.data(), csr.second.data(),
-					      NULL, NULL, NULL, &nParts, NULL,
-					      NULL, NULL,
-					      &objval,
-					      part.data());
+		METIS_PartGraphKway(&nVertices, &nWeights,
+				    csr.first.data(), csr.second.data(),
+				    NULL, NULL, NULL, &nParts, NULL,
+				    NULL, NULL,
+				    &objval,
+				    part.data());
 
 		
 		for(unsigned part_i = 0; part_i < part.size(); part_i++){
-		    if(part[part_i] == processID){
+		    if(part[part_i] == (int)processID){
 			myVertices.push_back(graph.getVertices().at(part_i));
 		    }
 		    
-		    std::cout << part_i << " " << part[part_i] << std::endl;
+		    //std::cout << part_i << " " << part[part_i] << std::endl;
 		} 
 		
 		return myVertices;

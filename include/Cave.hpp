@@ -259,6 +259,15 @@ namespace graybat {
 
 	}
 
+	/**
+	 * @breif Returns the number of hosts
+	 *        of the current **graph**.
+	 *
+	 */
+	unsigned nHosts(){
+	    return getGraphContext(graph).size();
+	}
+
 
 	/**
 	 * @brief Returns true if the *vertex* is hosted by the
