@@ -1,6 +1,19 @@
 project(genericCommunicator)
 cmake_minimum_required(VERSION 2.8.5)
 
+
+###############################################################################
+# CMAKE module path in utils/cmake/modules/
+###############################################################################
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/utils/cmake/modules/" ${CMAKE_MODULE_PATH})
+
+###############################################################################
+# METIS
+###############################################################################
+find_package(METIS 5.1.0 REQUIRED)
+include_directories(SYSTEM ${METIS_INCLUDE_DIRS})
+set(LIBS ${LIBS} ${METIS_LIBRARIES})
+
 ###############################################################################
 # Boost
 ###############################################################################
@@ -9,7 +22,7 @@ include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${Boost_LIBRARIES})
 
 ################################################################################
-# Find MPI
+# MPI
 ################################################################################
 find_package(MPI REQUIRED)
   include_directories(SYSTEM ${MPI_C_INCLUDE_PATH})
