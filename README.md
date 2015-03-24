@@ -66,6 +66,9 @@ the usage. All targets provide the synopthis of their executables.
 
  * clean: Cleanup build directory
 
+##Literature##
+ * Talk by Erik Zenker from his diploma defence [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.16306.svg)](http://dx.doi.org/10.5281/zenodo.16306)
+
 
 
 ##Authors##
