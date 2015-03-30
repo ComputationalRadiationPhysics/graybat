@@ -453,64 +453,81 @@ namespace graybat {
 
 	}
     
-
-        // This function is the hell
-        // TODO: Simplify !!!
-        // TODO: Better software design required !!!
-	template <typename T_Send, typename T_Recv>
-	void gather(const Vertex rootVertex, const Vertex srcVertex, const T_Send sendData, T_Recv& recvData, const bool reorder){
-	    typedef typename T_Send::value_type SendValueType;
-	    typedef typename T_Recv::value_type RecvValueType;
+      // This function is the hell
+      // TODO: Simplify !!!
+      // TODO: Better software design required !!!
+      template <typename T_Send, typename T_Recv>
+      void gather(const Vertex rootVertex, const Vertex srcVertex, const T_Send sendData, T_Recv& recvData, const bool reorder){
+	typedef typename T_Send::value_type SendValueType;
+	typedef typename T_Recv::value_type RecvValueType;
 	
-	    static std::vector<SendValueType> gather;
-	    static T_Recv* rootRecvData     = NULL;
-	    static bool peerHostsRootVertex = false;
+	static std::vector<SendValueType> gather;
+	static T_Recv* rootRecvData     = NULL;
+	static bool peerHostsRootVertex = false;
+	static unsigned nGatherCalls    = 0;
 
-	    VAddr rootVAddr  = locateVertex(graph, rootVertex);
-	    Context context  = getGraphContext(graph);
-	    
-	    // Insert data of srcVertex to the end of the gather vector
-	    gather.insert(gather.end(), sendData.begin(), sendData.end());
+	nGatherCalls++;
 
-	    // Store recv pointer of rootVertex
-	    if(srcVertex.id == rootVertex.id){
-		rootRecvData = &recvData;
-		peerHostsRootVertex = true;
+	VAddr rootVAddr  = locateVertex(graph, rootVertex);
+	Context context  = getGraphContext(graph);
+
+	// Insert data of srcVertex to the end of the gather vector
+	gather.insert(gather.end(), sendData.begin(), sendData.end());
+
+	// Store recv pointer of rootVertex
+	if(srcVertex.id == rootVertex.id){
+	  rootRecvData = &recvData;
+	  peerHostsRootVertex = true;
+	}
+
+	if(nGatherCalls == hostedVertices.size()){
+	  std::vector<unsigned> recvCount;
+	  std::vector<unsigned> prefixsum(context.size(),0);
+
+	  if(peerHostsRootVertex){
+	    cal.gatherVar(rootVAddr, context, gather, *rootRecvData, recvCount);
+
+	    // TODO
+	    // std::partial_sum might do the job
+	    unsigned sum = 0;
+	    for(unsigned count_i = 0; count_i < recvCount.size(); ++count_i){
+	      prefixsum[count_i] = sum;
+	      sum += recvCount[count_i];
 	    }
+		    
+	    // Reordering code
+	    if(reorder){
+	      std::vector<RecvValueType> recvDataReordered(recvData.size());
+	      for(unsigned vAddr = 0; vAddr < context.size(); vAddr++){
+		std::vector<Vertex> hostedVertices = getHostedVertices(graph, vAddr);
+		unsigned nElementsPerVertex = recvCount.at(vAddr) / hostedVertices.size();
 
-	    if(gather.size() == hostedVertices.size()){
-		std::vector<unsigned> recvCount;
+		unsigned hVertex_i=0;
+		for(Vertex v: hostedVertices){
 
-		if(peerHostsRootVertex){
-		    cal.gatherVar(rootVAddr, context, gather, *rootRecvData, recvCount);
+		  std::copy(rootRecvData->begin()+(prefixsum[vAddr] + (hVertex_i * nElementsPerVertex)),
+			    rootRecvData->begin()+(prefixsum[vAddr] + (hVertex_i * nElementsPerVertex)) + (nElementsPerVertex),
+			    recvDataReordered.begin()+(v.id*nElementsPerVertex));
+		  hVertex_i++;
 
-		    // Reordering code
-		    if(reorder){
-			std::vector<RecvValueType> recvDataReordered(recvData.size());
-			unsigned recv_i = 0;
-			for(unsigned vAddr = 0; vAddr < context.size(); vAddr++){
-			    std::vector<Vertex> hostedVertices = getHostedVertices(graph, vAddr);
-			    for(Vertex v: hostedVertices){
-				assert(recv_i < recvData.size());
-				recvDataReordered.at(v.id) = rootRecvData->at(recv_i);
-				recv_i++;
-			    }
+		}
 			    
-			}
-			std::copy(recvDataReordered.begin(), recvDataReordered.end(), rootRecvData->begin());
-
-		    }
-		
-		}
-		else {
-		    cal.gatherVar(rootVAddr, context, gather, recvData, recvCount);
-		}
-	    
-		gather.clear();
+	      }
+	      std::copy(recvDataReordered.begin(), recvDataReordered.end(), rootRecvData->begin());
 
 	    }
+		
+	  }
+	  else {
+	    cal.gatherVar(rootVAddr, context, gather, recvData, recvCount);
+	  }
+	    
+	  gather.clear();
+	  nGatherCalls = 0;
 
 	}
+
+      }
 
 
 	/**
