@@ -13,12 +13,12 @@ script:
   - mkdir build
   - cd build
   - echo "Clang++ build test"
-  - cmake -DCMAKE_CXX_COMPILER='which clang++' ..
+  - cmake -DCMAKE_CXX_COMPILER=`which clang++` ..
   - make GoL
   - mpiexec --allow-run-as-root ./GoL 90 10
   - rm * -rf
   - echo "G++ build test"
-  - cmake -DCMAKE_CXX_COMPILER='which g++' ..
+  - cmake -DCMAKE_CXX_COMPILER=`which g++` ..
   - make GoL
   - mpiexec --allow-run-as-root ./GoL 90 10
 
