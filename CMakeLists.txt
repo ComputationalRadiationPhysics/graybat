@@ -34,7 +34,11 @@ endif(${CMAKE_COMPILER_IS_GNUCXX})
 option(USE_CLANG "Use clang for compilation" OFF)
 if(${CMAKE_CXX_COMPILER} STREQUAL "/usr/bin/clang++")
   set (USE_CLANG "ON")
-endif(${CMAKE_CXX_COMPILER} STREQUAL "/usr/bin/clang++")  
+endif(${CMAKE_CXX_COMPILER} STREQUAL "/usr/bin/clang++")
+
+if(${CMAKE_CXX_COMPILER} STREQUAL "/usr/sbin/clang++")
+  set (USE_CLANG "ON")
+endif(${CMAKE_CXX_COMPILER} STREQUAL "/usr/sbin/clang++")  
 
 if(${USE_CLANG})
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
