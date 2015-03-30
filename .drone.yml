@@ -8,6 +8,7 @@ script:
   - echo "# SCRIPT"
   - pwd
   - ls -lah
+  - pacman -Sy
   - pacman -S gcc clang boost openmpi --noconfirm
   - git submodule init
   - git submodule update
