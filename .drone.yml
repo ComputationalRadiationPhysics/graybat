@@ -12,9 +12,15 @@ script:
   - git submodule update
   - mkdir build
   - cd build
-  - cmake ..
+  - echo "Clang++ build test"
+  - cmake -DCMAKE_CXX_COMPILER='which clang++' ..
   - make GoL
-  - mpiexec --allow-run-as-root ./GoL 90 1 
+  - mpiexec --allow-run-as-root ./GoL 90 10
+  - rm * -rf
+  - echo "G++ build test"
+  - cmake -DCMAKE_CXX_COMPILER='which g++' ..
+  - make GoL
+  - mpiexec --allow-run-as-root ./GoL 90 10
 
 before_script:
   - echo "# BEFORE SCRIPT"
