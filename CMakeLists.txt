@@ -24,26 +24,35 @@ endif(MPI_CXX_FOUND)
 ###############################################################################
 # Compiler Flags
 ###############################################################################
-if(${CMAKE_COMPILER_IS_GNUCXX})
+#set(${TEST})
+string(FIND ${CMAKE_CXX_COMPILER} "clang++" CXX_COMPILER_IS_CLANG++)
+string(FIND ${CMAKE_CXX_COMPILER} "clang++" CXX_COMPILER_IS_G++)
+
+#if(${CLANG})
+	#message("Clang++")
+#endif(${CLANG})
+
+
+if(${CXX_COMPILER_IS_G++})
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-endif(${CMAKE_COMPILER_IS_GNUCXX})
+endif(${CXX_COMPILER_IS_G++})
 
-option(USE_CLANG "Use clang for compilation" OFF)
-if(${CMAKE_CXX_COMPILER} STREQUAL "/usr/bin/clang++")
-  set (USE_CLANG "ON")
-endif(${CMAKE_CXX_COMPILER} STREQUAL "/usr/bin/clang++")
+#option(USE_CLANG "Use clang for compilation" OFF)
+#if(${CMAKE_CXX_COMPILER} STREQUAL "/usr/bin/clang++")
+#  set (USE_CLANG "ON")
+#endif(${CMAKE_CXX_COMPILER} STREQUAL "/usr/bin/clang++")
 
-if(${CMAKE_CXX_COMPILER} STREQUAL "/usr/sbin/clang++")
-  set (USE_CLANG "ON")
-endif(${CMAKE_CXX_COMPILER} STREQUAL "/usr/sbin/clang++")  
+#if(${CMAKE_CXX_COMPILER} STREQUAL "/usr/sbin/clang++")
+#  set (USE_CLANG "ON")
+#endif(${CMAKE_CXX_COMPILER} STREQUAL "/usr/sbin/clang++")  
 
-if(${USE_CLANG})
+if(${CXX_COMPILER_IS_CLANG++})
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
-endif(${USE_CLANG})
+endif(${CXX_COMPILER_IS_CLANG++})
 
 ###############################################################################
 # Build executables
