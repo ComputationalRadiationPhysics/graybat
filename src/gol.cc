@@ -111,7 +111,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     MyCave cave(graybat::pattern::GridDiagonal(height, width));
     
     // Distribute vertices
-    cave.distribute(graybat::mapping::Consecutive());
+    cave.distribute(graybat::mapping::GraphPartition());
     
     /***************************************************************************
      * Run Simulation
