@@ -58,7 +58,7 @@ namespace graybat {
      */
     template<typename T>
     struct MPIDatatypes{
-	static constexpr MPI_Datatype type = MPI_CHAR;
+	static constexpr MPI_Datatype type = static_cast<const MPI_Datatype>(MPI_CHAR);
     };
 
     template<>
@@ -78,7 +78,7 @@ namespace graybat {
 
     template<>
     struct MPIDatatypes<unsigned>{
-	static constexpr MPI_Datatype type = MPI_UNSIGNED;
+	static constexpr MPI_Datatype type = static_cast<const MPI_Datatype>(MPI_UNSIGNED);
     };
 
     template<>

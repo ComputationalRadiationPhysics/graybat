@@ -42,9 +42,14 @@ GrayBat  is licensed under the **GPLv3+**. Please refer to our [LICENSE.md](LICE
  * clone the repository: `git clone https://github.com/computationalradiationphysics/GrayBat.git`
  * create the build directory: `mkdir -p GrayBat/build`
  * go to build directory: `cd GrayBat/build`
+ * set compiler: `export CXX=[g++,clang++]`
  * create Makefile `cmake ..`
  * build project : `make [target]`
- 
+
+##Tested Compilers##
+
+ * clang 3.5
+ * g++ 4.9.2
 
 ### Current Compilation Status:
 
