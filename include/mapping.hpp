@@ -83,6 +83,10 @@ namespace graybat {
 		if(nParts == 0){
 		    nParts = processCount;
 		}
+
+		if(nParts == 1){
+		    return graph.getVertices();
+		}
 		
 		idx_t nVertices = graph.getVertices().size();
 		idx_t nWeights  = 1;
@@ -102,7 +106,6 @@ namespace graybat {
 			myVertices.push_back(graph.getVertices().at(part_i));
 		    }
 		    
-		    //std::cout << part_i << " " << part[part_i] << std::endl;
 		} 
 		
 		return myVertices;
