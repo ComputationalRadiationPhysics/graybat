@@ -44,7 +44,11 @@ GrayBat  is licensed under the **GPLv3+**. Please refer to our [LICENSE.md](LICE
  * go to build directory: `cd GrayBat/build`
  * create Makefile `cmake ..`
  * build project : `make [target]`
- 
+
+##Tested Compilers##
+
+ * clang 3.5
+ * g++ 4.9.2
 
 ### Current Compilation Status:
 
