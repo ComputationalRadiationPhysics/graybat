@@ -10,7 +10,8 @@
 //#include <MPI.hpp>     /* graybat::communicationPolicy::MPI */
 #include <BMPI.hpp>    /* graybat::communicationPolicy::BMPI */
 #include <Cave.hpp>    /* graybat::Cave */
-#include <mapping.hpp> /* graybat::Consecutive etc. */
-#include <pattern.hpp> /* graybat::GridDiagonal */
+#include <mapping/mapping.hpp> /* graybat::mapping::Consecutive etc. */
+//#include <mapping/GraphPartition.hpp> /* graybat::mappping::GraphPartition*/
+#include <pattern.hpp> /* graybat::pattern::GridDiagonal */
 
 
