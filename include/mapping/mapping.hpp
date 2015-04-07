@@ -4,7 +4,6 @@
 #include <vector>    /* std::vector */
 #include <assert.h>  /* assert */
 #include <stdlib.h>  /* srand, rand */
-#include <metis.h>   /* idx_t, METIS_PartGraphKway */
 
 /*******************************************************************************
  *
