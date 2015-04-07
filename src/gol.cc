@@ -103,7 +103,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     /***************************************************************************
      * Initialize Communication
      ****************************************************************************/
-    //Create Graph
+    // Set Graph properties
     const unsigned height = sqrt(nCells);
     const unsigned width  = height;
 
@@ -111,7 +111,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     MyCave cave(graybat::pattern::GridDiagonal(height, width));
     
     // Distribute vertices
-    cave.distribute(graybat::mapping::GraphPartition());
+    cave.distribute(graybat::mapping::Consecutive());
     
     /***************************************************************************
      * Run Simulation
