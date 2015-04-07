@@ -1,5 +1,10 @@
 // Communication
 #include <graybat.hpp>
+#include <mapping/Consecutive.hpp>
+#include <mapping/Random.hpp>
+#include <mapping/RoundRobin.hpp>
+//#include <mapping/GraphPartition.hpp>
+
 
 // STL
 #include <iostream>   /* std::cout */
