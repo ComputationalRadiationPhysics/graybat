@@ -6,7 +6,6 @@
 #include <assert.h>  /* assert */
 #include <cstddef>    /* nullptr_t */
 
-#include <binaryOperation.hpp> /* op::maximum */
 #include <dout.hpp>            /* dout::Dout::getInstance() */
 
 /************************************************************************//**
@@ -42,12 +41,7 @@ namespace graybat {
 	typedef typename CommunicationPolicy::Context   Context;
 	typedef typename CommunicationPolicy::ContextID ContextID;
 
-	template <class T_Functor>
-	Cage(T_Functor graphFunctor) : graph(GraphPolicy(graphFunctor())){
 
-	}
-
-      
       	/***************************************************************************
 	 *
 	 * MEMBER
@@ -586,6 +580,8 @@ namespace graybat {
 
 	}
 
+
     };
 
 } // namespace graybat
+
