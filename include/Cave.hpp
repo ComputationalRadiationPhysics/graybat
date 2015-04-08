@@ -6,24 +6,31 @@
 #include <assert.h>  /* assert */
 #include <cstddef>    /* nullptr_t */
 
-#include <binaryOperation.hpp> /* op::maximum */
 #include <dout.hpp>            /* dout::Dout::getInstance() */
 
-/************************************************************************//**
- * @class Cave
- *
- * @brief A central instance to locate the host 
- *        of vertices.
- *
- * @remark A peer can host several vertices.
- * @todo   Think of vertices hosted by several peers
- *         for fault tolerance purpose
- * @todo remove T_Graph template
+/**
+ * @defgroup group1 The frist group
+ * 
+ * @{
  *
  *
- ***************************************************************************/
+ */
+
 namespace graybat {
 
+    /************************************************************************//**
+     * @class Cave
+     *
+     * @brief A central instance to locate the host 
+     *        of vertices.
+     *
+     * @remark A peer can host several vertices.
+     * @todo   Think of vertices hosted by several peers
+     *         for fault tolerance purpose
+     * @todo remove T_Graph template
+     *
+     *
+     ***************************************************************************/
     template <typename T_CAL, typename T_Graph>
     struct Cave {
 	typedef T_CAL                            CAL;
@@ -181,7 +188,7 @@ namespace graybat {
 		// Retrieve maximum number of vertices per peer
 		std::vector<unsigned> myVerticesCount(1,vertices.size());
 		std::vector<unsigned> maxVerticesCount(1,  0);
-		cal.allReduce(newContext, op::maximum<unsigned>(), myVerticesCount, maxVerticesCount);
+		cal.allReduce(newContext, maximum<unsigned>(), myVerticesCount, maxVerticesCount);
 
 		// Gather maxVerticesCount times vertex ids
 		std::vector<std::vector<Vertex> > newVertexMaps (newContext.size(), std::vector<Vertex>());
@@ -629,6 +636,23 @@ namespace graybat {
 	 ***************************************************************************/
 
 	/**
+	 *  @brief Compute the maximum of two values.
+	 *
+	 *  This binary function object computes the maximum of the two values
+	 *  it is given. When used with MPI and a type @c T that has an
+	 *  associated, built-in MPI data type, translates to @c MPI_MAX.
+	 */
+	template<typename T>
+	struct maximum : public std::binary_function<T, T, T>
+	{
+	    /** @returns the maximum of x and y. */
+	    const T& operator()(const T& x, const T& y) const
+	    {
+		return x < y? y : x;
+	    }
+	};
+	
+	/**
 	 * @brief Returns a set of all host peer VAddrs of the *graph*
 	 *
 	 */
@@ -698,3 +722,5 @@ namespace graybat {
     };
 
 } // namespace graybat
+
+/** @} */ // end of group1
