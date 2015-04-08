@@ -1,15 +1,18 @@
 #pragma once
 
 /**
- * @mainpage 
+ * @mainpage GrayBat Introduction
  *  
  * Hello World
+ */
+
+/** 
+ * @page Mypage
+ * @section section_1 Section 1
  *
- * @section Section 1
+ * @section section_2 Section 2
  *
- * @section Section 2
- *
- * @subsection Section 2.1
+ * @subsection section_2_1 Section 2.1
  *
  */
 
