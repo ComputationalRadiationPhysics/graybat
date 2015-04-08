@@ -9,12 +9,27 @@
 #include <dout.hpp>            /* dout::Dout::getInstance() */
 
 /**
- * @defgroup group1 The frist group
+ * @defgroup communicationPolicy Communication Policy
  * 
- * @{
- *
- *
  */
+
+/**
+ * @defgroup graphPolicy Graph Policy
+ * 
+ */
+
+
+/**
+ * @defgroup pattern Communication Pattern
+ * 
+ */
+
+
+/**
+ * @defgroup mapping Graph Mappings
+ * 
+ */
+
 
 namespace graybat {
 
@@ -723,4 +738,4 @@ namespace graybat {
 
 } // namespace graybat
 
-/** @} */ // end of group1
+
