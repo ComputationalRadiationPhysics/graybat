@@ -12,14 +12,6 @@
 #include <fstream> /* std::fstream */
 
 
-/************************************************************************//**
- * @class BGL
- *									   
- * @brief A class to describe directed graphs.
- *
- * GraphPolicy on basis of the boost graph library.
- *
- ***************************************************************************/
 namespace graybat {
     
     namespace graphPolicy {
@@ -32,6 +24,14 @@ namespace graybat {
 	    ID id;
 	};
 
+	/************************************************************************//**
+         * @class BGL
+	 *									   
+	 * @brief A class to describe directed graphs.
+	 *
+	 * GraphPolicy on basis of the boost graph library.
+	 *
+	 ***************************************************************************/
 	template <class T_VertexProperty = SimpleProperty, class T_EdgeProperty = SimpleProperty>
 	class BGL {
 
