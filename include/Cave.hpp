@@ -304,7 +304,7 @@ namespace graybat {
 	 *
 	 */
 	template <typename T>
-	inline void send(Graph &graph, const Vertex destVertex, const Edge edge, const T& data){
+	inline void send(const Vertex destVertex, const Edge edge, const T& data){
 	    VAddr destVAddr   = locateVertex(graph, destVertex);
 	    Context context   = getGraphContext(graph);
 	    cal.send(destVAddr, edge.id, context, data);
@@ -362,7 +362,7 @@ namespace graybat {
 	 *
 	 */
 	template <typename T>
-	Event asyncRecv(Graph& graph, const Vertex srcVertex, const Edge edge, T& data){
+	Event asyncRecv(const Vertex srcVertex, const Edge edge, T& data){
 	    VAddr srcVAddr = locateVertex(graph, srcVertex);
 	    Context context  = getGraphContext(graph);
 	    return cal.asyncRecv(srcVAddr, edge.id, context, data);
@@ -376,7 +376,7 @@ namespace graybat {
 	 **************************************************************************/ 
 
 	template <typename T_Data, typename Op>
-	void reduce(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, Op op, const std::vector<T_Data> sendData, std::vector<T_Data>& recvData){
+	void reduce(const Vertex rootVertex, const Vertex srcVertex, Op op, const std::vector<T_Data> sendData, std::vector<T_Data>& recvData){
 	    static std::vector<T_Data> reduce;
 	    static std::vector<T_Data>* rootRecvData;
 	    static unsigned vertexCount = 0;
@@ -692,8 +692,6 @@ namespace graybat {
 	    graphMap[graph.id] = newContext;
     
 	}
-
-
 
     };
 

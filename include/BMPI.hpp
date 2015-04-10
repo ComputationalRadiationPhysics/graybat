@@ -459,7 +459,7 @@ namespace graybat {
 	     *
 	     */
 	    template <typename T_Send, typename T_Recv, typename T_Op>
-	    void reduce(const VAddr rootVAddr, const Context context, const T_Op op, const T_Send& sendData, const T_Recv& recvData){
+	    void reduce(const VAddr rootVAddr, const Context context, const T_Op op, const T_Send& sendData, T_Recv& recvData){
 	    	 Uri rootUri = getVAddrUri(context, rootVAddr);
 		 mpi::reduce(context.comm, sendData.data(), sendData.size(), recvData.data(), op, rootUri);
 

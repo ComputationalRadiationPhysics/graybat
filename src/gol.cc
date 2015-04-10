@@ -5,7 +5,6 @@
 #include <mapping/RoundRobin.hpp>
 //#include <mapping/GraphPartition.hpp>
 
-
 // STL
 #include <iostream>   /* std::cout */
 #include <vector>     /* std::vector */
@@ -42,6 +41,7 @@ void printGolDomain(const std::vector<unsigned> domain, const unsigned width, co
 	else {
 	    std::cerr << " ";
 	}
+
 
     }
     std::cerr << "Generation: " << generation << std::endl;
@@ -117,7 +117,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     
     // Distribute vertices
     cave.distribute(graybat::mapping::Consecutive());
-    
+
     /***************************************************************************
      * Run Simulation
      ****************************************************************************/
