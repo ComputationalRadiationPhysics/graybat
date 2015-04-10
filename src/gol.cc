@@ -50,6 +50,7 @@ void printGolDomain(const std::vector<unsigned> domain, const unsigned width, co
 	    std::cerr << " ";
 	}
 
+
     }
     std::cerr << "Generation: " << generation << std::endl;
     for(unsigned i = 0; i < height+1; ++i){
