@@ -17,7 +17,7 @@ namespace graybat {
 		unsigned maxVertex     = ceil((float)vertexCount / processCount);
 
 		std::vector<Vertex> myVertices;
-		if(processID < processCount){
+		if(processID <= vertexCount){
 		    for(unsigned i = 0; i < maxVertex; ++i){
 			unsigned vertex_i = processID + (i * processCount);
 			if(vertex_i >= vertexCount){

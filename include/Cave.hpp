@@ -156,9 +156,9 @@ namespace graybat {
 	    assert(oldContext.valid());
 
 	    // Create new context for peers which host vertices
-	    std::vector<unsigned> hasVertices(1, vertices.size());
+	    std::vector<unsigned> nVertices(1, vertices.size());
 	    std::vector<unsigned> recvHasVertices(oldContext.size(), 0);
-	    cal.allGather(oldContext, hasVertices, recvHasVertices);
+	    cal.allGather(oldContext, nVertices, recvHasVertices);
 
 	    std::vector<VAddr> vAddrsWithVertices;
 
@@ -174,14 +174,15 @@ namespace graybat {
 	
 	    // Each peer announces the vertices it hosts
 	    if(newContext.valid()){
+		std::cout << newContext.size() << std::endl;
 
 		// Bound graph to new context
 
 	    
 		// Retrieve maximum number of vertices per peer
-		std::vector<unsigned> myVerticesCount(1,vertices.size());
+		std::vector<unsigned> nVertices(1,vertices.size());
 		std::vector<unsigned> maxVerticesCount(1,  0);
-		cal.allReduce(newContext, op::maximum<unsigned>(), myVerticesCount, maxVerticesCount);
+		cal.allReduce(newContext, op::maximum<unsigned>(), nVertices, maxVerticesCount);
 
 		// Gather maxVerticesCount times vertex ids
 		std::vector<std::vector<Vertex> > newVertexMaps (newContext.size(), std::vector<Vertex>());
@@ -494,6 +495,7 @@ namespace graybat {
 	  std::vector<unsigned> prefixsum(context.size(),0);
 
 	  if(peerHostsRootVertex){
+	      std::cout << context.size() << std::endl;
 	    cal.gatherVar(rootVAddr, context, gather, *rootRecvData, recvCount);
 
 	    // TODO

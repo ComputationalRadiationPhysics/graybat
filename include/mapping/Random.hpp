@@ -28,17 +28,21 @@ namespace graybat {
 	    template<typename T_Graph>
 	    std::vector<typename T_Graph::Vertex> operator()(const unsigned processID, const unsigned processCount, T_Graph &graph){
 
+
 		typedef typename T_Graph::Vertex Vertex;
-	      
 		srand(seed);
 		std::vector<Vertex> myVertices;
-	      
-		for(Vertex v: graph.getVertices()){
-		    unsigned randomID = rand() % processCount;
-		    if(randomID == processID){
-			myVertices.push_back(v);
-		    }
+		unsigned vertexCount   = graph.getVertices().size();
+		
 
+		if(processID <= vertexCount){
+		    for(Vertex v: graph.getVertices()){
+			unsigned randomID = rand() % processCount;
+			if(randomID == processID){
+			    myVertices.push_back(v);
+			}
+
+		    }
 		}
 	      
 

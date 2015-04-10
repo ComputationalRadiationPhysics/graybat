@@ -563,8 +563,7 @@ namespace graybat {
 		    allGather(newContext, uri, otherUris);
 
 		    std::copy(otherUris.begin(), otherUris.end(), uriMap[newContext.getID()].begin());
-		    
-		    
+
 	    	    return newContext;
 
 	    	}

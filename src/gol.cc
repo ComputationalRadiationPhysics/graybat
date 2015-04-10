@@ -2,7 +2,7 @@
 #include <graybat.hpp>
 #include <mapping/Consecutive.hpp>
 #include <mapping/Random.hpp>
-#include <mapping/RoundRobin.hpp>
+#include <mapping/Roundrobin.hpp>
 //#include <mapping/GraphPartition.hpp>
 
 
@@ -116,8 +116,8 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     MyCave cave(graybat::pattern::GridDiagonal(height, width));
     
     // Distribute vertices
-    cave.distribute(graybat::mapping::Consecutive());
-    
+    cave.distribute(graybat::mapping::Roundrobin());
+
     /***************************************************************************
      * Run Simulation
      ****************************************************************************/
@@ -125,6 +125,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
      std::vector<unsigned> golDomain(cave.getVertices().size(), 0); 
      const Vertex root = cave.getVertex(0);
 
+     unsigned vAddr = cave.getGraphContext(cave.graph).getVAddr();
 
      // Simulate life 
      for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
@@ -148,16 +149,21 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     	    for(auto link : cave.getInEdges(v)){
     		Vertex srcVertex = link.first;
     		Edge   srcEdge   = link.second;
+
     		cave.recv(srcVertex, srcEdge, srcVertex.isAlive);
     		if(srcVertex.isAlive[0]) v.aliveNeighbors++;
     	    }
     	}
+
+
 
     	// Wait to finish events
     	for(unsigned i = 0; i < events.size(); ++i){
     	    events.back().wait();
     	    events.pop_back();
     	}
+
+	std::cout << vAddr << " after recv" << std::endl;
 
     	// Calculate state for next generation
     	updateState(cave.hostedVertices);
@@ -167,6 +173,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     	    v.aliveNeighbors = 0;
     	    cave.gather(root, v, v.isAlive, golDomain, true);
     	}
+	std::cout << vAddr << " Check" << std::endl;
 	
      }
     
