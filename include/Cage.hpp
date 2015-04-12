@@ -50,6 +50,7 @@ namespace graybat {
 	CommunicationPolicy comm;
         GraphPolicy graph;
         Context graphContext;
+
 	std::vector<Vertex> hostedVertices;
 
 
@@ -584,4 +585,3 @@ namespace graybat {
     };
 
 } // namespace graybat
-
