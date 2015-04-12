@@ -71,6 +71,7 @@ namespace graybat {
 		Context& operator=(const Context& otherContext){
 		    id            = otherContext.getID();
 		    isValid       = otherContext.valid();
+		    comm          = otherContext.comm;
 		    return *this;
 
 		}
@@ -91,7 +92,7 @@ namespace graybat {
 		    return isValid;
 		}
 
-		const mpi::communicator comm;
+		mpi::communicator comm;
 	
 	    private:	
 		ContextID id;

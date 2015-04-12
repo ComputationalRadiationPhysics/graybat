@@ -125,8 +125,6 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
      std::vector<unsigned> golDomain(cave.getVertices().size(), 0); 
      const Vertex root = cave.getVertex(0);
 
-     unsigned vAddr = cave.getGraphContext(cave.graph).getVAddr();
-
      // Simulate life 
      for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
 
@@ -163,7 +161,6 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     	    events.pop_back();
     	}
 
-	std::cout << vAddr << " after recv" << std::endl;
 
     	// Calculate state for next generation
     	updateState(cave.hostedVertices);
@@ -173,7 +170,6 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     	    v.aliveNeighbors = 0;
     	    cave.gather(root, v, v.isAlive, golDomain, true);
     	}
-	std::cout << vAddr << " Check" << std::endl;
 	
      }
     

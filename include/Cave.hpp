@@ -170,12 +170,9 @@ namespace graybat {
 
 	    Context newContext = cal.createContext(vAddrsWithVertices, oldContext);
 	    graphMap[graph.id] = newContext;
-	    // std::cout << "context size: " << newContext.size() << std::endl;
 	
 	    // Each peer announces the vertices it hosts
 	    if(newContext.valid()){
-		std::cout << newContext.size() << std::endl;
-
 		// Bound graph to new context
 
 	    
@@ -495,7 +492,6 @@ namespace graybat {
 	  std::vector<unsigned> prefixsum(context.size(),0);
 
 	  if(peerHostsRootVertex){
-	      std::cout << context.size() << std::endl;
 	    cal.gatherVar(rootVAddr, context, gather, *rootRecvData, recvCount);
 
 	    // TODO
