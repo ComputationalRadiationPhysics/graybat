@@ -8,6 +8,7 @@
 
 #include <dout.hpp>            /* dout::Dout::getInstance() */
 
+
 /**
  * @defgroup communicationPolicy Communication Policy
  * 
@@ -30,46 +31,66 @@
  * 
  */
 
-
 namespace graybat {
 
     /************************************************************************//**
-     * @class Cave
+     * @class Cage
      *
-     * @brief A central instance to locate the host 
-     *        of vertices.
+     * @brief The Communication And Graph Environment enables to communicate
+     *        on basis of a graph with methods of a user defined communication
+     *	  library.
+     *
+     * A cage is defined by its Communication and Graph policy. The communication
+     * policy provides methods for point to point and collective operations.
+     * The graph policy provides methods to query graph imformation of the
+     * cage graph. 
      *
      * @remark A peer can host several vertices.
-     * @todo   Think of vertices hosted by several peers
-     *         for fault tolerance purpose
-     * @todo remove T_Graph template
      *
      *
      ***************************************************************************/
-    template <typename T_CAL, typename T_Graph>
-    struct Cave {
-	typedef T_CAL                            CAL;
-	typedef T_Graph                          Graph;
-	typedef typename Graph::Vertex           Vertex;
-	typedef typename Graph::Edge             Edge;
-	typedef typename Graph::GraphID          GraphID;
-	typedef typename Graph::EdgeDescription  EdgeDescription;
-	typedef typename Graph::GraphDescription GraphDescription;
-	typedef typename Vertex::ID              VertexID;
-	typedef typename CAL::VAddr              VAddr;
-	typedef typename CAL::Event              Event;
-	typedef typename CAL::Context            Context;
-	typedef typename CAL::ContextID          ContextID;
+    template <typename T_CommunicationPolicy, typename T_GraphPolicy>
+    struct Cage {
+	typedef T_CommunicationPolicy                   CommunicationPolicy;
+        typedef T_GraphPolicy                           GraphPolicy;
+	typedef typename GraphPolicy::Vertex            Vertex;
+	typedef typename GraphPolicy::Edge              Edge;
+	typedef typename GraphPolicy::GraphID           GraphID;
+	typedef typename GraphPolicy::EdgeDescription   EdgeDescription;
+	typedef typename GraphPolicy::GraphDescription  GraphDescription;
+	typedef typename Vertex::ID                     VertexID;
+	typedef typename CommunicationPolicy::VAddr     VAddr;
+	typedef typename CommunicationPolicy::Event     Event;
+	typedef typename CommunicationPolicy::Context   Context;
+	typedef typename CommunicationPolicy::ContextID ContextID;
 
-	// Member
-	CAL cal;
-	Graph graph;
+
+      	/***************************************************************************
+	 *
+	 * MEMBER
+	 *
+	 ***************************************************************************/
+	CommunicationPolicy comm;
+        GraphPolicy graph;
+        Context graphContext;
+
 	std::vector<Vertex> hostedVertices;
 
-	template <class T_Functor>
-	Cave(T_Functor graphFunctor) : graph(Graph(graphFunctor())){
 
-	}
+      	/***************************************************************************
+	 *
+	 * MAPS
+	 *
+	 ***************************************************************************/
+	// Maps vertices to its hosts
+	std::map<VertexID, VAddr> vertexMap;
+    
+	// Each graph is mapped to a context of the peer
+	std::map<GraphID, Context> graphMap; 
+
+	// List of vertices of the hosts
+	std::map<VAddr, std::vector<Vertex> > peerMap;
+
 	
 	/***************************************************************************
 	 *
@@ -120,8 +141,8 @@ namespace graybat {
 	 */
 	template<class T_Functor>
 	void distribute(T_Functor distFunctor){
-	    hostedVertices = distFunctor(cal.getGlobalContext().getVAddr(), cal.getGlobalContext().size(), graph);
-	    announce(graph, hostedVertices);
+	    hostedVertices = distFunctor(comm.getGlobalContext().getVAddr(), comm.getGlobalContext().size(), graph);
+	    announce(hostedVertices);
 	}
 
 	
@@ -151,24 +172,16 @@ namespace graybat {
 	 * @param[in] vertices A set of vertices, that will be hosted by this peer
 	 *
 	 */
-	void announce(Graph& graph, const std::vector<Vertex> vertices, const bool global=true){
+	void announce(const std::vector<Vertex> vertices, const bool global=true){
 	    // Get old context from graph
-	    Context oldContext = getGraphContext(graph);
+    	  Context oldContext = graphContext;
 
-	    if(global)
-		oldContext = cal.getGlobalContext();
+	  if(global){
+		oldContext = comm.getGlobalContext();
 
+	  }
+		
 	    if(!oldContext.valid()){
-		if(graph.hasSuperGraph()){
-		    //std::cout << "hasSuperGraph" << std::endl;
-		    oldContext = getGraphContext(graph.superGraph);
-
-		}
-		else {
-		    //std::cout << "global context" << std::endl;
-		    oldContext = cal.getGlobalContext();
-
-		}
 
 	    }
 	    else {
@@ -178,9 +191,9 @@ namespace graybat {
 	    assert(oldContext.valid());
 
 	    // Create new context for peers which host vertices
-	    std::vector<unsigned> hasVertices(1, vertices.size());
+	    std::vector<unsigned> nVertices(1, vertices.size());
 	    std::vector<unsigned> recvHasVertices(oldContext.size(), 0);
-	    cal.allGather(oldContext, hasVertices, recvHasVertices);
+	    comm.allGather(oldContext, nVertices, recvHasVertices);
 
 	    std::vector<VAddr> vAddrsWithVertices;
 
@@ -190,20 +203,18 @@ namespace graybat {
 		}
 	    }
 
-	    Context newContext = cal.createContext(vAddrsWithVertices, oldContext);
-	    graphMap[graph.id] = newContext;
-	    // std::cout << "context size: " << newContext.size() << std::endl;
+	    Context newContext = comm.createContext(vAddrsWithVertices, oldContext);
+	    graphContext = newContext;
 	
 	    // Each peer announces the vertices it hosts
 	    if(newContext.valid()){
-
 		// Bound graph to new context
 
 	    
 		// Retrieve maximum number of vertices per peer
-		std::vector<unsigned> myVerticesCount(1,vertices.size());
+		std::vector<unsigned> nVertices(1,vertices.size());
 		std::vector<unsigned> maxVerticesCount(1,  0);
-		cal.allReduce(newContext, maximum<unsigned>(), myVerticesCount, maxVerticesCount);
+		comm.allReduce(newContext, op::maximum<unsigned>(), nVertices, maxVerticesCount);
 
 		// Gather maxVerticesCount times vertex ids
 		std::vector<std::vector<Vertex> > newVertexMaps (newContext.size(), std::vector<Vertex>());
@@ -215,14 +226,14 @@ namespace graybat {
 			vertexID[0] = graph.getLocalID(vertices.at(i));
 		    }
 
-		    cal.allGather(newContext, vertexID, recvData);
+		    comm.allGather(newContext, vertexID, recvData);
 		
 		   
 		    for(unsigned vAddr = 0; vAddr < newVertexMaps.size(); ++vAddr){
 			if(recvData[vAddr] != -1){
 			    VertexID vertexID = (VertexID) recvData[vAddr];
 			    Vertex v = graph.getVertices().at(vertexID);
-			    vertexMap[graph.id][v.id] = vAddr;
+			    vertexMap[v.id] = vAddr;
 			    newVertexMaps[vAddr].push_back(v);
 		    
 			}
@@ -230,7 +241,7 @@ namespace graybat {
 		    }
       
 		    for(unsigned vAddr = 0; vAddr < newVertexMaps.size(); ++vAddr){
-			peerMap[graph.id][vAddr] = newVertexMaps[vAddr];
+			peerMap[vAddr] = newVertexMaps[vAddr];
 
 		    }
 
@@ -242,21 +253,18 @@ namespace graybat {
 
   
 	/**
-	 * @brief Returns the VAddr of the host peer of *vertex* in the *graph*
+	 * @brief Returns the VAddr of the host of *vertex* in the graph
 	 *
 	 * @bug When the location of *vertex* is not known then
 	 *      the programm crashes by an exception. 
 	 *      This exception should be handled for better
 	 *      debugging behaviour.
 	 *
-	 * @param[in] graph Contains *vertex*.
 	 * @param[in] vertex Will be located.
 	 *
 	 */
-	VAddr locateVertex(Graph& graph, Vertex vertex){
-	    // std::cerr << graph.id << " " << vertex.id << std::endl;
-	    // return 0;
-	    return vertexMap.at(graph.id).at(vertex.id);
+	VAddr locateVertex(Vertex vertex){
+	    return vertexMap.at(vertex.id);
 
 	}
 
@@ -265,31 +273,10 @@ namespace graybat {
 	 *        vertices that are hosted by the peer with
 	 *        *vAddr*
 	 */
-	std::vector<Vertex> getHostedVertices(Graph& graph, VAddr vAddr){
-	    return peerMap[graph.id][vAddr];
+	std::vector<Vertex> getHostedVertices(const VAddr vAddr){
+	  return peerMap[vAddr];
 
 	}
-
-	/**
-	 * @brief Returns the context of the *graph*. All host
-	 *        peers of the *graph* are part of the
-	 *        returned context.
-	 *
-	 */
-	Context getGraphContext(Graph& graph){
-	    return graphMap[graph.id];
-
-	}
-
-	/**
-	 * @breif Returns the number of hosts
-	 *        of the current **graph**.
-	 *
-	 */
-	unsigned nHosts(){
-	    return getGraphContext(graph).size();
-	}
-
 
 	/**
 	 * @brief Returns true if the *vertex* is hosted by the
@@ -297,10 +284,9 @@ namespace graybat {
 	 *
 	 */
 	bool peerHostsVertex(Vertex vertex){
-	    Context context = getGraphContext(graph);
-	    VAddr vaddr     = context.getVAddr();
+	    VAddr vaddr     = graphContext.getVAddr();
 
-	    for(Vertex &v : getHostedVertices(graph, vaddr)){
+	    for(Vertex &v : getHostedVertices(vaddr)){
 		if(vertex.id == v.id)
 		    return true;
 	    }
@@ -326,10 +312,9 @@ namespace graybat {
 	 *
 	 */
 	template <typename T>
-	inline void send(Graph &graph, const Vertex destVertex, const Edge edge, const T& data){
-	    VAddr destVAddr   = locateVertex(graph, destVertex);
-	    Context context   = getGraphContext(graph);
-	    cal.send(destVAddr, edge.id, context, data);
+	inline void send(const Vertex destVertex, const Edge edge, const T& data){
+	    VAddr destVAddr   = locateVertex(destVertex);
+	    comm.send(destVAddr, edge.id, graphContext, data);
 
 	}
 
@@ -349,9 +334,8 @@ namespace graybat {
 	 */
 	template <typename T>
 	Event asyncSend(const Vertex destVertex, const Edge edge, const T& data){
-	    VAddr destVAddr  = locateVertex(graph, destVertex);
-	    Context context  = getGraphContext(graph);
-	    return cal.asyncSend(destVAddr, edge.id, context, data);
+	    VAddr destVAddr  = locateVertex(destVertex);
+	    return comm.asyncSend(destVAddr, edge.id, graphContext, data);
 	
 	}
 
@@ -366,9 +350,8 @@ namespace graybat {
 	 */
 	template <typename T>
 	inline void recv(const Vertex srcVertex, const Edge edge, T& data){
-	    VAddr srcVAddr   = locateVertex(graph, srcVertex);
-	    Context context  = getGraphContext(graph);
-	    cal.recv(srcVAddr, edge.id, context, data);
+	    VAddr srcVAddr   = locateVertex(srcVertex);
+	    comm.recv(srcVAddr, edge.id, graphContext, data);
 
 	}
 
@@ -384,10 +367,9 @@ namespace graybat {
 	 *
 	 */
 	template <typename T>
-	Event asyncRecv(Graph& graph, const Vertex srcVertex, const Edge edge, T& data){
-	    VAddr srcVAddr = locateVertex(graph, srcVertex);
-	    Context context  = getGraphContext(graph);
-	    return cal.asyncRecv(srcVAddr, edge.id, context, data);
+	Event asyncRecv(const Vertex srcVertex, const Edge edge, T& data){
+	    VAddr srcVAddr = locateVertex(srcVertex);
+	    return comm.asyncRecv(srcVAddr, edge.id, graphContext, data);
 
 	}
 
@@ -398,17 +380,17 @@ namespace graybat {
 	 **************************************************************************/ 
 
 	template <typename T_Data, typename Op>
-	void reduce(const Vertex rootVertex, const Vertex srcVertex, Graph& graph, Op op, const std::vector<T_Data> sendData, std::vector<T_Data>& recvData){
+	void reduce(const Vertex rootVertex, const Vertex srcVertex, Op op, const std::vector<T_Data> sendData, std::vector<T_Data>& recvData){
 	    static std::vector<T_Data> reduce;
 	    static std::vector<T_Data>* rootRecvData;
 	    static unsigned vertexCount = 0;
 	    static bool hasRootVertex = false;
 
 
-	    VAddr rootVAddr   = locateVertex(graph, rootVertex);
-	    VAddr srcVAddr    = locateVertex(graph, srcVertex);
-	    Context context   = getGraphContext(graph);
-	    std::vector<Vertex> vertices = getHostedVertices(graph, srcVAddr);
+	    VAddr rootVAddr   = locateVertex(rootVertex);
+	    VAddr srcVAddr    = locateVertex(srcVertex);
+	    Context context   = graphContext;
+	    std::vector<Vertex> vertices = getHostedVertices(srcVAddr);
 
 	    vertexCount++;
 
@@ -429,10 +411,10 @@ namespace graybat {
 	    if(vertexCount == vertices.size()){
 
 		if(hasRootVertex){
-		    cal.reduce(rootVAddr, context, op, reduce, *rootRecvData);
+		    comm.reduce(rootVAddr, context, op, reduce, *rootRecvData);
 		}
 		else{
-		    cal.reduce(rootVAddr, context, op, reduce, recvData);
+		    comm.reduce(rootVAddr, context, op, reduce, recvData);
 
 		}
 
@@ -444,15 +426,15 @@ namespace graybat {
 	}
 
 	template <typename T_Data, typename T_Recv, typename Op>
-	void allReduce(const Vertex srcVertex, Graph& graph, Op op, const std::vector<T_Data> sendData, T_Recv& recvData){
+	void allReduce(const Vertex srcVertex, Op op, const std::vector<T_Data> sendData, T_Recv& recvData){
 
 	    static std::vector<T_Data> reduce;
 	    static unsigned vertexCount = 0;
 	    static std::vector<T_Recv*> recvDatas;
 
-	    VAddr srcVAddr    = locateVertex(graph, srcVertex);
-	    Context context   = getGraphContext(graph);
-	    std::vector<Vertex> vertices = getHostedVertices(graph, srcVAddr);
+	    VAddr srcVAddr    = locateVertex(srcVertex);
+	    Context context   = graphContext;
+	    std::vector<Vertex> vertices = getHostedVertices(srcVAddr);
 
 	    recvDatas.push_back(&recvData);
 	
@@ -468,7 +450,7 @@ namespace graybat {
 	    // Finally start reduction
 	    if(vertexCount == vertices.size()){
 
-		cal.allReduce(context, op, reduce, *(recvDatas[0]));
+		comm.allReduce(context, op, reduce, *(recvDatas[0]));
 
 		// Distribute Received Data to Hosted Vertices
 		for(unsigned i = 1; i < recvDatas.size(); ++i){
@@ -499,8 +481,8 @@ namespace graybat {
 
 	nGatherCalls++;
 
-	VAddr rootVAddr  = locateVertex(graph, rootVertex);
-	Context context  = getGraphContext(graph);
+	VAddr rootVAddr  = locateVertex(rootVertex);
+	Context context  = graphContext;
 
 	// Insert data of srcVertex to the end of the gather vector
 	gather.insert(gather.end(), sendData.begin(), sendData.end());
@@ -516,7 +498,7 @@ namespace graybat {
 	  std::vector<unsigned> prefixsum(context.size(),0);
 
 	  if(peerHostsRootVertex){
-	    cal.gatherVar(rootVAddr, context, gather, *rootRecvData, recvCount);
+	    comm.gatherVar(rootVAddr, context, gather, *rootRecvData, recvCount);
 
 	    // TODO
 	    // std::partial_sum might do the job
@@ -530,7 +512,7 @@ namespace graybat {
 	    if(reorder){
 	      std::vector<RecvValueType> recvDataReordered(recvData.size());
 	      for(unsigned vAddr = 0; vAddr < context.size(); vAddr++){
-		std::vector<Vertex> hostedVertices = getHostedVertices(graph, vAddr);
+		std::vector<Vertex> hostedVertices = getHostedVertices(vAddr);
 		unsigned nElementsPerVertex = recvCount.at(vAddr) / hostedVertices.size();
 
 		unsigned hVertex_i=0;
@@ -550,7 +532,7 @@ namespace graybat {
 		
 	  }
 	  else {
-	    cal.gatherVar(rootVAddr, context, gather, recvData, recvCount);
+	    comm.gatherVar(rootVAddr, context, gather, recvData, recvCount);
 	  }
 	    
 	  gather.clear();
@@ -567,15 +549,15 @@ namespace graybat {
 	 *
 	 **/
 	template <typename T_Send, typename T_Recv>
-	void allGather(const Vertex srcVertex, Graph& graph, T_Send sendData, T_Recv& recvData, const bool reorder){
+	void allGather(const Vertex srcVertex, T_Send sendData, T_Recv& recvData, const bool reorder){
 	    typedef typename T_Send::value_type T_Send_Container;
 	
 	    static std::vector<T_Send_Container> gather;
 	    static std::vector<T_Recv*> recvDatas;
 
-	    VAddr srcVAddr  = locateVertex(graph, srcVertex);
-	    Context context = getGraphContext(graph);
-	    std::vector<Vertex> vertices = getHostedVertices(graph, srcVAddr);
+	    VAddr srcVAddr  = locateVertex(srcVertex);
+	    Context context = graphContext;
+	    std::vector<Vertex> vertices = getHostedVertices(srcVAddr);
 
 	    gather.insert(gather.end(), sendData.begin(), sendData.end());
 	    recvDatas.push_back(&recvData);
@@ -584,13 +566,13 @@ namespace graybat {
 	    if(gather.size() == vertices.size()){
 		std::vector<unsigned> recvCount;
 
-		cal.allGatherVar(context, gather, *(recvDatas[0]), recvCount);
+		comm.allGatherVar(context, gather, *(recvDatas[0]), recvCount);
 
 		if(reorder){
 		    std::vector<typename T_Recv::value_type> recvDataReordered(recvData.size());
 		    unsigned vAddr = 0;
 		    for(unsigned recv_i = 0; recv_i < recvData.size(); ){
-			std::vector<Vertex> hostedVertices = getHostedVertices(graph, vAddr);
+			std::vector<Vertex> hostedVertices = getHostedVertices(vAddr);
 			for(Vertex v: hostedVertices){
 			    recvDataReordered.at(v.id) = recvDatas[0]->data()[recv_i];
 			    recv_i++;
@@ -617,125 +599,12 @@ namespace graybat {
 
 	}
 
-	void synchronize(Graph &graph){
-	    Context context = getGraphContext(graph);
-	    cal.synchronize(context);
+	void synchronize(){
+	    comm.synchronize(graphContext);
 
 	}
-
-    
-    private:
-
-	/***************************************************************************
-	 *
-	 * MAPS
-	 *
-	 ***************************************************************************/
-	// Maps vertices to its hosts
-	std::map<GraphID, std::map<VertexID, VAddr> > vertexMap;
-    
-	// Each graph is mapped to a context of the peer
-	std::map<GraphID, Context> graphMap; 
-
-	// List of vertices a peer hosts of a graph
-	std::map<GraphID, std::map<VAddr, std::vector<Vertex>> > peerMap;
-
-	// Count of vertices that are in a collective operation in the moment
-	std::map<GraphID, std::map<VertexID, unsigned>> vertexCount;
-
-
-	/***************************************************************************
-	 *
-	 * AUXILIARY FUNCTIONS
-	 *
-	 ***************************************************************************/
-
-	/**
-	 *  @brief Compute the maximum of two values.
-	 *
-	 *  This binary function object computes the maximum of the two values
-	 *  it is given. When used with MPI and a type @c T that has an
-	 *  associated, built-in MPI data type, translates to @c MPI_MAX.
-	 */
-	template<typename T>
-	struct maximum : public std::binary_function<T, T, T>
-	{
-	    /** @returns the maximum of x and y. */
-	    const T& operator()(const T& x, const T& y) const
-	    {
-		return x < y? y : x;
-	    }
-	};
-	
-	/**
-	 * @brief Returns a set of all host peer VAddrs of the *graph*
-	 *
-	 */
-	std::vector<VAddr> getGraphHostVAddrs(Graph& graph){
-	    std::vector<Vertex> vertices = graph.getVertices();
-
-	    std::set<VAddr> vAddrs;
-	    for(Vertex vertex : vertices){
-		vAddrs.insert(locateVertex(graph, vertex));
-	    }
-
-	    return std::vector<VAddr>(vAddrs.begin(), vAddrs.end());
-
-	}
-
-	std::string generateID(Graph &graph, Vertex vertex){
-	    std::stringstream idSS; 
-	    if(vertexCount[graph.id][vertex.id] > 0){
-		throw std::logic_error("Can not perform collective operation on same vertex in same graph simultaneous");
-	    }
-	    else {
-		idSS << graph.id << vertexCount[graph.id][vertex.id]++;
-		return idSS.str();
-	    }
-
-	}
-
-
-	/**
-	 * @brief Creates a context from the given *subgraph* inherited from
-	 *        the context of the given graph.
-	 *
-	 * @param[in] graph is the supergraph of subGraph
-	 * @param[in] subGraph is a subgraph of graph
-	 *
-	 */
-	void createGraphContext(Graph& graph, Graph& subGraph){
-	    std::vector<VAddr> vAddrs = getGraphHostVAddrs(subGraph);
-
-	    Context oldContext = getGraphContext(graph);
-	    Context newContext = cal.createContext(vAddrs, oldContext);
-	    if(newContext.valid()){
-		graphMap[subGraph.id] = newContext;
-	    }
-
-	}
-
-	/**
-	 * @brief Creates a context for the the given graph inherited from
-	 *        the global context. After this step, vertices within
-	 *        this graph can do communication.
-	 *
-	 * @param[in] graph for which a new context from global context will be created.
-	 */
-	void createGraphContext(Graph& graph){
-	    std::vector<VAddr> vAddrs = getGraphHostVAddrs(graph);
-
-	    Context oldContext = cal.getGlobalContext();
-	    Context newContext = cal.createContext(vAddrs, oldContext);
-	
-	    graphMap[graph.id] = newContext;
-    
-	}
-
 
 
     };
 
 } // namespace graybat
-
-
