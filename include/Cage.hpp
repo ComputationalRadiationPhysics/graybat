@@ -10,22 +10,25 @@
 #include <dout.hpp>            /* dout::Dout::getInstance() */
 
 /************************************************************************//**
- * @class Cave
+ * @class Cage
  *
- * @brief A central instance to locate the host 
- *        of vertices.
+ * @brief The Communication And Graph Environment enables to communicate
+ *        on basis of a graph with methods of a user defined communication
+ *	  library.
+ *
+ * A cage is defined by its Communication and Graph policy. The communication
+ * policy provides methods for point to point and collective operations.
+ * The graph policy provides methods to query graph imformation of the
+ * cage graph. 
  *
  * @remark A peer can host several vertices.
- * @todo   Think of vertices hosted by several peers
- *         for fault tolerance purpose
- * @todo remove T_Graph template
  *
  *
  ***************************************************************************/
 namespace graybat {
 
     template <typename T_CommunicationPolicy, typename T_GraphPolicy>
-    struct Cave {
+    struct Cage {
 	typedef T_CommunicationPolicy                   CommunicationPolicy;
         typedef T_GraphPolicy                           GraphPolicy;
 	typedef typename GraphPolicy::Vertex            Vertex;
@@ -40,7 +43,7 @@ namespace graybat {
 	typedef typename CommunicationPolicy::ContextID ContextID;
 
 	template <class T_Functor>
-	Cave(T_Functor graphFunctor) : graph(GraphPolicy(graphFunctor())){
+	Cage(T_Functor graphFunctor) : graph(GraphPolicy(graphFunctor())){
 
 	}
 

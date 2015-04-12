@@ -7,9 +7,8 @@
  */
 
 #include <BGL.hpp>     /* graybat::graphPolicy::BGL */
-//#include <MPI.hpp>     /* graybat::communicationPolicy::MPI */
 #include <BMPI.hpp>    /* graybat::communicationPolicy::BMPI */
-#include <Cave.hpp>    /* graybat::Cave */
+#include <Cage.hpp>    /* graybat::Cage */
 #include <pattern.hpp> /* graybat::pattern::GridDiagonal */
 
 
