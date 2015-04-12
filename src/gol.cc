@@ -1,5 +1,10 @@
 // Communication
 #include <graybat.hpp>
+#include <mapping/Consecutive.hpp>
+#include <mapping/Random.hpp>
+#include <mapping/Roundrobin.hpp>
+//#include <mapping/GraphPartition.hpp>
+
 
 // STL
 #include <iostream>   /* std::cout */
@@ -103,7 +108,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     /***************************************************************************
      * Initialize Communication
      ****************************************************************************/
-    //Create Graph
+    // Set Graph properties
     const unsigned height = sqrt(nCells);
     const unsigned width  = height;
 
@@ -111,15 +116,14 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     MyCave cave(graybat::pattern::GridDiagonal(height, width));
     
     // Distribute vertices
-    cave.distribute(graybat::mapping::GraphPartition());
-    
+    cave.distribute(graybat::mapping::Roundrobin());
+
     /***************************************************************************
      * Run Simulation
      ****************************************************************************/
      std::vector<Event> events;   
      std::vector<unsigned> golDomain(cave.getVertices().size(), 0); 
      const Vertex root = cave.getVertex(0);
-
 
      // Simulate life 
      for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
@@ -143,16 +147,20 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     	    for(auto link : cave.getInEdges(v)){
     		Vertex srcVertex = link.first;
     		Edge   srcEdge   = link.second;
+
     		cave.recv(srcVertex, srcEdge, srcVertex.isAlive);
     		if(srcVertex.isAlive[0]) v.aliveNeighbors++;
     	    }
     	}
+
+
 
     	// Wait to finish events
     	for(unsigned i = 0; i < events.size(); ++i){
     	    events.back().wait();
     	    events.pop_back();
     	}
+
 
     	// Calculate state for next generation
     	updateState(cave.hostedVertices);

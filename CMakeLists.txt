@@ -10,7 +10,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/utils/cmake/modules/" ${CMAKE
 ###############################################################################
 # METIS
 ###############################################################################
-find_package(METIS 5.1.0 REQUIRED)
+find_package(METIS 5.1.0)
 include_directories(SYSTEM ${METIS_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${METIS_LIBRARIES})
 
@@ -37,7 +37,7 @@ endif(MPI_CXX_FOUND)
 # Compiler Flags
 ###############################################################################
 string(FIND ${CMAKE_CXX_COMPILER} "clang++" CXX_COMPILER_IS_CLANG++)
-string(FIND ${CMAKE_CXX_COMPILER} "clang++" CXX_COMPILER_IS_G++)
+string(FIND ${CMAKE_CXX_COMPILER} "g++" CXX_COMPILER_IS_G++)
 
 if(${CXX_COMPILER_IS_G++})
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
