@@ -25,23 +25,14 @@ namespace graybat {
     namespace communicationPolicy {
     
 	/************************************************************************//**
-	 * @class MPI
+	 * @class BMPI
 	 *
-	 * @brief A communication interface implemented by the
-	 * CommunicationPolicy
+	 * @brief Implementation of the communicationPolicy interface
 	 *
 	 * The MPI, provides two classes
-	 * of communication schemas .On one hand point to point communication
+	 * of communication schemas.On one hand point to point communication
 	 * between two peers, both synchron and asynchron and on the other hand collective
 	 * collective operations on a Context.
-	 *
-	 * The CAL also provides inner class definitions for Event and Context.
-	 *
-	 * Events are objects returned by non blocking functions and they 
-	 * can be queried for the state of this function.
-	 *
-	 * A Context represents a set of peers that are able to communicate
-	 * with each other
 	 *
 	 ***************************************************************************/
 	struct BMPI {
