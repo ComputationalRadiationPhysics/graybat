@@ -8,24 +8,24 @@
 
 #include <dout.hpp>            /* dout::Dout::getInstance() */
 
-/************************************************************************//**
- * @class Cage
- *
- * @brief The Communication And Graph Environment enables to communicate
- *        on basis of a graph with methods of a user defined communication
- *	  library.
- *
- * A cage is defined by its Communication and Graph policy. The communication
- * policy provides methods for point to point and collective operations.
- * The graph policy provides methods to query graph imformation of the
- * cage graph. 
- *
- * @remark A peer can host several vertices.
- *
- *
- ***************************************************************************/
 namespace graybat {
 
+  /************************************************************************//**
+   * @class Cage
+   *
+   * @brief The Communication And Graph Environment enables to communicate
+   *        on basis of a graph with methods of a user defined communication
+   *	  library.
+   *
+   * A cage is defined by its Communication and Graph policy. The
+   * communication policy provides methods for point to point and
+   * collective communication operations.  The graph policy provides
+   * methods to query graph imformation of the cage graph.
+   *
+   * @remark A peer can host several vertices.
+   *
+   *
+   ***************************************************************************/
     template <typename T_CommunicationPolicy, typename T_GraphPolicy>
     struct Cage {
 	typedef T_CommunicationPolicy                   CommunicationPolicy;
@@ -48,8 +48,8 @@ namespace graybat {
 	 *
 	 ***************************************************************************/
 	CommunicationPolicy comm;
-        GraphPolicy graph;
-        Context graphContext;
+        GraphPolicy         graph;
+        Context             graphContext;
 
 	std::vector<Vertex> hostedVertices;
 
@@ -79,7 +79,7 @@ namespace graybat {
 	    
 	}
 	
-	Vertex getVertex(VertexID vertexID){
+	Vertex getVertex(const VertexID vertexID){
 	    return graph.getVertices().at(vertexID);
 	    
 	}
