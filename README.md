@@ -1,5 +1,7 @@
-#GrayBat#
-**Gr**aph **A**pproach for Highl**y** Generic Communication Schemes **B**ased on **A**daptive **T**opologies 
+GrayBat   {#mainpage}
+=======
+
+<b>Gr</b>aph <b>A</b>pproach for Highl<b>y</b> Generic Communication Schemes <b>B</b>ased on <b>A</b>daptive <b>T</b>opologies 
 
 
 ##Description##
@@ -24,7 +26,8 @@ results that used GrayBat, you should set this as a **reference**.
 
 ##Software License##
 
-GrayBat is licensed under the **GPLv3+**. Please refer to our [LICENSE.md](LICENSE.md)
+
+GrayBat  is licensed under the <b>GPLv3+</b>. Please refer to our [LICENSE.md](LICENSE.md)
 
 
 ##Dependencies##

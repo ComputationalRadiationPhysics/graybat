@@ -8,24 +8,46 @@
 
 #include <dout.hpp>            /* dout::Dout::getInstance() */
 
+/**
+ * @defgroup communicationPolicy Communication Policy
+ * 
+ */
+
+/**
+ * @defgroup graphPolicy Graph Policy
+ * 
+ */
+
+
+/**
+ * @defgroup pattern Communication Pattern
+ * 
+ */
+
+
+/**
+ * @defgroup mapping Graph Mappings
+ * 
+ */
+
 namespace graybat {
 
-  /************************************************************************//**
-   * @class Cage
-   *
-   * @brief The Communication And Graph Environment enables to communicate
-   *        on basis of a graph with methods of a user defined communication
-   *	  library.
-   *
-   * A cage is defined by its Communication and Graph policy. The
-   * communication policy provides methods for point to point and
-   * collective communication operations.  The graph policy provides
-   * methods to query graph imformation of the cage graph.
-   *
-   * @remark A peer can host several vertices.
-   *
-   *
-   ***************************************************************************/
+    /************************************************************************//**
+     * @class Cage
+     *
+     * @brief The Communication And Graph Environment enables to communicate
+     *        on basis of a graph with methods of a user defined communication
+     *	  library.
+     *
+     * A cage is defined by its Communication and Graph policy. The communication
+     * policy provides methods for point to point and collective operations.
+     * The graph policy provides methods to query graph imformation of the
+     * cage graph. 
+     *
+     * @remark A peer can host several vertices.
+     *
+     *
+     ***************************************************************************/
     template <typename T_CommunicationPolicy, typename T_GraphPolicy>
     struct Cage {
 	typedef T_CommunicationPolicy                   CommunicationPolicy;
