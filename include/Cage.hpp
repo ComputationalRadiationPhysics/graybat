@@ -9,28 +9,6 @@
 
 #include <dout.hpp>            /* dout::Dout::getInstance() */
 
-/**
- * @defgroup communicationPolicy Communication Policy
- * 
- */
-
-/**
- * @defgroup graphPolicy Graph Policy
- * 
- */
-
-
-/**
- * @defgroup pattern Communication Pattern
- * 
- */
-
-
-/**
- * @defgroup mapping Graph Mappings
- * 
- */
-
 namespace graybat {
 
     /************************************************************************//**
@@ -622,7 +600,10 @@ namespace graybat {
 
 } // namespace graybat
 
-/** @example gol.cc
- * Example how to use the cage
- */
 
+/**
+ * @example gol.cc
+ *
+ * @brief Simple example that shows how to instantiate and use the Cage.
+ *
+ */
