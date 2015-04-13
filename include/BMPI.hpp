@@ -27,18 +27,14 @@ namespace graybat {
 	/************************************************************************//**
 	 * @class BMPI
 	 *
-	 * @brief Implementation of the communicationPolicy interface
-	 *
-	 * The MPI, provides two classes
-	 * of communication schemas.On one hand point to point communication
-	 * between two peers, both synchron and asynchron and on the other hand collective
-	 * collective operations on a Context.
+	 * @brief Implementation of the Cage communicationPolicy interface
+	 *        based on the MPI implementation boost::mpi.
 	 *
 	 ***************************************************************************/
 	struct BMPI {
 	    /**
-	     * @brief A context represents a set of peers
-	     *        which are able to communicate with each other.
+	     * @brief A context represents a set of peers which are
+	     *        able to communicate with each other.
 	     *
 	     */
 	    class Context {
@@ -155,24 +151,14 @@ namespace graybat {
 	    ~BMPI(){
 		
 	    }
-
-	    // Member Variables
-	    ContextID                      contextCount;
-	    std::vector<std::vector<Uri>>  uriMap;
-	    Context                        initialContext;
-	    mpi::environment               env;
-
-
-	
-
-
-	    /***************************************************************************
+	    /***********************************************************************//**
+             *
+	     * @name Point to Point Communication Interface
 	     *
-	     * POINT TO POINT COMMUNICATION INTERFACE
+	     * @{
 	     *
 	     ***************************************************************************/
-
-	    /**
+	    /** 
 	     * @brief Non blocking transmission of a message sendData to peer with virtual address destVAddr.
 	     * 
 	     * @param[in] destVAddr  VAddr of peer that will receive the message
@@ -255,15 +241,15 @@ namespace graybat {
 		context.comm.recv(srcUri, tag, recvData.data(), recvData.size());
 
 	    }
-
-
+	    /** @} */
     
-	    /**************************************************************************
+	    /************************************************************************//**
 	     *
-	     * COLLECTIVE COMMUNICATION INTERFACE
+	     * @name Collective Communication Interface
+	     *
+	     * @{
 	     *
 	     **************************************************************************/
-	    
 	    /**
 	     * @brief Collects *sendData* from all peers of the *context* and
 	     *        transmits it as a list to the peer with
@@ -515,12 +501,14 @@ namespace graybat {
 	     void synchronize(){
 	         synchronize(getGlobalContext());
 	     }
-    
+	    /** @} */
 
     
-	    /***************************************************************************
+	    /*************************************************************************//**
 	     *
-	     * ORGANISATION
+	     * @name Context Interface
+	     *
+	     * @{
 	     *
 	     ***************************************************************************/
 	    /**
@@ -576,14 +564,27 @@ namespace graybat {
 	    Context getGlobalContext(){
 	     	return initialContext;
 	    }
+	    /** @} */
 
+	    	private:
 
 	    /***************************************************************************
 	     *
-	     * MPI HELPER FUNCTION 
+	     * @name Private Member
 	     *
 	     ***************************************************************************/
+	    ContextID                      contextCount;
+	    std::vector<std::vector<Uri>>  uriMap;
+	    Context                        initialContext;
+	    mpi::environment               env;
 
+	    /***************************************************************************
+	     *
+	     * @name Helper Functions
+	     *
+	     ***************************************************************************/
+	    
+	    
 	    void error(VAddr vAddr, std::string msg){
 	    	using namespace dout;
 	    	Dout dout = Dout::getInstance();

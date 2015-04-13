@@ -9,13 +9,13 @@ GrayBat   {#mainpage}
 **GrayBat** is a C++ library that presents a graph-based communication
 approach, which enables a mapping of algorithms to communication
 patterns and further a mapping of these communication patterns to
-hardware topologies and therefore a highly flexible and configurable parallel or
-distributed application. These mappings are established as an
-intermediate layer between an application and communication libraries,
-which provides dynamic remapping at run-time.  The [Game of
-Life](src/gol.cc) and [N Body](src/nbody.cc) example simulations
-provide full demonstrations of utilizing GrayBat in a scientific
-simulations.
+hardware topologies. Therefore, a flexible and configurable
+communication approach for parallel or distributed applications. These mappings are
+established as an intermediate layer between an application and
+communication libraries and are adptable dynamically during run-time.
+The [Game of Life](src/gol.cc) and [N Body](src/nbody.cc) example
+simulations provide full demonstrations of utilizing GrayBat in a
+scientific simulations.
 
 
 ##Referencing##
@@ -40,7 +40,7 @@ GrayBat  is licensed under the <b>GPLv3+</b>. Please refer to our [LICENSE.md](L
 
 ##Compiling##
 
- * clone the repository: `git clone https://github.com/computationalradiationphysics/GrayBat.git`
+ * clone the repository: `git clone https://github.com/computationalradiationphysics/graybat.git`
  * create the build directory: `mkdir -p GrayBat/build`
  * go to build directory: `cd GrayBat/build`
  * set compiler: `export CXX=[g++,clang++]`
@@ -62,7 +62,7 @@ GrayBat  is licensed under the <b>GPLv3+</b>. Please refer to our [LICENSE.md](L
 ##Example Targets##
 
 GrayBat is a library, but some examples are provided to demonstrate
-the usage. All targets provide the synopthis of their executables.
+its usage. All targets provide the synoptsis of their executables.
 
  * GoL: Game of Life simulation
 

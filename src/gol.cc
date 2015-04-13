@@ -5,6 +5,9 @@
 #include <mapping/Roundrobin.hpp>
 //#include <mapping/GraphPartition.hpp>
 
+/** @name Game of Life Example
+ *
+ */
 
 // STL
 #include <iostream>   /* std::cout */
@@ -12,7 +15,6 @@
 #include <array>      /* std::array */
 #include <cmath>      /* sqrt */
 #include <cstdlib>    /* atoi */
-
 
 struct Cell : public graybat::graphPolicy::SimpleProperty{
     Cell() : SimpleProperty(0), isAlive{{0}}, aliveNeighbors(0){}

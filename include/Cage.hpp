@@ -5,6 +5,7 @@
 #include <sstream>   /* std::stringstream */
 #include <assert.h>  /* assert */
 #include <cstddef>    /* nullptr_t */
+#include <algorithm> /* std::max */
 
 #include <dout.hpp>            /* dout::Dout::getInstance() */
 
@@ -37,7 +38,7 @@ namespace graybat {
      *
      * @brief The Communication And Graph Environment enables to communicate
      *        on basis of a graph with methods of a user defined communication
-     *	  library.
+     *	      library.
      *
      * A cage is defined by its Communication and Graph policy. The communication
      * policy provides methods for point to point and collective operations.
@@ -64,6 +65,11 @@ namespace graybat {
 	typedef typename CommunicationPolicy::ContextID ContextID;
 
 
+	template <class T_Functor>
+	Cage(T_Functor graphFunctor) : graph(GraphPolicy(graphFunctor())){
+
+	}
+
       	/***************************************************************************
 	 *
 	 * MEMBER
@@ -72,7 +78,6 @@ namespace graybat {
 	CommunicationPolicy comm;
         GraphPolicy         graph;
         Context             graphContext;
-
 	std::vector<Vertex> hostedVertices;
 
 
@@ -213,7 +218,7 @@ namespace graybat {
 		// Retrieve maximum number of vertices per peer
 		std::vector<unsigned> nVertices(1,vertices.size());
 		std::vector<unsigned> maxVerticesCount(1,  0);
-		comm.allReduce(newContext, op::maximum<unsigned>(), nVertices, maxVerticesCount);
+		comm.allReduce(newContext, maximum<unsigned>(), nVertices, maxVerticesCount);
 
 		// Gather maxVerticesCount times vertex ids
 		std::vector<std::vector<Vertex> > newVertexMaps (newContext.size(), std::vector<Vertex>());
@@ -249,6 +254,15 @@ namespace graybat {
 	    }
 
 	}
+
+	template <typename T>
+	struct maximum {
+
+	    T operator()(const T a, const T b){
+		return std::max(a, b);
+	    }
+	    
+	};
 
   
 	/**
@@ -607,3 +621,8 @@ namespace graybat {
     };
 
 } // namespace graybat
+
+/** @example gol.cc
+ * Example how to use the cage
+ */
+
