@@ -1,4 +1,4 @@
-GrayBat   {#mainpage}
+GrayBat
 =======
 
 <b>Gr</b>aph <b>A</b>pproach for Highl<b>y</b> Generic Communication Schemes <b>B</b>ased on <b>A</b>daptive <b>T</b>opologies 
