@@ -31,6 +31,10 @@ typedef typename MyCave::Vertex Vertex;
 typedef typename MyCave::Edge   Edge;
 
 
+/***************************************************************************
+ * Test Cases
+ ****************************************************************************/
+
 BOOST_AUTO_TEST_SUITE(point_to_point)
 
 MyCave allToAll(graybat::pattern::FullyConnected(2));
@@ -136,7 +140,7 @@ BOOST_AUTO_TEST_CASE( reduce ){
     const unsigned nElements = 10;
     
     std::vector<unsigned> send(nElements, 1);
-    std::vector<unsigned> recv(nElements,0);
+    std::vector<unsigned> recv(nElements, 0);
 
     Vertex rootVertex = grid.getVertices().at(0);
     
@@ -145,11 +149,30 @@ BOOST_AUTO_TEST_CASE( reduce ){
     }
 
     if(grid.peerHostsVertex(rootVertex)){
-	for(unsigned u: recv){
-	    BOOST_CHECK_EQUAL(u, grid.getVertices().size());
+	for(unsigned receivedElement: recv){
+	    BOOST_CHECK_EQUAL(receivedElement, grid.getVertices().size());
 	}
     }
     
+}
+
+
+BOOST_AUTO_TEST_CASE( allReduce ){
+
+    grid.distribute(graybat::mapping::Consecutive());
+
+    const unsigned nElements = 10;
+    
+    std::vector<unsigned> send(nElements, 1);
+    std::vector<unsigned> recv(nElements, 0);
+
+    for(Vertex v: grid.hostedVertices){
+	grid.allReduce(v, std::plus<unsigned>(), send, recv);
+    }
+
+    for(unsigned receivedElement: recv){
+	BOOST_CHECK_EQUAL(receivedElement, grid.getVertices().size());
+    }
     
 }
 
@@ -171,12 +194,33 @@ BOOST_AUTO_TEST_CASE( gather ){
     }
 
     if(grid.peerHostsVertex(rootVertex)){
-	for(unsigned u: recv){
-	    BOOST_CHECK_EQUAL(u, testValue);
+	for(unsigned receivedElement: recv){
+	    BOOST_CHECK_EQUAL(receivedElement, testValue);
 	}
     }
     
     
+}
+
+BOOST_AUTO_TEST_CASE( allGather ){
+
+    grid.distribute(graybat::mapping::Consecutive());
+
+    const unsigned nElements = 10;
+    const unsigned testValue = 1;
+    
+    std::vector<unsigned> send(nElements, testValue);
+    std::vector<unsigned> recv(nElements * grid.getVertices().size(), 0);
+
+    for(Vertex v: grid.hostedVertices){
+	bool reorder = true;
+	grid.allGather(v, send, recv, reorder);
+    }
+
+    for(unsigned receivedElement: recv){
+	BOOST_CHECK_EQUAL(receivedElement, testValue);
+    }
+        
 }
 
 BOOST_AUTO_TEST_SUITE_END()

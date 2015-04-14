@@ -422,7 +422,7 @@ namespace graybat {
 	}
 
 	template <typename T_Data, typename T_Recv, typename Op>
-	void allReduce(const Vertex srcVertex, Graph& graph, Op op, const std::vector<T_Data> sendData, T_Recv& recvData){
+	void allReduce(const Vertex srcVertex, Op op, const std::vector<T_Data> sendData, T_Recv& recvData){
 
 	    static std::vector<T_Data> reduce;
 	    static unsigned vertexCount = 0;
@@ -545,7 +545,7 @@ namespace graybat {
 	 *
 	 **/
 	template <typename T_Send, typename T_Recv>
-	void allGather(const Vertex srcVertex, Graph& graph, T_Send sendData, T_Recv& recvData, const bool reorder){
+	void allGather(const Vertex srcVertex, T_Send sendData, T_Recv& recvData, const bool reorder){
 	    typedef typename T_Send::value_type T_Send_Container;
 	
 	    static std::vector<T_Send_Container> gather;
