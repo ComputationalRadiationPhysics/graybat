@@ -17,7 +17,7 @@ The [Game of Life](src/gol.cc) and [N Body](src/nbody.cc) example
 simulations provide full demonstrations of utilizing GrayBat in a
 scientific simulations.
 
-![GrayBat Overview](utils/doxygen/graphics/overview.png)
+![GrayBat Overview](utils/doxygen/graphics/overview.svg)
 
 
 ##Referencing##
