@@ -10,9 +10,9 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="210mm"
-   height="297mm"
-   viewBox="0 0 744.09448819 1052.3622047"
+   width="424.25095mm"
+   height="124.86218mm"
+   viewBox="0 0 1503.2514 442.42505"
    id="svg11407"
    version="1.1"
    inkscape:version="0.91 r13725"
@@ -3015,9 +3015,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4142136"
-     inkscape:cx="1318.1784"
-     inkscape:cy="771.38383"
+     inkscape:zoom="0.50000001"
+     inkscape:cx="626.68106"
+     inkscape:cy="204.091"
      inkscape:document-units="px"
      inkscape:current-layer="layer5"
      showgrid="false"
@@ -3028,33 +3028,37 @@
      inkscape:window-x="0"
      inkscape:window-y="19"
      inkscape:window-maximized="1"
-     showborder="false">
+     showborder="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0">
     <sodipodi:guide
-       position="425.27423,906.61193"
+       position="404.80342,360.56198"
        orientation="1,0"
        id="guide25745" />
     <sodipodi:guide
-       position="380,939.28573"
+       position="359.52919,393.23578"
        orientation="0,1"
        id="guide4234" />
     <sodipodi:guide
-       position="562.85715,547.85715"
+       position="542.38635,1.8072028"
        orientation="0,1"
        id="guide4254" />
     <sodipodi:guide
-       position="747.14286,724.28573"
+       position="726.67206,178.23578"
        orientation="1,0"
        id="guide11797" />
     <sodipodi:guide
-       position="856.42858,856.42859"
+       position="835.95779,310.37864"
        orientation="0,1"
        id="guide22442" />
     <sodipodi:guide
-       position="635,741.42859"
+       position="614.5292,195.37864"
        orientation="0,1"
        id="guide22444" />
     <sodipodi:guide
-       position="573.57143,617.14287"
+       position="553.10063,71.092921"
        orientation="0,1"
        id="guide22446" />
   </sodipodi:namedview>
@@ -3073,11 +3077,13 @@
   <g
      inkscape:label="Ebene 1"
      inkscape:groupmode="layer"
-     id="layer1" />
+     id="layer1"
+     transform="translate(-20.470818,-63.887207)" />
   <g
      inkscape:groupmode="layer"
      id="layer2"
-     inkscape:label="simulation">
+     inkscape:label="simulation"
+     transform="translate(-20.470818,-63.887207)">
     <path
        transform="matrix(1.0784325,0,0,1.0784325,67.288712,124.80102)"
        sodipodi:nodetypes="cccccccc"
@@ -3108,7 +3114,8 @@
   <g
      inkscape:groupmode="layer"
      id="layer3"
-     inkscape:label="domain decomposition">
+     inkscape:label="domain decomposition"
+     transform="translate(-20.470818,-63.887207)">
     <rect
        ry="44.297779"
        y="122.37246"
@@ -3226,7 +3233,7 @@
        id="path4268"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:6,3;stroke-dashoffset:0"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:6, 3;stroke-dashoffset:0;stroke-opacity:1"
        d="m 295.71429,370.39791 229.64285,0"
        id="path4270"
        inkscape:connector-curvature="0" />
@@ -3234,7 +3241,8 @@
   <g
      inkscape:groupmode="layer"
      id="layer4"
-     inkscape:label="pattern">
+     inkscape:label="pattern"
+     transform="translate(-20.470818,-63.887207)">
     <rect
        style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3.01999998;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect4237"
@@ -3726,7 +3734,8 @@
   <g
      inkscape:groupmode="layer"
      id="layer5"
-     inkscape:label="mapping">
+     inkscape:label="mapping"
+     transform="translate(-20.470818,-63.887207)">
     <rect
        ry="44.297779"
        y="120.70548"
@@ -3755,14 +3764,14 @@
     <flowRoot
        xml:space="preserve"
        id="flowRoot11973"
-       style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Sans;font-style:normal;font-weight:normal;font-size:15px;line-height:125%;letter-spacing:0px;word-spacing:0px"><flowRegion
+       style="font-style:normal;font-weight:normal;font-size:15px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"><flowRegion
          id="flowRegion11975"><rect
            id="rect11977"
            width="154.55334"
            height="32.481037"
            x="975.80737"
            y="80.595459" /></flowRegion><flowPara
-         id="flowPara11979"></flowPara></flowRoot>    <rect
+         id="flowPara11979" /></flowRoot>    <rect
        rx="7.6246285"
        y="160.34891"
        x="991.86053"
@@ -4515,7 +4524,8 @@
   <g
      inkscape:groupmode="layer"
      id="layer6"
-     inkscape:label="hardware">
+     inkscape:label="hardware"
+     transform="translate(-20.470818,-63.887207)">
     <rect
        style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:3.01999998;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect22571"
