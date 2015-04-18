@@ -17,7 +17,16 @@ The [Game of Life](src/gol.cc) and [N Body](src/nbody.cc) example
 simulations provide full demonstrations of utilizing GrayBat in a
 scientific simulations.
 
+A parallel application can be created with support of GrayBat by
+the following steps:
+
+1. Decide on how fine grain the application domain should be decomposed
+2. Model communication pattern of subdomains as a graph
+3. Choose mapping of graph vertices to peers
+4. Choose hardware to run the application on
+
 ![GrayBat Overview](utils/doxygen/graphics/overview.svg)
+![Game of Life](utils/doxygen/graphics/gol.svg)
 
 
 ##Referencing##
