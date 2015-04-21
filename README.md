@@ -9,13 +9,11 @@ GrayBat
 **GrayBat** is a C++ library that presents a graph-based communication
 approach, which enables a mapping of algorithms to communication
 patterns and further a mapping of these communication patterns to
-hardware topologies. Therefore, a flexible and configurable
-communication approach for parallel or distributed applications. These
-mappings are established as an intermediate layer between an
-application and communication libraries and are adptable dynamically
-during run-time.  The [Game of Life](src/gol.cc) and [N
-Body](src/nbody.cc) example simulations provide full demonstrations of
-utilizing GrayBat in a scientific simulations.
+varying hardware architectures. Therefore, a flexible and configurable
+communication approach for parallel and distributed
+applications. These mappings are established as an intermediate layer
+between an application and communication libraries and are dynamically
+adptable during run-time.
 
 An application supported by GrayBat can be created with the following steps:
 
@@ -24,23 +22,14 @@ An application supported by GrayBat can be created with the following steps:
 3. Choose mapping of graph vertices to peers
 4. Choose hardware to run the application on
 
-![GrayBat Overview](utils/doxygen/graphics/overview.svg)
+![](utils/doxygen/graphics/overview.svg)
 
-The following figure shows a sketch of the [Game of Life
-simulation](src/gol.cc) implemented with GrayBat support.  The Game of
-Life domain (20 x 20 cells) is decomposed very fine grain, such that,
-every cell is represented by a vertex in a two-dimensional grid and
-neighboring vertices are connected by edges. The graph is partioned
-into four partitions and mapped to four peers. Therefore, each peer is
-responsible for the communication of 100 vertices with its
-neighbors. Finally, each two peers are mapped to a quad core processor
-on a dual socket system. This is one possible sequence of mappings for a Game of
-Life simulation within the GrayBat framework. On each step changes are possible
-to adapt the simulation to other architectures, networks or
-algorithms.
-
-![Game of Life](utils/doxygen/graphics/gol.svg)
-
+The central role to establish these mappings plays the
+[communication and graph environment](utils/doxygen/cage.md)([cage](include/cage.hpp)).
+The cage provides both communication and
+graph operations to enable communication based on graphs.
+The [Game of Life](utils/doxygen/gol.md) and [N Body](src/nbody.cc) example
+simulations provide each a full demonstrations for utilizing GrayBat.
 
 ##Referencing##
 
