@@ -1,8 +1,11 @@
+[cage]:utils/doxygen/cage.md
+[gol]:utils/doxygen/gol.md
+
 GrayBat
 =======
 
-<b>Gr</b>aph <b>A</b>pproach for Highl<b>y</b> Generic Communication Schemes <b>B</b>ased on <b>A</b>daptive <b>T</b>opologies 
-
+<b>Gr</b>aph <b>A</b>pproach  for Highl<b>y</b>  Generic Communication
+Schemes <b>B</b>ased on <b>A</b>daptive <b>T</b>opologies
 
 ##Description##
 
@@ -24,12 +27,12 @@ An application supported by GrayBat can be created with the following steps:
 
 ![](utils/doxygen/graphics/overview.svg)
 
-The central role to establish these mappings plays the
-[communication and graph environment](utils/doxygen/cage.md)([cage](include/cage.hpp)).
-The cage provides both communication and
-graph operations to enable communication based on graphs.
-The [Game of Life](utils/doxygen/gol.md) and [N Body](src/nbody.cc) example
-simulations provide each a full demonstrations for utilizing GrayBat.
+The [communication and graph environment][cage] (cage) is the central
+class of GrayBat.  The cage provides both communication and graph
+operations to enable communication based on graphs and is a good point
+to **get started**. Otherwise consider the [Game of Life][gol] or
+[N Body](src/nbody.cc) example simulations which provide each a full
+demonstrations of utilizing GrayBat.
 
 ##Referencing##
 
@@ -47,18 +50,20 @@ GrayBat  is licensed under the <b>GPLv3+</b>. Please refer to our [LICENSE.md](L
 
  * cmake 3.0.2
  * Boost 1.57.0
- * OpenMPI 1.8.0 (for mpi [communication policy](utils/doxygen/communicationPolicy.md))
+ * OpenMPI 1.8.0 ([mpi communication policy](@ref graybat::communicationPolicy::BMPI))
  * g++ 4.9.2
- * metis 5.1 (for graph partitioning)
+ * metis 5.1 ([graph partitioning](@ref graybat::mapping::GraphPartition))
 
 ##Compiling##
 
- * clone the repository: `git clone https://github.com/computationalradiationphysics/graybat.git`
- * create the build directory: `mkdir -p GrayBat/build`
- * go to build directory: `cd GrayBat/build`
- * set compiler: `export CXX=[g++,clang++]`
- * create Makefile `cmake ..`
- * build project : `make [target]`
+ * Clone the repository: `git clone https://github.com/computationalradiationphysics/graybat.git`
+ * Change directory: `cd graybat`
+ * Init git submodules: `git submodule init && git submodule update`
+ * Create the build directory: `mkdir -p build`
+ * Change to build directory: `cd build`
+ * Set compiler: `export CXX=[g++,clang++]`
+ * Create Makefile `cmake ..`
+ * Build project : `make [target]`
 
 ##Tested Compilers##
 
@@ -74,17 +79,13 @@ GrayBat  is licensed under the <b>GPLv3+</b>. Please refer to our [LICENSE.md](L
 
 ##Example Targets##
 
-GrayBat is a library, but some examples are provided to demonstrate
-its usage. All targets provide the synoptsis of their executables.
+ * [GoL][gol]: Game of Life simulation
 
- * GoL: Game of Life simulation
+ * **NBody**: N Body simulation
 
- * NBody: N Body simulation
+ * **doc**: Build documentation in doc/
 
- * doc: Build documentation in ../doc/
-
- * clean: Cleanup build directory
-
+ * **clean**: Cleanup build directory
 
 
 ##Authors##

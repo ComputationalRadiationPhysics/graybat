@@ -25,6 +25,7 @@ namespace graybat {
     namespace communicationPolicy {
     
 	/************************************************************************//**
+	 *
 	 * @class BMPI
 	 *
 	 * @brief Implementation of the Cage communicationPolicy interface
