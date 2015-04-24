@@ -15,7 +15,7 @@
 
 
 struct Cell : public graybat::graphPolicy::SimpleProperty{
-    Cell() : SimpleProperty(0), isAlive{{0}}, aliveNeighbors(0){}
+    Cell() : SimpleProperty(0){}
     Cell(ID id) : SimpleProperty(id), isAlive{{0}}, aliveNeighbors(0){
       unsigned random = rand() % 10000;
       if(random < 3125){
