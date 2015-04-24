@@ -1,2 +1,27 @@
 Event
 =====
+
+[cage]:utils/doxygen/cage.md
+[context]:utils/doxygen/context.md
+[communication policy]:utils/doxygen/communicationPolicy.md
+
+An event is a class that is returned by non-blocking or asynchronous
+communication functions like graybat::cage::asyncSend or
+graybat::cage::asyncRecv. Each [communication policy] needs
+to define its event class, since this can be very library dependent.
+The [cage] determines a strict event interface, but leaves their
+implementation open to the [communication policy].
+
+The following listing provides a skeleton for a event
+class with all necessary methods:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
+struct EventSkeleton {
+
+	// Wait for the event to be finished
+	void wait() {...}
+
+	// Ask for current state of the event
+	bool ready(){...}
+};
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
