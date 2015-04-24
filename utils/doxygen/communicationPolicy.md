@@ -53,14 +53,14 @@ namespace graybat {
 
 	namespace communicationPolicy {
 
-		struct CommunicationPolicyI {
+		struct CommunicationPolicySkeleton {
 			typedef unsigned    VAddr;
 		
 			// Necessary type definitions
 			typedef ContextImpl Context;
 			typedef EventImpl   Event;
 
-			CommunicationPolicyI(){
+			CommunicationPolicySkeleton(){
 				...
 			}
 				
@@ -78,7 +78,7 @@ namespace graybat {
 				
 			Context getGlobalContext(){...}
 				
-	    }
+	    };
 				
 	} /* namespace communicationPolicy*/
 				
@@ -93,7 +93,7 @@ namespace graybat {
 
 	namespace communicationPolicy {
 
-	    struct CommunicationPolicyI {
+	    struct CommunicationPolicySkeleton {
 			typedef unsigned    Tag;
 			typedef unsigned    VAddr;
 		
@@ -101,7 +101,7 @@ namespace graybat {
 			typedef ContextImpl Context;
 			typedef EventImpl   Event;
 
-			CommunicationPolicyI(){
+			CommunicationPolicySkeleton(){
 				...
 			}
 				
@@ -159,7 +159,7 @@ namespace graybat {
 				
 			Context getGlobalContext(){...}
 				
-	    }
+	    };
 				
 	} /* namespace communicationPolicy*/
 				

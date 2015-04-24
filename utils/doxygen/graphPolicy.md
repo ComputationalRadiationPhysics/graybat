@@ -4,19 +4,22 @@ Graph Policy
 [cage]:utils/doxygen/cage.md
 
 The graph policy is a class which implements the graph interface of
-its host class ([cage]). A graph is defined by its vertex and
-edge property through template arguments. The following defintion
-of a graph defines a graph were a city property represents a vertex
-and a road represents an edge:
+its host class ([cage]). A graph is defined by its vertex and edge
+property through template arguments and its graph description as
+constructor argument. The following defintion of a graph is defined by
+a city property which represents a vertex and a road property which
+represents an edge:
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 typedef graybat::graphPolicy::BGL<City, Road> CityGraph;
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The basic member of a property is an unique identifier within the
+
+The basic member of a property is an unique identifier (id) within the
 graph.  This id is used by the [cage] to map vertices to peers.  The
-following property is a very simple and basic proptert for edges and
-vertex. Therefore, it is called SimpleProperty:
+following property is a very simple and basic property for edges and
+vertices. Therefore, it is called SimpleProperty:
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 struct SimpleProperty{
     typedef unsigned ID;
@@ -25,21 +28,26 @@ struct SimpleProperty{
 
     ID id;
 };
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The SimpleProperty can 
+The SimpleProperty can be used to build more complex properties:
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
-struct ComplexProperty::SimpleProperty{
+struct ComplexProperty::public graybat::graphPolicy::SimpleProperty{
+	ComplexProperty() : SimpleProperty(0)
+
 	// Property specific data
 };
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-
-* pattern
-* properties
+The following source code provides the full skeleton of a graph
+policy.  Nevertheless, the predefined boost graph library graph policy
+(graybat::graphPolicy::BGL) is a good starting point to be used in a
+[cage]. A custom implementation might only be necessary if there exist
+some special requirements.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 namespace graybat {
@@ -55,7 +63,7 @@ namespace graybat {
 			typedef std::pair<unsigned, unsigned>                                   EdgeDescription;
 			typedef std::pair<std::vector<unsigned>, std::vector<EdgeDescription> > GraphDescription;
 			
-			// Construct the graph from graph description
+			// Construct the graph from a graph description
 			GraphPolicyI(GraphDescription description) {...}
 			
 			// Graph identifier
@@ -74,7 +82,6 @@ namespace graybat {
 		}
 	}
 }
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
