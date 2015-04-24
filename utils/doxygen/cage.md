@@ -2,10 +2,10 @@ Communication and Graph Environment
 ===================================
 
 [cage]: @ref graybat::Cage
-[communication policy]:utils/doxygen/communicationPolicy.md
-[graph policy]:utils/doxygen/graphPolicy.md
-[pattern]:utils/doxygen/communicationPattern.md
-[mapping]:utils/doxygen/mapping.md
+[communication policy]: utils/doxygen/communicationPolicy.md
+[graph policy]: utils/doxygen/graphPolicy.md
+[pattern]: utils/doxygen/communicationPattern.md
+[mapping]: utils/doxygen/mapping.md
 
 
 The communication and graph environment ([cage]) provides a
