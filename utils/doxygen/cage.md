@@ -17,9 +17,9 @@ described by a graph.
 
 The behavior of the [cage] need to be defined by a
 [communication policy] and a [graph policy]. These policies need to be
-provided as template arguments to the [cage] class.
-The following listings show examples on how to use and how to configure
-the [cage] with predefined [communication policy] and [graph policy].
+provided as template arguments to the [cage] class.  The following
+listings show examples on how to use and how to configure the [cage]
+with predefined [communication policy] and [graph policy].
 
 ## Configure the GrayBat Cage ##
 
@@ -31,23 +31,23 @@ the [cage] with predefined [communication policy] and [graph policy].
 #include <mapping/Consecutive.hpp>
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-2. Define communication policy to use (boost.MPI)
+2. Define communication policy to use (boost.MPI).
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 typedef graybat::communicationPolicy::BMPI CommunicationPolicy;
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-3. Define graph policy to use (boost graph library)
+3. Define graph policy to use (boost graph library).
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 typedef graybat::graphPolicy::BGL<> GraphPolicy;
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-4. Define cage through policies
+4. Define cage through policies.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 typedef graybat::Cage<CommunicatonPolicy, GraphPolicy> Cage;
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 5. Create Cage instance with graph creation functor that describes the
-   communication [pattern]
+   communication [pattern].
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 Cage cage(graybat::pattern::GridDiagonal(100,100))
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -55,38 +55,47 @@ Cage cage(graybat::pattern::GridDiagonal(100,100))
 
 ## Mapping Operations ##
 
-1. Distributes vertices of the graph based on a [mapping] functor
+1. **distribute**: Distributes vertices of the graph to peer(s) based on a [mapping].
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 cage.distribute(graybat::mapping::Consecutive());
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-2. The vertices mapped to the own peer are called hosted vertices
+2. **hostedVertices**: The vertices mapped to the peer itself are called hosted vertices.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 typedef Cage::Vertex Vertex;
 
 // Iterate over all vertices that I host
-for(Vertex v: cage.hostedVertices){
-	std::cout << v.id << std::endl;
+for(Vertex vertex: cage.hostedVertices){
+	std::cout << vertex.id << std::endl;
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Graph Operations ##
 
-1. Retrieve outgoing edges of hosted vertices
+A peer is responsible for the communication of all its hosted
+vertices.  Therefore, the common approach for communication in GrayBat
+is to iterate over the set of hosted vertices and send data to
+adjacent vertices which are connected with an outgoing edge and
+receive data from adjacent vertices which are connected with an
+incoming edge.
+
+1. **getOutEdges**: Retrieve outgoing edges of hosted vertices. This
+   information can be used to send data to adjacent vertices.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 typedef Cage::Edge Edge;
-for(Vertex v: cage.hostedVertices){
-	for(auto outEdge : cage.getOutEdges(v)){
+for(Vertex vertex: cage.hostedVertices){
+	for(auto outEdge : cage.getOutEdges(vertex)){
     	Vertex destVertex = outEdge.first;
 		Edge   destEdge   = outEdge.second;
 	}
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-2. Retrieve incoming edges of hosted vertices
+2. **getInEdges**: Retrieve incoming edges of hosted vertices. This
+   information can be used to receive data from adjacent vertices.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
-for(Vertex v: cage.hostedVertices){
-	for(auto inEdge : cage.getInEdges(v)){
+for(Vertex vertex: cage.hostedVertices){
+	for(auto inEdge : cage.getInEdges(vertex)){
     	Vertex srcVertex = inEdge.first;
 		Edge   srcEdge   = inEdge.second;
 	}
@@ -96,100 +105,117 @@ for(Vertex v: cage.hostedVertices){
 
 ## Point to Point Communication Operations ##
 
-1. Send synchronous and asynchronous data
+* **send/asyncSend**: Send synchronous and asynchronous data. The
+   asynchronous version of send returns an event, which can be waited
+   for or tested for its state.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 typedef Cage::Edge  Edge;
 typedef Cage::Event Event;
-for(Vertex v: cage.hostedVertices){
-	for(auto outEdge : cage.getOutEdges(v)){
+
+// Some data that should be send
+std::vector<int> data(100,1);
+
+for(Vertex vertex: cage.hostedVertices){
+	for(auto outEdge : cage.getOutEdges(vertex)){
     	Vertex destVertex = outEdge.first;
 		Edge   destEdge   = outEdge.second;
-		// some data
-		std::vector<int> data(100,1);
-		// synchronous
+
+		// Synchronous
 		cage.send(destVertex, destEdge, data);
-		// asynchronous
+
+	    // Asynchronous
 		Event e = cage.asyncSend(destVertex, destEdge, data);
-		// wait for event
+
+        // Wait for and test event
 		e.wait();
+		bool eventState = e.ready();
 	}
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-1. Receive synchronous and asynchronous data
+* **recv/asyncRecv**: Receive synchronous and asynchronous data. The
+   asynchronous version of recv returns an event, which can be waited
+   for or tested for its state.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 typedef Cage::Edge  Edge;
 typedef Cage::Event Event;
-for(Vertex v: cage.hostedVertices){
-	for(auto inEdge : cage.getInEdges(v)){
+
+// Some data that should be send
+std::vector<int> data(100,1);
+
+for(Vertex vertex: cage.hostedVertices){
+	for(auto inEdge : cage.getInEdges(vertex)){
     	Vertex srcVertex = inEdge.first;
 		Edge   srcEdge   = inEdge.second;
-		// some data
-		std::vector<int> data(100,1);
-		// synchronous
+
+	    // Synchronous receive
 		cage.recv(destVertex, destEdge, data);
-		// asynchronous
+
+	    // Asynchronous receive
 		Event e = cage.asyncRecv(destVertex, destEdge, data);
-		// wait for event
+
+	    // Wait for and test event
 		e.wait();
+		bool eventState = e.ready();
 	}
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Collective Communication Operations ##
 
-1. Reduce vector of data with binary operator and receive by some root vertex
+* **reduce**: Reduce vector of data with binary operator and receive
+   by some root vertex.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 Vertex rootVertex = cage.getVertex(0);
 
 std::vector<int> send(100);
 std::vector<int> recv(100);
 
-// Each vertex need to reduce its data
+// Each vertex need to reduce its data, the root receives reduction.
 for(Vertex vertex: cage.hostedVertices){
 	cage.reduce(rootVertex, vertex, std::plus<int>, send, recv);
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-2. Reduce vector of data and receive them by every vertex
+* **allReduce**: Reduce vector of data and receive them by every vertex.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 std::vector<int> send(100);
 std::vector<int> recv(100);
 
-// Each vertex need to reduce its data
+// Each vertex need to reduce its data, all receive reduction.
 for(Vertex vertex: cage.hostedVertices){
 	cage.allReduce(rootVertex, vertex, std::plus<int>, send, recv);
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-3. Root vertex collects data from each vertex
+* **gather**: Root vertex collects data from each vertex.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 Vertex rootVertex = cage.getVertex(0);
 
 std::vector<int> send(10);
 std::vector<int> recv(10 * cage.getVertices().size());
 
-// Each vertex need to send its data
+// Each vertex need to send its data, the root receives
 for(Vertex vertex: cage.hostedVertices){
 	cage.gather(rootVertex, vertex, send, recv);
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-4. Data is send to all vertices
+* **allGather**: Data is send to all vertices.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 std::vector<int> send(10);
 std::vector<int> recv(10 * cage.getVertices().size());
 
-// Each vertex need to send its data
+// Each vertex need to send its data, all receive.
 for(Vertex vertex: cage.hostedVertices){
 	cage.allGather(vertex, send, recv);
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-5. Synchronize all peers (including their hosted vertices)
+* **synchronize**: Synchronize all peers (including their hosted vertices).
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 cage.synchronize();
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

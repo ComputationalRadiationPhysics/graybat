@@ -507,7 +507,7 @@ namespace graybat {
     
 	    /*************************************************************************//**
 	     *
-	     * @name Context Interface
+	     * @name Context Management Interface
 	     *
 	     * @{
 	     *

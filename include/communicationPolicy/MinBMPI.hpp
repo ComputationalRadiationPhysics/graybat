@@ -334,7 +334,7 @@ namespace graybat {
 	     *
 	     */
 	    template <typename T_Send, typename T_Recv>
-	    void allGather(Context context, const T_Send& sendData, T_Recv& recvData){
+	    void allGather(const Context context, const T_Send& sendData, T_Recv& recvData){
 		mpi::all_gather(context.comm, sendData.data(), sendData.size(), recvData.data());
 		
 	    }
