@@ -6,8 +6,8 @@ Event
 [communication policy]:utils/doxygen/communicationPolicy.md
 
 An event is a class that is returned by non-blocking or asynchronous
-communication functions like graybat::cage::asyncSend or
-graybat::cage::asyncRecv. Each [communication policy] needs
+communication functions like graybat::Cage::asyncSend or
+graybat::Cage::asyncRecv. Each [communication policy] needs
 to define its event class, since this can be very library dependent.
 The [cage] determines a strict event interface, but leaves their
 implementation open to the [communication policy].
