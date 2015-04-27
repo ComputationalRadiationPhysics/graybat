@@ -1,13 +1,11 @@
 /**
 \page cage Communication and Graph Environment
-\subpage communicationPolicy
-\subpage graphPolicy
 
 [cage]: @ref graybat::Cage
-[communication policy]: utils/doxygen/communicationPolicy.md
-[graph policy]: utils/doxygen/graphPolicy.md
-[pattern]: utils/doxygen/communicationPattern.md
-[mapping]: utils/doxygen/mapping.md
+[communication policy]: @ref communicationPolicy
+[graph policy]: @ref graphPolicy
+[pattern]: @ref communicationPattern
+[mapping]: @ref mapping
 
 
 The communication and graph environment ([cage]) provides a
@@ -107,7 +105,7 @@ for(Vertex vertex: cage.hostedVertices){
 
 ## Point to Point Communication Operations ##
 
-* **send/asyncSend**: Send synchronous and asynchronous data. The
+- **send/asyncSend**: Send synchronous and asynchronous data. The
    asynchronous version of send returns an event, which can be waited
    for or tested for its state.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
@@ -136,7 +134,7 @@ for(Vertex vertex: cage.hostedVertices){
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-* **recv/asyncRecv**: Receive synchronous and asynchronous data. The
+- **recv/asyncRecv**: Receive synchronous and asynchronous data. The
    asynchronous version of recv returns an event, which can be waited
    for or tested for its state.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
@@ -166,7 +164,7 @@ for(Vertex vertex: cage.hostedVertices){
 
 ## Collective Communication Operations ##
 
-* **reduce**: Reduce vector of data with binary operator and receive
+- **reduce**: Reduce vector of data with binary operator and receive
    by some root vertex.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 Vertex rootVertex = cage.getVertex(0);
@@ -180,7 +178,7 @@ for(Vertex vertex: cage.hostedVertices){
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* **allReduce**: Reduce vector of data and receive them by every vertex.
+- **allReduce**: Reduce vector of data and receive them by every vertex.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 std::vector<int> send(100);
 std::vector<int> recv(100);
@@ -192,7 +190,7 @@ for(Vertex vertex: cage.hostedVertices){
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-* **gather**: Root vertex collects data from each vertex.
+- **gather**: Root vertex collects data from each vertex.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 Vertex rootVertex = cage.getVertex(0);
 
@@ -206,7 +204,7 @@ for(Vertex vertex: cage.hostedVertices){
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-* **allGather**: Data is send to all vertices.
+- **allGather**: Data is send to all vertices.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 std::vector<int> send(10);
 std::vector<int> recv(10 * cage.getVertices().size());
@@ -217,9 +215,16 @@ for(Vertex vertex: cage.hostedVertices){
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* **synchronize**: Synchronize all peers (including their hosted vertices).
+- **synchronize**: Synchronize all peers (including their hosted vertices).
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 cage.synchronize();
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+## Further Links ##
+
+- \subpage communicationPolicy 
+- \subpage graphPolicy 
+- \subpage communicationPattern
+- \subpage mapping
 
 */

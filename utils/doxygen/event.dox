@@ -1,5 +1,6 @@
-Event
-=====
+/**
+
+\page event Event
 
 [cage]:utils/doxygen/cage.md
 [context]:utils/doxygen/context.md
@@ -25,3 +26,5 @@ struct EventSkeleton {
 	bool ready(){...}
 };
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+*/

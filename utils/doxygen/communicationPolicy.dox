@@ -2,10 +2,10 @@
 
 \page communicationPolicy Communication Policy
 
-
-[cage]:utils/doxygen/cage.md
-[context]:utils/doxygen/context.md
-[communication policy]:utils/doxygen/communicationPolicy.md
+[cage]: @ref cage
+[context]: @ref context 
+[event]: @ref event 
+[communication policy]: @ref communicationPolicy
 
 The communication policy is a class which implements the
 communication interface of its host class ([cage]).
@@ -25,8 +25,8 @@ can interpret the term communication on its own. See the code example
 below or consider the preimplemented communication policies.
 
 The communication policy interface is separated into the parts
-**point-to-point communication**, **collective communication**, and
-**context management**. The advice for completeness is to implement
+<b>point-to-point</b> <b>communication</b> , <b>collective communication</b> , and
+<b>context management</b> . The advice for completeness is to implement
 all methods of these three parts and run the provided unit test cases
 to verify their correctness. Nevertheless, not all communication
 methods might be necessary for a special use case and only a handful
@@ -37,15 +37,15 @@ all interface methods.
 The basic set of methods that **need** to be implemented to initialize
 the [cage] are the following:
 
-* Context Management
- * getGlobalContext
- * createContext
-* Collective Communication
- * allGather
- * allReduce
-* Type definitions
- * Context 
- * Event
+- Context Management
+ - getGlobalContext
+ - createContext
+- Collective Communication
+ - allGather
+ - allReduce
+- Type definitions
+ - [Context][context] 
+ - [Event][event]
  
 The following source code provides a basic skeleton of a communication
 policy:
@@ -167,5 +167,10 @@ namespace graybat {
 				
 } /* namespace graybat */
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+## Further Links ##
+
+- \subpage context
+- \subpage event
 
 */

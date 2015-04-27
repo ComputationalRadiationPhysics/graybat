@@ -1,7 +1,9 @@
-Graph Policy
-============
+/**
 
-[cage]:utils/doxygen/cage.md
+\page graphPolicy Graph Policy
+
+
+[cage]: @ref cage
 
 The graph policy is a class which implements the graph interface of
 its host class ([cage]). A graph is defined by its vertex and edge
@@ -55,7 +57,7 @@ namespace graybat {
 	namespace graphPolicy {
 
 		template <class T_VertexProperty, class T_EdgeProperty>
-		class GraphPolicyI {
+		class GraphPolicySkeleton {
 		
 			// Type definitions
 			typedef T_VertexProperty                                                Vertex;
@@ -64,7 +66,7 @@ namespace graybat {
 			typedef std::pair<std::vector<unsigned>, std::vector<EdgeDescription> > GraphDescription;
 			
 			// Construct the graph from a graph description
-			GraphPolicyI(GraphDescription description) {...}
+			GraphPolicySkeleton(GraphDescription description) {...}
 			
 			// Graph identifier
 			unsigned id;
@@ -84,4 +86,4 @@ namespace graybat {
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
+*/

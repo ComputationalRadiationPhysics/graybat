@@ -1,5 +1,6 @@
-Context
-=======
+/**
+
+\page context Context
 
 [cage]:utils/doxygen/cage.md
 [context]:utils/doxygen/context.md
@@ -37,3 +38,5 @@ struc ContextSkeleton {
 
 };
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+*/

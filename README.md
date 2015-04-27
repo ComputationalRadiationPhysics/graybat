@@ -1,8 +1,8 @@
 GrayBat
 =======
 
-[cage]:utils/doxygen/cage.md
-[gol]:utils/doxygen/gol.md
+[cage]: @ref cage
+[gol]: @ref gol
 
 <b>Gr</b>aph <b>A</b>pproach  for Highl<b>y</b>  Generic Communication
 Schemes <b>B</b>ased on <b>A</b>daptive <b>T</b>opologies
@@ -30,9 +30,8 @@ An application supported by GrayBat can be created with the following steps:
 The [communication and graph environment][cage] (cage) is the central
 class of GrayBat.  The cage provides both communication and graph
 operations to enable communication based on graphs and is a good point
-to **get started**. Otherwise consider the [Game of Life][gol] or
-[N Body](src/nbody.cc) example simulations which provide each a full
-demonstrations of utilizing GrayBat.
+to **get started**. Otherwise consider the [Game of Life][gol] example
+simulation which provides a full demonstration of utilizing GrayBat.
 
 ##Referencing##
 
@@ -80,8 +79,6 @@ GrayBat  is licensed under the <b>GPLv3+</b>. Please refer to our [LICENSE.md](L
 ##Example Targets##
 
  * [GoL][gol]: Game of Life simulation
-
- * **NBody**: N Body simulation
 
  * **doc**: Build documentation in doc/
 
