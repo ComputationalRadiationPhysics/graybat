@@ -2,7 +2,7 @@
 
 \page mapping Vertex Mapping
 
-[cage]: @ref cage
+[cage]: utils/doxygen/cage.md
 
 A vertex mapping is a class functor which describes the mapping of a
 graph to peers. A mapping is used by the [cage] in its

@@ -1,8 +1,8 @@
 GrayBat
 =======
 
-[cage]: @ref cage
-[gol]: @ref gol
+[cage]: utils/doxygen/cage.md
+[gol]: utils/doxygen/gol.md
 
 <b>Gr</b>aph <b>A</b>pproach  for Highl<b>y</b>  Generic Communication
 Schemes <b>B</b>ased on <b>A</b>daptive <b>T</b>opologies
@@ -88,3 +88,4 @@ GrayBat  is licensed under the <b>GPLv3+</b>. Please refer to our [LICENSE.md](L
 ##Authors##
 
  * Erik Zenker (erikzenker@posteo.de)
+

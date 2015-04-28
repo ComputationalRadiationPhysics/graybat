@@ -2,9 +2,9 @@
 
 \page event Event
 
-[cage]:utils/doxygen/cage.md
-[context]:utils/doxygen/context.md
-[communication policy]:utils/doxygen/communicationPolicy.md
+[cage]: utils/doxygen/cage.md
+[context]: @ref context
+[communication policy]: @ref communicationPolicy
 
 An event is a class that is returned by non-blocking or asynchronous
 communication functions like graybat::Cage::asyncSend or

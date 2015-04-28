@@ -3,7 +3,7 @@
 \page graphPolicy Graph Policy
 
 
-[cage]: @ref cage
+[cage]: /utils/doxygen/cage.md
 
 The graph policy is a class which implements the graph interface of
 its host class ([cage]). A graph is defined by its vertex and edge

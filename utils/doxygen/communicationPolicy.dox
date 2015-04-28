@@ -2,7 +2,7 @@
 
 \page communicationPolicy Communication Policy
 
-[cage]: @ref cage
+[cage]: utils/doxygen/cage.md
 [context]: @ref context 
 [event]: @ref event 
 [communication policy]: @ref communicationPolicy
