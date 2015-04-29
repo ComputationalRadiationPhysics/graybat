@@ -1,49 +1,53 @@
-#GrayBat#
-**Gr**aph **A**pproach for Highl**y** Generic Communication Schemes **B**ased on **A**daptive **T**opologies 
+GrayBat
+=======
 
+<b>Gr</b>aph <b>A</b>pproach  for Highl<b>y</b>  Generic Communication
+Schemes <b>B</b>ased on <b>A</b>daptive <b>T</b>opologies
 
 ##Description##
 
-**GrayBat** is a C++ library that presents the **graph-based virtual
-overlay network**, a flexible description which enables a mapping of
-algorithms to communication patterns and further a mapping of these
-communication patterns onto the available hardware topologies. These
-mappings were established as an intermediate layer between an
-application and communication libraries. This approach provides a
-dynamic remapping at run-time, which will allow to address load
-balancing and fault tolerance for upcoming exascale systems. The
-[Game of Life](src/gol.cc) and [N Body](src/nbody.cc) example
-simulations provide full demonstrations of utilizing GrayBat in a
-scientific simulations.
+**GrayBat** is a C++ library that presents a graph-based communication
+approach, which enables a mapping of algorithms to communication
+patterns and further a mapping of these communication patterns to
+varying hardware architectures. Therefore, a flexible and configurable
+communication approach for parallel and distributed
+applications. These mappings are established as an intermediate layer
+between an application and communication libraries and are dynamically
+adptable during run-time.
 
+##Documentation##
+
+Have a look at the documentation that is available [here](https://erikzenker.github.io/GrayBat)
 
 ##Referencing##
 
 GrayBat is a scientific project. If you **present and/or publish** scientific
 results that used GrayBat, you should set this as a **reference**.
 
-
 ##Software License##
 
-GrayBat  is licensed under the **GPLv3+**. Please refer to our [LICENSE.md](LICENSE.md)
+
+GrayBat  is licensed under the <b>GPLv3+</b>. Please refer to our [LICENSE.md](LICENSE.md)
 
 
 ##Dependencies##
 
  * cmake 3.0.2
  * Boost 1.57.0
- * OpenMPI 1.8.0
+ * OpenMPI 1.8.0 (mpi communication policy)
  * g++ 4.9.2
- * metis 5.1
+ * metis 5.1 (graph partitioning)
 
 ##Compiling##
 
- * clone the repository: `git clone https://github.com/computationalradiationphysics/GrayBat.git`
- * create the build directory: `mkdir -p GrayBat/build`
- * go to build directory: `cd GrayBat/build`
- * set compiler: `export CXX=[g++,clang++]`
- * create Makefile `cmake ..`
- * build project : `make [target]`
+ * Clone the repository: `git clone https://github.com/computationalradiationphysics/graybat.git`
+ * Change directory: `cd graybat`
+ * Init git submodules: `git submodule init && git submodule update`
+ * Create the build directory: `mkdir -p build`
+ * Change to build directory: `cd build`
+ * Set compiler: `export CXX=[g++,clang++]`
+ * Create Makefile `cmake ..`
+ * Build project : `make [target]`
 
 ##Tested Compilers##
 
@@ -59,19 +63,14 @@ GrayBat  is licensed under the **GPLv3+**. Please refer to our [LICENSE.md](LICE
 
 ##Example Targets##
 
-GrayBat is a library, but some examples are provided to demonstrate
-the usage. All targets provide the synopthis of their executables.
+ * **GoL**: Game of Life simulation
 
- * GoL: Game of Life simulation
+ * **doc**: Build documentation in doc/
 
- * NBody: N Body simulation
-
- * doc: Build documentation in ../doc/
-
- * clean: Cleanup build directory
-
+ * **clean**: Cleanup build directory
 
 
 ##Authors##
 
  * Erik Zenker (erikzenker@posteo.de)
+

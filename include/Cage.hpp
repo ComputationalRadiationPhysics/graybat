@@ -5,28 +5,28 @@
 #include <sstream>   /* std::stringstream */
 #include <assert.h>  /* assert */
 #include <cstddef>    /* nullptr_t */
+#include <algorithm> /* std::max */
 
-#include <binaryOperation.hpp> /* op::maximum */
 #include <dout.hpp>            /* dout::Dout::getInstance() */
 
-/************************************************************************//**
- * @class Cage
- *
- * @brief The Communication And Graph Environment enables to communicate
- *        on basis of a graph with methods of a user defined communication
- *	  library.
- *
- * A cage is defined by its Communication and Graph policy. The communication
- * policy provides methods for point to point and collective operations.
- * The graph policy provides methods to query graph imformation of the
- * cage graph. 
- *
- * @remark A peer can host several vertices.
- *
- *
- ***************************************************************************/
 namespace graybat {
 
+    /************************************************************************//**
+     * @class Cage
+     *
+     * @brief The Communication And Graph Environment enables to communicate
+     *        on basis of a graph with methods of a user defined communication
+     *	      library.
+     *
+     * A cage is defined by its Communication and Graph policy. The communication
+     * policy provides methods for point to point and collective operations.
+     * The graph policy provides methods to query graph imformation of the
+     * cage graph. 
+     *
+     * @remark A peer can host several vertices.
+     *
+     *
+     ***************************************************************************/
     template <typename T_CommunicationPolicy, typename T_GraphPolicy>
     struct Cage {
 	typedef T_CommunicationPolicy                   CommunicationPolicy;
@@ -42,20 +42,20 @@ namespace graybat {
 	typedef typename CommunicationPolicy::Context   Context;
 	typedef typename CommunicationPolicy::ContextID ContextID;
 
+
 	template <class T_Functor>
 	Cage(T_Functor graphFunctor) : graph(GraphPolicy(graphFunctor())){
 
 	}
 
-      
       	/***************************************************************************
 	 *
 	 * MEMBER
 	 *
 	 ***************************************************************************/
 	CommunicationPolicy comm;
-        GraphPolicy graph;
-        Context graphContext;
+        GraphPolicy         graph;
+        Context             graphContext;
 	std::vector<Vertex> hostedVertices;
 
 
@@ -74,9 +74,11 @@ namespace graybat {
 	std::map<VAddr, std::vector<Vertex> > peerMap;
 
 	
-	/***************************************************************************
-	 *
-	 * GRAPH OPERATIONS
+	/***********************************************************************//**
+         *
+	 * @name Graph Operations
+	 * 
+	 * @{
 	 *
 	 ***************************************************************************/
 	std::vector<Vertex> getVertices(){
@@ -84,7 +86,7 @@ namespace graybat {
 	    
 	}
 	
-	Vertex getVertex(VertexID vertexID){
+	Vertex getVertex(const VertexID vertexID){
 	    return graph.getVertices().at(vertexID);
 	    
 	}
@@ -103,11 +105,13 @@ namespace graybat {
 	    return graph.getInEdges(v);
 	    
 	}
+	/** @} */
 
-
-	/***************************************************************************
+	/***********************************************************************//**
 	 *
-	 * MAPPING OPERATIONS
+	 * @name Mapping Operations
+	 *
+	 * @{
 	 *
 	 ***************************************************************************/
 
@@ -196,7 +200,7 @@ namespace graybat {
 		// Retrieve maximum number of vertices per peer
 		std::vector<unsigned> nVertices(1,vertices.size());
 		std::vector<unsigned> maxVerticesCount(1,  0);
-		comm.allReduce(newContext, op::maximum<unsigned>(), nVertices, maxVerticesCount);
+		comm.allReduce(newContext, maximum<unsigned>(), nVertices, maxVerticesCount);
 
 		// Gather maxVerticesCount times vertex ids
 		std::vector<std::vector<Vertex> > newVertexMaps (newContext.size(), std::vector<Vertex>());
@@ -232,6 +236,15 @@ namespace graybat {
 	    }
 
 	}
+
+	template <typename T>
+	struct maximum {
+
+	    T operator()(const T a, const T b){
+		return std::max(a, b);
+	    }
+	    
+	};
 
   
 	/**
@@ -277,9 +290,13 @@ namespace graybat {
 
 	}
 
-	/***************************************************************************
+	/** @} */
+
+	/***********************************************************************//**
 	 *
-	 * COMMUNICATION OPERATIONS BASED ON THE GRAPH
+	 * @name Point to Point Communication Operations 
+	 *
+	 * @{
 	 *
 	 ***************************************************************************/
 
@@ -349,15 +366,19 @@ namespace graybat {
 	 *
 	 */
 	template <typename T>
-	Event asyncRecv(const Vertex srcVertex, const Edge edge, T& data){
+	Event asypncRecv(const Vertex srcVertex, const Edge edge, T& data){
 	    VAddr srcVAddr = locateVertex(srcVertex);
 	    return comm.asyncRecv(srcVAddr, edge.id, graphContext, data);
 
 	}
 
-	/**************************************************************************
+	/** @} */
+
+	/**********************************************************************//**
 	 *
-	 * COLLECTIVE GRAPH OPERATIONS
+	 * @name Collective Communication Operations 
+	 *
+	 * @{
 	 *
 	 **************************************************************************/ 
 
@@ -585,7 +606,16 @@ namespace graybat {
 	    comm.synchronize(graphContext);
 
 	}
+	/** @} */
 
     };
 
 } // namespace graybat
+
+
+/**
+ * @example gol.cc
+ *
+ * @brief Simple example that shows how to instantiate and use the Cage.
+ *
+ */

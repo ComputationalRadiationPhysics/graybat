@@ -6,9 +6,9 @@
  *
  */
 
-#include <BGL.hpp>     /* graybat::graphPolicy::BGL */
-#include <BMPI.hpp>    /* graybat::communicationPolicy::BMPI */
+#include <graphPolicy/BGL.hpp>     /* graybat::graphPolicy::BGL */
+#include <communicationPolicy/BMPI.hpp>    /* graybat::communicationPolicy::BMPI */
+#include <communicationPolicy/MinBMPI.hpp>    /* graybat::communicationPolicy::MinBMPI */
 #include <Cage.hpp>    /* graybat::Cage */
-#include <pattern.hpp> /* graybat::pattern::GridDiagonal */
 
 
