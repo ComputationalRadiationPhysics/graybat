@@ -2,7 +2,7 @@
 
 \page communicationPattern Communication Pattern
 
-[cage]: utils/doxygen/cage
+[cage]: @ref cage 
 
 A communication pattern is a class functor which generates
 a graph. They are used to define the communication graph of a

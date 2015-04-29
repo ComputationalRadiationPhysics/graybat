@@ -1,5 +1,6 @@
-Communication and Graph Environment
-===================================
+/**
+
+\page cage Communication and Graph Environment
 
 [cage]: @ref graybat::Cage
 [communication policy]: @ref communicationPolicy
@@ -226,3 +227,5 @@ cage.synchronize();
 - \subpage graphPolicy 
 - \subpage communicationPattern
 - \subpage mapping
+
+*/

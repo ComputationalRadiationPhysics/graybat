@@ -27,7 +27,6 @@ Have a look at the documentation that is available [here](https://erikzenker.git
 GrayBat is a scientific project. If you **present and/or publish** scientific
 results that used GrayBat, you should set this as a **reference**.
 
-
 ##Software License##
 
 

@@ -2,9 +2,9 @@
 
 \page context Context
 
-[cage]:utils/doxygen/cage.md
-[context]:utils/doxygen/context.md
-[communication policy]:utils/doxygen/communicationPolicy.md
+[cage]: @ref cage
+[context]: @ref context
+[communication policy]: @ref communicationPolicy
 
 A context is a set of peers which are able to communicate with
 each other. A context need to be defined by a [communication policy],

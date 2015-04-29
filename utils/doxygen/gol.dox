@@ -1,5 +1,6 @@
-The Game of Life Example
-========================
+/**
+
+\page gol The Game of Life Example
 
 The following figure shows a sketch of the game of life
 simulation implemented with GrayBat support.  The Game of
@@ -19,10 +20,11 @@ algorithms.
 
 ## See Also ##
 
-- [Communication and Graph Environment](utils/doxygen/cage.md)
+-  @ref cage
  - @ref communicationPolicy
  - @ref graphPolicy
  - @ref communicationPattern
  - @ref mapping
 
 
+*/
