@@ -17,7 +17,7 @@ adptable during run-time.
 
 ##Documentation##
 
-Have a look at the documentation that is available [here](https://erikzenker.github.io/GrayBat)
+Have a look at the documentation that is available [here](https://ComputationalRadiationPhysics.github.io/graybat)
 
 ##Referencing##
 
