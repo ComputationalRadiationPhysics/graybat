@@ -2,7 +2,7 @@
 
 \page event Event
 
-[cage]: utils/doxygen/cage.md
+[cage]: @ref cage
 [context]: @ref context
 [communication policy]: @ref communicationPolicy
 

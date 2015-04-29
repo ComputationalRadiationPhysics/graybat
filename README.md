@@ -18,26 +18,14 @@ applications. These mappings are established as an intermediate layer
 between an application and communication libraries and are dynamically
 adptable during run-time.
 
-An application supported by GrayBat can be created with the following steps:
+##Documentation##
 
-1. Decide on how fine grain the application domain should be decomposed
-2. Model communication pattern of subdomains as a graph
-3. Choose mapping of graph vertices to peers
-4. Choose hardware to run the application on
-
-![](utils/doxygen/graphics/overview.svg)
-
-The [communication and graph environment][cage] (cage) is the central
-class of GrayBat.  The cage provides both communication and graph
-operations to enable communication based on graphs and is a good point
-to **get started**. Otherwise consider the [Game of Life][gol] example
-simulation which provides a full demonstration of utilizing GrayBat.
+Have a look at the GrayBat documentation [here](https://erikzenker.github.io/GrayBat)
 
 ##Referencing##
 
 GrayBat is a scientific project. If you **present and/or publish** scientific
 results that used GrayBat, you should set this as a **reference**.
-
 
 ##Software License##
 
