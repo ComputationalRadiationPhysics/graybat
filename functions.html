@@ -90,7 +90,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="#index_c"><span>c</span></a></li>
       <li><a href="#index_d"><span>d</span></a></li>
       <li><a href="#index_g"><span>g</span></a></li>
-      <li><a href="#index_h"><span>h</span></a></li>
       <li><a href="#index_l"><span>l</span></a></li>
       <li><a href="#index_p"><span>p</span></a></li>
       <li><a href="#index_r"><span>r</span></a></li>
@@ -150,12 +149,14 @@ $(document).ready(function(){initNavTree('functions.html','');});
 : <a class="el" href="structgraybat_1_1Cage.html#a8888227acfa41b0a9127a607ca16d32d">graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;</a>
 </li>
 <li>asyncRecv()
-: <a class="el" href="structgraybat_1_1Cage.html#a0f60680a4ac046e4fa86826560c7cf1e">graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;</a>
-, <a class="el" href="structgraybat_1_1communicationPolicy_1_1BMPI.html#a092b709e200b44cacf32909e9dace56b">graybat::communicationPolicy::BMPI</a>
+: <a class="el" href="structgraybat_1_1communicationPolicy_1_1BMPI.html#a092b709e200b44cacf32909e9dace56b">graybat::communicationPolicy::BMPI</a>
 </li>
 <li>asyncSend()
 : <a class="el" href="structgraybat_1_1Cage.html#ad026fc8ab52c084c1c79fbdd4267ad61">graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;</a>
 , <a class="el" href="structgraybat_1_1communicationPolicy_1_1BMPI.html#a68444513404ebd1548f34cbf3a2c3cc2">graybat::communicationPolicy::BMPI</a>
+</li>
+<li>asypncRecv()
+: <a class="el" href="structgraybat_1_1Cage.html#a18e84ae6d366218ab95be389ff8302b8">graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;</a>
 </li>
 </ul>
 
@@ -171,15 +172,9 @@ $(document).ready(function(){initNavTree('functions.html','');});
 
 
 <h3><a class="anchor" id="index_c"></a>- c -</h3><ul>
-<li>contains()
-: <a class="el" href="classgraybat_1_1graphPolicy_1_1BGL.html#ac1091ef3f355c1cef0e134b84bfb763d">graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;</a>
-</li>
 <li>createContext()
 : <a class="el" href="structgraybat_1_1communicationPolicy_1_1BMPI.html#a332c965a70e219be6ad6b42cd59eb306">graybat::communicationPolicy::BMPI</a>
 , <a class="el" href="structgraybat_1_1communicationPolicy_1_1MinBMPI.html#ad1861049c3aed2009703135e0286d297">graybat::communicationPolicy::MinBMPI</a>
-</li>
-<li>createSubGraph()
-: <a class="el" href="classgraybat_1_1graphPolicy_1_1BGL.html#a0cfe6dd6c30ae4013b9dd5c719015a2e">graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;</a>
 </li>
 </ul>
 
@@ -223,13 +218,6 @@ $(document).ready(function(){initNavTree('functions.html','');});
 </ul>
 
 
-<h3><a class="anchor" id="index_h"></a>- h -</h3><ul>
-<li>hasSuperGraph()
-: <a class="el" href="classgraybat_1_1graphPolicy_1_1BGL.html#ae9cd7a1baa6df4c7491c9cacbb654417">graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;</a>
-</li>
-</ul>
-
-
 <h3><a class="anchor" id="index_l"></a>- l -</h3><ul>
 <li>locateVertex()
 : <a class="el" href="structgraybat_1_1Cage.html#aefc3bddf2aa1ebbc363a35a35be8fb38">graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;</a>
@@ -240,9 +228,6 @@ $(document).ready(function(){initNavTree('functions.html','');});
 <h3><a class="anchor" id="index_p"></a>- p -</h3><ul>
 <li>peerHostsVertex()
 : <a class="el" href="structgraybat_1_1Cage.html#abf0aa8d61511ba1e2593fb45e694aa16">graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;</a>
-</li>
-<li>print()
-: <a class="el" href="classgraybat_1_1graphPolicy_1_1BGL.html#a60877c8ac2190c14220ba221db705143">graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;</a>
 </li>
 </ul>
 
@@ -282,7 +267,7 @@ $(document).ready(function(){initNavTree('functions.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Wed Apr 29 2015 11:41:44 for GrayBat by
+    <li class="footer">Generated on Wed Apr 29 2015 13:55:23 for GrayBat by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.9.1 </li>
   </ul>

@@ -173,6 +173,7 @@ Public Member Functions</h2></td></tr>
 template&lt;class T_Functor &gt; </td></tr>
 <tr class="memitem:a1a7afb409cd54c75e1e5cac4980d0099"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><b>Cage</b> (T_Functor graphFunctor)</td></tr>
 <tr class="separator:a1a7afb409cd54c75e1e5cac4980d0099"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Graph Operations</div></td></tr>
 <tr class="memitem:a2e4558e1f636d7e6db3f0a1fce63a6fb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2e4558e1f636d7e6db3f0a1fce63a6fb"></a>
 std::vector&lt; Vertex &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getVertices</b> ()</td></tr>
 <tr class="separator:a2e4558e1f636d7e6db3f0a1fce63a6fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -188,6 +189,7 @@ std::vector&lt; std::pair&lt; Vertex, Edge &gt; &gt;&#160;</td><td class="memIte
 <tr class="memitem:ad4369eb837f41d2761baa53f7aa012d7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad4369eb837f41d2761baa53f7aa012d7"></a>
 std::vector&lt; std::pair&lt; Vertex, Edge &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getInEdges</b> (const Vertex v)</td></tr>
 <tr class="separator:ad4369eb837f41d2761baa53f7aa012d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Mapping Operations</div></td></tr>
 <tr class="memitem:afeddcc035e25382462c38c77b481304d"><td class="memTemplParams" colspan="2">template&lt;class T_Functor &gt; </td></tr>
 <tr class="memitem:afeddcc035e25382462c38c77b481304d"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structgraybat_1_1Cage.html#afeddcc035e25382462c38c77b481304d">distribute</a> (T_Functor distFunctor)</td></tr>
 <tr class="memdesc:afeddcc035e25382462c38c77b481304d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Distribution of the graph vertices to the peers of the global context. The distFunctor it the function responsible for this distribution.  <a href="#afeddcc035e25382462c38c77b481304d">More...</a><br /></td></tr>
@@ -206,6 +208,7 @@ std::vector&lt; Vertex &gt;&#160;</td><td class="memItemRight" valign="bottom"><
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgraybat_1_1Cage.html#abf0aa8d61511ba1e2593fb45e694aa16">peerHostsVertex</a> (Vertex vertex)</td></tr>
 <tr class="memdesc:abf0aa8d61511ba1e2593fb45e694aa16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if the <em>vertex</em> is hosted by the calling peer otherwise false. <br /></td></tr>
 <tr class="separator:abf0aa8d61511ba1e2593fb45e694aa16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Point to Point Communication Operations</div></td></tr>
 <tr class="memitem:a6e66c334ec691727c0f5ae5f193563e0"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a6e66c334ec691727c0f5ae5f193563e0"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structgraybat_1_1Cage.html#a6e66c334ec691727c0f5ae5f193563e0">send</a> (const Vertex destVertex, const Edge edge, const T &amp;data)</td></tr>
 <tr class="memdesc:a6e66c334ec691727c0f5ae5f193563e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synchron transmission of <em>data</em> to the <em>destVertex</em> on <em>edge</em>.  <a href="#a6e66c334ec691727c0f5ae5f193563e0">More...</a><br /></td></tr>
@@ -218,10 +221,11 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <tr class="memitem:a1290597f9fd45b47d94e3e4cc429b592"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structgraybat_1_1Cage.html#a1290597f9fd45b47d94e3e4cc429b592">recv</a> (const Vertex srcVertex, const Edge edge, T &amp;data)</td></tr>
 <tr class="memdesc:a1290597f9fd45b47d94e3e4cc429b592"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synchron receive of <em>data</em> from the <em>srcVertex</em> on <em>edge</em>.  <a href="#a1290597f9fd45b47d94e3e4cc429b592">More...</a><br /></td></tr>
 <tr class="separator:a1290597f9fd45b47d94e3e4cc429b592"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f60680a4ac046e4fa86826560c7cf1e"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a0f60680a4ac046e4fa86826560c7cf1e"><td class="memTemplItemLeft" align="right" valign="top">Event&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structgraybat_1_1Cage.html#a0f60680a4ac046e4fa86826560c7cf1e">asyncRecv</a> (const Vertex srcVertex, const Edge edge, T &amp;data)</td></tr>
-<tr class="memdesc:a0f60680a4ac046e4fa86826560c7cf1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asynchron receive of <em>data</em> from the <em>srcVertex</em> on <em>edge</em>.  <a href="#a0f60680a4ac046e4fa86826560c7cf1e">More...</a><br /></td></tr>
-<tr class="separator:a0f60680a4ac046e4fa86826560c7cf1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18e84ae6d366218ab95be389ff8302b8"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a18e84ae6d366218ab95be389ff8302b8"><td class="memTemplItemLeft" align="right" valign="top">Event&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structgraybat_1_1Cage.html#a18e84ae6d366218ab95be389ff8302b8">asypncRecv</a> (const Vertex srcVertex, const Edge edge, T &amp;data)</td></tr>
+<tr class="memdesc:a18e84ae6d366218ab95be389ff8302b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asynchron receive of <em>data</em> from the <em>srcVertex</em> on <em>edge</em>.  <a href="#a18e84ae6d366218ab95be389ff8302b8">More...</a><br /></td></tr>
+<tr class="separator:a18e84ae6d366218ab95be389ff8302b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Collective Communication Operations</div></td></tr>
 <tr class="memitem:a36fa784cb2d80c8f18005729d1035fee"><td class="memTemplParams" colspan="2"><a class="anchor" id="a36fa784cb2d80c8f18005729d1035fee"></a>
 template&lt;typename T_Data , typename Op &gt; </td></tr>
 <tr class="memitem:a36fa784cb2d80c8f18005729d1035fee"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>reduce</b> (const Vertex rootVertex, const Vertex srcVertex, Op op, const std::vector&lt; T_Data &gt; sendData, std::vector&lt; T_Data &gt; &amp;recvData)</td></tr>
@@ -379,62 +383,6 @@ template&lt;typename T_CommunicationPolicy , typename T_GraphPolicy &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a0f60680a4ac046e4fa86826560c7cf1e"></a>
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T_CommunicationPolicy , typename T_GraphPolicy &gt; </div>
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">Event <a class="el" href="structgraybat_1_1Cage.html">graybat::Cage</a>&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::asyncRecv </td>
-          <td>(</td>
-          <td class="paramtype">const Vertex&#160;</td>
-          <td class="paramname"><em>srcVertex</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const Edge&#160;</td>
-          <td class="paramname"><em>edge</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">T &amp;&#160;</td>
-          <td class="paramname"><em>data</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Asynchron receive of <em>data</em> from the <em>srcVertex</em> on <em>edge</em>. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">graph</td><td>The graph in which the communication takes place. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">srcVertex</td><td>Vertex that send the <em>data</em> </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">edge</td><td>Edge over which the <em>data</em> will be transmitted. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">data</td><td>Data that will be received</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Event Can be waited (Event::wait()) for or checked for (Event::ready()) </dd></dl>
-
-</div>
-</div>
 <a class="anchor" id="ad026fc8ab52c084c1c79fbdd4267ad61"></a>
 <div class="memitem">
 <div class="memproto">
@@ -484,6 +432,62 @@ template&lt;typename T &gt; </div>
     <tr><td class="paramdir">[in]</td><td class="paramname">destVertex</td><td>Vertex that will receive the <em>data</em>. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">edge</td><td>Edge over which the <em>data</em> will be transmitted. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">data</td><td>Data that will be send.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Event Can be waited (Event::wait()) for or checked for (Event::ready()) </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a18e84ae6d366218ab95be389ff8302b8"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T_CommunicationPolicy , typename T_GraphPolicy &gt; </div>
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Event <a class="el" href="structgraybat_1_1Cage.html">graybat::Cage</a>&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::asypncRecv </td>
+          <td>(</td>
+          <td class="paramtype">const Vertex&#160;</td>
+          <td class="paramname"><em>srcVertex</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Edge&#160;</td>
+          <td class="paramname"><em>edge</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T &amp;&#160;</td>
+          <td class="paramname"><em>data</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Asynchron receive of <em>data</em> from the <em>srcVertex</em> on <em>edge</em>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">graph</td><td>The graph in which the communication takes place. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">srcVertex</td><td>Vertex that send the <em>data</em> </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">edge</td><td>Edge over which the <em>data</em> will be transmitted. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">data</td><td>Data that will be received</td></tr>
   </table>
   </dd>
 </dl>
@@ -680,7 +684,7 @@ template&lt;typename T &gt; </div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>graybat</b></li><li class="navelem"><a class="el" href="structgraybat_1_1Cage.html">Cage</a></li>
-    <li class="footer">Generated on Wed Apr 29 2015 11:41:44 for GrayBat by
+    <li class="footer">Generated on Wed Apr 29 2015 13:55:23 for GrayBat by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.9.1 </li>
   </ul>

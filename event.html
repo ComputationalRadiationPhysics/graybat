@@ -104,7 +104,7 @@ $(document).ready(function(){initNavTree('event.html','');});
 <div class="title">Event </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>An event is a class that is returned by non-blocking or asynchronous communication functions like <a class="el" href="structgraybat_1_1Cage.html#ad026fc8ab52c084c1c79fbdd4267ad61" title="Asynchron transmission of data to the destVertex on edge. ">graybat::Cage::asyncSend</a> or <a class="el" href="structgraybat_1_1Cage.html#a0f60680a4ac046e4fa86826560c7cf1e" title="Asynchron receive of data from the srcVertex on edge. ">graybat::Cage::asyncRecv</a>. Each <a class="el" href="communicationPolicy.html">communication policy</a> needs to define its event class, since this can be very library dependent. The <a class="el" href="cage.html">cage</a> determines a strict event interface, but leaves their implementation open to the <a class="el" href="communicationPolicy.html">communication policy</a>.</p>
+<div class="textblock"><p>An event is a class that is returned by non-blocking or asynchronous communication functions like <a class="el" href="structgraybat_1_1Cage.html#ad026fc8ab52c084c1c79fbdd4267ad61" title="Asynchron transmission of data to the destVertex on edge. ">graybat::Cage::asyncSend</a> or graybat::Cage::asyncRecv. Each <a class="el" href="communicationPolicy.html">communication policy</a> needs to define its event class, since this can be very library dependent. The <a class="el" href="cage.html">cage</a> determines a strict event interface, but leaves their implementation open to the <a class="el" href="communicationPolicy.html">communication policy</a>.</p>
 <p>The following listing provides a skeleton for a event class with all necessary methods:</p>
 <div class="fragment"><div class="line"><span class="keyword">struct </span>EventSkeleton {</div>
 <div class="line"></div>
@@ -120,7 +120,7 @@ $(document).ready(function(){initNavTree('event.html','');});
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="cage.html">Communication and Graph Environment</a></li><li class="navelem"><a class="el" href="communicationPolicy.html">Communication Policy</a></li>
-    <li class="footer">Generated on Wed Apr 29 2015 11:41:44 for GrayBat by
+    <li class="footer">Generated on Wed Apr 29 2015 13:55:23 for GrayBat by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.9.1 </li>
   </ul>

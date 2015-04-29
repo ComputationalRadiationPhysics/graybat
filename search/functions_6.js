@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['locatevertex',['locateVertex',['../structgraybat_1_1Cage.html#aefc3bddf2aa1ebbc363a35a35be8fb38',1,'graybat::Cage']]]
+  ['peerhostsvertex',['peerHostsVertex',['../structgraybat_1_1Cage.html#abf0aa8d61511ba1e2593fb45e694aa16',1,'graybat::Cage']]]
 ];
