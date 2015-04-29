@@ -35,5 +35,9 @@ operations to enable communication based on graphs and is a good point
 to **get started**. Otherwise consider the [Game of Life][gol] example
 simulation which provides a full demonstration of utilizing GrayBat.
 
+##Further Links##
+
+- @ref cage
+- @ref gol
 
 */

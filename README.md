@@ -1,9 +1,6 @@
 GrayBat
 =======
 
-[cage]: utils/doxygen/cage.md
-[gol]: utils/doxygen/gol.md
-
 <b>Gr</b>aph <b>A</b>pproach  for Highl<b>y</b>  Generic Communication
 Schemes <b>B</b>ased on <b>A</b>daptive <b>T</b>opologies
 
@@ -37,9 +34,9 @@ GrayBat  is licensed under the <b>GPLv3+</b>. Please refer to our [LICENSE.md](L
 
  * cmake 3.0.2
  * Boost 1.57.0
- * OpenMPI 1.8.0 ([mpi communication policy](@ref graybat::communicationPolicy::BMPI))
+ * OpenMPI 1.8.0 (mpi communication policy)
  * g++ 4.9.2
- * metis 5.1 ([graph partitioning](@ref graybat::mapping::GraphPartition))
+ * metis 5.1 (graph partitioning)
 
 ##Compiling##
 
@@ -66,7 +63,7 @@ GrayBat  is licensed under the <b>GPLv3+</b>. Please refer to our [LICENSE.md](L
 
 ##Example Targets##
 
- * [GoL][gol]: Game of Life simulation
+ * **GoL**: Game of Life simulation
 
  * **doc**: Build documentation in doc/
 

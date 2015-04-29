@@ -74,9 +74,11 @@ namespace graybat {
 	std::map<VAddr, std::vector<Vertex> > peerMap;
 
 	
-	/***************************************************************************
-	 *
-	 * GRAPH OPERATIONS
+	/***********************************************************************//**
+         *
+	 * @name Graph Operations
+	 * 
+	 * @{
 	 *
 	 ***************************************************************************/
 	std::vector<Vertex> getVertices(){
@@ -103,11 +105,13 @@ namespace graybat {
 	    return graph.getInEdges(v);
 	    
 	}
+	/** @} */
 
-
-	/***************************************************************************
+	/***********************************************************************//**
 	 *
-	 * MAPPING OPERATIONS
+	 * @name Mapping Operations
+	 *
+	 * @{
 	 *
 	 ***************************************************************************/
 
@@ -286,9 +290,13 @@ namespace graybat {
 
 	}
 
-	/***************************************************************************
+	/** @} */
+
+	/***********************************************************************//**
 	 *
-	 * COMMUNICATION OPERATIONS BASED ON THE GRAPH
+	 * @name Point to Point Communication Operations 
+	 *
+	 * @{
 	 *
 	 ***************************************************************************/
 
@@ -358,15 +366,19 @@ namespace graybat {
 	 *
 	 */
 	template <typename T>
-	Event asyncRecv(const Vertex srcVertex, const Edge edge, T& data){
+	Event asypncRecv(const Vertex srcVertex, const Edge edge, T& data){
 	    VAddr srcVAddr = locateVertex(srcVertex);
 	    return comm.asyncRecv(srcVAddr, edge.id, graphContext, data);
 
 	}
 
-	/**************************************************************************
+	/** @} */
+
+	/**********************************************************************//**
 	 *
-	 * COLLECTIVE GRAPH OPERATIONS
+	 * @name Collective Communication Operations 
+	 *
+	 * @{
 	 *
 	 **************************************************************************/ 
 
@@ -594,7 +606,7 @@ namespace graybat {
 	    comm.synchronize(graphContext);
 
 	}
-
+	/** @} */
 
     };
 
