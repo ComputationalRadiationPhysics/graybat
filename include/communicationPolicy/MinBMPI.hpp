@@ -25,29 +25,16 @@ namespace graybat {
     namespace communicationPolicy {
     
 	/************************************************************************//**
-	 * @class MPI
+	 * @class MinBMPI
 	 *
-	 * @brief A communication interface implemented by the
-	 * CommunicationPolicy
-	 *
-	 * The MPI, provides two classes
-	 * of communication schemas .On one hand point to point communication
-	 * between two peers, both synchron and asynchron and on the other hand collective
-	 * collective operations on a Context.
-	 *
-	 * The CAL also provides inner class definitions for Event and Context.
-	 *
-	 * Events are objects returned by non blocking functions and they 
-	 * can be queried for the state of this function.
-	 *
-	 * A Context represents a set of peers that are able to communicate
-	 * with each other
+	 * @brief Implementation of the Cage communicationPolicy interface
+	 *        based on the MPI implementation boost::mpi.
 	 *
 	 ***************************************************************************/
-	struct BMPI {
+	struct MinBMPI {
 	    /**
-	     * @brief A context represents a set of peers
-	     *        which are able to communicate with each other.
+	     * @brief A context represents a set of peers which are
+	     *        able to communicate with each other.
 	     *
 	     */
 	    class Context {
@@ -148,7 +135,7 @@ namespace graybat {
 	    typedef int      Uri;
 
 
-	    BMPI() :contextCount(0),
+	    MinBMPI() :contextCount(0),
 		    uriMap(0),
 		    initialContext(contextCount, mpi::communicator()){
 
@@ -161,27 +148,17 @@ namespace graybat {
 	    }
 
 	    // Destructor
-	    ~BMPI(){
+	    ~MinBMPI(){
 		
 	    }
-
-	    // Member Variables
-	    ContextID                      contextCount;
-	    std::vector<std::vector<Uri>>  uriMap;
-	    Context                        initialContext;
-	    mpi::environment               env;
-
-
-	
-
-
-	    /***************************************************************************
+	    /***********************************************************************//**
+             *
+	     * @name Point to Point Communication Interface
 	     *
-	     * POINT TO POINT COMMUNICATION INTERFACE
+	     * @{
 	     *
 	     ***************************************************************************/
-
-	    /**
+	    /** 
 	     * @brief Non blocking transmission of a message sendData to peer with virtual address destVAddr.
 	     * 
 	     * @param[in] destVAddr  VAddr of peer that will receive the message
@@ -195,13 +172,13 @@ namespace graybat {
 	     *
 	     * @return Event
 	     */
-	    template <typename T_Send>
-	    Event asyncSend(const VAddr destVAddr, const Tag tag, const Context context, const T_Send& sendData){
-		Uri destUri = getVAddrUri(context, destVAddr);
-		mpi::request request = context.comm.isend(destUri, tag, sendData.data(), sendData.size());
-	    	return Event(request);
+	    // template <typename T_Send>
+	    // Event asyncSend(const VAddr destVAddr, const Tag tag, const Context context, const T_Send& sendData){
+	    // 	Uri destUri = getVAddrUri(context, destVAddr);
+	    // 	mpi::request request = context.comm.isend(destUri, tag, sendData.data(), sendData.size());
+	    // 	return Event(request);
 
-	    }
+	    // }
 
 
 	    /**
@@ -216,11 +193,11 @@ namespace graybat {
 	     *                       return the amount of data elements to send. Notice, that
 	     *                       std::vector and std::array implement this interface.
 	     */
-	    template <typename T_Send>
-	    void send(const VAddr destVAddr, const Tag tag, const Context context, const T_Send& sendData){
-	    	Uri destUri = getVAddrUri(context, destVAddr);
-		context.comm.send(destUri, tag, sendData.data(), sendData.size());
-	    }
+	    // template <typename T_Send>
+	    // void send(const VAddr destVAddr, const Tag tag, const Context context, const T_Send& sendData){
+	    // 	Uri destUri = getVAddrUri(context, destVAddr);
+	    // 	context.comm.send(destUri, tag, sendData.data(), sendData.size());
+	    // }
 
 	    
 	    /**
@@ -238,12 +215,12 @@ namespace graybat {
 	     * @return Event
 	     *
 	     */
-	    template <typename T_Recv>
-	    Event asyncRecv(const VAddr srcVAddr, const Tag tag, const Context context, T_Recv& recvData){
-	    	 Uri srcUri = getVAddrUri(context, srcVAddr);
-		 mpi::request request = context.comm.irecv(srcUri, tag, recvData.data(), recvData.size());
-	    	 return Event(request);
-	    }
+	    // template <typename T_Recv>
+	    // Event asyncRecv(const VAddr srcVAddr, const Tag tag, const Context context, T_Recv& recvData){
+	    // 	 Uri srcUri = getVAddrUri(context, srcVAddr);
+	    // 	 mpi::request request = context.comm.irecv(srcUri, tag, recvData.data(), recvData.size());
+	    // 	 return Event(request);
+	    // }
 
 
 	    /**
@@ -258,21 +235,21 @@ namespace graybat {
 	     *                        return the amount of data elements to send. Notice, that
 	     *                        std::vector and std::array implement this interface.
 	     */
-	    template <typename T_Recv>
-	    void recv(const VAddr srcVAddr, const Tag tag, const Context context, T_Recv& recvData){
-	    	Uri srcUri = getVAddrUri(context, srcVAddr);
-		context.comm.recv(srcUri, tag, recvData.data(), recvData.size());
+	    // template <typename T_Recv>
+	    // void recv(const VAddr srcVAddr, const Tag tag, const Context context, T_Recv& recvData){
+	    // 	Uri srcUri = getVAddrUri(context, srcVAddr);
+	    // 	context.comm.recv(srcUri, tag, recvData.data(), recvData.size());
 
-	    }
-
-
+	    // }
+	    /** @} */
     
-	    /**************************************************************************
+	    /************************************************************************//**
 	     *
-	     * COLLECTIVE COMMUNICATION INTERFACE
+	     * @name Collective Communication Interface
+	     *
+	     * @{
 	     *
 	     **************************************************************************/
-	    
 	    /**
 	     * @brief Collects *sendData* from all peers of the *context* and
 	     *        transmits it as a list to the peer with
@@ -287,11 +264,11 @@ namespace graybat {
 	     *                        *rootVAddr* will receive. *recvData* of all other members of the 
 	     *                        *context* will be empty.
 	     */
-	    template <typename T_Send, typename T_Recv>
-	    void gather(const VAddr rootVAddr, const Context context, const T_Send& sendData, T_Recv& recvData){
-		Uri rootUri = getVAddrUri(context, rootVAddr);
-	    	mpi::gather(context.comm, sendData.data(), sendData.size(), recvData, rootUri);
-	    }
+	    // template <typename T_Send, typename T_Recv>
+	    // void gather(const VAddr rootVAddr, const Context context, const T_Send& sendData, T_Recv& recvData){
+	    // 	Uri rootUri = getVAddrUri(context, rootVAddr);
+	    // 	mpi::gather(context.comm, sendData.data(), sendData.size(), recvData, rootUri);
+	    // }
 
 	
 	    /**
@@ -316,35 +293,35 @@ namespace graybat {
 	     * @param[out] recvCount  Number of elements each peer sends (can by varying).
 	     *
 	     */
-	    template <typename T_Send, typename T_Recv>
-	    void gatherVar(const VAddr rootVAddr, const Context context, const T_Send& sendData, T_Recv& recvData, std::vector<unsigned>& recvCount){
-		// Retrieve number of elements each peer sends
-		recvCount.resize(context.size());
-		std::array<unsigned, 1> nElements{{(unsigned)sendData.size()}};
-		allGather(context, nElements, recvCount);
-		recvData.resize(std::accumulate(recvCount.begin(), recvCount.end(), 0U));
+	    // template <typename T_Send, typename T_Recv>
+	    // void gatherVar(const VAddr rootVAddr, const Context context, const T_Send& sendData, T_Recv& recvData, std::vector<unsigned>& recvCount){
+	    // 	// Retrieve number of elements each peer sends
+	    // 	recvCount.resize(context.size());
+	    // 	std::array<unsigned, 1> nElements{{(unsigned)sendData.size()}};
+	    // 	allGather(context, nElements, recvCount);
+	    // 	recvData.resize(std::accumulate(recvCount.begin(), recvCount.end(), 0U));
 
-		Uri rootUri = getVAddrUri(context, rootVAddr);
-		int rdispls[context.size()];
+	    // 	Uri rootUri = getVAddrUri(context, rootVAddr);
+	    // 	int rdispls[context.size()];
 
-		// Create offset map 
-		unsigned offset  = 0;
-		for (unsigned i=0; i < context.size(); ++i) { 
-		    rdispls[i] = offset; 
-		    offset += recvCount[i];
+	    // 	// Create offset map 
+	    // 	unsigned offset  = 0;
+	    // 	for (unsigned i=0; i < context.size(); ++i) { 
+	    // 	    rdispls[i] = offset; 
+	    // 	    offset += recvCount[i];
 		
-		}
+	    // 	}
 	    
-		// Gather data with varying size
-		MPI_Gatherv(const_cast<typename T_Send::value_type*>(sendData.data()), sendData.size(),
-			    mpi::get_mpi_datatype<typename T_Send::value_type>(*(sendData.data())),
-			    const_cast<typename T_Recv::value_type*>(recvData.data()),
-			    const_cast<int*>((int*)recvCount.data()), rdispls,
-			    mpi::get_mpi_datatype<typename T_Recv::value_type>(*(recvData.data())), 
-			    rootUri, context.comm);
+	    // 	// Gather data with varying size
+	    // 	MPI_Gatherv(const_cast<typename T_Send::value_type*>(sendData.data()), sendData.size(),
+	    // 		    mpi::get_mpi_datatype<typename T_Send::value_type>(*(sendData.data())),
+	    // 		    const_cast<typename T_Recv::value_type*>(recvData.data()),
+	    // 		    const_cast<int*>((int*)recvCount.data()), rdispls,
+	    // 		    mpi::get_mpi_datatype<typename T_Recv::value_type>(*(recvData.data())), 
+	    // 		    rootUri, context.comm);
 		
 		
-	    }
+	    // }
 
 	
 	    /**
@@ -357,7 +334,7 @@ namespace graybat {
 	     *
 	     */
 	    template <typename T_Send, typename T_Recv>
-	    void allGather(Context context, const T_Send& sendData, T_Recv& recvData){
+	    void allGather(const Context context, const T_Send& sendData, T_Recv& recvData){
 		mpi::all_gather(context.comm, sendData.data(), sendData.size(), recvData.data());
 		
 	    }
@@ -373,33 +350,33 @@ namespace graybat {
 	     * @param[out] recvCount  Number of elements each peer sends (can by varying).
 	     *
 	     */
-	     template <typename T_Send, typename T_Recv>
-	     void allGatherVar(const Context context, const T_Send& sendData, T_Recv& recvData, std::vector<unsigned>& recvCount){
-	         // Retrieve number of elements each peer sends
-	         recvCount.resize(context.size());
-	         allGather(context, std::array<unsigned, 1>{{(unsigned)sendData.size()}}, recvCount);
-	         recvData.resize(std::accumulate(recvCount.begin(), recvCount.end(), 0U));
+	     // template <typename T_Send, typename T_Recv>
+	     // void allGatherVar(const Context context, const T_Send& sendData, T_Recv& recvData, std::vector<unsigned>& recvCount){
+	     //     // Retrieve number of elements each peer sends
+	     //     recvCount.resize(context.size());
+	     //     allGather(context, std::array<unsigned, 1>{{(unsigned)sendData.size()}}, recvCount);
+	     //     recvData.resize(std::accumulate(recvCount.begin(), recvCount.end(), 0U));
 
-		 int rdispls[context.size()];
+	     // 	 int rdispls[context.size()];
 
-		 // Create offset map
-		 unsigned offset  = 0;
-		 for (unsigned i=0; i < context.size(); ++i) { 
-		     rdispls[i] = offset; 
-		     offset += recvCount[i];
+	     // 	 // Create offset map
+	     // 	 unsigned offset  = 0;
+	     // 	 for (unsigned i=0; i < context.size(); ++i) { 
+	     // 	     rdispls[i] = offset; 
+	     // 	     offset += recvCount[i];
 		
-		 }
+	     // 	 }
 	    
-		 // Gather data with varying size
-		 MPI_Allgatherv(const_cast<typename T_Send::value_type*>(sendData.data()), sendData.size(),
-				mpi::get_mpi_datatype<typename T_Send::value_type>(*(sendData.data())),
-				const_cast<typename T_Recv::value_type*>(recvData.data()),
-				const_cast<int*>((int*)recvCount.data()), rdispls,
-				mpi::get_mpi_datatype<typename T_Recv::value_type>(*(recvData.data())), 
-				context.comm);
+	     // 	 // Gather data with varying size
+	     // 	 MPI_Allgatherv(const_cast<typename T_Send::value_type*>(sendData.data()), sendData.size(),
+	     // 			mpi::get_mpi_datatype<typename T_Send::value_type>(*(sendData.data())),
+	     // 			const_cast<typename T_Recv::value_type*>(recvData.data()),
+	     // 			const_cast<int*>((int*)recvCount.data()), rdispls,
+	     // 			mpi::get_mpi_datatype<typename T_Recv::value_type>(*(recvData.data())), 
+	     // 			context.comm);
 		 
 		 
-	     }
+	     // }
 
 
 	    /**
@@ -414,12 +391,12 @@ namespace graybat {
 	     * @param[out] recvData   Data from peer with *rootVAddr*.
 	     *
 	     */
-	    template <typename T_Send, typename T_Recv>
-	    void scatter(const VAddr rootVAddr, const Context context, const T_Send& sendData, T_Recv& recvData){
-	    	 Uri rootUri = getVAddrUri(context, rootVAddr);
-		 mpi::scatter(context.comm, sendData.data(), recvData.data(), recvData.size(), rootUri);
+	    // template <typename T_Send, typename T_Recv>
+	    // void scatter(const VAddr rootVAddr, const Context context, const T_Send& sendData, T_Recv& recvData){
+	    // 	 Uri rootUri = getVAddrUri(context, rootVAddr);
+	    // 	 mpi::scatter(context.comm, sendData.data(), recvData.data(), recvData.size(), rootUri);
 
-	    }
+	    // }
 
 	
 	    /**
@@ -434,13 +411,13 @@ namespace graybat {
 	     * @param[out] recvData Data from all peer.
 	     *
 	     */
-	    template <typename T_Send, typename T_Recv>
-	    void allToAll(const Context context, const T_Send& sendData, T_Recv& recvData){
-	        unsigned elementsPerPeer = sendData.size() / context.size();
+	    // template <typename T_Send, typename T_Recv>
+	    // void allToAll(const Context context, const T_Send& sendData, T_Recv& recvData){
+	    //     unsigned elementsPerPeer = sendData.size() / context.size();
 
-		mpi::all_to_all(context.comm, sendData.data(), elementsPerPeer, recvData.data());
+	    // 	mpi::all_to_all(context.comm, sendData.data(), elementsPerPeer, recvData.data());
 
-	    }
+	    // }
 
 	
 	    /**
@@ -459,12 +436,12 @@ namespace graybat {
 	     *                       reduced sendData values.
 	     *
 	     */
-	    template <typename T_Send, typename T_Recv, typename T_Op>
-	    void reduce(const VAddr rootVAddr, const Context context, const T_Op op, const T_Send& sendData, const T_Recv& recvData){
-	    	 Uri rootUri = getVAddrUri(context, rootVAddr);
-		 mpi::reduce(context.comm, sendData.data(), sendData.size(), recvData.data(), op, rootUri);
+	    // template <typename T_Send, typename T_Recv, typename T_Op>
+	    // void reduce(const VAddr rootVAddr, const Context context, const T_Op op, const T_Send& sendData, const T_Recv& recvData){
+	    // 	 Uri rootUri = getVAddrUri(context, rootVAddr);
+	    // 	 mpi::reduce(context.comm, sendData.data(), sendData.size(), recvData.data(), op, rootUri);
 
-	    }
+	    // }
 
 	    /**
 	     * @brief Performs a reduction with a binary operator *op* on all *sendData* elements from all peers
@@ -497,11 +474,11 @@ namespace graybat {
 	     * @param[out] recvData  Data from peer with *rootVAddr*.
 	     *
 	     */
-	    template <typename T_SendRecv>
-	    void broadcast(const VAddr rootVAddr, const Context context, const T_SendRecv& data){
-	    	 Uri rootUri = uriMap.at(context.getID()).at(rootVAddr);
-		 mpi::broadcast(context.comm, data.data(), data.size(), rootUri);
-	    }
+	    // template <typename T_SendRecv>
+	    // void broadcast(const VAddr rootVAddr, const Context context, const T_SendRecv& data){
+	    // 	 Uri rootUri = uriMap.at(context.getID()).at(rootVAddr);
+	    // 	 mpi::broadcast(context.comm, data.data(), data.size(), rootUri);
+	    // }
 
 	
 	    /**
@@ -509,9 +486,9 @@ namespace graybat {
 	     *        in the programm execution (barrier).
 	     *        
 	     */
-	     void synchronize(const Context context){
-		 context.comm.barrier();
-	     }
+	     // void synchronize(const Context context){
+	     // 	 context.comm.barrier();
+	     // }
 
 	
 	    /**
@@ -521,15 +498,17 @@ namespace graybat {
 	     * @see getGlobalContext()
 	     *        
 	     */
-	     void synchronize(){
-	         synchronize(getGlobalContext());
-	     }
-    
+	     // void synchronize(){
+	     //     synchronize(getGlobalContext());
+	     // }
+	    /** @} */
 
     
-	    /***************************************************************************
+	    /*************************************************************************//**
 	     *
-	     * ORGANISATION
+	     * @name Context Interface
+	     *
+	     * @{
 	     *
 	     ***************************************************************************/
 	    /**
@@ -585,14 +564,27 @@ namespace graybat {
 	    Context getGlobalContext(){
 	     	return initialContext;
 	    }
+	    /** @} */
 
+	    	private:
 
 	    /***************************************************************************
 	     *
-	     * MPI HELPER FUNCTION 
+	     * @name Private Member
 	     *
 	     ***************************************************************************/
+	    ContextID                      contextCount;
+	    std::vector<std::vector<Uri>>  uriMap;
+	    Context                        initialContext;
+	    mpi::environment               env;
 
+	    /***************************************************************************
+	     *
+	     * @name Helper Functions
+	     *
+	     ***************************************************************************/
+	    
+	    
 	    void error(VAddr vAddr, std::string msg){
 	    	using namespace dout;
 	    	Dout dout = Dout::getInstance();

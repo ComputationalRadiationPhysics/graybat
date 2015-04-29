@@ -12,14 +12,6 @@
 #include <fstream> /* std::fstream */
 
 
-/************************************************************************//**
- * @class BGL
- *									   
- * @brief A class to describe directed graphs.
- *
- * GraphPolicy on basis of the boost graph library.
- *
- ***************************************************************************/
 namespace graybat {
     
     namespace graphPolicy {
@@ -32,6 +24,14 @@ namespace graybat {
 	    ID id;
 	};
 
+	/************************************************************************//**
+         * @class BGL
+	 *									   
+	 * @brief A class to describe directed graphs.
+	 *
+	 * GraphPolicy on basis of the boost graph library.
+	 *
+	 ***************************************************************************/
 	template <class T_VertexProperty = SimpleProperty, class T_EdgeProperty = SimpleProperty>
 	class BGL {
 
@@ -71,7 +71,7 @@ namespace graybat {
 
 	public: 
 	    GraphID id;
-	    BGL<Vertex, Edge>& superGraph;
+	    //BGL<Vertex, Edge>& superGraph;
 
 
 	    /**
@@ -81,8 +81,8 @@ namespace graybat {
 	     *
 	     */
 	    BGL(GraphDescription graphDesc) :
-		id(0),
-		superGraph(*this){
+		id(0){
+		
 
 		std::vector<VertexID> vertices     = graphDesc.first;
 		std::vector<EdgeDescription> edges = graphDesc.second;
@@ -173,23 +173,6 @@ namespace graybat {
 	    }
 
 	    /**
-	     * @brief Prints graphs vertices connected by edges in simple representation
-	     *
-	     */
-	    void print(){
-		std::vector<Vertex> vertices = getVertices();
-
-		for(Vertex v : vertices){
-		    std::vector<std::pair<Vertex, Edge> > outEdges = getOutEdges(v);
-		    for(std::pair<Vertex, Edge> e : outEdges){
-			std::cout << "Graph [" << id << "] "<<"Edge [" << e.second.id << "] : (" << v.id << ") ==> (" << e.first.id << ")" << std::endl; 
-		    }
-
-		}
-
-	    }
-
-	    /**
 	     * @brief Creates a subgraph of this graph from *vertices* 
 	     *        and returns a reference to this newly created subgraph. 
 	     *
@@ -202,6 +185,7 @@ namespace graybat {
 	     * @param[in] vertices A list of vertices that should be in set of the graph vertices
 	     *
 	     */
+	    /*
 	    BGL<Vertex, Edge>& createSubGraph(const std::vector<Vertex> vertices){
 		std::vector<BGLVertex> vertexIDs;
 		for(unsigned v_i = 0; v_i < vertices.size(); ++v_i){
@@ -215,6 +199,7 @@ namespace graybat {
 
 
 	    }
+	    */
 
 	    /**
 	     * @brief Cheacks wheather *textVertex* is in the set of vertices of this graph.
@@ -222,6 +207,7 @@ namespace graybat {
 	     * @return **true**  If testVertex is part of this graph.
 	     * @return **false** If testVertex is not part of this graph.
 	     */
+	    /*
 	    bool contains(Vertex testVertex){
 		std::vector<Vertex> vertices = getVertices();
 		for(Vertex containedVertex: vertices){
@@ -233,6 +219,7 @@ namespace graybat {
 		return false;
 
 	    }
+	    */
 
 	    /**
 	     * @brief Checks wheather this graph has an supergraph (is subgraph) 
@@ -240,6 +227,7 @@ namespace graybat {
 	     * @return **true** If this graph is subgrapph of some supergraph.
 	     * @return **false** If this graph has no supergraph (is rootgraph).
 	     */
+	    /*
 	    bool hasSuperGraph(){
 		if(id == superGraph.id){
 		    return false;
@@ -248,6 +236,7 @@ namespace graybat {
 		    return true;
 		}
 	    }
+	    */
 
 	    /**
 	     * @brief Returns the local id of *vertex* in this graph.
@@ -261,12 +250,14 @@ namespace graybat {
    
 	private:
 
+	    /*
 	    BGL(BGL<Vertex, Edge>& superGraph, BGL& subGraph, unsigned id) : 
 		graph(&subGraph),
 		id(id),
 		superGraph(superGraph){
 
 	    }
+	    */
 
 	    std::vector<Vertex> getVerticesProperties(std::vector<BGLVertex> bglVertices){
 		std::vector<Vertex> vertices;

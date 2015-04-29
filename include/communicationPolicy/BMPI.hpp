@@ -7,229 +7,141 @@
 #include <exception>    /* std::out_of_range */
 #include <sstream>      /* std::stringstream */
 #include <algorithm>    /* std::transform */
-#include <mpi.h>        /* MPI_* */
+ #include <mpi.h>        /* MPI_* */
 #include <dout.hpp>     /* dout */
 
+// Boost mpi stuff
+#include <boost/mpi/environment.hpp>
+#include <boost/mpi/communicator.hpp>
+#include <boost/mpi/collectives.hpp>
+#include <boost/mpi/datatype.hpp>
+#include <boost/optional.hpp>
+
+
+namespace mpi = boost::mpi;
 
 namespace graybat {
     
-    /**
-     * @brief Construction of MPI_Op from binary operation *Op* with type *T*
-     *
-     * @todo is it possible to get rid of this static shit ?
-     */
-    template<typename T, typename Op>
-    class UserOperation
-    {
-    public:
-	explicit UserOperation(Op& op){
-	    bool isCommutative = true;
-	    MPI_Op_create(&UserOperation<T, Op>::perform, isCommutative, &_mpiOp);
-	    _op = &op;
-	}
-
-	~UserOperation(){
-	    MPI_Op_free(&_mpiOp);
-	}
-
-	MPI_Op& getMpiOp(){
-	    return _mpiOp;
-	}
-
-	static void perform(void* vinvec, void* voutvec, int* plen, MPI_Datatype*)
-	{
-	    T* invec = static_cast<T*>(vinvec);
-	    T* outvec = static_cast<T*>(voutvec);
-	    std::transform(invec, invec + *plen, outvec, outvec, *_op);
-	}
-
-    private:
-	MPI_Op _mpiOp;
-	static Op* _op;
-
-    };
-
-    template<typename T, typename Op> Op* UserOperation<T, Op>::_op = 0;
-    
-    /**
-     * @brief Type traits for transformation of primitive
-     *        C++ data types to MPI data types.
-     *
-     */
-    template<typename T>
-    struct MPIDatatypes{
-	static constexpr MPI_Datatype type = static_cast<const MPI_Datatype>(MPI_CHAR);
-    };
-
-    template<>
-    struct MPIDatatypes<float>{
-	static constexpr MPI_Datatype type = MPI_FLOAT;
-    };
-
-    template<>
-    struct MPIDatatypes<double>{
-	static constexpr MPI_Datatype type = MPI_DOUBLE;
-    };
-
-    template<>
-    struct MPIDatatypes<int>{
-	static constexpr MPI_Datatype type = MPI_INT;
-    };
-
-    template<>
-    struct MPIDatatypes<unsigned>{
-	static constexpr MPI_Datatype type = static_cast<const MPI_Datatype>(MPI_UNSIGNED);
-    };
-
-    template<>
-    struct MPIDatatypes<const char>{
-	static constexpr MPI_Datatype type = MPI_CHAR;
-    };
-
-    template<>
-    struct MPIDatatypes<const bool>{
-	static constexpr MPI_Datatype type = MPI_CHAR;
-    };
-
-    /**
-     * @brief A context represents a set of peers
-     *        which are able to communicate with each other.
-     *
-     */
-    class Context {
-	typedef unsigned ContextID;
-	typedef unsigned VAddr;
-	    
-    public:
-	Context() :
-	    id(0),
-	    vAddr(0),
-	    contextSize(0),
-	    isValid(false){
-
-	}
-
-	Context(ContextID contextID, VAddr id, size_t contextSize) : 
-	    id(contextID),
-	    vAddr(id),
-	    contextSize(contextSize),
-	    isValid(true){
-		
-	}
-
-	Context& operator=(const Context& otherContext){
-	    id            = otherContext.getID();
-	    vAddr         = otherContext.getVAddr();
-	    contextSize   = otherContext.size();
-	    isValid       = otherContext.valid();
-	    return *this;
-
-	}
-
-	size_t size() const{
-	    return contextSize;
-	}
-
-	VAddr getVAddr() const {
-	    return vAddr;
-	}
-
-	ContextID getID() const {
-	    return id;
-	}
-
-	bool valid() const{
-	    return isValid;
-	}
-
-
-    private:
-	ContextID id;
-	VAddr     vAddr;
-	size_t    contextSize;
-	bool      isValid;
-    };
-
-    /**
-     * @brief An event is returned by non-blocking 
-     *        communication operations and can be 
-     *        asked whether an operation has finished
-     *        or it can be waited for this operation to
-     *        be finished.
-     *
-     */
-    class Event {
-    public:
-	Event(MPI_Request request) : request(request){
-
-	}
-
-	~Event(){
-
-	}
-
-	void wait(){
-	    MPI_Status status;
-	    MPI_Wait(&request, &status);
-	
-	}
-
-	bool ready(){
-	    int flag = 0;
-	    MPI_Status status;
-	    MPI_Test(&request, &flag, &status);
-	    return bool(flag);
-	}
-
-    private:
-	MPI_Request request;
-    };
-
     namespace communicationPolicy {
     
 	/************************************************************************//**
-	 * @class MPI
 	 *
-	 * @brief A communication interface implemented by the
-	 * CommunicationPolicy
+	 * @class BMPI
 	 *
-	 * The MPI, provides two classes
-	 * of communication schemas .On one hand point to point communication
-	 * between two peers, both synchron and asynchron and on the other hand collective
-	 * collective operations on a Context.
-	 *
-	 * The CAL also provides inner class definitions for Event and Context.
-	 *
-	 * Events are objects returned by non blocking functions and they 
-	 * can be queried for the state of this function.
-	 *
-	 * A Context represents a set of peers that are able to communicate
-	 * with each other
+	 * @brief Implementation of the Cage communicationPolicy interface
+	 *        based on the MPI implementation boost::mpi.
 	 *
 	 ***************************************************************************/
-	struct MPI {
+	struct BMPI {
+	    /**
+	     * @brief A context represents a set of peers which are
+	     *        able to communicate with each other.
+	     *
+	     */
+	    class Context {
+		typedef unsigned ContextID;
+		typedef unsigned VAddr;
+	    
+	    public:
+		Context() :
+		    id(0),
+		    isValid(false){
+
+		}
+
+		Context(ContextID contextID, mpi::communicator comm) : 
+		    comm(comm),
+		    id(contextID),
+		    isValid(true){
+		
+		}
+
+		Context& operator=(const Context& otherContext){
+		    id            = otherContext.getID();
+		    isValid       = otherContext.valid();
+		    comm          = otherContext.comm;
+		    return *this;
+
+		}
+
+		size_t size() const{
+		    return comm.size();
+		}
+
+		VAddr getVAddr() const {
+		    return comm.rank();
+		}
+
+		ContextID getID() const {
+		    return id;
+		}
+
+		bool valid() const{
+		    return isValid;
+		}
+
+		mpi::communicator comm;
+	
+	    private:	
+		ContextID id;
+		bool      isValid;
+	    };
+
+	    /**
+	     * @brief An event is returned by non-blocking 
+	     *        communication operations and can be 
+	     *        asked whether an operation has finished
+	     *        or it can be waited for this operation to
+	     *        be finished.
+	     *
+	     */
+	    class Event {
+	    public:
+		Event(mpi::request request) : request(request){
+
+		}
+
+		~Event(){
+
+		}
+
+		void wait(){
+		    request.wait();
+	
+		}
+
+		bool ready(){
+		    boost::optional<mpi::status> status = request.test();
+
+		    if(status){
+			return true;
+		    }
+		    else {
+			return false;
+		    }
+
+		}
+
+	    private:
+		mpi::request request;
+	    };
+
 
 	    // Type defs
-	    typedef unsigned         Tag;                                            
-	    typedef unsigned         ContextID;
-	    typedef unsigned         VAddr;
-
-	    typedef graybat::Context Context;
-	    typedef graybat::Event   Event;
+	    typedef unsigned Tag;                                            
+	    typedef unsigned ContextID;
+	    typedef unsigned VAddr;
 
 	    typedef unsigned MsgType;
-	    typedef int Uri;
+	    typedef int      Uri;
 
 
-	    // Constructor
-	    MPI() :contextCount(0),
-		   uriMap(0),
-		   contextMap(0),
-		   initialContext(contextCount, initialVAddr(), MPICommSize(MPI_COMM_WORLD)) {
-	    
-		contextMap.push_back(MPI_COMM_WORLD);
+	    BMPI() :contextCount(0),
+		    uriMap(0),
+		    initialContext(contextCount, mpi::communicator()){
+
 		uriMap.push_back(std::vector<Uri>());
-	    
+		
 		for(unsigned i = 0; i < initialContext.size(); ++i){
 		    uriMap.back().push_back(i);
 		}
@@ -237,27 +149,17 @@ namespace graybat {
 	    }
 
 	    // Destructor
-	    ~MPI(){
-		MPI_Barrier(MPI_COMM_WORLD);
-		MPI_Finalize();
+	    ~BMPI(){
+		
 	    }
-
-	    // Member Variables
-	    ContextID                     contextCount;
-	    std::vector<std::vector<Uri>> uriMap;
-	    std::vector<MPI_Comm>         contextMap;
-	    Context                       initialContext;
-
-	
-
-
-	    /***************************************************************************
+	    /***********************************************************************//**
+             *
+	     * @name Point to Point Communication Interface
 	     *
-	     * POINT TO POINT COMMUNICATION INTERFACE
+	     * @{
 	     *
 	     ***************************************************************************/
-
-	    /**
+	    /** 
 	     * @brief Non blocking transmission of a message sendData to peer with virtual address destVAddr.
 	     * 
 	     * @param[in] destVAddr  VAddr of peer that will receive the message
@@ -273,12 +175,9 @@ namespace graybat {
 	     */
 	    template <typename T_Send>
 	    Event asyncSend(const VAddr destVAddr, const Tag tag, const Context context, const T_Send& sendData){
-		MPI_Request request;
 		Uri destUri = getVAddrUri(context, destVAddr);
-		MPI_Issend(const_cast<typename T_Send::value_type*>(sendData.data()), sendData.size(),
-			   MPIDatatypes<typename T_Send::value_type>::type,
-			   destUri, tag, contextMap[context.getID()], &request);
-		return Event(request);
+		mpi::request request = context.comm.isend(destUri, tag, sendData.data(), sendData.size());
+	    	return Event(request);
 
 	    }
 
@@ -297,9 +196,8 @@ namespace graybat {
 	     */
 	    template <typename T_Send>
 	    void send(const VAddr destVAddr, const Tag tag, const Context context, const T_Send& sendData){
-		Uri destUri = getVAddrUri(context, destVAddr);
-		MPI_Send(const_cast<typename T_Send::value_type*>(sendData.data()), sendData.size(),
-			 MPIDatatypes<typename T_Send::value_Type>::type, destUri, tag, contextMap[context.getID()]);
+	    	Uri destUri = getVAddrUri(context, destVAddr);
+		context.comm.send(destUri, tag, sendData.data(), sendData.size());
 	    }
 
 	    
@@ -318,15 +216,12 @@ namespace graybat {
 	     * @return Event
 	     *
 	     */
-	     template <typename T_Recv>
-	     Event asyncRecv(const VAddr srcVAddr, const Tag tag, const Context context, const T_Recv& recvData){
-		 MPI_Request request;
-		 Uri srcUri = getVAddrUri(context, srcVAddr);
-		 MPI_Irecv(const_cast<typename T_Recv::value_type*>(recvData.data()), recvData.size(),
-			   MPIDatatypes<typename T_Recv::value_type>::type, srcUri, tag,
-			   contextMap[context.getID()], &request);
-		 return Event(request);
-	     }
+	    template <typename T_Recv>
+	    Event asyncRecv(const VAddr srcVAddr, const Tag tag, const Context context, T_Recv& recvData){
+	    	 Uri srcUri = getVAddrUri(context, srcVAddr);
+		 mpi::request request = context.comm.irecv(srcUri, tag, recvData.data(), recvData.size());
+	    	 return Event(request);
+	    }
 
 
 	    /**
@@ -342,22 +237,20 @@ namespace graybat {
 	     *                        std::vector and std::array implement this interface.
 	     */
 	    template <typename T_Recv>
-	    void recv(const VAddr srcVAddr, const Tag tag, const Context context, const T_Recv& recvData){
-		MPI_Status status;
-		Uri srcUri = getVAddrUri(context, srcVAddr);
-		MPI_Recv(const_cast<typename T_Recv::value_type*>(recvData.data()), recvData.size(),
-			 MPIDatatypes<typename T_Recv::value_type>::type,
-			 srcUri, tag, contextMap[context.getID()], &status);
+	    void recv(const VAddr srcVAddr, const Tag tag, const Context context, T_Recv& recvData){
+	    	Uri srcUri = getVAddrUri(context, srcVAddr);
+		context.comm.recv(srcUri, tag, recvData.data(), recvData.size());
+
 	    }
-
-
+	    /** @} */
     
-	    /**************************************************************************
+	    /************************************************************************//**
 	     *
-	     * COLLECTIVE COMMUNICATION INTERFACE
+	     * @name Collective Communication Interface
+	     *
+	     * @{
 	     *
 	     **************************************************************************/
-	    
 	    /**
 	     * @brief Collects *sendData* from all peers of the *context* and
 	     *        transmits it as a list to the peer with
@@ -375,12 +268,7 @@ namespace graybat {
 	    template <typename T_Send, typename T_Recv>
 	    void gather(const VAddr rootVAddr, const Context context, const T_Send& sendData, T_Recv& recvData){
 		Uri rootUri = getVAddrUri(context, rootVAddr);
-
-		MPI_Gather(const_cast<typename T_Send::value_type*>(sendData.data()), sendData.size(),
-			   MPIDatatypes<typename T_Send::value_type>::type, 
-			   const_cast<typename T_Recv::value_type*>(recvData.data()), sendData.size(),
-			   MPIDatatypes<typename T_Recv::value_type>::type, 
-			   rootUri, contextMap[context.getID()]);
+	    	mpi::gather(context.comm, sendData.data(), sendData.size(), recvData, rootUri);
 	    }
 
 	
@@ -393,6 +281,9 @@ namespace graybat {
 	     *       not dynamically determined. Since retrieving the size of send data
 	     *       of every peer is a further gather operation and therefore extra
 	     *       overhead.
+	     *
+	     * @todo Replace by boost gatherv version when available.
+	     *       Patches are already submited
 	     *
 	     * @param[in]  rootVAddr  Peer that will receive collcted data from *context* members
 	     * @param[in]  context    Set of peers that want to send Data
@@ -423,12 +314,14 @@ namespace graybat {
 		}
 	    
 		// Gather data with varying size
-		MPI_Gatherv(const_cast<typename T_Send::value_type *>(sendData.data()), sendData.size(),
-			    MPIDatatypes<typename T_Send::value_type>::type, 
+		MPI_Gatherv(const_cast<typename T_Send::value_type*>(sendData.data()), sendData.size(),
+			    mpi::get_mpi_datatype<typename T_Send::value_type>(*(sendData.data())),
 			    const_cast<typename T_Recv::value_type*>(recvData.data()),
 			    const_cast<int*>((int*)recvCount.data()), rdispls,
-			    MPIDatatypes<typename T_Recv::value_type>::type, 
-			    rootUri, contextMap[context.getID()]);
+			    mpi::get_mpi_datatype<typename T_Recv::value_type>(*(recvData.data())), 
+			    rootUri, context.comm);
+		
+		
 	    }
 
 	
@@ -443,12 +336,8 @@ namespace graybat {
 	     */
 	    template <typename T_Send, typename T_Recv>
 	    void allGather(Context context, const T_Send& sendData, T_Recv& recvData){
-		MPI_Allgather(const_cast<typename T_Send::value_type*>(sendData.data()), sendData.size(),
-			      MPIDatatypes<typename T_Send::value_type>::type, 
-			      const_cast<typename T_Recv::value_type*>(recvData.data()), sendData.size(),
-			      MPIDatatypes<typename T_Recv::value_type>::type, 
-			      contextMap[context.getID()]);
-	
+		mpi::all_gather(context.comm, sendData.data(), sendData.size(), recvData.data());
+		
 	    }
 
 	
@@ -481,11 +370,13 @@ namespace graybat {
 	    
 		 // Gather data with varying size
 		 MPI_Allgatherv(const_cast<typename T_Send::value_type*>(sendData.data()), sendData.size(),
-				MPIDatatypes<typename T_Send::value_type>::type, 
+				mpi::get_mpi_datatype<typename T_Send::value_type>(*(sendData.data())),
 				const_cast<typename T_Recv::value_type*>(recvData.data()),
 				const_cast<int*>((int*)recvCount.data()), rdispls,
-				MPIDatatypes<typename T_Recv::value_type>::type, 
-				contextMap[context.getID()]);
+				mpi::get_mpi_datatype<typename T_Recv::value_type>(*(recvData.data())), 
+				context.comm);
+		 
+		 
 	     }
 
 
@@ -501,16 +392,12 @@ namespace graybat {
 	     * @param[out] recvData   Data from peer with *rootVAddr*.
 	     *
 	     */
-	     template <typename T_Send, typename T_Recv>
-	     void scatter(const VAddr rootVAddr, const Context context, const T_Send& sendData, T_Recv& recvData){
-		 Uri rootUri = getVAddrUri(context, rootVAddr);
-		 MPI_Scatter(const_cast<typename T_Send::value_type*>(sendData.data()), recvData.size(),
-			     MPIDatatypes<typename T_Send::value_type>::type, 
-			     const_cast<typename T_Recv::value_type*>(recvData.data()), recvData.size(),
-			     MPIDatatypes<typename T_Recv::value_type>::type, 
-			     rootUri, contextMap[context.getID()]);
+	    template <typename T_Send, typename T_Recv>
+	    void scatter(const VAddr rootVAddr, const Context context, const T_Send& sendData, T_Recv& recvData){
+	    	 Uri rootUri = getVAddrUri(context, rootVAddr);
+		 mpi::scatter(context.comm, sendData.data(), recvData.data(), recvData.size(), rootUri);
 
-	     }
+	    }
 
 	
 	    /**
@@ -525,16 +412,13 @@ namespace graybat {
 	     * @param[out] recvData Data from all peer.
 	     *
 	     */
-	     template <typename T_Send, typename T_Recv>
-	     void allToAll(const Context context, const T_Send& sendData, T_Recv& recvData){
-	         unsigned elementsPerPeer = sendData.size() / context.size();
-		 MPI_Alltoall(const_cast<typename T_Send::value_type*>(sendData.data()), elementsPerPeer,
-			      MPIDatatypes<typename T_Send::value_type>::type, 
-			      const_cast<typename T_Recv::value_type*>(recvData), elementsPerPeer,
-			      MPIDatatypes<typename T_Recv::value_type>::type, 
-			      contextMap[context.getID()]);
+	    template <typename T_Send, typename T_Recv>
+	    void allToAll(const Context context, const T_Send& sendData, T_Recv& recvData){
+	        unsigned elementsPerPeer = sendData.size() / context.size();
 
-	     }
+		mpi::all_to_all(context.comm, sendData.data(), elementsPerPeer, recvData.data());
+
+	    }
 
 	
 	    /**
@@ -553,17 +437,12 @@ namespace graybat {
 	     *                       reduced sendData values.
 	     *
 	     */
-	     template <typename T_Send, typename T_Recv, typename T_Op>
-	     void reduce(const VAddr rootVAddr, const Context context, const T_Op op, const T_Send& sendData, const T_Recv& recvData){
+	    template <typename T_Send, typename T_Recv, typename T_Op>
+	    void reduce(const VAddr rootVAddr, const Context context, const T_Op op, const T_Send& sendData, const T_Recv& recvData){
+	    	 Uri rootUri = getVAddrUri(context, rootVAddr);
+		 mpi::reduce(context.comm, sendData.data(), sendData.size(), recvData.data(), op, rootUri);
 
-		 UserOperation<typename T_Send::value_type, T_Op> mpiOp(op);
-		 Uri rootUri = getVAddrUri(context, rootVAddr);
-		 MPI_Reduce(const_cast<typename T_Send::value_type*>(sendData.data()),
-			    const_cast<typename T_Recv::value_type*>(recvData.data()), sendData.size(),
-			    MPIDatatypes<typename T_Send::value_type>::type, mpiOp.getMpiOp(),
-			    rootUri, contextMap[context.getID()]);
-
-	     }
+	    }
 
 	    /**
 	     * @brief Performs a reduction with a binary operator *op* on all *sendData* elements from all peers
@@ -579,11 +458,7 @@ namespace graybat {
 	     */
 	    template <typename T_Send, typename T_Recv, typename T_Op>
 	    void allReduce(const Context context, T_Op op, const T_Send& sendData, T_Recv& recvData){
-		UserOperation<typename T_Send::value_type, T_Op> mpiOp(op);
-		MPI_Allreduce(const_cast<typename T_Send::value_type*>(sendData.data()),
-			      const_cast<typename T_Recv::value_type*>(recvData.data()), sendData.size(),
-			      MPIDatatypes<typename T_Send::value_type>::type, mpiOp.getMpiOp() ,
-			      contextMap[context.getID()]);
+		mpi::all_reduce(context.comm, sendData.data(), sendData.size(), recvData.data(), op);
 	     
 	    }
 
@@ -600,12 +475,11 @@ namespace graybat {
 	     * @param[out] recvData  Data from peer with *rootVAddr*.
 	     *
 	     */
-	     template <typename T_SendRecv>
-	     void broadcast(const VAddr rootVAddr, const Context context, const T_SendRecv& data){
-		 Uri rootUri = uriMap.at(context.getID()).at(rootVAddr);
-		 MPI_Bcast(const_cast<typename T_SendRecv::value_type*>(data.data()), data.size(),
-			   MPIDatatypes<typename T_SendRecv::value_type>::type, rootUri, contextMap[context.getID()]);
-	     }
+	    template <typename T_SendRecv>
+	    void broadcast(const VAddr rootVAddr, const Context context, const T_SendRecv& data){
+	    	 Uri rootUri = uriMap.at(context.getID()).at(rootVAddr);
+		 mpi::broadcast(context.comm, data.data(), data.size(), rootUri);
+	    }
 
 	
 	    /**
@@ -614,7 +488,7 @@ namespace graybat {
 	     *        
 	     */
 	     void synchronize(const Context context){
-		 MPI_Barrier(contextMap[context.getID()]);
+		 context.comm.barrier();
 	     }
 
 	
@@ -628,12 +502,14 @@ namespace graybat {
 	     void synchronize(){
 	         synchronize(getGlobalContext());
 	     }
-    
+	    /** @} */
 
     
-	    /***************************************************************************
+	    /*************************************************************************//**
 	     *
-	     * ORGANISATION
+	     * @name Context Management Interface
+	     *
+	     * @{
 	     *
 	     ***************************************************************************/
 	    /**
@@ -641,45 +517,43 @@ namespace graybat {
 	     *
 	     */
 	    Context createContext(const std::vector<VAddr> vAddrs, const Context oldContext){
-		assert(vAddrs.size() > 0);
-		MPI_Comm  newMPIContext;
-		MPI_Group oldGroup, newGroup;
+	    	assert(vAddrs.size() > 0);
+		
+		VAddr myVAddr = oldContext.getVAddr();
+		bool  isPartOfNewContext = false;
+		
+	    	for(VAddr vAddr : vAddrs){
+		    if(vAddr == myVAddr){
+			isPartOfNewContext = true;
+		    }
 
-		// Translate vAddrs to uris
-		std::vector<Uri> ranks;
+	    	}
 
-		for(VAddr vAddr : vAddrs){
-		    ranks.push_back(getVAddrUri(oldContext, vAddr));
-		}
+		mpi::communicator newComm = oldContext.comm.split(isPartOfNewContext);
 
-		// Create new context	    
-		MPI_Comm_group(contextMap[oldContext.getID()], &oldGroup);
-		MPI_Group_incl(oldGroup, ranks.size(), &(ranks[0]), &newGroup);
-		MPI_Comm_create(contextMap[oldContext.getID()], newGroup, &newMPIContext);
+	    	if(isPartOfNewContext){
+	    	    std::array<Uri, 1> uri;
 
-		if(newMPIContext != MPI_COMM_NULL){
-		    std::array<Uri, 1> uri;
-		    MPI_Comm_rank(newMPIContext, uri.data());
-		    Context newContext(++contextCount, uri[0], MPICommSize(newMPIContext));
-		    contextMap.push_back(newMPIContext);
+	    	    Context newContext(++contextCount, newComm);
+		    uri[0] = newContext.getVAddr();
 
-		    // Update UriMap
-		    uriMap.push_back(std::vector<Uri>(newContext.size()));
-		    std::vector<Uri> otherUris(newContext.size());
+	    	    // Update UriMap
+	    	    uriMap.push_back(std::vector<Uri>(newContext.size()));
+	    	    std::vector<Uri> otherUris(newContext.size());
+
 		    allGather(newContext, uri, otherUris);
 
-		    for(unsigned i = 0; i < newContext.size(); ++i){
-			uriMap[newContext.getID()][i] =  otherUris[i];
-		    }
-		    return newContext;
+		    std::copy(otherUris.begin(), otherUris.end(), uriMap[newContext.getID()].begin());
 
-		}
-		else {
-		    // return invalid context
-		    // for peers not anymore included
-		    return Context();
+	    	    return newContext;
+
+	    	}
+	    	else {
+	    	    // return invalid context
+	    	    // for peers not anymore included
+	    	    return Context();
 		
-		}
+	    	}
 	    
 	    }
 
@@ -689,63 +563,33 @@ namespace graybat {
 	     *
 	     */
 	    Context getGlobalContext(){
-		return initialContext;
+	     	return initialContext;
 	    }
+	    /** @} */
 
+	    	private:
 
 	    /***************************************************************************
 	     *
-	     * MPI HELPER FUNCTION 
+	     * @name Private Member
 	     *
 	     ***************************************************************************/
+	    ContextID                      contextCount;
+	    std::vector<std::vector<Uri>>  uriMap;
+	    Context                        initialContext;
+	    mpi::environment               env;
 
-	    /**
-	     * @brief Initilizes MPI if it was not initialized
-	     *        before.
+	    /***************************************************************************
 	     *
-	     */
-	    void initMPI(){
-		int flag = 0;
-		MPI_Initialized(&flag);
-		if(!flag){
-		    int argc = 0;
-		    char **argv;
-		    MPI_Init(&argc, &argv);
-		}
-	    }
-
-	    /**
-	     * @brief Returns the initial VAddr of the peer
-	     *        in the global context. This is the
-	     *        rank of the MPI process in the global
-	     *        communicator.
+	     * @name Helper Functions
 	     *
-	     */
-	    VAddr initialVAddr(){
-		initMPI();
-		Uri uriTmp;
-		MPI_Comm_rank(MPI_COMM_WORLD, &uriTmp);
-		return (VAddr)uriTmp;
-
-	    }
-
-	    /**
-	     * @brief Returns the number of processes
-	     *        in a communicator and ensures
-	     *        that MPI is initialized.
-	     *
-	     */
-	    size_t MPICommSize(MPI_Comm comm){
-		initMPI();
-		int n;
-		MPI_Comm_size(comm, &n);
-		return n;
-	    }
-
+	     ***************************************************************************/
+	    
+	    
 	    void error(VAddr vAddr, std::string msg){
-		using namespace dout;
-		Dout dout = Dout::getInstance();
-		dout(Flags::ERROR) << "[" << vAddr << "] " << msg;
+	    	using namespace dout;
+	    	Dout dout = Dout::getInstance();
+	    	dout(Flags::ERROR) << "[" << vAddr << "] " << msg;
 
 	    }
 
@@ -756,18 +600,18 @@ namespace graybat {
 	     */
 	    template <typename T_Context>
 	    inline Uri getVAddrUri(const T_Context context, const VAddr vAddr){
-		Uri uri  = 0;
-		try {
-		    uri = uriMap.at(context.getID()).at(vAddr);
+	    	Uri uri  = 0;
+	    	try {
+	    	    uri = uriMap.at(context.getID()).at(vAddr);
 
-		} catch(const std::out_of_range& e){
-		    std::stringstream errorStream;
-		    errorStream << "MPI::getVAddrUri::" << e.what()<< " : Communicator with ID " << vAddr << " is not part of the context " << context.getID() << std::endl;
-		    error(context.getID(), errorStream.str());
-		    exit(1);
-		}
+	    	} catch(const std::out_of_range& e){
+	    	    std::stringstream errorStream;
+	    	    errorStream << "MPI::getVAddrUri::" << e.what()<< " : Communicator with ID " << vAddr << " is not part of the context " << context.getID() << std::endl;
+	    	    error(context.getID(), errorStream.str());
+	    	    exit(1);
+	    	}
 
-		return uri;
+	    	return uri;
 	    }
 
 	};
