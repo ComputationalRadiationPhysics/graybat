@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.9.1"/>
-<title>GrayBat: README</title>
+<title>GrayBat: GrayBat</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -101,13 +101,14 @@ $(document).ready(function(){initNavTree('md_README.html','');});
 
 <div class="header">
   <div class="headertitle">
-<div class="title">README </div>  </div>
+<div class="title">GrayBat </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>{#mainpage} </p><h1>GrayBat </h1>
-<p><b>Gr</b>aph <b>A</b>pproach for Highl<b>y</b> Generic Communication Schemes <b>B</b>ased on <b>A</b>daptive <b>T</b>opologies</p>
+<div class="textblock"><p><b>Gr</b>aph <b>A</b>pproach for Highl<b>y</b> Generic Communication Schemes <b>B</b>ased on <b>A</b>daptive <b>T</b>opologies</p>
 <h2>Description</h2>
-<p><b>GrayBat</b> is a C++ library that presents a graph-based communication approach, which enables a mapping of algorithms to communication patterns and further a mapping of these communication patterns to hardware topologies. Therefore, a flexible and configurable communication approach for parallel or distributed applications. These mappings are established as an intermediate layer between an application and communication libraries and are adptable dynamically during run-time. The <a href="src/gol.cc">Game of Life</a> and <a href="src/nbody.cc">N Body</a> example simulations provide full demonstrations of utilizing GrayBat in a scientific simulations.</p>
+<p><b>GrayBat</b> is a C++ library that presents a graph-based communication approach, which enables a mapping of algorithms to communication patterns and further a mapping of these communication patterns to varying hardware architectures. Therefore, a flexible and configurable communication approach for parallel and distributed applications. These mappings are established as an intermediate layer between an application and communication libraries and are dynamically adptable during run-time.</p>
+<h2>Documentation</h2>
+<p>Have a look at the GrayBat documentation <a href="https://erikzenker.github.io/GrayBat">here</a></p>
 <h2>Referencing</h2>
 <p>GrayBat is a scientific project. If you <b>present and/or publish</b> scientific results that used GrayBat, you should set this as a <b>reference</b>.</p>
 <h2>Software License</h2>
@@ -116,18 +117,20 @@ $(document).ready(function(){initNavTree('md_README.html','');});
 <ul>
 <li>cmake 3.0.2</li>
 <li>Boost 1.57.0</li>
-<li>OpenMPI 1.8.0</li>
+<li>OpenMPI 1.8.0 (<a class="el" href="structgraybat_1_1communicationPolicy_1_1BMPI.html">mpi communication policy</a>)</li>
 <li>g++ 4.9.2</li>
-<li>metis 5.1</li>
+<li>metis 5.1 (<a class="el" href="structgraybat_1_1mapping_1_1GraphPartition.html">graph partitioning</a>)</li>
 </ul>
 <h2>Compiling</h2>
 <ul>
-<li>clone the repository: <code>git clone <a href="https://github.com/computationalradiationphysics/graybat.git">https://github.com/computationalradiationphysics/graybat.git</a></code></li>
-<li>create the build directory: <code>mkdir -p GrayBat/build</code></li>
-<li>go to build directory: <code>cd GrayBat/build</code></li>
-<li>set compiler: <code>export CXX=[g++,clang++]</code></li>
-<li>create Makefile <code>cmake ..</code></li>
-<li>build project : <code>make [target]</code></li>
+<li>Clone the repository: <code>git clone <a href="https://github.com/computationalradiationphysics/graybat.git">https://github.com/computationalradiationphysics/graybat.git</a></code></li>
+<li>Change directory: <code>cd graybat</code></li>
+<li>Init git submodules: <code>git submodule init &amp;&amp; git submodule update</code></li>
+<li>Create the build directory: <code>mkdir -p build</code></li>
+<li>Change to build directory: <code>cd build</code></li>
+<li>Set compiler: <code>export CXX=[g++,clang++]</code></li>
+<li>Create Makefile <code>cmake ..</code></li>
+<li>Build project : <code>make [target]</code></li>
 </ul>
 <h2>Tested Compilers</h2>
 <ul>
@@ -144,12 +147,10 @@ $(document).ready(function(){initNavTree('md_README.html','');});
 <td><b>dev</b> </td><td><a href="http://haseongpu.mooo.com/github.com/erikzenker/GrayBat">![Build Status](http://haseongpu.mooo.com/api/badge/github.com/erikzenker/GrayBat/status.svg?branch=dev)</a> </td><td>development branch </td></tr>
 </table>
 <h2>Example Targets</h2>
-<p>GrayBat is a library, but some examples are provided to demonstrate its usage. All targets provide the synoptsis of their executables.</p>
 <ul>
-<li>GoL: Game of Life simulation</li>
-<li>NBody: N Body simulation</li>
-<li>doc: Build documentation in ../doc/</li>
-<li>clean: Cleanup build directory</li>
+<li><a class="el" href="md_utils_doxygen_gol.html">GoL</a>: Game of Life simulation</li>
+<li><b>doc</b>: Build documentation in doc/</li>
+<li><b>clean</b>: Cleanup build directory</li>
 </ul>
 <h2>Authors</h2>
 <ul>
@@ -160,7 +161,7 @@ $(document).ready(function(){initNavTree('md_README.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon Apr 13 2015 16:54:08 for GrayBat by
+    <li class="footer">Generated on Wed Apr 29 2015 11:29:47 for GrayBat by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.9.1 </li>
   </ul>

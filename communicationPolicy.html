@@ -104,11 +104,11 @@ $(document).ready(function(){initNavTree('communicationPolicy.html','');});
 <div class="title">Communication Policy </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>The communication policy is a class which implements the communication interface of its host class (<a class="el" href="md_utils_doxygen_cage.html">cage</a>).</p>
+<div class="textblock"><p>The communication policy is a class which implements the communication interface of its host class (<a class="el" href="cage.html">cage</a>).</p>
 <p>Communication in GrayBat is modeled in the way, that an instance that takes part on whatever communication is called a <em>peer</em>. All peers that want to communicate in some way with each other need to group up in a <a class="el" href="context.html">context</a>. Therefore, a <a class="el" href="context.html">context</a> is a set of peers that are able to communicate with each other.</p>
 <p>By communication is meant the exchange of arbitrary data between peers or even within one peer. Thus, communication can mean sending a message over the internet, copying data between two memories, or distributing data with the help of MPI. Therefore, a communication policy need to implement the required interface but can interpret the term communication on its own. See the code example below or consider the preimplemented communication policies.</p>
-<p>The communication policy interface is separated into the parts <b>point-to-point</b> <b>communication</b> , <b>collective communication</b> , and <b>context management</b> . The advice for completeness is to implement all methods of these three parts and run the provided unit test cases to verify their correctness. Nevertheless, not all communication methods might be necessary for a special use case and only a handful is really necessary to initialize the <a class="el" href="md_utils_doxygen_cage.html">cage</a>. Thus, it is possible to provide a communication policy implementation that does not implement all interface methods.</p>
-<p>The basic set of methods that <b>need</b> to be implemented to initialize the <a class="el" href="md_utils_doxygen_cage.html">cage</a> are the following:</p>
+<p>The communication policy interface is separated into the parts <b>point-to-point</b> <b>communication</b> , <b>collective communication</b> , and <b>context management</b> . The advice for completeness is to implement all methods of these three parts and run the provided unit test cases to verify their correctness. Nevertheless, not all communication methods might be necessary for a special use case and only a handful is really necessary to initialize the <a class="el" href="cage.html">cage</a>. Thus, it is possible to provide a communication policy implementation that does not implement all interface methods.</p>
+<p>The basic set of methods that <b>need</b> to be implemented to initialize the <a class="el" href="cage.html">cage</a> are the following:</p>
 <ul>
 <li>Context Management<ul>
 <li>getGlobalContext</li>
@@ -247,8 +247,8 @@ $(document).ready(function(){initNavTree('communicationPolicy.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="md_utils_doxygen_cage.html">Communication and Graph Environment</a></li>
-    <li class="footer">Generated on Tue Apr 28 2015 16:15:35 for GrayBat by
+    <li class="navelem"><a class="el" href="cage.html">Communication and Graph Environment</a></li>
+    <li class="footer">Generated on Wed Apr 29 2015 11:41:44 for GrayBat by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.9.1 </li>
   </ul>

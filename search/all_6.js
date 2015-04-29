@@ -10,7 +10,8 @@ var searchData=
   ['getoutedges',['getOutEdges',['../classgraybat_1_1graphPolicy_1_1BGL.html#ace819f3231bc55f0e3d3d52ef0e0e42f',1,'graybat::graphPolicy::BGL']]],
   ['getvertices',['getVertices',['../classgraybat_1_1graphPolicy_1_1BGL.html#ad54894c7c818defa36ddba0ba74a93e2',1,'graybat::graphPolicy::BGL']]],
   ['graphpartition',['GraphPartition',['../structgraybat_1_1mapping_1_1GraphPartition.html',1,'graybat::mapping']]],
-  ['graph_20policy',['Graph Policy',['../graphPolicy.html',1,'md_utils_doxygen_cage']]],
+  ['graph_20policy',['Graph Policy',['../graphPolicy.html',1,'cage']]],
   ['grid',['Grid',['../structgraybat_1_1pattern_1_1Grid.html',1,'graybat::pattern']]],
-  ['griddiagonal',['GridDiagonal',['../structgraybat_1_1pattern_1_1GridDiagonal.html',1,'graybat::pattern']]]
+  ['griddiagonal',['GridDiagonal',['../structgraybat_1_1pattern_1_1GridDiagonal.html',1,'graybat::pattern']]],
+  ['graybat',['GrayBat',['../index.html',1,'']]]
 ];

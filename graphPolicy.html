@@ -104,9 +104,9 @@ $(document).ready(function(){initNavTree('graphPolicy.html','');});
 <div class="title">Graph Policy </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>The graph policy is a class which implements the graph interface of its host class (/utils/doxygen/cage.md "cage"). A graph is defined by its vertex and edge property through template arguments and its graph description as constructor argument. The following defintion of a graph is defined by a city property which represents a vertex and a road property which represents an edge:</p>
+<div class="textblock"><p>The graph policy is a class which implements the graph interface of its host class (<a class="el" href="cage.html">cage</a>). A graph is defined by its vertex and edge property through template arguments and its graph description as constructor argument. The following defintion of a graph is defined by a city property which represents a vertex and a road property which represents an edge:</p>
 <div class="fragment"><div class="line"><span class="keyword">typedef</span> <a class="code" href="classgraybat_1_1graphPolicy_1_1BGL.html">graybat::graphPolicy::BGL&lt;City, Road&gt;</a> CityGraph;</div>
-</div><!-- fragment --><p>The basic member of a property is an unique identifier (id) within the graph. This id is used by the /utils/doxygen/cage.md "cage" to map vertices to peers. The following property is a very simple and basic property for edges and vertices. Therefore, it is called SimpleProperty:</p>
+</div><!-- fragment --><p>The basic member of a property is an unique identifier (id) within the graph. This id is used by the <a class="el" href="cage.html">cage</a> to map vertices to peers. The following property is a very simple and basic property for edges and vertices. Therefore, it is called SimpleProperty:</p>
 <div class="fragment"><div class="line"><span class="keyword">struct </span>SimpleProperty{</div>
 <div class="line">    <span class="keyword">typedef</span> <span class="keywordtype">unsigned</span> ID;</div>
 <div class="line">    SimpleProperty() : SimpleProperty(0){}</div>
@@ -120,7 +120,7 @@ $(document).ready(function(){initNavTree('graphPolicy.html','');});
 <div class="line"></div>
 <div class="line">    <span class="comment">// Property specific data</span></div>
 <div class="line">};</div>
-</div><!-- fragment --><p>The following source code provides the full skeleton of a graph policy. Nevertheless, the predefined boost graph library graph policy (<a class="el" href="classgraybat_1_1graphPolicy_1_1BGL.html" title="A class to describe directed graphs. ">graybat::graphPolicy::BGL</a>) is a good starting point to be used in a /utils/doxygen/cage.md "cage". A custom implementation might only be necessary if there exist some special requirements.</p>
+</div><!-- fragment --><p>The following source code provides the full skeleton of a graph policy. Nevertheless, the predefined boost graph library graph policy (<a class="el" href="classgraybat_1_1graphPolicy_1_1BGL.html" title="A class to describe directed graphs. ">graybat::graphPolicy::BGL</a>) is a good starting point to be used in a <a class="el" href="cage.html">cage</a>. A custom implementation might only be necessary if there exist some special requirements.</p>
 <div class="fragment"><div class="line"><span class="keyword">namespace </span><a class="code" href="namespacegraybat.html">graybat</a> {</div>
 <div class="line"></div>
 <div class="line">    <span class="keyword">namespace </span>graphPolicy {</div>
@@ -158,8 +158,8 @@ $(document).ready(function(){initNavTree('graphPolicy.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="md_utils_doxygen_cage.html">Communication and Graph Environment</a></li>
-    <li class="footer">Generated on Tue Apr 28 2015 16:15:35 for GrayBat by
+    <li class="navelem"><a class="el" href="cage.html">Communication and Graph Environment</a></li>
+    <li class="footer">Generated on Wed Apr 29 2015 11:41:44 for GrayBat by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.9.1 </li>
   </ul>
