@@ -7,6 +7,10 @@
 #include <graybat.hpp>
 #include <mapping/Random.hpp>
 #include <mapping/Consecutive.hpp>
+#include <pattern/FullyConnected.hpp>
+#include <pattern/Star.hpp>
+#include <pattern/Grid.hpp>
+
 
 // stl
 #include <array>
@@ -24,11 +28,11 @@ typedef graybat::communicationPolicy::BMPI CP;
 // GraphPolicy
 typedef graybat::graphPolicy::BGL<>   GP;
     
-// Cave
-typedef graybat::Cave<CP, GP>   MyCave;
-typedef typename MyCave::Event  Event;
-typedef typename MyCave::Vertex Vertex;
-typedef typename MyCave::Edge   Edge;
+// Cage
+typedef graybat::Cage<CP, GP>   MyCage;
+typedef typename MyCage::Event  Event;
+typedef typename MyCage::Vertex Vertex;
+typedef typename MyCage::Edge   Edge;
 
 
 /***************************************************************************
@@ -37,8 +41,8 @@ typedef typename MyCave::Edge   Edge;
 
 BOOST_AUTO_TEST_SUITE(point_to_point)
 
-MyCave allToAll(graybat::pattern::FullyConnected(2));
-MyCave star(graybat::pattern::Star(2));
+MyCage allToAll(graybat::pattern::FullyConnected(2));
+MyCage star(graybat::pattern::Star(2));
 
 BOOST_AUTO_TEST_CASE( send_recv ){
     star.distribute(graybat::mapping::Consecutive());
@@ -131,7 +135,7 @@ BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE( collectives )
 
-MyCave grid(graybat::pattern::Grid(3,3));
+MyCage grid(graybat::pattern::Grid(3,3));
 
 BOOST_AUTO_TEST_CASE( reduce ){
 
@@ -182,6 +186,8 @@ BOOST_AUTO_TEST_CASE( gather ){
 
     const unsigned nElements = 10;
     const unsigned testValue = 1;
+    const bool reorder = true;
+
     
     std::vector<unsigned> send(nElements, testValue);
     std::vector<unsigned> recv(nElements * grid.getVertices().size(), 0);
@@ -189,7 +195,6 @@ BOOST_AUTO_TEST_CASE( gather ){
     Vertex rootVertex = grid.getVertices().at(0);
     
     for(Vertex v: grid.hostedVertices){
-	bool reorder = true;
 	grid.gather(rootVertex, v, send, recv, reorder);
     }
 
@@ -208,12 +213,13 @@ BOOST_AUTO_TEST_CASE( allGather ){
 
     const unsigned nElements = 10;
     const unsigned testValue = 1;
+    const bool reorder = true;
+
     
     std::vector<unsigned> send(nElements, testValue);
     std::vector<unsigned> recv(nElements * grid.getVertices().size(), 0);
 
     for(Vertex v: grid.hostedVertices){
-	bool reorder = true;
 	grid.allGather(v, send, recv, reorder);
     }
 
