@@ -69,6 +69,9 @@ GrayBat  is licensed under the <b>GPLv3+</b>. Please refer to our [LICENSE.md](L
 
  * **clean**: Cleanup build directory
 
+##Literature##
+ * Talk by Erik Zenker of his diploma defence [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.16306.svg)](http://dx.doi.org/10.5281/zenodo.16306)
+
 
 ##Authors##
 
