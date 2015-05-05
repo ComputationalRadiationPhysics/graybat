@@ -470,30 +470,6 @@ namespace graybat {
 
 	}
 
-	template <class T>
-	void reorder(const std::vector<T> &data, const std::vector<unsigned> &recvCount, std::vector<T> &dataReordered){
-	    std::vector<unsigned> prefixsum(graphContext.size(), 0);
-
-	    utils::exclusivePrefixSum(recvCount.begin(), recvCount.end(), prefixsum.begin());
-
-	    for(unsigned vAddr = 0; vAddr < graphContext.size(); vAddr++){
-		const std::vector<Vertex> hostedVertices = getHostedVertices(vAddr);
-		const unsigned nElementsPerVertex = recvCount.at(vAddr) / hostedVertices.size();
-
-		for(unsigned hostVertex_i = 0; hostVertex_i < hostedVertices.size(); hostVertex_i++){
-
-		    unsigned sourceOffset = prefixsum[vAddr] + (hostVertex_i * nElementsPerVertex);
-		    unsigned targetOffset = hostedVertices[hostVertex_i].id * nElementsPerVertex;
-		    
-		    std::copy(data.begin() + sourceOffset,
-			      data.begin() + sourceOffset + nElementsPerVertex,
-			      dataReordered.begin() + targetOffset);
-		}
-	    }
-
-	}
-
-	
       // This function is the hell
       // TODO: Simplify !!!
       // TODO: Better software design required !!!
@@ -612,6 +588,35 @@ namespace graybat {
 	}
 	/** @} */
 
+    private:
+
+	/**
+	 * @brief Reorders data received from vertices into vertex id order.
+	 *
+	 */
+	template <class T>
+	void reorder(const std::vector<T> &data, const std::vector<unsigned> &recvCount, std::vector<T> &dataReordered){
+	    std::vector<unsigned> prefixsum(graphContext.size(), 0);
+
+	    utils::exclusivePrefixSum(recvCount.begin(), recvCount.end(), prefixsum.begin());
+
+	    for(unsigned vAddr = 0; vAddr < graphContext.size(); vAddr++){
+		const std::vector<Vertex> hostedVertices = getHostedVertices(vAddr);
+		const unsigned nElementsPerVertex = recvCount.at(vAddr) / hostedVertices.size();
+
+		for(unsigned hostVertex_i = 0; hostVertex_i < hostedVertices.size(); hostVertex_i++){
+
+		    unsigned sourceOffset = prefixsum[vAddr] + (hostVertex_i * nElementsPerVertex);
+		    unsigned targetOffset = hostedVertices[hostVertex_i].id * nElementsPerVertex;
+		    
+		    std::copy(data.begin() + sourceOffset,
+			      data.begin() + sourceOffset + nElementsPerVertex,
+			      dataReordered.begin() + targetOffset);
+		}
+	    }
+
+	}
+	
     };
 
 } // namespace graybat
