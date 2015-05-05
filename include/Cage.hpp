@@ -8,6 +8,7 @@
 #include <algorithm> /* std::max */
 
 #include <dout.hpp>            /* dout::Dout::getInstance() */
+#include <utils.hpp> /* exclusivePrefixSum */
 
 namespace graybat {
 
@@ -468,7 +469,31 @@ namespace graybat {
 	    assert(vertexCount <= vertices.size());
 
 	}
-    
+
+	template <class T>
+	void reorder(const std::vector<T> &data, const std::vector<unsigned> &recvCount, std::vector<T> &dataReordered){
+	    std::vector<unsigned> prefixsum(graphContext.size(), 0);
+
+	    utils::exclusivePrefixSum(recvCount.begin(), recvCount.end(), prefixsum.begin());
+
+	    for(unsigned vAddr = 0; vAddr < graphContext.size(); vAddr++){
+		const std::vector<Vertex> hostedVertices = getHostedVertices(vAddr);
+		const unsigned nElementsPerVertex = recvCount.at(vAddr) / hostedVertices.size();
+
+		for(unsigned hostVertex_i = 0; hostVertex_i < hostedVertices.size(); hostVertex_i++){
+
+		    unsigned sourceOffset = prefixsum[vAddr] + (hostVertex_i * nElementsPerVertex);
+		    unsigned targetOffset = hostedVertices[hostVertex_i].id * nElementsPerVertex;
+		    
+		    std::copy(data.begin() + sourceOffset,
+			      data.begin() + sourceOffset + nElementsPerVertex,
+			      dataReordered.begin() + targetOffset);
+		}
+	    }
+
+	}
+
+	
       // This function is the hell
       // TODO: Simplify !!!
       // TODO: Better software design required !!!
@@ -498,37 +523,16 @@ namespace graybat {
 
 	if(nGatherCalls == hostedVertices.size()){
 	  std::vector<unsigned> recvCount;
-	  std::vector<unsigned> prefixsum(context.size(),0);
 
 	  if(peerHostsRootVertex){
 	    comm.gatherVar(rootVAddr, context, gather, *rootRecvData, recvCount);
 
-	    // TODO
-	    // std::partial_sum might do the job
-	    unsigned sum = 0;
-	    for(unsigned count_i = 0; count_i < recvCount.size(); ++count_i){
-	      prefixsum[count_i] = sum;
-	      sum += recvCount[count_i];
-	    }
-		    
-	    // Reordering code
+	    // Reorder the received data, so that the data
+	    // is in vertex id order. This operation is no
+	    // sorting since the mapping is known before.
 	    if(reorder){
 	      std::vector<RecvValueType> recvDataReordered(recvData.size());
-	      for(unsigned vAddr = 0; vAddr < context.size(); vAddr++){
-		std::vector<Vertex> hostedVertices = getHostedVertices(vAddr);
-		unsigned nElementsPerVertex = recvCount.at(vAddr) / hostedVertices.size();
-
-		unsigned hVertex_i=0;
-		for(Vertex v: hostedVertices){
-
-		  std::copy(rootRecvData->begin()+(prefixsum[vAddr] + (hVertex_i * nElementsPerVertex)),
-			    rootRecvData->begin()+(prefixsum[vAddr] + (hVertex_i * nElementsPerVertex)) + (nElementsPerVertex),
-			    recvDataReordered.begin()+(v.id*nElementsPerVertex));
-		  hVertex_i++;
-
-		}
-			    
-	      }
+	      Cage::reorder(*rootRecvData, recvCount, recvDataReordered);
 	      std::copy(recvDataReordered.begin(), recvDataReordered.end(), rootRecvData->begin());
 
 	    }
