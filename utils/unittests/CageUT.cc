@@ -7,10 +7,13 @@
 #include <graybat.hpp>
 #include <mapping/Random.hpp>
 #include <mapping/Consecutive.hpp>
+<<<<<<< HEAD
 #include <pattern/FullyConnected.hpp>
 #include <pattern/Star.hpp>
 #include <pattern/Grid.hpp>
 
+=======
+>>>>>>> 75660b4f5edb68543c0c8d1a5cbd2e13701fdea4
 
 // stl
 #include <array>
@@ -28,11 +31,19 @@ typedef graybat::communicationPolicy::BMPI CP;
 // GraphPolicy
 typedef graybat::graphPolicy::BGL<>   GP;
     
+<<<<<<< HEAD
 // Cage
 typedef graybat::Cage<CP, GP>   MyCage;
 typedef typename MyCage::Event  Event;
 typedef typename MyCage::Vertex Vertex;
 typedef typename MyCage::Edge   Edge;
+=======
+// Cave
+typedef graybat::Cave<CP, GP>   MyCave;
+typedef typename MyCave::Event  Event;
+typedef typename MyCave::Vertex Vertex;
+typedef typename MyCave::Edge   Edge;
+>>>>>>> 75660b4f5edb68543c0c8d1a5cbd2e13701fdea4
 
 
 /***************************************************************************
@@ -41,8 +52,13 @@ typedef typename MyCage::Edge   Edge;
 
 BOOST_AUTO_TEST_SUITE(point_to_point)
 
+<<<<<<< HEAD
 MyCage allToAll(graybat::pattern::FullyConnected(2));
 MyCage star(graybat::pattern::Star(2));
+=======
+MyCave allToAll(graybat::pattern::FullyConnected(2));
+MyCave star(graybat::pattern::Star(2));
+>>>>>>> 75660b4f5edb68543c0c8d1a5cbd2e13701fdea4
 
 BOOST_AUTO_TEST_CASE( send_recv ){
     star.distribute(graybat::mapping::Consecutive());
@@ -135,7 +151,11 @@ BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE( collectives )
 
+<<<<<<< HEAD
 MyCage grid(graybat::pattern::Grid(3,3));
+=======
+MyCave grid(graybat::pattern::Grid(3,3));
+>>>>>>> 75660b4f5edb68543c0c8d1a5cbd2e13701fdea4
 
 BOOST_AUTO_TEST_CASE( reduce ){
 
@@ -186,8 +206,11 @@ BOOST_AUTO_TEST_CASE( gather ){
 
     const unsigned nElements = 10;
     const unsigned testValue = 1;
+<<<<<<< HEAD
     const bool reorder = true;
 
+=======
+>>>>>>> 75660b4f5edb68543c0c8d1a5cbd2e13701fdea4
     
     std::vector<unsigned> send(nElements, testValue);
     std::vector<unsigned> recv(nElements * grid.getVertices().size(), 0);
@@ -195,6 +218,10 @@ BOOST_AUTO_TEST_CASE( gather ){
     Vertex rootVertex = grid.getVertices().at(0);
     
     for(Vertex v: grid.hostedVertices){
+<<<<<<< HEAD
+=======
+	bool reorder = true;
+>>>>>>> 75660b4f5edb68543c0c8d1a5cbd2e13701fdea4
 	grid.gather(rootVertex, v, send, recv, reorder);
     }
 
@@ -213,13 +240,20 @@ BOOST_AUTO_TEST_CASE( allGather ){
 
     const unsigned nElements = 10;
     const unsigned testValue = 1;
+<<<<<<< HEAD
     const bool reorder = true;
 
+=======
+>>>>>>> 75660b4f5edb68543c0c8d1a5cbd2e13701fdea4
     
     std::vector<unsigned> send(nElements, testValue);
     std::vector<unsigned> recv(nElements * grid.getVertices().size(), 0);
 
     for(Vertex v: grid.hostedVertices){
+<<<<<<< HEAD
+=======
+	bool reorder = true;
+>>>>>>> 75660b4f5edb68543c0c8d1a5cbd2e13701fdea4
 	grid.allGather(v, send, recv, reorder);
     }
 
