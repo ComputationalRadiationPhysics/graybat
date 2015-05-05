@@ -6,7 +6,6 @@
 #include <assert.h>  /* assert */
 #include <cstddef>    /* nullptr_t */
 #include <algorithm> /* std::max */
-#include <numeric>   /* std::partial_sum */
 
 #include <dout.hpp>            /* dout::Dout::getInstance() */
 
@@ -470,20 +469,6 @@ namespace graybat {
 
 	}
 
-	struct Sum {
-
-	    template<typename T1>
-	    Sum(T1 sum) : sum(sum){};
-
-	    T1 sum;
-	    
-	    template<typename T1, T2>
-	    T1 operator()(const T1 &a, const T2 &b){
-		
-	    }
-
-	};
-
 	
       // This function is the hell
       // TODO: Simplify !!!
@@ -532,7 +517,6 @@ namespace graybat {
 			    sum += recvCount[count_i];
 			}
 
-			std::partial_sum(recvCount.begin(), revCount.end(), prefixsum);
 		
 			std::vector<RecvValueType> recvDataReordered(recvData.size());
 			for(unsigned vAddr = 0; vAddr < context.size(); vAddr++){
