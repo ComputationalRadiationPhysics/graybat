@@ -8,6 +8,7 @@
 #include <algorithm> /* std::max */
 
 #include <dout.hpp>            /* dout::Dout::getInstance() */
+#include <utils.hpp> /* exclusivePrefixSum */
 
 namespace graybat {
 
@@ -468,82 +469,61 @@ namespace graybat {
 	    assert(vertexCount <= vertices.size());
 
 	}
-    
+
+
       // This function is the hell
       // TODO: Simplify !!!
       // TODO: Better software design required !!!
-      template <typename T_Send, typename T_Recv>
-      void gather(const Vertex rootVertex, const Vertex srcVertex, const T_Send sendData, T_Recv& recvData, const bool reorder){
-	typedef typename T_Send::value_type SendValueType;
-	typedef typename T_Recv::value_type RecvValueType;
+	template <typename T_Send, typename T_Recv>
+	void gather(const Vertex rootVertex, const Vertex srcVertex, const T_Send sendData, T_Recv& recvData, const bool reorder){
+	    typedef typename T_Send::value_type SendValueType;
+	    typedef typename T_Recv::value_type RecvValueType;
 	
-	static std::vector<SendValueType> gather;
-	static T_Recv* rootRecvData     = NULL;
-	static bool peerHostsRootVertex = false;
-	static unsigned nGatherCalls    = 0;
+	    static std::vector<SendValueType> gather;
+	    static T_Recv* rootRecvData     = NULL;
+	    static bool peerHostsRootVertex = false;
+	    static unsigned nGatherCalls    = 0;
 
-	nGatherCalls++;
+	    nGatherCalls++;
 
-	VAddr rootVAddr  = locateVertex(rootVertex);
-	Context context  = graphContext;
+	    VAddr rootVAddr  = locateVertex(rootVertex);
+	    Context context  = graphContext;
 
-	// Insert data of srcVertex to the end of the gather vector
-	gather.insert(gather.end(), sendData.begin(), sendData.end());
+	    // Insert data of srcVertex to the end of the gather vector
+	    gather.insert(gather.end(), sendData.begin(), sendData.end());
 
-	// Store recv pointer of rootVertex
-	if(srcVertex.id == rootVertex.id){
-	  rootRecvData = &recvData;
-	  peerHostsRootVertex = true;
-	}
-
-	if(nGatherCalls == hostedVertices.size()){
-	  std::vector<unsigned> recvCount;
-	  std::vector<unsigned> prefixsum(context.size(),0);
-
-	  if(peerHostsRootVertex){
-	    comm.gatherVar(rootVAddr, context, gather, *rootRecvData, recvCount);
-
-	    // TODO
-	    // std::partial_sum might do the job
-	    unsigned sum = 0;
-	    for(unsigned count_i = 0; count_i < recvCount.size(); ++count_i){
-	      prefixsum[count_i] = sum;
-	      sum += recvCount[count_i];
+	    // Store recv pointer of rootVertex
+	    if(srcVertex.id == rootVertex.id){
+		rootRecvData = &recvData;
+		peerHostsRootVertex = true;
 	    }
-		    
-	    // Reordering code
-	    if(reorder){
-	      std::vector<RecvValueType> recvDataReordered(recvData.size());
-	      for(unsigned vAddr = 0; vAddr < context.size(); vAddr++){
-		std::vector<Vertex> hostedVertices = getHostedVertices(vAddr);
-		unsigned nElementsPerVertex = recvCount.at(vAddr) / hostedVertices.size();
 
-		unsigned hVertex_i=0;
-		for(Vertex v: hostedVertices){
+	    if(nGatherCalls == hostedVertices.size()){
+		std::vector<unsigned> recvCount;
+		if(peerHostsRootVertex){
+		    comm.gatherVar(rootVAddr, context, gather, *rootRecvData, recvCount);
 
-		  std::copy(rootRecvData->begin()+(prefixsum[vAddr] + (hVertex_i * nElementsPerVertex)),
-			    rootRecvData->begin()+(prefixsum[vAddr] + (hVertex_i * nElementsPerVertex)) + (nElementsPerVertex),
-			    recvDataReordered.begin()+(v.id*nElementsPerVertex));
-		  hVertex_i++;
+		    // Reorder the received data, so that the data
+		    // is in vertex id order. This operation is no
+		    // sorting since the mapping is known before.
+		    if(reorder){
+			std::vector<RecvValueType> recvDataReordered(recvData.size());
+			Cage::reorder(*rootRecvData, recvCount, recvDataReordered);
+			std::copy(recvDataReordered.begin(), recvDataReordered.end(), rootRecvData->begin());
 
-		}
-			    
-	      }
-	      std::copy(recvDataReordered.begin(), recvDataReordered.end(), rootRecvData->begin());
-
-	    }
+		    }
 		
-	  }
-	  else {
-	    comm.gatherVar(rootVAddr, context, gather, recvData, recvCount);
-	  }
+		}
+		else {
+		    comm.gatherVar(rootVAddr, context, gather, recvData, recvCount);
+		}
 	    
-	  gather.clear();
-	  nGatherCalls = 0;
+		gather.clear();
+		nGatherCalls = 0;
+
+	    }
 
 	}
-
-      }
 
 
 	/**
@@ -553,11 +533,14 @@ namespace graybat {
 	 **/
 	template <typename T_Send, typename T_Recv>
 	void allGather(const Vertex srcVertex, T_Send sendData, T_Recv& recvData, const bool reorder){
-	    typedef typename T_Send::value_type T_Send_Container;
-	
-	    static std::vector<T_Send_Container> gather;
-	    static std::vector<T_Recv*> recvDatas;
+	    typedef typename T_Send::value_type SendValueType;
+	    typedef typename T_Recv::value_type RecvValueType;
 
+	    static std::vector<SendValueType> gather;
+	    static std::vector<T_Recv*> recvDatas;
+	    static unsigned nGatherCalls    = 0;
+	    nGatherCalls++;
+	    
 	    VAddr srcVAddr  = locateVertex(srcVertex);
 	    Context context = graphContext;
 	    std::vector<Vertex> vertices = getHostedVertices(srcVAddr);
@@ -566,27 +549,57 @@ namespace graybat {
 	    recvDatas.push_back(&recvData);
 
 
-	    if(gather.size() == vertices.size()){
+	    if(nGatherCalls == hostedVertices.size()){
 		std::vector<unsigned> recvCount;
 
 		comm.allGatherVar(context, gather, *(recvDatas[0]), recvCount);
 
+		// Reordering code
 		if(reorder){
-		    std::vector<typename T_Recv::value_type> recvDataReordered(recvData.size());
-		    unsigned vAddr = 0;
-		    for(unsigned recv_i = 0; recv_i < recvData.size(); ){
-			std::vector<Vertex> hostedVertices = getHostedVertices(vAddr);
-			for(Vertex v: hostedVertices){
-			    recvDataReordered.at(v.id) = recvDatas[0]->data()[recv_i];
-			    recv_i++;
-			}
-			vAddr++;
-		    }
-		    for(unsigned i = 0; i < recvDataReordered.size(); ++i){
-			recvDatas[0]->data()[i] = recvDataReordered[i];
+		    std::vector<unsigned> prefixsum(context.size(),0);
+
+		    unsigned sum = 0;
+		    for(unsigned count_i = 0; count_i < recvCount.size(); ++count_i){
+			prefixsum[count_i] = sum;
+			sum += recvCount[count_i];
 		    }
 		    
+		    std::vector<RecvValueType> recvDataReordered(recvData.size());
+		    for(unsigned vAddr = 0; vAddr < context.size(); vAddr++){
+			std::vector<Vertex> hostedVertices = getHostedVertices(vAddr);
+			unsigned nElementsPerVertex = recvCount.at(vAddr) / hostedVertices.size();
+
+			unsigned hVertex_i=0;
+			for(Vertex v: hostedVertices){
+
+			    std::copy(recvDatas[0]->begin()+(prefixsum[vAddr] + (hVertex_i * nElementsPerVertex)),
+				      recvDatas[0]->begin()+(prefixsum[vAddr] + (hVertex_i * nElementsPerVertex)) + (nElementsPerVertex),
+				      recvDataReordered.begin()+(v.id*nElementsPerVertex));
+			    hVertex_i++;
+
+			}
+			    
+		    }
+
 		}
+		
+
+		// if(reorder){
+		//     std::vector<typename T_Recv::value_type> recvDataReordered(recvData.size());
+		//     unsigned vAddr = 0;
+		//     for(unsigned recv_i = 0; recv_i < recvData.size(); ){
+		// 	std::vector<Vertex> hostedVertices = getHostedVertices(vAddr);
+		// 	for(Vertex v: hostedVertices){
+		// 	    recvDataReordered.at(v.id) = recvDatas[0]->data()[recv_i];
+		// 	    recv_i++;
+		// 	}
+		// 	vAddr++;
+		//     }
+		//     for(unsigned i = 0; i < recvDataReordered.size(); ++i){
+		// 	recvDatas[0]->data()[i] = recvDataReordered[i];
+		//     }
+		    
+		// }
 
 		// Distribute Received Data to Hosted Vertices
 		//unsigned nElements = std::accumulate(recvCount.begin(), recvCount.end(), 0);
@@ -608,6 +621,35 @@ namespace graybat {
 	}
 	/** @} */
 
+    private:
+
+	/**
+	 * @brief Reorders data received from vertices into vertex id order.
+	 *
+	 */
+	template <class T>
+	void reorder(const std::vector<T> &data, const std::vector<unsigned> &recvCount, std::vector<T> &dataReordered){
+	    std::vector<unsigned> prefixsum(graphContext.size(), 0);
+
+	    utils::exclusivePrefixSum(recvCount.begin(), recvCount.end(), prefixsum.begin());
+
+	    for(unsigned vAddr = 0; vAddr < graphContext.size(); vAddr++){
+		const std::vector<Vertex> hostedVertices = getHostedVertices(vAddr);
+		const unsigned nElementsPerVertex = recvCount.at(vAddr) / hostedVertices.size();
+
+		for(unsigned hostVertex_i = 0; hostVertex_i < hostedVertices.size(); hostVertex_i++){
+
+		    unsigned sourceOffset = prefixsum[vAddr] + (hostVertex_i * nElementsPerVertex);
+		    unsigned targetOffset = hostedVertices[hostVertex_i].id * nElementsPerVertex;
+		    
+		    std::copy(data.begin() + sourceOffset,
+			      data.begin() + sourceOffset + nElementsPerVertex,
+			      dataReordered.begin() + targetOffset);
+		}
+	    }
+
+	}
+	
     };
 
 } // namespace graybat
