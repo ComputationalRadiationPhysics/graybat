@@ -17,7 +17,7 @@ set(LIBS ${LIBS} ${METIS_LIBRARIES})
 ###############################################################################
 # Boost
 ###############################################################################
-find_package(Boost 1.46.0 COMPONENTS mpi REQUIRED)
+find_package(Boost 1.46.0 COMPONENTS mpi unit_test_framework REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${Boost_LIBRARIES})
 
@@ -58,32 +58,18 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include
 		   ${CMAKE_CURRENT_SOURCE_DIR}/include/dout/include )
 #add_executable(Main EXCLUDE_FROM_ALL src/main.cc)
 add_executable(GoL EXCLUDE_FROM_ALL src/gol.cc )
-add_executable(GoLBench EXCLUDE_FROM_ALL src/golBench.cc )
-add_executable(GoLFlex EXCLUDE_FROM_ALL src/golFlex.cc )
 add_executable(NBody EXCLUDE_FROM_ALL src/nbody.cc )
-add_executable(NBodyBench EXCLUDE_FROM_ALL src/nbodyBench.cc )
-add_executable(Synthetic EXCLUDE_FROM_ALL src/synthetic.cc )
-add_executable(SyntheticOneLookup EXCLUDE_FROM_ALL src/synthetic_one_lookup.cc )
-add_executable(SyntheticRandom EXCLUDE_FROM_ALL src/synthetic_random.cc )
-add_executable(Gather EXCLUDE_FROM_ALL src/gather.cc )
-add_executable(Reduce EXCLUDE_FROM_ALL src/reduce.cc )
-add_executable(UnitCAL EXCLUDE_FROM_ALL src/unit_cal.cc )
-add_executable(UnitGVON EXCLUDE_FROM_ALL src/unit_gvon.cc )
+add_executable(Test EXCLUDE_FROM_ALL utils/unittests/CageUT.cc )
+
+
 
 # add the libraries (Boost...) to this executable
-#target_link_libraries(Main ${LIBS})
 target_link_libraries(GoL ${LIBS})
-target_link_libraries(GoLBench ${LIBS})
-target_link_libraries(GoLFlex ${LIBS})
 target_link_libraries(NBody ${LIBS})
-target_link_libraries(NBodyBench ${LIBS})
-target_link_libraries(Synthetic ${LIBS})
-target_link_libraries(SyntheticOneLookup ${LIBS})
-target_link_libraries(SyntheticRandom ${LIBS})
-target_link_libraries(Gather ${LIBS})
-target_link_libraries(Reduce ${LIBS})
-target_link_libraries(UnitCAL ${LIBS})
-target_link_libraries(UnitGVON ${LIBS})
+target_link_libraries(Test ${LIBS})
+
+
+
 
 ###############################################################################
 # Custom targets

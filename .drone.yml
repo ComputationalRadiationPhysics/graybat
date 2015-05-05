@@ -15,12 +15,18 @@ script:
   - mkdir build
   - cd build
   - echo "Clang++ build test"
-  - cmake -DCMAKE_CXX_COMPILER=`which clang++` ..
+  - export CXX=clang++
+  - cmake ..
+  - make Test
+  - ./Test
   - make GoL
   - mpiexec --allow-run-as-root ./GoL 90 10
   - rm * -rf
   - echo "G++ build test"
-  - cmake -DCMAKE_CXX_COMPILER=`which g++` ..
+  - export CXX=g++
+  - cmake ..
+  - make Test
+  - ./Test
   - make GoL
   - mpiexec --allow-run-as-root ./GoL 90 10
 

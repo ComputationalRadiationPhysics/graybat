@@ -14,6 +14,7 @@
  *
  */
 
+
 // STL
 #include <iostream>   /* std::cout */
 #include <vector>     /* std::vector */
@@ -49,6 +50,7 @@ void printGolDomain(const std::vector<unsigned> domain, const unsigned width, co
 	else {
 	    std::cerr << " ";
 	}
+
 
     }
     std::cerr << "Generation: " << generation << std::endl;
