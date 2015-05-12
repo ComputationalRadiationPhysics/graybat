@@ -8,6 +8,7 @@ struct EdgeTest {
     typedef typename Cage::Vertex Vertex;
     typedef typename GraphPolicy::EdgeProperty EdgeProperty;
     typedef typename Cage::Event Event;
+    typedef unsigned ID;
 	    
     unsigned id;
     Vertex vertex;    

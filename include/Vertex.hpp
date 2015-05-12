@@ -10,6 +10,7 @@ struct VertexTest {
     typedef T_Cage Cage;
     typedef typename Cage::GraphPolicy GraphPolicy;
     typedef typename GraphPolicy::VertexProperty VertexProperty;
+    typedef unsigned ID;
 
     unsigned id;
     VertexProperty vertexProperty;

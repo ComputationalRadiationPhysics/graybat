@@ -37,8 +37,8 @@ namespace graybat {
     struct Cage {
 	typedef T_CommunicationPolicy                   CommunicationPolicy;
         typedef T_GraphPolicy                           GraphPolicy;
-	typedef typename GraphPolicy::Vertex            Vertex;
-	typedef typename GraphPolicy::Edge              Edge;
+	typedef EdgeTest<Cage<CommunicationPolicy, GraphPolicy> >   Edge;
+	typedef VertexTest<Cage<CommunicationPolicy, GraphPolicy> > Vertex;
 	typedef typename GraphPolicy::GraphID           GraphID;
 	typedef typename GraphPolicy::EdgeDescription   EdgeDescription;
 	typedef typename GraphPolicy::GraphDescription  GraphDescription;
@@ -50,8 +50,6 @@ namespace graybat {
 
 
 
-	typedef EdgeTest<Cage<CommunicationPolicy, GraphPolicy> >   EdgeTest;
-	typedef VertexTest<Cage<CommunicationPolicy, GraphPolicy> > VertexTest;
 	
 	
 	template <class T_Functor>
@@ -94,21 +92,31 @@ namespace graybat {
 	 *
 	 ***************************************************************************/
 	std::vector<Vertex> getVertices(){
-	    return graph.getVertices();
+	    std::vector<Vertex> vertices();
+	    typedef typename GraphPolicy::AllVertexIter Iter;
+
+	    Iter vi_first, vi_last;
+	    std::tie(vi_first, vi_last) = graph.getVertices();
+
+	    while(vi_first != vi_last){
+		vertices.push_back(Vertex(*vi_first, graph.getVertexProperty(*vi_first), *this));
+		vi_first++;
+	    }
 	    
+	    return vertices;
 	}
 	
-	Vertex getVertex(const VertexID vertexID){
-	    return graph.getVertices().at(vertexID);
+	// Vertex getVertex(const VertexID vertexID){
+	//     return graph.getVertices().at(vertexID);
 	    
-	}
+	// }
 
 
 	// Vertex == VertexProperty
-	VertexTest getVertexTest(const VertexID vertexID){
-	    Vertex vp = graph.getVertexProperty(vertexID);
-	    return VertexTest(vertexID, vp, *this);
-	}
+	// Vertex getVertexTest(const VertexID vertexID){
+	//     Vertex vp = graph.getVertexProperty(vertexID);
+	//     return VertexTest(vertexID, vp, *this);
+	// }
 
 	std::vector<Vertex> getAdjacentVertices(const Vertex v){
 	    return graph.getAdjacentVertices(v);
@@ -120,18 +128,18 @@ namespace graybat {
 	    
 	}
 
-	std::vector<EdgeTest> getOutEdgesTest(const Vertex v){
-	    std::vector<std::pair<Vertex, Edge> > edges =  graph.getOutEdges(v);
-	    std::vector<EdgeTest> es;
-	    for(auto link : edges){
-		Vertex destVertex = link.first;
-    		Edge   srcEdge   = link.second;
+	// std::vector<Edge> getOutEdgesTest(const Vertex v){
+	//     std::vector<std::pair<Vertex, Edge> > edges =  graph.getOutEdges(v);
+	//     std::vector<Edge> es;
+	//     for(auto link : edges){
+	// 	Vertex destVertex = link.first;
+    	// 	Edge   srcEdge   = link.second;
 
-		es.push_back(EdgeTest(srcEdge.id, destVertex, srcEdge, *this));
-	    }
+	// 	es.push_back(Edge(srcEdge.id, destVertex, srcEdge, *this));
+	//     }
 
-	    return es;
-	}
+	//     return es;
+	// }
 
 	
 
@@ -252,7 +260,7 @@ namespace graybat {
 		    for(unsigned vAddr = 0; vAddr < newVertexMaps.size(); ++vAddr){
 			if(recvData[vAddr] != -1){
 			    VertexID vertexID = (VertexID) recvData[vAddr];
-			    Vertex v = graph.getVertices().at(vertexID);
+			    Vertex v = getVertices().at(vertexID);
 			    vertexMap[v.id] = vAddr;
 			    newVertexMaps[vAddr].push_back(v);
 		    

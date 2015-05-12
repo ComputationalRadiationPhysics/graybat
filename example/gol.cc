@@ -134,18 +134,18 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
      ****************************************************************************/
      std::vector<Event> events;   
      std::vector<unsigned> golDomain(grid.getVertices().size(), 0); 
-     const Vertex root = grid.getVertex(0);
+     //const Vertex root = grid.getVertex(0);
 
      // Simulate life 
      for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
 
     	// Print life field by owner of vertex 0
-    	if(grid.peerHostsVertex(root)){
-    	    printGolDomain(golDomain, width, height, timestep);
-    	}
+    	// if(grid.peerHostsVertex(root)){
+    	//     printGolDomain(golDomain, width, height, timestep);
+    	// }
 	
     	// Send state to neighbor cells
-    	for(Vertex &v : grid.hostedVertices){
+    	//for(Vertex &v : grid.hostedVertices){
     	    //for(auto link : grid.getOutEdges(v)){
 	    //Vertex destVertex = link.first;
 	    //Edge   destEdge   = link.second;
@@ -155,48 +155,48 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 		 * destEdge << v().isAlive;
 		 *
 		 */
-		typename MyCage::VertexTest vt = grid.getVertexTest(v.id);
+		// typename MyCage::VertexTest vt = grid.getVertexTest(v.id);
 
-		std::cout << vt.id << std::endl;
+		// std::cout << vt.id << std::endl;
 
 		// for(auto &link : grid.getOutEdgesTest(v)){
 		//     link << v.isAlive;
 		// }
 
-    	}
+	 //}
 
      	// Recv state from neighbor cells
-     	for(Vertex &v : grid.hostedVertices){
-    	    for(auto link : grid.getInEdges(v)){
-    		Vertex srcVertex = link.first;
-    		Edge   srcEdge   = link.second;
+     	// for(Vertex &v : grid.hostedVertices){
+    	//     for(auto link : grid.getInEdges(v)){
+    	// 	Vertex srcVertex = link.first;
+    	// 	Edge   srcEdge   = link.second;
 
-		/**
-		 * srcEdge >> v().isAlive
-		 *
-		 */
-    		grid.recv(srcVertex, srcEdge, srcVertex.isAlive);
-    		if(srcVertex.isAlive[0]) v.aliveNeighbors++;
-    	    }
-    	}
+	// 	/**
+	// 	 * srcEdge >> v().isAlive
+	// 	 *
+	// 	 */
+    	// 	grid.recv(srcVertex, srcEdge, srcVertex.isAlive);
+    	// 	if(srcVertex.isAlive[0]) v.aliveNeighbors++;
+    	//     }
+    	// }
 
 
 
     	// Wait to finish events
-    	for(unsigned i = 0; i < events.size(); ++i){
-    	    events.back().wait();
-    	    events.pop_back();
-    	}
+    	// for(unsigned i = 0; i < events.size(); ++i){
+    	//     events.back().wait();
+    	//     events.pop_back();
+    	// }
 
 
     	// Calculate state for next generation
-    	updateState(grid.hostedVertices);
+    	//updateState(grid.hostedVertices);
 
      	// Gather state by vertex with id = 0
-    	for(Vertex &v: grid.hostedVertices){
-    	    v.aliveNeighbors = 0;
-    	    grid.gather(root, v, v.isAlive, golDomain, true);
-    	}
+    	// for(Vertex &v: grid.hostedVertices){
+    	//     v.aliveNeighbors = 0;
+    	//     grid.gather(root, v, v.isAlive, golDomain, true);
+    	// }
 	
      }
     

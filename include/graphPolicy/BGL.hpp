@@ -115,10 +115,9 @@ namespace graybat {
 	     * @brief Returns all vertices of the graph
 	     * 
 	     */
-	    std::vector<Vertex> getVertices(){
+	    std::pair<AllVertexIter, AllVertexIter> getVertices(){
 		AllVertexIter vi, vi_end;
-		std::tie(vi, vi_end) =  boost::vertices((*graph));
-		return getVerticesProperties(std::vector<BGLVertex>(vi, vi_end));
+		return boost::vertices((*graph));
 
 	    }
 
