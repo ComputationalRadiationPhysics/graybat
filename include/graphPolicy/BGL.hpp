@@ -37,14 +37,11 @@ namespace graybat {
 
 	public:
 	    // Public typedefs
-	    typedef T_VertexProperty                                                Vertex;
 	    typedef T_VertexProperty                                                VertexProperty;
-	    typedef typename Vertex::ID                                             VertexID;
 	    typedef T_EdgeProperty                                                  Edge;
 	    typedef T_EdgeProperty                                                  EdgeProperty;	    
-	    typedef typename Edge::ID                                               EdgeID;
-	    typedef std::pair<VertexID, VertexID>                                   EdgeDescription;
-	    typedef std::pair<std::vector<VertexID>, std::vector<EdgeDescription> > GraphDescription;
+	    typedef std::pair<unsigned, unsigned>                                   EdgeDescription;
+	    typedef std::pair<std::vector<unsigned>, std::vector<EdgeDescription> > GraphDescription;
 
 	    typedef unsigned                                                        GraphID;
 
@@ -53,22 +50,23 @@ namespace graybat {
 	    typedef boost::adjacency_list<boost::vecS, 
 					  boost::vecS, 
 					  boost::bidirectionalS, 
-					  boost::property<boost::vertex_index_t, size_t, Vertex>,
+					  boost::property<boost::vertex_index_t, size_t, VertexProperty>,
 					  boost::property<boost::edge_index_t, size_t, Edge> > GraphType;
 
 	    typedef boost::subgraph<GraphType> BGLGraph;
-	    typedef typename BGLGraph::vertex_descriptor BGLVertex;
-	    typedef typename BGLGraph::edge_descriptor   BGLEdge;
+	    typedef typename BGLGraph::vertex_descriptor VertexID;
+	    typedef typename BGLGraph::edge_descriptor   EdgeID;
 
 	    typedef typename boost::graph_traits<BGLGraph>::in_edge_iterator   InEdgeIter;
 	    typedef typename boost::graph_traits<BGLGraph>::out_edge_iterator  OutEdgeIter;
 	    typedef typename boost::graph_traits<BGLGraph>::adjacency_iterator AdjacentVertexIter;
 	    typedef typename boost::graph_traits<BGLGraph>::vertex_iterator    AllVertexIter;
+	    
 
 
 	    // Member
 	    BGLGraph* graph;
-	    std::vector<BGL<Vertex, Edge>> subGraphs;
+	    std::vector<BGL<VertexProperty, Edge>> subGraphs;
 
 	public: 
 	    GraphID id;
@@ -83,25 +81,24 @@ namespace graybat {
 	     */
 	    BGL(GraphDescription graphDesc) :
 		id(0){
-		
 
-		std::vector<VertexID> vertices     = graphDesc.first;
+		std::vector<unsigned> vertices     = graphDesc.first;
 		std::vector<EdgeDescription> edges = graphDesc.second;
 
 		graph = new BGLGraph(vertices.size());
 
-		EdgeID edgeCount = 0;
+		unsigned edgeCount = 0;
 
 		for(EdgeDescription edge: edges){
 		    VertexID srcVertex    = std::get<0>(edge);
 		    VertexID targetVertex = std::get<1>(edge);
-		    BGLEdge edgeID = boost::add_edge(srcVertex, targetVertex, (*graph)).first;
+		    EdgeID edgeID = boost::add_edge(srcVertex, targetVertex, (*graph)).first;
 		    setEdgeProperty(edgeID, Edge(edgeCount++));
 		}
 
 		// Bind vertex_descriptor and VertexProperty;
 		for(unsigned vertexID = 0; vertexID < vertices.size(); ++vertexID){
-		    setVertexProperty(vertexID, Vertex(vertexID));
+		    setVertexProperty(vertexID, VertexProperty(vertexID));
 		}
 		
 	    }	    
@@ -116,7 +113,6 @@ namespace graybat {
 	     * 
 	     */
 	    std::pair<AllVertexIter, AllVertexIter> getVertices(){
-		AllVertexIter vi, vi_end;
 		return boost::vertices((*graph));
 
 	    }
@@ -125,47 +121,31 @@ namespace graybat {
 	     * @brief Returns all vertices, that are adjacent (connected) to *vertex*
 	     *
 	     */
-	    std::vector<Vertex> getAdjacentVertices(const Vertex vertex){
-		std::vector<Vertex> adjacentVertices;
-		for(std::pair<Vertex, Edge> e: getOutEdges(vertex)){
-		    adjacentVertices.push_back(e.first);
-		}
-
-		return adjacentVertices;
+	    std::pair<AdjacentVertexIter, AdjacentVertexIter>  getAdjacentVertices(const VertexID id){
+		return boost::adjacent_vertices(id, *graph);
 	    }
 
 	    /**
 	     * @brief Returns all outgoing edges of *srcVertex* paired with its target vertex.
 	     *
 	     */
-	    std::vector<std::pair<Vertex, Edge> > getOutEdges(const Vertex srcVertex){
-		OutEdgeIter ei, ei_end;
-		std::tie(ei, ei_end) = boost::out_edges((*graph).global_to_local(srcVertex.id), (*graph));
-		std::vector<BGLEdge> bglOutEdges(ei, ei_end);
-
-		std::vector<std::pair<Vertex, Edge> > outEdges;
-		for(BGLEdge e : bglOutEdges){
-		    BGLVertex target = getEdgeTarget(e);
-		    Vertex vertex    = getVertexProperty(target);
-		    Edge   edge      = getEdge(e);
-		    outEdges.push_back(std::make_pair(vertex, edge));
-		}
-		return outEdges;
+	    std::pair<OutEdgeIter, OutEdgeIter> getOutEdges(const VertexID id){
+		return boost::out_edges((*graph).global_to_local(id), (*graph));
 	    }
 
 	    /**
 	     * @brief Returns all incoming edges to *targetVertex* paired with its source vertex.
 	     *
 	     */
-	    std::vector<std::pair<Vertex, Edge> > getInEdges(const Vertex targetVertex){
+	    std::vector<std::pair<VertexProperty, Edge> > getInEdges(const VertexProperty targetVertex){
 		InEdgeIter ei, ei_end;
 		std::tie(ei, ei_end) = boost::in_edges((*graph).global_to_local(targetVertex.id), (*graph));
-		std::vector<BGLEdge> bglInEdges(ei, ei_end);
+		std::vector<EdgeID> bglInEdges(ei, ei_end);
 
-		std::vector<std::pair<Vertex, Edge> > inEdges;
-		for(BGLEdge e : bglInEdges){
-		    BGLVertex source = getEdgeSource(e);
-		    Vertex vertex    = getVertexProperty(source);
+		std::vector<std::pair<VertexProperty, Edge> > inEdges;
+		for(EdgeID e : bglInEdges){
+		    VertexID source = getEdgeSource(e);
+		    VertexProperty vertex    = getVertexProperty(source);
 		    Edge edge        = getEdge(e);
 		    inEdges.push_back(std::make_pair(vertex, edge));
 		}
@@ -187,9 +167,9 @@ namespace graybat {
 	     */
 	    /*
 	    BGL<Vertex, Edge>& createSubGraph(const std::vector<Vertex> vertices){
-		std::vector<BGLVertex> vertexIDs;
+		std::vector<VertexID> vertexIDs;
 		for(unsigned v_i = 0; v_i < vertices.size(); ++v_i){
-		    vertexIDs.push_back(BGLVertex(vertices[v_i].id));
+		    vertexIDs.push_back(VertexID(vertices[v_i].id));
 		}
 
 		BGL& subGraph = (*graph).create_subgraph(vertexIDs.begin(), vertexIDs.end());
@@ -243,7 +223,7 @@ namespace graybat {
 	     *
 	     * If this graph has no supergraph (hasSuperGraph()==false) then local ids are the same as global ids.
 	     */
-	    VertexID getLocalID(Vertex vertex){
+	    VertexID getLocalID(VertexProperty vertex){
 		return (*graph).global_to_local(vertex.id);
 	    }
 	    
@@ -258,19 +238,19 @@ namespace graybat {
 	    }
 	    */
 
-	    std::vector<Vertex> getVerticesProperties(std::vector<BGLVertex> bglVertices){
-		std::vector<Vertex> vertices;
-		for(BGLVertex v : bglVertices){
+	    std::vector<VertexProperty> getVerticesProperties(std::vector<VertexID> bglVertices){
+		std::vector<VertexProperty> vertices;
+		for(VertexID v : bglVertices){
 		    vertices.push_back(getVertexProperty(v));
 		}
 		return vertices;
 	    }
 
-	    void setVertexProperty(BGLVertex vertex, Vertex value){
+	    void setVertexProperty(VertexID vertex, VertexProperty value){
 		(*graph)[vertex] = value;
 	    }
 
-	    void setEdgeProperty(BGLEdge edge, Edge value){
+	    void setEdgeProperty(EdgeID edge, Edge value){
 		(*graph)[edge] = value;
 	    }
 
@@ -278,12 +258,12 @@ namespace graybat {
 	     * @brief Returns the property of *vertex*.
 	     *
 	     */
-	    // Vertex getVertexProperty(BGLVertex vertex){
+	    // Vertex getVertexProperty(VertexID vertex){
 	    // 	return (*graph)[vertex];
 	    // }
 
 
-	    Vertex &getVertexProperty(BGLVertex vertex){
+	    VertexProperty& getVertexProperty(const VertexID vertex){
 		return (*graph)[vertex];
 	    }
 	    
@@ -293,7 +273,7 @@ namespace graybat {
 	     * @brief Return the property of *edge*.
 	     *
 	     */
-	    Edge getEdge(BGLEdge edge){
+	    Edge& getEdgeProperty(const EdgeID edge){
 		return (*graph)[edge];
 	    }
 
@@ -301,7 +281,7 @@ namespace graybat {
 	     * @brief Return the vertex to which *edge* points to.
 	     *
 	     */
-	    BGLVertex getEdgeTarget(BGLEdge edge){
+	    VertexID getEdgeTarget(EdgeID edge){
 		return boost::target(edge, (*graph));
 	    }
 
@@ -309,7 +289,7 @@ namespace graybat {
 	     * @brief Return the vertex to which *edge* points from.
 	     *
 	     */
-	    BGLVertex getEdgeSource(BGLEdge edge){
+	    VertexID getEdgeSource(EdgeID edge){
 		return boost::source(edge, (*graph));
 	    }
 	      

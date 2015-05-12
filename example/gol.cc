@@ -134,19 +134,27 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
      ****************************************************************************/
      std::vector<Event> events;   
      std::vector<unsigned> golDomain(grid.getVertices().size(), 0); 
-     //const Vertex root = grid.getVertex(0);
+     const Vertex root = grid.getVertex(0);
 
+      for(Vertex &v1: grid.getVertices()){
+	  std::cout << v1.id << std::endl;
+	  for(Vertex &v2 : grid.getAdjacentVertices(v1)){
+	      std::cout << "adjacent: "<< v2.id << std::endl;
+	  }
+
+      }
+     
      // Simulate life 
      for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
 
     	// Print life field by owner of vertex 0
-    	// if(grid.peerHostsVertex(root)){
-    	//     printGolDomain(golDomain, width, height, timestep);
-    	// }
+    	 if(grid.peerHostsVertex(root)){
+    	     printGolDomain(golDomain, width, height, timestep);
+    	 }
 	
     	// Send state to neighbor cells
-    	//for(Vertex &v : grid.hostedVertices){
-    	    //for(auto link : grid.getOutEdges(v)){
+    	for(Vertex &v : grid.hostedVertices){
+    	    for(auto link : grid.getOutEdges(v)){
 	    //Vertex destVertex = link.first;
 	    //Edge   destEdge   = link.second;
 
@@ -161,9 +169,9 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 
 		// for(auto &link : grid.getOutEdgesTest(v)){
 		//     link << v.isAlive;
-		// }
+	    }
 
-	 //}
+	}
 
      	// Recv state from neighbor cells
      	// for(Vertex &v : grid.hostedVertices){

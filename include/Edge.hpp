@@ -7,17 +7,18 @@ struct EdgeTest {
     typedef typename Cage::GraphPolicy GraphPolicy;
     typedef typename Cage::Vertex Vertex;
     typedef typename GraphPolicy::EdgeProperty EdgeProperty;
+    typedef typename GraphPolicy::EdgeID  EdgeID;
     typedef typename Cage::Event Event;
-    typedef unsigned ID;
+
 	    
-    unsigned id;
-    Vertex vertex;    
-    EdgeProperty edgeProperty;
+    EdgeID id;
+    Vertex &vertex;    
+    EdgeProperty &edgeProperty;
     Cage &cage;
 	    
 
 
-    EdgeTest(const unsigned id, Vertex vertex, EdgeProperty edgeProperty, Cage &cage) :
+    EdgeTest(const EdgeID id, Vertex &vertex, EdgeProperty &edgeProperty, Cage &cage) :
 	id(id),
 	vertex(vertex),
 	edgeProperty(edgeProperty),

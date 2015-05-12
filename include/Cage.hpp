@@ -42,15 +42,12 @@ namespace graybat {
 	typedef typename GraphPolicy::GraphID           GraphID;
 	typedef typename GraphPolicy::EdgeDescription   EdgeDescription;
 	typedef typename GraphPolicy::GraphDescription  GraphDescription;
-	typedef typename Vertex::ID                     VertexID;
+	typedef typename Vertex::VertexID               VertexID;
 	typedef typename CommunicationPolicy::VAddr     VAddr;
 	typedef typename CommunicationPolicy::Event     Event;
 	typedef typename CommunicationPolicy::Context   Context;
 	typedef typename CommunicationPolicy::ContextID ContextID;
 
-
-
-	
 	
 	template <class T_Functor>
 	Cage(T_Functor graphFunctor) : graph(GraphPolicy(graphFunctor())){
@@ -92,8 +89,8 @@ namespace graybat {
 	 *
 	 ***************************************************************************/
 	std::vector<Vertex> getVertices(){
-	    std::vector<Vertex> vertices();
 	    typedef typename GraphPolicy::AllVertexIter Iter;
+	    std::vector<Vertex> vertices;
 
 	    Iter vi_first, vi_last;
 	    std::tie(vi_first, vi_last) = graph.getVertices();
@@ -105,26 +102,43 @@ namespace graybat {
 	    
 	    return vertices;
 	}
+
 	
-	// Vertex getVertex(const VertexID vertexID){
-	//     return graph.getVertices().at(vertexID);
+	Vertex& getVertex(const VertexID vertexID){
+	    return getVertices().at(vertexID);
 	    
-	// }
+	}
 
+	
+	std::vector<Vertex> getAdjacentVertices(const Vertex &v){
+	    typedef typename GraphPolicy::AdjacentVertexIter Iter;
+	    std::vector<Vertex> adjacentVertices;
 
-	// Vertex == VertexProperty
-	// Vertex getVertexTest(const VertexID vertexID){
-	//     Vertex vp = graph.getVertexProperty(vertexID);
-	//     return VertexTest(vertexID, vp, *this);
-	// }
+	    Iter avi_first, avi_last;
+	    std::tie(avi_first, avi_last) = graph.getAdjacentVertices(v.id);
 
-	std::vector<Vertex> getAdjacentVertices(const Vertex v){
-	    return graph.getAdjacentVertices(v);
+	    while(avi_first != avi_last){
+		adjacentVertices.push_back(Vertex(*avi_first, graph.getVertexProperty(*avi_first), *this));
+		avi_first++;
+	    }
+	    
+	    return adjacentVertices;
 	    
 	}
 	
-	std::vector<std::pair<Vertex, Edge>> getOutEdges(const Vertex v){
-	    return graph.getOutEdges(v);
+	std::vector<Edge> getOutEdges(const Vertex &v){
+	    typedef typename GraphPolicy::OutEdgeIter Iter;
+	    std::vector<Edge> outEdges;
+	    
+	    Iter oi_first, oi_last;
+	    std::tie(oi_first, oi_last) = graph.getOutEdges(v.id);
+
+	    while(oi_first != oi_last){
+		outEdges.push_back(Edge(*oi_first, getVertex(graph.getEdgeTarget(*oi_first)), graph.getEdgeProperty(*oi_first), *this));
+		
+	    }
+	    
+	    return outEdges;
 	    
 	}
 
@@ -169,7 +183,7 @@ namespace graybat {
 	 */
 	template<class T_Functor>
 	void distribute(T_Functor distFunctor){
-	    hostedVertices = distFunctor(comm.getGlobalContext().getVAddr(), comm.getGlobalContext().size(), graph);
+	    hostedVertices = distFunctor(comm.getGlobalContext().getVAddr(), comm.getGlobalContext().size(), *this);
 	    announce(hostedVertices);
 	}
 
@@ -251,7 +265,7 @@ namespace graybat {
 		    std::vector<int> recvData(newContext.size(), 0);
 
 		    if(i < vertices.size()){
-			vertexID[0] = graph.getLocalID(vertices.at(i));
+			vertexID[0] = vertices.at(i).id;
 		    }
 
 		    comm.allGather(newContext, vertexID, recvData);
