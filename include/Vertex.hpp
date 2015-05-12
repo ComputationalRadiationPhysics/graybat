@@ -1,5 +1,9 @@
 #pragma once
 
+
+// TODO
+// Replace call by value with
+// call by reference
 template <class T_Cage>
 struct VertexTest {
     
@@ -8,16 +12,18 @@ struct VertexTest {
     typedef typename GraphPolicy::VertexProperty VertexProperty;
 
     unsigned id;
-    VertexProperty &vertexProperty;
+    VertexProperty vertexProperty;
+    Cage &cage;
 
 
-    VertexTest(const unsigned id, VertexProperty &vertexProperty) :
+    VertexTest(const unsigned id, VertexProperty vertexProperty, Cage &cage) :
 	id(id),
-	vertexProperty(vertexProperty){
+	vertexProperty(vertexProperty),
+	cage(cage){
 	    
     }
 
-    VertexProperty& operator()(){
+    VertexProperty operator()(){
 	return vertexProperty;
     }
 	

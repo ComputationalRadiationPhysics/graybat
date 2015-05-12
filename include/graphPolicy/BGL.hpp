@@ -38,8 +38,10 @@ namespace graybat {
 	public:
 	    // Public typedefs
 	    typedef T_VertexProperty                                                Vertex;
+	    typedef T_VertexProperty                                                VertexProperty;
 	    typedef typename Vertex::ID                                             VertexID;
 	    typedef T_EdgeProperty                                                  Edge;
+	    typedef T_EdgeProperty                                                  EdgeProperty;	    
 	    typedef typename Edge::ID                                               EdgeID;
 	    typedef std::pair<VertexID, VertexID>                                   EdgeDescription;
 	    typedef std::pair<std::vector<VertexID>, std::vector<EdgeDescription> > GraphDescription;

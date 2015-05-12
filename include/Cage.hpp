@@ -103,6 +103,13 @@ namespace graybat {
 	    
 	}
 
+
+	// Vertex == VertexProperty
+	VertexTest getVertexTest(const VertexID vertexID){
+	    Vertex vp = getVertex(vertexID);
+	    return VertexTest(vertexID, vp, *this);
+	}
+
 	std::vector<Vertex> getAdjacentVertices(const Vertex v){
 	    return graph.getAdjacentVertices(v);
 	    
@@ -112,6 +119,21 @@ namespace graybat {
 	    return graph.getOutEdges(v);
 	    
 	}
+
+	std::vector<EdgeTest> getOutEdgesTest(const Vertex v){
+	    std::vector<std::pair<Vertex, Edge> > edges =  graph.getOutEdges(v);
+	    std::vector<EdgeTest> es;
+	    for(auto link : edges){
+		Vertex destVertex = link.first;
+    		Edge   srcEdge   = link.second;
+
+		es.push_back(EdgeTest(srcEdge.id, destVertex, srcEdge, *this));
+	    }
+
+	    return es;
+	}
+
+	
 
 	std::vector<std::pair<Vertex, Edge>> getInEdges(const Vertex v){
 	    return graph.getInEdges(v);

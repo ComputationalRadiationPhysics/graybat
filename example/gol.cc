@@ -144,17 +144,27 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 	
     	// Send state to neighbor cells
     	for(Vertex &v : grid.hostedVertices){
-    	    for(auto link : grid.getOutEdges(v)){
-		Vertex destVertex = link.first;
-    		Edge   destEdge   = link.second;
+    	    //for(auto link : grid.getOutEdges(v)){
+	    //Vertex destVertex = link.first;
+	    //Edge   destEdge   = link.second;
 
 		/**
 		 * Idea for new graph communication interface
 		 * destEdge << v().isAlive;
 		 *
 		 */
-    		events.push_back(grid.asyncSend(destVertex, destEdge, v.isAlive));
-    	    }
+		typename MyCage::VertexTest vt = grid.getVertexTest(v.id);
+
+		std::vector<MyCage::EdgeTest> edges = grid.getOutEdgesTest(v);
+		//std::cout << vt().id << std::endl;
+		for(auto link : edges){
+		
+		    link << vt().isAlive;
+		
+
+		}
+    		//events.push_back(grid.asyncSend(destVertex, destEdge, v.isAlive));
+		//}
     	}
 
      	// Recv state from neighbor cells
