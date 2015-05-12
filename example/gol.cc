@@ -145,8 +145,14 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     	// Send state to neighbor cells
     	for(Vertex &v : grid.hostedVertices){
     	    for(auto link : grid.getOutEdges(v)){
-    		Vertex destVertex = link.first;
+		Vertex destVertex = link.first;
     		Edge   destEdge   = link.second;
+
+		/**
+		 * Idea for new graph communication interface
+		 * destEdge << v().isAlive;
+		 *
+		 */
     		events.push_back(grid.asyncSend(destVertex, destEdge, v.isAlive));
     	    }
     	}
@@ -157,6 +163,10 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     		Vertex srcVertex = link.first;
     		Edge   srcEdge   = link.second;
 
+		/**
+		 * srcEdge >> v().isAlive
+		 *
+		 */
     		grid.recv(srcVertex, srcEdge, srcVertex.isAlive);
     		if(srcVertex.isAlive[0]) v.aliveNeighbors++;
     	    }

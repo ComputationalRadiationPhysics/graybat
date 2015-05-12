@@ -9,9 +9,14 @@
 
 #include <dout.hpp>            /* dout::Dout::getInstance() */
 #include <utils.hpp> /* exclusivePrefixSum */
+#include <Edge.hpp>
+#include <Vertex.hpp>
 
 namespace graybat {
 
+
+    
+    
     /************************************************************************//**
      * @class Cage
      *
@@ -44,10 +49,16 @@ namespace graybat {
 	typedef typename CommunicationPolicy::ContextID ContextID;
 
 
+
+	typedef EdgeTest<Cage<CommunicationPolicy, GraphPolicy> >   EdgeTest;
+	typedef VertexTest<Cage<CommunicationPolicy, GraphPolicy> > VertexTest;
+	
+	
 	template <class T_Functor>
 	Cage(T_Functor graphFunctor) : graph(GraphPolicy(graphFunctor())){
 
 	}
+      
 
       	/***************************************************************************
 	 *
