@@ -22,6 +22,8 @@
 #include <cmath>      /* sqrt */
 #include <cstdlib>    /* atoi */
 
+std::array<unsigned,1> testValue {{1}};
+
 struct Cell : public graybat::graphPolicy::SimpleProperty{
     Cell() : SimpleProperty(0){}
     Cell(ID id) : SimpleProperty(id), isAlive{{0}}, aliveNeighbors(0){
@@ -155,16 +157,12 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 		 */
 		typename MyCage::VertexTest vt = grid.getVertexTest(v.id);
 
-		std::vector<MyCage::EdgeTest> edges = grid.getOutEdgesTest(v);
-		//std::cout << vt().id << std::endl;
-		for(auto link : edges){
-		
-		    link << vt().isAlive;
-		
+		std::cout << vt.id << std::endl;
 
-		}
-    		//events.push_back(grid.asyncSend(destVertex, destEdge, v.isAlive));
-		//}
+		// for(auto &link : grid.getOutEdgesTest(v)){
+		//     link << v.isAlive;
+		// }
+
     	}
 
      	// Recv state from neighbor cells

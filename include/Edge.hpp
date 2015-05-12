@@ -10,15 +10,15 @@ struct EdgeTest {
     typedef typename Cage::Event Event;
 	    
     unsigned id;
+    Vertex vertex;    
     EdgeProperty edgeProperty;
-    Vertex srcVertex;
-    Vertex destVertex;
     Cage &cage;
 	    
 
 
-    EdgeTest(const unsigned id, Vertex destVertex, EdgeProperty edgeProperty, Cage &cage) :
+    EdgeTest(const unsigned id, Vertex vertex, EdgeProperty edgeProperty, Cage &cage) :
 	id(id),
+	vertex(vertex),
 	edgeProperty(edgeProperty),
 	cage(cage){
 	    
@@ -30,7 +30,7 @@ struct EdgeTest {
 
     template <class T_Send>
     Event operator<<(const T_Send &data){
-	return cage.asyncSend(destVertex, edgeProperty, data);
+	return cage.asyncSend(vertex, edgeProperty, data);
     }
 	
 };

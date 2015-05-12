@@ -106,7 +106,7 @@ namespace graybat {
 
 	// Vertex == VertexProperty
 	VertexTest getVertexTest(const VertexID vertexID){
-	    Vertex vp = getVertex(vertexID);
+	    Vertex vp = graph.getVertexProperty(vertexID);
 	    return VertexTest(vertexID, vp, *this);
 	}
 

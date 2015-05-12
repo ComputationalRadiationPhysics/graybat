@@ -48,7 +48,6 @@ namespace graybat {
 
 	    typedef unsigned                                                        GraphID;
 
-	private:
 
 	    // BGL typdefs
 	    typedef boost::adjacency_list<boost::vecS, 
@@ -250,7 +249,6 @@ namespace graybat {
 	    }
 	    
    
-	private:
 
 	    /*
 	    BGL(BGL<Vertex, Edge>& superGraph, BGL& subGraph, unsigned id) : 
@@ -281,10 +279,17 @@ namespace graybat {
 	     * @brief Returns the property of *vertex*.
 	     *
 	     */
-	    Vertex getVertexProperty(BGLVertex vertex){
+	    // Vertex getVertexProperty(BGLVertex vertex){
+	    // 	return (*graph)[vertex];
+	    // }
+
+
+	    Vertex &getVertexProperty(BGLVertex vertex){
 		return (*graph)[vertex];
 	    }
-  
+	    
+
+	    
 	    /**
 	     * @brief Return the property of *edge*.
 	     *
