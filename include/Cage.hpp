@@ -214,6 +214,7 @@ namespace graybat {
 	template<class T_Functor>
 	void distribute(T_Functor distFunctor){
 	    hostedVertices = distFunctor(comm.getGlobalContext().getVAddr(), comm.getGlobalContext().size(), *this);
+
 	    announce(hostedVertices);
 	}
 

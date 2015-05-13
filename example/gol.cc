@@ -24,13 +24,13 @@
 
 std::array<unsigned,1> testValue {{1}};
 
-struct Cell : public graybat::graphPolicy::SimpleProperty{
-    Cell() : SimpleProperty(0){}
-    Cell(ID id) : SimpleProperty(id), isAlive{{0}}, aliveNeighbors(0){
-      unsigned random = rand() % 10000;
-      if(random < 3125){
-	isAlive[0] = 1;
-      }
+struct Cell {
+    Cell() : isAlive{{0}}, aliveNeighbors(0){
+       unsigned random = rand() % 10000;
+       if(random < 3125){
+       	isAlive[0] = 1;
+       }
+	
 
     }
 	
@@ -136,27 +136,22 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
      std::vector<unsigned> golDomain(grid.getVertices().size(), 0); 
      Vertex root = grid.getVertex(0);
 
-      // for(Vertex &v1: grid.getVertices()){
-      // 	  std::cout << v1.id << std::endl;
-      // 	  for(Vertex &v2 : grid.getAdjacentVertices(v1)){
-      // 	      std::cout << "adjacent: "<< v2.id << std::endl;
-      // 	  }
-
-      // }
-
-     // Simulate life 
+     // Simulate life
      for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
 
 	 // Print life field by owner of vertex 0
-    	 if(grid.peerHostsVertex(root)){
-    	     printGolDomain(golDomain, width, height, timestep);
-    	 }
+    	 // if(grid.peerHostsVertex(root)){
+    	 //     printGolDomain(golDomain, width, height, timestep);
+    	 // }
 	
     	// Send state to neighbor cells
     	for(Vertex &v : grid.hostedVertices){
     	    for(Edge &edge : grid.getOutEdges(v)){
 		//std::cout << "Send to Vertex:" << edge.vertex.id << " over Edge:" << edge.id << std::endl;
-		edge << v().isAlive;
+
+		//std::cerr << v().isAlive[0] << std::endl;
+	
+		events.push_back(edge << v().isAlive);
 	    }
 
 	}
@@ -164,20 +159,24 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
      	// Recv state from neighbor cells
      	 for(Vertex &v : grid.hostedVertices){
     	     for(Edge &edge : grid.getInEdges(v)){
+	 	 //std::cout << "Recv from Vertex:" << edge.vertex.id << " over Edge:" << edge.id << std::endl;
 		 std::array<unsigned, 1> isAlive{{0}};
-		 //std::cout << "Recv from Vertex:" << edge.vertex.id << " over Edge:" << edge.id << std::endl;
-		 edge >> isAlive;
-		 if(isAlive[0]) v().aliveNeighbors++;
+	 	 edge >> isAlive;
+
+		 if(isAlive[0]) {
+		     v().aliveNeighbors++;
+		 }
+
 	     }
 	 }
 
 
 
     	// Wait to finish events
-    	// for(unsigned i = 0; i < events.size(); ++i){
-    	//     events.back().wait();
-    	//     events.pop_back();
-    	// }
+    	for(unsigned i = 0; i < events.size(); ++i){
+    	    events.back().wait();
+    	    events.pop_back();
+    	}
 
 
     	// Calculate state for next generation
@@ -185,6 +184,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 
 	//Gather state by vertex with id = 0
 	for(Vertex &v: grid.hostedVertices){
+	    //std::cout << v().aliveNeighbors << std::endl;
 	    v().aliveNeighbors = 0;
 	    grid.gather(root, v, v().isAlive, golDomain, true);
 	}

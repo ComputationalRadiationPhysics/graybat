@@ -98,7 +98,7 @@ namespace graybat {
 
 		// Bind vertex_descriptor and VertexProperty;
 		for(unsigned vertexID = 0; vertexID < vertices.size(); ++vertexID){
-		    setVertexProperty(vertexID, VertexProperty(vertexID));
+		    setVertexProperty(vertexID, VertexProperty());
 		}
 		
 	    }	    
