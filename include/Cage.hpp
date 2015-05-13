@@ -104,8 +104,16 @@ namespace graybat {
 	}
 
 	
-	Vertex& getVertex(const VertexID vertexID){
-	    return getVertices().at(vertexID);
+	Vertex getVertex(const VertexID vertexID){
+	      typedef typename GraphPolicy::AllVertexIter Iter;
+	    std::vector<Vertex> vertices;
+
+	    Iter vi_first, vi_last;
+	    std::tie(vi_first, vi_last) = graph.getVertices();
+
+	    std::advance(vi_first, vertexID);
+
+	    return Vertex(*vi_first, graph.getVertexProperty(*vi_first), *this);
 	    
 	}
 
@@ -133,8 +141,13 @@ namespace graybat {
 	    Iter oi_first, oi_last;
 	    std::tie(oi_first, oi_last) = graph.getOutEdges(v.id);
 
+	    unsigned edgeID = 0;
+	    // TODO in and out edges which are
+	    // the same should have the same ID
+	    // Here set to 0 as workaround
 	    while(oi_first != oi_last){
-		outEdges.push_back(Edge(*oi_first, getVertex(graph.getEdgeTarget(*oi_first)), graph.getEdgeProperty(*oi_first), *this));
+		outEdges.push_back(Edge(edgeID, getVertex(graph.getEdgeTarget(*oi_first)), graph.getEdgeProperty(*oi_first), *this));
+		oi_first++;
 		
 	    }
 	    
@@ -157,8 +170,25 @@ namespace graybat {
 
 	
 
-	std::vector<std::pair<Vertex, Edge>> getInEdges(const Vertex v){
-	    return graph.getInEdges(v);
+	std::vector<Edge> getInEdges(const Vertex v){
+	    typedef typename GraphPolicy::InEdgeIter Iter;
+	    std::vector<Edge> inEdges;
+	    
+	    Iter ii_first, ii_last;
+	    std::tie(ii_first, ii_last) = graph.getInEdges(v.id);
+
+	    unsigned edgeID = 0;
+	    // TODO in and out edges which are
+	    // the same should have the same ID
+	    // Here set to 0 as workaround
+	    while(ii_first != ii_last){
+		inEdges.push_back(Edge(edgeID, getVertex(graph.getEdgeSource(*ii_first)), graph.getEdgeProperty(*ii_first), *this));
+		ii_first++;
+		
+	    }
+	    
+	    return inEdges;
+
 	    
 	}
 	/** @} */
@@ -540,6 +570,7 @@ namespace graybat {
 	    static unsigned nGatherCalls    = 0;
 
 	    nGatherCalls++;
+
 
 	    VAddr rootVAddr  = locateVertex(rootVertex);
 	    Context context  = graphContext;

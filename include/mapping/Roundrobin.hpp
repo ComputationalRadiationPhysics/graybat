@@ -24,7 +24,7 @@ namespace graybat {
 			    break;
 			}
 			else {
-			    myVertices.push_back(cage.getVertices().at(vertex_i));
+			    myVertices.push_back(cage.getVertex(vertex_i));
 			}
 	
 		    }

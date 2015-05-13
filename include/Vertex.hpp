@@ -24,7 +24,7 @@ struct VertexTest {
 	    
     }
 
-    VertexProperty operator()(){
+    VertexProperty& operator()(){
 	return vertexProperty;
     }
 

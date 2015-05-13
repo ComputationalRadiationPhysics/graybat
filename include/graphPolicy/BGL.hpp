@@ -137,19 +137,8 @@ namespace graybat {
 	     * @brief Returns all incoming edges to *targetVertex* paired with its source vertex.
 	     *
 	     */
-	    std::vector<std::pair<VertexProperty, Edge> > getInEdges(const VertexProperty targetVertex){
-		InEdgeIter ei, ei_end;
-		std::tie(ei, ei_end) = boost::in_edges((*graph).global_to_local(targetVertex.id), (*graph));
-		std::vector<EdgeID> bglInEdges(ei, ei_end);
-
-		std::vector<std::pair<VertexProperty, Edge> > inEdges;
-		for(EdgeID e : bglInEdges){
-		    VertexID source = getEdgeSource(e);
-		    VertexProperty vertex    = getVertexProperty(source);
-		    Edge edge        = getEdge(e);
-		    inEdges.push_back(std::make_pair(vertex, edge));
-		}
-		return inEdges;
+	    std::pair<InEdgeIter, InEdgeIter> getInEdges(const VertexID id){
+		return boost::in_edges((*graph).global_to_local(id), (*graph));
 	    }
 
 	    /**

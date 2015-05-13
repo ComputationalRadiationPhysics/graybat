@@ -7,18 +7,17 @@ struct EdgeTest {
     typedef typename Cage::GraphPolicy GraphPolicy;
     typedef typename Cage::Vertex Vertex;
     typedef typename GraphPolicy::EdgeProperty EdgeProperty;
-    typedef typename GraphPolicy::EdgeID  EdgeID;
     typedef typename Cage::Event Event;
 
 	    
-    EdgeID id;
-    Vertex &vertex;    
+    unsigned id;
+    const Vertex vertex;    
     EdgeProperty &edgeProperty;
     Cage &cage;
 	    
 
 
-    EdgeTest(const EdgeID id, Vertex &vertex, EdgeProperty &edgeProperty, Cage &cage) :
+    EdgeTest(const unsigned id, const Vertex vertex, EdgeProperty &edgeProperty, Cage &cage) :
 	id(id),
 	vertex(vertex),
 	edgeProperty(edgeProperty),
@@ -32,7 +31,12 @@ struct EdgeTest {
 
     template <class T_Send>
     Event operator<<(const T_Send &data){
-	return cage.asyncSend(vertex, edgeProperty, data);
+	return cage.asyncSend(vertex, *this, data);
+    }
+
+    template <class T_Recv>
+    void operator>>(T_Recv &data){
+	cage.recv(vertex, *this, data);
     }
 	
 };
