@@ -26,10 +26,10 @@ std::array<unsigned,1> testValue {{1}};
 
 struct Cell {
     Cell() : isAlive{{0}}, aliveNeighbors(0){
-       unsigned random = rand() % 10000;
-       if(random < 3125){
-       	isAlive[0] = 1;
-       }
+	unsigned random = rand() % 10000;
+	if(random < 3125){
+	    isAlive[0] = 1;
+	}
 	
 
     }
@@ -75,6 +75,7 @@ void updateState(std::vector<T_Cell> &cells){
 
 template <class T_Cell>
 void updateState(T_Cell &cell){
+
     switch(cell().aliveNeighbors){
 
     case 0:
@@ -82,22 +83,23 @@ void updateState(T_Cell &cell){
 	cell().isAlive[0] = 0;
 	break;
 
-    case 2:
+	/*    case 2:
 	cell().isAlive[0] = cell().isAlive[0];
 	break;
 	    
     case 3: 
 	cell().isAlive[0] = 1;
-	break;
+	break; */
 
     default: 
-	cell().isAlive[0] = 0;
+	cell().isAlive[0] = 1;
 	break;
 
     };
 
 }
 
+std::array<unsigned,1> one{{1}};
 
 int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     /***************************************************************************
@@ -140,17 +142,15 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
      for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
 
 	 // Print life field by owner of vertex 0
-    	 // if(grid.peerHostsVertex(root)){
-    	 //     printGolDomain(golDomain, width, height, timestep);
-    	 // }
+	 if(grid.peerHostsVertex(root)){
+	     printGolDomain(golDomain, width, height, timestep);
+	 }
 	
     	// Send state to neighbor cells
     	for(Vertex &v : grid.hostedVertices){
     	    for(Edge &edge : grid.getOutEdges(v)){
 		//std::cout << "Send to Vertex:" << edge.vertex.id << " over Edge:" << edge.id << std::endl;
-
 		//std::cerr << v().isAlive[0] << std::endl;
-	
 		events.push_back(edge << v().isAlive);
 	    }
 
@@ -158,13 +158,20 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 
      	// Recv state from neighbor cells
      	 for(Vertex &v : grid.hostedVertices){
+	     std::array<unsigned, 1> isAlive{{0}};
     	     for(Edge &edge : grid.getInEdges(v)){
 	 	 //std::cout << "Recv from Vertex:" << edge.vertex.id << " over Edge:" << edge.id << std::endl;
-		 std::array<unsigned, 1> isAlive{{0}};
-	 	 edge >> isAlive;
 
-		 if(isAlive[0]) {
-		     v().aliveNeighbors++;
+
+	 	 edge >> isAlive;
+		 // The following line should populate the game field
+		 // but it does not
+		 // Problem:
+		 // When using only one peer then the messages
+		 // are send all with tag = 0. Thus it is not
+		 // distinglished between edges.
+		 if(isAlive[0] == 1) {
+		     v().isAlive[0] = 0;
 		 }
 
 	     }
@@ -180,12 +187,13 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 
 
     	// Calculate state for next generation
-    	updateState(grid.hostedVertices);
+    	//updateState(grid.hostedVertices);
 
 	//Gather state by vertex with id = 0
 	for(Vertex &v: grid.hostedVertices){
 	    //std::cout << v().aliveNeighbors << std::endl;
-	    v().aliveNeighbors = 0;
+	    //assert(v().isAlive[0] == 1);
+	    //v().aliveNeighbors = 0;
 	    grid.gather(root, v, v().isAlive, golDomain, true);
 	}
 	
