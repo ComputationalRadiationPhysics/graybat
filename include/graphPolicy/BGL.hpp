@@ -93,7 +93,7 @@ namespace graybat {
 		    VertexID srcVertex    = std::get<0>(edge);
 		    VertexID targetVertex = std::get<1>(edge);
 		    EdgeID edgeID = boost::add_edge(srcVertex, targetVertex, (*graph)).first;
-		    setEdgeProperty(edgeID, Edge(edgeCount++));
+		    setEdgeProperty(edgeID, EdgeProperty());
 		}
 
 		// Bind vertex_descriptor and VertexProperty;
