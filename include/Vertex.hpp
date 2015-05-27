@@ -28,12 +28,6 @@ struct VertexTest {
 	return vertexProperty;
     }
 
-    VertexTest(const VertexTest &other) :
-    	id(other.id),
-    	vertexProperty(other.vertexProperty),
-    	cage(other.cage){
-    }
-
     VertexTest& operator=(const VertexTest &other){
 	id = other.id;
 	vertexProperty = other.vertexProperty;

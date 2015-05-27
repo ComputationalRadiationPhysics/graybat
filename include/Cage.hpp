@@ -149,6 +149,7 @@ namespace graybat {
 
 	    while(oi_first != oi_last){
 		outEdges.push_back(Edge(graph.getEdgeProperty(*oi_first).first,
+					getVertex(graph.getEdgeSource(*oi_first)),
 					getVertex(graph.getEdgeTarget(*oi_first)),
 					graph.getEdgeProperty(*oi_first).second,
 					*this));
@@ -170,6 +171,7 @@ namespace graybat {
 	    while(ii_first != ii_last){
 		inEdges.push_back(Edge(graph.getEdgeProperty(*ii_first).first,
 				       getVertex(graph.getEdgeSource(*ii_first)),
+				       getVertex(graph.getEdgeTarget(*ii_first)),
 				       graph.getEdgeProperty(*ii_first).second,
 				       *this));
 		ii_first++;

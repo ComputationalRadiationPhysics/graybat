@@ -156,15 +156,12 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 	}
 
      	// Recv state from neighbor cells
-	std::array<unsigned, 1> neighborIsAlive{{0}};
 	for(Vertex &cell : grid.hostedVertices){
 	    cell().aliveNeighbors = 0;
     	     for(Edge &edge : grid.getInEdges(cell)){
-	 	 edge >> neighborIsAlive;
 
-		 if(neighborIsAlive[0]) {
-		     cell().aliveNeighbors++;
-		 }
+		 edge >> edge.source().isAlive;
+		 if(edge.source().isAlive[0]) cell().aliveNeighbors++;
 
 	     }
 	     
