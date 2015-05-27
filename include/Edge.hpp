@@ -1,7 +1,7 @@
 #pragma once
 
 template <class T_Cage>
-struct EdgeTest {
+struct CommunicationEdge {
 
     typedef T_Cage Cage;
     typedef typename Cage::GraphPolicy GraphPolicy;
@@ -12,19 +12,19 @@ struct EdgeTest {
 
 	    
     unsigned id;
-    Vertex edgeTarget;
-    Vertex edgeSource;
+    Vertex target;
+    Vertex source;
     EdgeProperty &edgeProperty;
     Cage &cage;
 
-    EdgeTest(const unsigned id,
-	     Vertex edgeSource,
-	     Vertex edgeTarget,
+    CommunicationEdge(const unsigned id,
+	     Vertex source,
+	     Vertex target,
 	     EdgeProperty &edgeProperty,
 	     Cage &cage) :
 	id(id),
-	edgeTarget(edgeTarget),
-	edgeSource(edgeSource),	
+	target(target),
+	source(source),	
 	edgeProperty(edgeProperty),
 	cage(cage){
 	    
@@ -36,20 +36,12 @@ struct EdgeTest {
 
     template <class T_Send>
     Event operator<<(const T_Send &data){
-	return cage.asyncSend(edgeTarget, *this, data);
-    }
-
-    VertexProperty& target(){
-	return edgeTarget();
-    }
-
-    VertexProperty& source(){
-	return edgeSource();
+	return cage.asyncSend(*this, data);
     }
 
     template <class T_Recv>
     void operator>>(T_Recv &data){
-	cage.recv(edgeSource, *this, data);
+	cage.recv(*this, data);
     }
 	
 };

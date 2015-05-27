@@ -37,8 +37,9 @@ namespace graybat {
     struct Cage {
 	typedef T_CommunicationPolicy                   CommunicationPolicy;
         typedef T_GraphPolicy                           GraphPolicy;
-	typedef EdgeTest<Cage<CommunicationPolicy, GraphPolicy> >   Edge;
-	typedef VertexTest<Cage<CommunicationPolicy, GraphPolicy> > Vertex;
+	typedef Cage<CommunicationPolicy, GraphPolicy>  Cage_T;
+	typedef CommunicationEdge<Cage_T>               Edge;
+	typedef CommunicationVertex<Cage_T>             Vertex;
 	typedef typename GraphPolicy::GraphID           GraphID;
 	typedef typename GraphPolicy::EdgeDescription   EdgeDescription;
 	typedef typename GraphPolicy::GraphDescription  GraphDescription;
@@ -46,7 +47,6 @@ namespace graybat {
 	typedef typename CommunicationPolicy::VAddr     VAddr;
 	typedef typename CommunicationPolicy::Event     Event;
 	typedef typename CommunicationPolicy::Context   Context;
-	typedef typename CommunicationPolicy::ContextID ContextID;
 
 	
 	template <class T_Functor>
@@ -397,6 +397,13 @@ namespace graybat {
 
 	}
 
+	template <typename T>
+	inline void send(const Edge edge, const T& data){
+	    VAddr destVAddr   = locateVertex(edge.target);
+	    comm.send(destVAddr, edge.id, graphContext, data);
+
+	}
+
 
 	/**
 	 * @brief Asynchron transmission of *data* to the *destVertex* on *edge*.
@@ -418,6 +425,13 @@ namespace graybat {
 	
 	}
 
+	template <typename T>
+	Event asyncSend(const Edge edge, const T& data){
+	    VAddr destVAddr  = locateVertex(edge.target);
+	    return comm.asyncSend(destVAddr, edge.id, graphContext, data);
+	
+	}
+
 	/**
 	 * @brief Synchron receive of *data* from the *srcVertex* on *edge*.
 	 *
@@ -434,6 +448,13 @@ namespace graybat {
 
 	}
 
+	template <typename T>
+	inline void recv(const Edge edge, T& data){
+	    VAddr srcVAddr   = locateVertex(edge.source);
+	    comm.recv(srcVAddr, edge.id, graphContext, data);
+
+	}	
+
 	/**
 	 * @brief Asynchron receive of *data* from the *srcVertex* on *edge*.
 	 *
@@ -446,8 +467,15 @@ namespace graybat {
 	 *
 	 */
 	template <typename T>
-	Event asypncRecv(const Vertex srcVertex, const Edge edge, T& data){
+	Event asyncRecv(const Vertex srcVertex, const Edge edge, T& data){
 	    VAddr srcVAddr = locateVertex(srcVertex);
+	    return comm.asyncRecv(srcVAddr, edge.id, graphContext, data);
+
+	}
+
+	template <typename T>
+	Event asyncRecv(const Edge edge, T& data){
+	    VAddr srcVAddr = locateVertex(edge.source);
 	    return comm.asyncRecv(srcVAddr, edge.id, graphContext, data);
 
 	}

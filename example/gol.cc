@@ -146,16 +146,17 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 	     printGolDomain(golDomain, width, height, timestep);
 	 }
 	
-    	// Send state to neighbor cells
+    	// Send cell state to neighbor cells
     	for(Vertex &cell : grid.hostedVertices){
     	    for(Edge &edge : grid.getOutEdges(cell)){
-		events.push_back(edge << cell().isAlive);
+		Event e = edge << cell().isAlive;
+		events.push_back(e);
 		
 	    }
 
 	}
 
-     	// Recv state from neighbor cells
+     	// Recv cell state from neighbor cells
 	for(Vertex &cell : grid.hostedVertices){
 	    cell().aliveNeighbors = 0;
     	     for(Edge &edge : grid.getInEdges(cell)){
