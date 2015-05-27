@@ -96,7 +96,9 @@ namespace graybat {
 	    std::tie(vi_first, vi_last) = graph.getVertices();
 
 	    while(vi_first != vi_last){
-		vertices.push_back(Vertex(*vi_first, graph.getVertexProperty(*vi_first), *this));
+		vertices.push_back(Vertex(graph.getVertexProperty(*vi_first).first,
+					  graph.getVertexProperty(*vi_first).second,
+					  *this));
 		vi_first++;
 	    }
 	    
@@ -113,7 +115,9 @@ namespace graybat {
 
 	    std::advance(vi_first, vertexID);
 
-	    return Vertex(*vi_first, graph.getVertexProperty(*vi_first), *this);
+	    return Vertex(graph.getVertexProperty(*vi_first).first,
+			  graph.getVertexProperty(*vi_first).second,
+			  *this);
 	    
 	}
 
@@ -126,7 +130,9 @@ namespace graybat {
 	    std::tie(avi_first, avi_last) = graph.getAdjacentVertices(v.id);
 
 	    while(avi_first != avi_last){
-		adjacentVertices.push_back(Vertex(*avi_first, graph.getVertexProperty(*avi_first), *this));
+		adjacentVertices.push_back(Vertex(graph.getVertexProperty(*avi_first).first,
+						  graph.getVertexProperty(*avi_first).second,
+						  *this));
 		avi_first++;
 	    }
 	    
@@ -141,12 +147,11 @@ namespace graybat {
 	    Iter oi_first, oi_last;
 	    std::tie(oi_first, oi_last) = graph.getOutEdges(v.id);
 
-	    unsigned edgeID = 0;
-	    // TODO in and out edges which are
-	    // the same should have the same ID
-	    // Here set to 0 as workaround
 	    while(oi_first != oi_last){
-		outEdges.push_back(Edge(edgeID, getVertex(graph.getEdgeTarget(*oi_first)), graph.getEdgeProperty(*oi_first), *this));
+		outEdges.push_back(Edge(graph.getEdgeProperty(*oi_first).first,
+					getVertex(graph.getEdgeTarget(*oi_first)),
+					graph.getEdgeProperty(*oi_first).second,
+					*this));
 		oi_first++;
 		
 	    }
@@ -155,21 +160,6 @@ namespace graybat {
 	    
 	}
 
-	// std::vector<Edge> getOutEdgesTest(const Vertex v){
-	//     std::vector<std::pair<Vertex, Edge> > edges =  graph.getOutEdges(v);
-	//     std::vector<Edge> es;
-	//     for(auto link : edges){
-	// 	Vertex destVertex = link.first;
-    	// 	Edge   srcEdge   = link.second;
-
-	// 	es.push_back(Edge(srcEdge.id, destVertex, srcEdge, *this));
-	//     }
-
-	//     return es;
-	// }
-
-	
-
 	std::vector<Edge> getInEdges(const Vertex v){
 	    typedef typename GraphPolicy::InEdgeIter Iter;
 	    std::vector<Edge> inEdges;
@@ -177,12 +167,11 @@ namespace graybat {
 	    Iter ii_first, ii_last;
 	    std::tie(ii_first, ii_last) = graph.getInEdges(v.id);
 
-	    unsigned edgeID = 0;
-	    // TODO in and out edges which are
-	    // the same should have the same ID
-	    // Here set to 0 as workaround
 	    while(ii_first != ii_last){
-		inEdges.push_back(Edge(edgeID, getVertex(graph.getEdgeSource(*ii_first)), graph.getEdgeProperty(*ii_first), *this));
+		inEdges.push_back(Edge(graph.getEdgeProperty(*ii_first).first,
+				       getVertex(graph.getEdgeSource(*ii_first)),
+				       graph.getEdgeProperty(*ii_first).second,
+				       *this));
 		ii_first++;
 		
 	    }
@@ -213,7 +202,9 @@ namespace graybat {
 	 */
 	template<class T_Functor>
 	void distribute(T_Functor distFunctor){
-	    hostedVertices = distFunctor(comm.getGlobalContext().getVAddr(), comm.getGlobalContext().size(), *this);
+	    hostedVertices = distFunctor(comm.getGlobalContext().getVAddr(),
+					 comm.getGlobalContext().size(),
+					 *this);
 
 	    announce(hostedVertices);
 	}

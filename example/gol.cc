@@ -83,16 +83,16 @@ void updateState(T_Cell &cell){
 	cell().isAlive[0] = 0;
 	break;
 
-	/*    case 2:
+    case 2:
 	cell().isAlive[0] = cell().isAlive[0];
 	break;
 	    
     case 3: 
 	cell().isAlive[0] = 1;
-	break; */
+	break; 
 
     default: 
-	cell().isAlive[0] = 1;
+	cell().isAlive[0] = 0;
 	break;
 
     };
@@ -147,37 +147,28 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 	 }
 	
     	// Send state to neighbor cells
-    	for(Vertex &v : grid.hostedVertices){
-    	    for(Edge &edge : grid.getOutEdges(v)){
-		//std::cout << "Send to Vertex:" << edge.vertex.id << " over Edge:" << edge.id << std::endl;
-		//std::cerr << v().isAlive[0] << std::endl;
-		events.push_back(edge << v().isAlive);
+    	for(Vertex &cell : grid.hostedVertices){
+    	    for(Edge &edge : grid.getOutEdges(cell)){
+		events.push_back(edge << cell().isAlive);
+		
 	    }
 
 	}
 
      	// Recv state from neighbor cells
-     	 for(Vertex &v : grid.hostedVertices){
-	     std::array<unsigned, 1> isAlive{{0}};
-    	     for(Edge &edge : grid.getInEdges(v)){
-	 	 //std::cout << "Recv from Vertex:" << edge.vertex.id << " over Edge:" << edge.id << std::endl;
+	std::array<unsigned, 1> neighborIsAlive{{0}};
+	for(Vertex &cell : grid.hostedVertices){
+	    cell().aliveNeighbors = 0;
+    	     for(Edge &edge : grid.getInEdges(cell)){
+	 	 edge >> neighborIsAlive;
 
-
-	 	 edge >> isAlive;
-		 // The following line should populate the game field
-		 // but it does not
-		 // Problem:
-		 // When using only one peer then the messages
-		 // are send all with tag = 0. Thus it is not
-		 // distinglished between edges.
-		 if(isAlive[0] == 1) {
-		     v().isAlive[0] = 0;
+		 if(neighborIsAlive[0]) {
+		     cell().aliveNeighbors++;
 		 }
 
 	     }
+	     
 	 }
-
-
 
     	// Wait to finish events
     	for(unsigned i = 0; i < events.size(); ++i){
@@ -185,16 +176,12 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     	    events.pop_back();
     	}
 
-
     	// Calculate state for next generation
-    	//updateState(grid.hostedVertices);
+    	updateState(grid.hostedVertices);
 
 	//Gather state by vertex with id = 0
-	for(Vertex &v: grid.hostedVertices){
-	    //std::cout << v().aliveNeighbors << std::endl;
-	    //assert(v().isAlive[0] == 1);
-	    //v().aliveNeighbors = 0;
-	    grid.gather(root, v, v().isAlive, golDomain, true);
+	for(Vertex &cell: grid.hostedVertices){
+	    grid.gather(root, cell, cell().isAlive, golDomain, true);
 	}
 	
      }

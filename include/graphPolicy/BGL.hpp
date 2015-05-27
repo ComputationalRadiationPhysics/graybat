@@ -2,7 +2,6 @@
 #include <vector>
 #include <iostream>
 #include <tuple>
-
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/subgraph.hpp>
@@ -10,6 +9,7 @@
 #include <tuple>
 #include <string>
 #include <fstream> /* std::fstream */
+#include <utility> /* std::pair, std::make_pair */
 
 
 namespace graybat {
@@ -38,7 +38,6 @@ namespace graybat {
 	public:
 	    // Public typedefs
 	    typedef T_VertexProperty                                                VertexProperty;
-	    typedef T_EdgeProperty                                                  Edge;
 	    typedef T_EdgeProperty                                                  EdgeProperty;	    
 	    typedef std::pair<unsigned, unsigned>                                   EdgeDescription;
 	    typedef std::pair<std::vector<unsigned>, std::vector<EdgeDescription> > GraphDescription;
@@ -50,8 +49,8 @@ namespace graybat {
 	    typedef boost::adjacency_list<boost::vecS, 
 					  boost::vecS, 
 					  boost::bidirectionalS, 
-					  boost::property<boost::vertex_index_t, size_t, VertexProperty>,
-					  boost::property<boost::edge_index_t, size_t, Edge> > GraphType;
+					  boost::property<boost::vertex_index_t, size_t, std::pair<unsigned, VertexProperty> >,
+					  boost::property<boost::edge_index_t, size_t, std::pair<unsigned, EdgeProperty> > > GraphType;
 
 	    typedef boost::subgraph<GraphType> BGLGraph;
 	    typedef typename BGLGraph::vertex_descriptor VertexID;
@@ -66,7 +65,7 @@ namespace graybat {
 
 	    // Member
 	    BGLGraph* graph;
-	    std::vector<BGL<VertexProperty, Edge>> subGraphs;
+	    std::vector<BGL<VertexProperty, EdgeProperty>> subGraphs;
 
 	public: 
 	    GraphID id;
@@ -93,12 +92,12 @@ namespace graybat {
 		    VertexID srcVertex    = std::get<0>(edge);
 		    VertexID targetVertex = std::get<1>(edge);
 		    EdgeID edgeID = boost::add_edge(srcVertex, targetVertex, (*graph)).first;
-		    setEdgeProperty(edgeID, EdgeProperty());
+		    setEdgeProperty(edgeID, std::make_pair(edgeCount++, EdgeProperty()));
 		}
 
 		// Bind vertex_descriptor and VertexProperty;
 		for(unsigned vertexID = 0; vertexID < vertices.size(); ++vertexID){
-		    setVertexProperty(vertexID, VertexProperty());
+		    setVertexProperty(vertexID, std::make_pair(vertexID, VertexProperty()));
 		}
 		
 	    }	    
@@ -227,6 +226,7 @@ namespace graybat {
 	    }
 	    */
 
+	    /*
 	    std::vector<VertexProperty> getVerticesProperties(std::vector<VertexID> bglVertices){
 		std::vector<VertexProperty> vertices;
 		for(VertexID v : bglVertices){
@@ -234,35 +234,41 @@ namespace graybat {
 		}
 		return vertices;
 	    }
+	    */
 
 	    void setVertexProperty(VertexID vertex, VertexProperty value){
-		(*graph)[vertex] = value;
+		std::pair<unsigned, VertexProperty> propPair = (*graph)[vertex];
+		(*graph)[vertex] = std::make_pair<propPair.first, value>;
 	    }
 
-	    void setEdgeProperty(EdgeID edge, Edge value){
-		(*graph)[edge] = value;
+	    void setVertexProperty(VertexID vertex, std::pair<unsigned, VertexProperty> propPair){
+		(*graph)[vertex] = propPair;
 	    }
+
+	    
+	    void setEdgeProperty(EdgeID edge, EdgeProperty value){
+		std::pair<unsigned, EdgeProperty> propPair = (*graph)[edge];
+		(*graph)[edge] = std::make_pair<propPair.first, value>;
+	    }
+
+	    void setEdgeProperty(EdgeID edge, std::pair<unsigned, EdgeProperty> propPair){
+		(*graph)[edge] = propPair;
+	    }	    
 
 	    /**
 	     * @brief Returns the property of *vertex*.
 	     *
 	     */
-	    // Vertex getVertexProperty(VertexID vertex){
-	    // 	return (*graph)[vertex];
-	    // }
-
-
-	    VertexProperty& getVertexProperty(const VertexID vertex){
+	    std::pair<unsigned, VertexProperty>& getVertexProperty(const VertexID vertex){
 		return (*graph)[vertex];
 	    }
 	    
-
 	    
 	    /**
 	     * @brief Return the property of *edge*.
 	     *
 	     */
-	    Edge& getEdgeProperty(const EdgeID edge){
+	    std::pair<unsigned, EdgeProperty>& getEdgeProperty(const EdgeID edge){
 		return (*graph)[edge];
 	    }
 
