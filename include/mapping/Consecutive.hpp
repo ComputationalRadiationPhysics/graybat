@@ -20,7 +20,7 @@ namespace graybat {
 
 		// More processes than vertices
 		if(processID > vertexCount - 1){
-		    return std::vector<Vertex>(0);
+		    return std::vector<Vertex>();
 		}
 
 		unsigned minVertex = processID * vertexPerProcess;
@@ -28,7 +28,7 @@ namespace graybat {
 
 		// Slice maxVertex of last process
 		if(minVertex > vertexCount){
-		    return std::vector<Vertex>(0);
+		    return std::vector<Vertex>();
 		}
 	    
 		maxVertex = std::min(maxVertex, vertexCount);

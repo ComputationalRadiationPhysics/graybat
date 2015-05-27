@@ -129,7 +129,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     MyCage grid(graybat::pattern::GridDiagonal(height, width));
     
     // Distribute vertices
-    grid.distribute(graybat::mapping::Roundrobin());
+    grid.distribute(graybat::mapping::Consecutive());
 
     /***************************************************************************
      * Run Simulation

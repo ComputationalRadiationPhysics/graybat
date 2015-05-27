@@ -69,7 +69,6 @@ namespace graybat {
 
 	public: 
 	    GraphID id;
-	    //BGL<Vertex, Edge>& superGraph;
 
 
 	    /**
@@ -141,72 +140,6 @@ namespace graybat {
 	    }
 
 	    /**
-	     * @brief Creates a subgraph of this graph from *vertices* 
-	     *        and returns a reference to this newly created subgraph. 
-	     *
-	     * Connected vertices in this graph are still connected in the subgraph.
-	     * The subgraph will be added to the children of this graph and this graph
-	     * will be the supergraph of the subgraph. The global id of the subgraph
-	     * vertices are always reachable with vertex.id. To obtain the local id
-	     * whithin a subgraph it is possible to call getLocalID(Vertex).
-	     *
-	     * @param[in] vertices A list of vertices that should be in set of the graph vertices
-	     *
-	     */
-	    /*
-	    BGL<Vertex, Edge>& createSubGraph(const std::vector<Vertex> vertices){
-		std::vector<VertexID> vertexIDs;
-		for(unsigned v_i = 0; v_i < vertices.size(); ++v_i){
-		    vertexIDs.push_back(VertexID(vertices[v_i].id));
-		}
-
-		BGL& subGraph = (*graph).create_subgraph(vertexIDs.begin(), vertexIDs.end());
-
-		subGraphs.push_back(BGL<Vertex, Edge>(*this, subGraph, id + 1));
-		return subGraphs.back();
-
-
-	    }
-	    */
-
-	    /**
-	     * @brief Cheacks wheather *textVertex* is in the set of vertices of this graph.
-	     * 
-	     * @return **true**  If testVertex is part of this graph.
-	     * @return **false** If testVertex is not part of this graph.
-	     */
-	    /*
-	    bool contains(Vertex testVertex){
-		std::vector<Vertex> vertices = getVertices();
-		for(Vertex containedVertex: vertices){
-		    if(containedVertex.id == testVertex.id){
-			return true;
-		    }
-
-		}
-		return false;
-
-	    }
-	    */
-
-	    /**
-	     * @brief Checks wheather this graph has an supergraph (is subgraph) 
-	     *
-	     * @return **true** If this graph is subgrapph of some supergraph.
-	     * @return **false** If this graph has no supergraph (is rootgraph).
-	     */
-	    /*
-	    bool hasSuperGraph(){
-		if(id == superGraph.id){
-		    return false;
-		}
-		else {
-		    return true;
-		}
-	    }
-	    */
-
-	    /**
 	     * @brief Returns the local id of *vertex* in this graph.
 	     *
 	     * If this graph has no supergraph (hasSuperGraph()==false) then local ids are the same as global ids.
@@ -215,27 +148,6 @@ namespace graybat {
 		return (*graph).global_to_local(vertex.id);
 	    }
 	    
-   
-
-	    /*
-	    BGL(BGL<Vertex, Edge>& superGraph, BGL& subGraph, unsigned id) : 
-		graph(&subGraph),
-		id(id),
-		superGraph(superGraph){
-
-	    }
-	    */
-
-	    /*
-	    std::vector<VertexProperty> getVerticesProperties(std::vector<VertexID> bglVertices){
-		std::vector<VertexProperty> vertices;
-		for(VertexID v : bglVertices){
-		    vertices.push_back(getVertexProperty(v));
-		}
-		return vertices;
-	    }
-	    */
-
 	    void setVertexProperty(VertexID vertex, VertexProperty value){
 		std::pair<unsigned, VertexProperty> propPair = (*graph)[vertex];
 		(*graph)[vertex] = std::make_pair<propPair.first, value>;

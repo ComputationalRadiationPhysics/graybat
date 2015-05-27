@@ -93,7 +93,7 @@ namespace graybat {
 		
 		for(unsigned part_i = 0; part_i < part.size(); part_i++){
 		    if(part[part_i] == (int)processID){
-			myVertices.push_back(graph.getVertices().at(part_i));
+			myVertices.push_back(graph.getVertex(part_i));
 		    }
 		    
 		} 
