@@ -148,12 +148,8 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 	
     	// Send cell state to neighbor cells
     	for(Vertex &cell : grid.hostedVertices){
-    	    for(Edge &edge : grid.getOutEdges(cell)){
-		Event e = edge << cell().isAlive;
-		events.push_back(e);
-		
-	    }
-
+	    std::vector<Event> es = cell.broadcast(cell().isAlive);
+	    events.insert(events.end(), es.begin(), es.end());
 	}
 
      	// Recv cell state from neighbor cells

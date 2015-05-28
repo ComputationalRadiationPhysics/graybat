@@ -1,16 +1,17 @@
 #pragma once
-#include <map>       /* map */
-#include <set>       /* set */
-#include <exception> /* std::out_of_range */
-#include <sstream>   /* std::stringstream */
-#include <assert.h>  /* assert */
+#include <map>        /* map */
+#include <set>        /* set */
+#include <exception>  /* std::out_of_range */
+#include <sstream>    /* std::stringstream */
+#include <assert.h>   /* assert */
 #include <cstddef>    /* nullptr_t */
-#include <algorithm> /* std::max */
+#include <algorithm>  /* std::max */
 
-#include <dout.hpp>            /* dout::Dout::getInstance() */
-#include <utils.hpp> /* exclusivePrefixSum */
-#include <Edge.hpp>
-#include <Vertex.hpp>
+#include <dout.hpp>   /* dout::Dout::getInstance() */
+#include <utils.hpp>  /* exclusivePrefixSum */
+#include <Vertex.hpp> /* CommunicationVertex */
+#include <Edge.hpp>   /* CommunicationEdge */
+
 
 namespace graybat {
 
@@ -38,15 +39,16 @@ namespace graybat {
 	typedef T_CommunicationPolicy                   CommunicationPolicy;
         typedef T_GraphPolicy                           GraphPolicy;
 	typedef Cage<CommunicationPolicy, GraphPolicy>  Cage_T;
-	typedef CommunicationEdge<Cage_T>               Edge;
-	typedef CommunicationVertex<Cage_T>             Vertex;
 	typedef typename GraphPolicy::GraphID           GraphID;
 	typedef typename GraphPolicy::EdgeDescription   EdgeDescription;
 	typedef typename GraphPolicy::GraphDescription  GraphDescription;
-	typedef typename Vertex::VertexID               VertexID;
 	typedef typename CommunicationPolicy::VAddr     VAddr;
-	typedef typename CommunicationPolicy::Event     Event;
 	typedef typename CommunicationPolicy::Context   Context;
+	typedef typename CommunicationPolicy::Event     Event;
+	typedef CommunicationEdge<Cage_T>               Edge;
+	typedef CommunicationVertex<Cage_T>             Vertex;
+	typedef typename Vertex::VertexID               VertexID;
+
 
 	
 	template <class T_Functor>
@@ -432,6 +434,8 @@ namespace graybat {
 	
 	}
 
+
+
 	/**
 	 * @brief Synchron receive of *data* from the *srcVertex* on *edge*.
 	 *
@@ -723,6 +727,19 @@ namespace graybat {
 
 	}
 
+	template <typename T>
+	std::vector<Event> broadcast(const Vertex vertex, const T& data){
+	    std::vector<Event> events;
+	    std::vector<Edge> edges = getOutEdges(vertex);
+	    for(Edge edge: edges){
+		Event e = asyncSend(edge, data);
+		events.push_back(e);
+	    }
+	    
+	    return events;
+	
+	}
+	
 	void synchronize(){
 	    comm.synchronize(graphContext);
 

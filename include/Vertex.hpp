@@ -1,18 +1,18 @@
 #pragma once
 
-
 template <class T_Cage>
 struct CommunicationVertex {
-    
-    typedef T_Cage Cage;
-    typedef typename Cage::GraphPolicy GraphPolicy;
+
+    typedef unsigned                             VertexID; 
+    typedef T_Cage                               Cage;
+    typedef typename Cage::GraphPolicy           GraphPolicy;
+    typedef typename Cage::Edge                  Edge;
+    typedef typename Cage::Event                 Event;
     typedef typename GraphPolicy::VertexProperty VertexProperty;
-    typedef typename GraphPolicy::VertexID VertexID;
 
     VertexID id;
     VertexProperty &vertexProperty;
     Cage &cage;
-
 
     CommunicationVertex(const VertexID id, VertexProperty &vertexProperty, Cage &cage) :
 	id(id),
@@ -31,5 +31,16 @@ struct CommunicationVertex {
 
 	return *this;
     }
+
+    /***************************************************************************
+     * Communication Operations
+     ****************************************************************************/
+
+    template <typename T>
+    std::vector<Event> broadcast(const T& data){
+	return cage.broadcast(*this, data);
+	
+    }
+
 	
 };
