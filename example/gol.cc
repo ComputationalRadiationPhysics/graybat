@@ -154,11 +154,15 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 
      	// Recv cell state from neighbor cells
 	for(Vertex &cell : grid.hostedVertices){
+
+	    // Nice to have
+	    //cell.aliveNeighbors = cell.recvAll(accumulate);
+	    
 	    cell().aliveNeighbors = 0;
     	     for(Edge &edge : grid.getInEdges(cell)){
 
 		 edge >> edge.source().isAlive;
-		 if(edge.source().isAlive[0]) cell().aliveNeighbors++;
+		 cell().aliveNeighbors+= edge.source().isAlive[0];
 
 	     }
 	     
