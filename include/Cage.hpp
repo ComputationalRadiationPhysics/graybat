@@ -728,7 +728,7 @@ namespace graybat {
 	}
 
 	template <typename T>
-	std::vector<Event> broadcast(const Vertex vertex, const T& data){
+	std::vector<Event> spread(const Vertex vertex, const T& data){
 	    std::vector<Event> events;
 	    std::vector<Edge> edges = getOutEdges(vertex);
 	    for(Edge edge: edges){
@@ -739,6 +739,19 @@ namespace graybat {
 	    return events;
 	
 	}
+
+	template <typename T>
+	void collect(const Vertex vertex, T& data){
+	    std::vector<Edge> edges = getInEdges(vertex);
+	    for(unsigned i = 0; i < edges.size(); ++i){
+		std::array<typename T::value_type, 1> element;
+		recv(edges[i], element);
+		data[i] = element[0];
+	    }
+	    
+	}
+
+	
 	
 	void synchronize(){
 	    comm.synchronize(graphContext);

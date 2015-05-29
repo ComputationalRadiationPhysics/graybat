@@ -21,6 +21,7 @@
 #include <array>      /* std::array */
 #include <cmath>      /* sqrt */
 #include <cstdlib>    /* atoi */
+#include <numeric>    /* std::accumulate */
 
 std::array<unsigned,1> testValue {{1}};
 
@@ -146,45 +147,35 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 	     printGolDomain(golDomain, width, height, timestep);
 	 }
 	
-    	// Send cell state to neighbor cells
-    	for(Vertex &cell : grid.hostedVertices){
-	    std::vector<Event> es = cell.broadcast(cell().isAlive);
-	    events.insert(events.end(), es.begin(), es.end());
-	}
-
-     	// Recv cell state from neighbor cells
-	for(Vertex &cell : grid.hostedVertices){
-
-	    // Nice to have
-	    //cell.aliveNeighbors = cell.recvAll(accumulate);
-	    
-	    cell().aliveNeighbors = 0;
-    	     for(Edge &edge : grid.getInEdges(cell)){
-
-		 edge >> edge.source().isAlive;
-		 cell().aliveNeighbors+= edge.source().isAlive[0];
-
-	     }
-	     
+	 // Send cell state to neighbor cells
+	 std::vector<Event> es;	 
+	 for(Vertex &cell : grid.hostedVertices){
+	     es = cell.spread(cell().isAlive);
+	     events.insert(events.end(), es.begin(), es.end());
 	 }
 
-    	// Wait to finish events
-    	for(unsigned i = 0; i < events.size(); ++i){
-    	    events.back().wait();
-    	    events.pop_back();
-    	}
+	 // Recv cell state from neighbor cells
+	 for(Vertex &cell : grid.hostedVertices){
+	     std::vector<unsigned> areAlive(cell.nInEdges());
+	     cell.collect(areAlive);
+	     cell().aliveNeighbors = std::accumulate(areAlive.begin(), areAlive.end(), 0);
+	     updateState(cell);
+	 }
 
-    	// Calculate state for next generation
-    	updateState(grid.hostedVertices);
+	 // Wait to finish events
+	 for(unsigned i = 0; i < events.size(); ++i){
+	     events.back().wait();
+	     events.pop_back();
+	 }
 
-	//Gather state by vertex with id = 0
-	for(Vertex &cell: grid.hostedVertices){
-	    grid.gather(root, cell, cell().isAlive, golDomain, true);
-	}
+	 //Gather state by vertex with id = 0
+	 for(Vertex &cell: grid.hostedVertices){
+	     grid.gather(root, cell, cell().isAlive, golDomain, true);
+	 }
 	
      }
     
-    return 0;
+     return 0;
 
 }
 

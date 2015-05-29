@@ -37,9 +37,19 @@ struct CommunicationVertex {
      ****************************************************************************/
 
     template <typename T>
-    std::vector<Event> broadcast(const T& data){
-	return cage.broadcast(*this, data);
+    std::vector<Event> spread(const T& data){
+	return cage.spread(*this, data);
 	
+    }
+
+    template <typename T>
+    void collect(T& data){
+	cage.collect(*this, data);
+	
+    }
+
+    size_t nInEdges(){
+	return cage.getInEdges(*this).size();
     }
 
 	
