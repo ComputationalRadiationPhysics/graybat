@@ -85,9 +85,13 @@ incoming edge.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 typedef Cage::Edge Edge;
 for(Vertex vertex: cage.hostedVertices){
-	for(auto outEdge : cage.getOutEdges(vertex)){
-    	Vertex destVertex = outEdge.first;
-		Edge   destEdge   = outEdge.second;
+	for(Edge outEdge : cage.getOutEdges(vertex)){
+		Vertex sourceVertex = outEdge.source;
+		Vertex targetVertex = outEdge.target;
+		
+		std::cout << "From vertex " << sourceVertex.id
+			      << "over edge "   << outEdge.id
+			      << "to vertex "   << targetVertex.id << std::endl;
 	}
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -96,9 +100,13 @@ for(Vertex vertex: cage.hostedVertices){
    information can be used to receive data from adjacent vertices.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 for(Vertex vertex: cage.hostedVertices){
-	for(auto inEdge : cage.getInEdges(vertex)){
-    	Vertex srcVertex = inEdge.first;
-		Edge   srcEdge   = inEdge.second;
+	for(Edge inEdge : cage.getInEdges(vertex)){
+		Vertex sourceVertex = inEdge.source;
+		Vertex targetVertex = inEdge.target;
+
+		std::cout << "From vertex " << sourceVertex.id
+			      << "over edge "   << inEdge.id
+			      << "to vertex "   << targetVertex.id << std::endl;
 	}
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -113,23 +121,24 @@ for(Vertex vertex: cage.hostedVertices){
 typedef Cage::Edge  Edge;
 typedef Cage::Event Event;
 
+// Events that will occur
+std::vector<Event> events;
+
 // Some data that should be send
 std::vector<int> data(100,1);
 
 for(Vertex vertex: cage.hostedVertices){
-	for(auto outEdge : cage.getOutEdges(vertex)){
-    	Vertex destVertex = outEdge.first;
-		Edge   destEdge   = outEdge.second;
+	for(Edge outEdge : cage.getOutEdges(vertex)){
 
 		// Synchronous
-		cage.send(destVertex, destEdge, data);
+		cage.send(outEdge, data);
 
 	    // Asynchronous
-		Event e = cage.asyncSend(destVertex, destEdge, data);
+	    cage.send(outEdge, data, events);
 
         // Wait for and test event
-		e.wait();
-		bool eventState = e.ready();
+		events.back().wait();
+		bool eventState = events.back().ready();
 	}
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -142,28 +151,64 @@ for(Vertex vertex: cage.hostedVertices){
 typedef Cage::Edge  Edge;
 typedef Cage::Event Event;
 
+// Events that will occur
+std::vector<Event> events;
+
 // Some data that should be send
 std::vector<int> data(100,1);
 
 for(Vertex vertex: cage.hostedVertices){
-	for(auto inEdge : cage.getInEdges(vertex)){
-    	Vertex srcVertex = inEdge.first;
-		Edge   srcEdge   = inEdge.second;
+	for(Edge inEdge : cage.getInEdges(vertex)){
 
 	    // Synchronous receive
-		cage.recv(destVertex, destEdge, data);
+		cage.recv(inEdge, data);
 
 	    // Asynchronous receive
-		Event e = cage.asyncRecv(destVertex, destEdge, data);
+		cage.recv(inEdge, data, events);
 
 	    // Wait for and test event
-		e.wait();
-		bool eventState = e.ready();
+		events.back().wait();
+		bool eventState = events.back().ready();
 	}
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Collective Communication Operations ##
+
+- **spread**: Spread data to all adjacent vertices of a vertex
+  that are connected by an outgoing edge.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
+typedef Cage::Edge  Edge;
+typedef Cage::Event Event;
+
+// Events that will occur
+std::vector<Event> events;
+
+// Some data that should be send
+std::vector<int> data(100,1);
+
+for(Vertex vertex: cage.hostedVertices){
+	cage.spread(vertex, data, events);
+}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- **collect**: Collect data from all adjacent vertices of a vertex
+  that are connected by an incoming edge.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
+typedef Cage::Edge  Edge;
+typedef Cage::Event Event;
+
+// Events that will occur
+std::vector<Event> events;
+
+for(Vertex vertex: cage.hostedVertices){
+	// Some data that should be collected
+	std::vector<int> data(vertex.nInEdges * 100, 1);
+
+	cage.collect(vertex, data);
+}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 - **reduce**: Reduce vector of data with binary operator and receive
    by some root vertex.

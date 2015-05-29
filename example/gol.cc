@@ -47,7 +47,7 @@ void printGolDomain(const std::vector<unsigned> domain, const unsigned width, co
 	}
 
 	if(domain.at(i)){
-	  std::cerr << "#";
+	    std::cerr << "#";
 	}
 	else {
 	    std::cerr << " ";
@@ -123,44 +123,44 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     /***************************************************************************
      * Run Simulation
      ****************************************************************************/
-     std::vector<Event> events;   
-     std::vector<unsigned> golDomain(grid.getVertices().size(), 0); 
-     Vertex root = grid.getVertex(0);
+    std::vector<Event> events;   
+    std::vector<unsigned> golDomain(grid.getVertices().size(), 0); 
+    Vertex root = grid.getVertex(0);
 
-     // Simulate life
-     for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
+    // Simulate life
+    for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
 
-	 // Print life field by owner of vertex 0
-	 if(grid.peerHostsVertex(root)){
-	     printGolDomain(golDomain, width, height, timestep);
-	 }
+	// Print life field by owner of vertex 0
+	if(grid.peerHostsVertex(root)){
+	    printGolDomain(golDomain, width, height, timestep);
+	}
 	
-	 // Send cell state to neighbor cells
-	 std::vector<Event> es;	 
-	 for(Vertex &cell : grid.hostedVertices){
-	     cell.spread(cell().isAlive, events);
-	 }
+	// Send cell state to neighbor cells
+	std::vector<Event> es;	 
+	for(Vertex &cell : grid.hostedVertices){
+	    cell.spread(cell().isAlive, events);
+	}
 
-	 // Recv cell state from neighbor cells and update own cell states
-	 for(Vertex &cell : grid.hostedVertices){
-	     cell().aliveNeighbors = cell.accumulate(std::plus<unsigned>(), 0);
-	     updateState(cell);
-	 }
+	// Recv cell state from neighbor cells and update own cell states
+	for(Vertex &cell : grid.hostedVertices){
+	    cell().aliveNeighbors = cell.accumulate(std::plus<unsigned>(), 0);
+	    updateState(cell);
+	}
 
-	 // Wait to finish events
-	 for(unsigned i = 0; i < events.size(); ++i){
-	     events.back().wait();
-	     events.pop_back();
-	 }
+	// Wait to finish events
+	for(unsigned i = 0; i < events.size(); ++i){
+	    events.back().wait();
+	    events.pop_back();
+	}
 
-	 // Gather state by vertex with id = 0
-	 for(Vertex &cell: grid.hostedVertices){
-	     grid.gather(root, cell, cell().isAlive, golDomain, true);
-	 }
+	// Gather state by vertex with id = 0
+	for(Vertex &cell: grid.hostedVertices){
+	    grid.gather(root, cell, cell().isAlive, golDomain, true);
+	}
 	
-     }
+    }
     
-     return 0;
+    return 0;
 
 }
 

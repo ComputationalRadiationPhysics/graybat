@@ -225,7 +225,7 @@ BOOST_AUTO_TEST_CASE( spreadAndCollect ){
 
     star.distribute(graybat::mapping::Consecutive());
 
-    const unsigned nElements = 1;
+    const unsigned nElements = 10;
     const unsigned testValue = 1;
     std::vector<Event> events; 
     
@@ -237,7 +237,7 @@ BOOST_AUTO_TEST_CASE( spreadAndCollect ){
     }
 
     for(Vertex v: star.hostedVertices){
-	std::vector<unsigned> recv(v.nInEdges(), 0);
+	std::vector<unsigned> recv(v.nInEdges() * nElements, 0);
 	v.collect(recv);
 	for(unsigned receivedElement: recv){
 	    BOOST_CHECK_EQUAL(receivedElement, testValue);

@@ -652,6 +652,15 @@ namespace graybat {
 
 	}
 
+	/**
+	 * @brief Spread data from a vertex to all adjacent vertices
+	 *        connected by an outgoing edge (async).
+	 *
+	 * @param[in]  vertex to spread data from
+	 * @param[in]  data   that will be spreaded
+	 * @param[out] events where the events for this async operations will be inserted.
+	 *
+	 */
 	template <typename T>
 	void spread(const Vertex vertex, const T& data, std::vector<Event> &events){
 	    std::vector<Edge> edges = getOutEdges(vertex);
@@ -660,13 +669,37 @@ namespace graybat {
 	    }
 	}
 
+	/**
+	 * @brief Spread data from a vertex to all adjacent vertices
+	 *        connected by an outgoing edge (sync).
+	 *
+	 * @param[in]  vertex to spread data from
+	 * @param[in]  data   that will be spreaded
+	 *
+	 */
+	template <typename T>
+	void spread(const Vertex vertex, const T& data){
+	    std::vector<Edge> edges = getOutEdges(vertex);
+	    for(Edge edge: edges){
+		Cage::send(edge, data);
+	    }
+	}
+
+	/**
+	 * @brief collects data from all incoming edges
+	 *
+	 * @param[in]  vertex that collects data
+	 * @param[in]  data were collected data will be stored
+	 *
+	 */
 	template <typename T>
 	void collect(const Vertex vertex, T& data){
 	    std::vector<Edge> edges = getInEdges(vertex);
 	    for(unsigned i = 0; i < edges.size(); ++i){
-		std::array<typename T::value_type, 1> element;
-		Cage::recv(edges[i], element);
-		data[i] = element[0];
+		unsigned elementsPerEdge = data.size() / edges.size();
+		std::vector<typename T::value_type> elements(elementsPerEdge);
+		Cage::recv(edges[i], elements);
+		std::copy(elements.begin(), elements.end(), data.begin() + (i*elementsPerEdge));
 	    }
 	    
 	}
