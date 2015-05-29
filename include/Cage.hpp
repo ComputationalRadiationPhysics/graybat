@@ -387,20 +387,12 @@ namespace graybat {
 	 * @brief Synchron transmission of *data* to the *destVertex* on *edge*.
 	 *
 	 * @param[in] graph The graph in which the communication takes place.
-	 * @param[in] destVertex Vertex that will receive the *data*.
 	 * @param[in] edge Edge over which the *data* will be transmitted.
 	 * @param[in] data Data that will be send.
 	 *
 	 */
 	template <typename T>
-	inline void send(const Vertex destVertex, const Edge edge, const T& data){
-	    VAddr destVAddr   = locateVertex(destVertex);
-	    comm.send(destVAddr, edge.id, graphContext, data);
-
-	}
-
-	template <typename T>
-	inline void send(const Edge edge, const T& data){
+	void send(const Edge edge, const T& data){
 	    VAddr destVAddr   = locateVertex(edge.target);
 	    comm.send(destVAddr, edge.id, graphContext, data);
 
@@ -413,47 +405,29 @@ namespace graybat {
 	 * @todo Documentation how data should be formated !!!
 	 *
 	 * @param[in] graph The graph in which the communication takes place.
-	 * @param[in] destVertex Vertex that will receive the *data*.
 	 * @param[in] edge Edge over which the *data* will be transmitted.
 	 * @param[in] data Data that will be send.
-	 *
-	 * @return Event Can be waited (Event::wait()) for or checked for (Event::ready())
+	 * @param[out] List of events the send event will be added to.
 	 *
 	 */
 	template <typename T>
-	Event asyncSend(const Vertex destVertex, const Edge edge, const T& data){
-	    VAddr destVAddr  = locateVertex(destVertex);
-	    return comm.asyncSend(destVAddr, edge.id, graphContext, data);
-	
-	}
-
-	template <typename T>
-	Event asyncSend(const Edge edge, const T& data){
+	void send(const Edge edge, const T& data, std::vector<Event> &events){
 	    VAddr destVAddr  = locateVertex(edge.target);
-	    return comm.asyncSend(destVAddr, edge.id, graphContext, data);
+	    events.push_back(comm.asyncSend(destVAddr, edge.id, graphContext, data));
 	
 	}
-
 
 
 	/**
 	 * @brief Synchron receive of *data* from the *srcVertex* on *edge*.
 	 *
 	 * @param[in]  graph The graph in which the communication takes place.
-	 * @param[in]  srcVertex Vertex that send the *data*
 	 * @param[in]  edge Edge over which the *data* will be transmitted.
 	 * @param[out] data Data that will be received
 	 *
 	 */
 	template <typename T>
-	inline void recv(const Vertex srcVertex, const Edge edge, T& data){
-	    VAddr srcVAddr   = locateVertex(srcVertex);
-	    comm.recv(srcVAddr, edge.id, graphContext, data);
-
-	}
-
-	template <typename T>
-	inline void recv(const Edge edge, T& data){
+	void recv(const Edge edge, T& data){
 	    VAddr srcVAddr   = locateVertex(edge.source);
 	    comm.recv(srcVAddr, edge.id, graphContext, data);
 
@@ -463,24 +437,15 @@ namespace graybat {
 	 * @brief Asynchron receive of *data* from the *srcVertex* on *edge*.
 	 *
 	 * @param[in]  graph The graph in which the communication takes place.
-	 * @param[in]  srcVertex Vertex that send the *data*
 	 * @param[in]  edge Edge over which the *data* will be transmitted.
 	 * @param[out] data Data that will be received
-	 *
-	 * @return Event Can be waited (Event::wait()) for or checked for (Event::ready())
+	 * @param[out] List of events the send event will be added to.
 	 *
 	 */
 	template <typename T>
-	Event asyncRecv(const Vertex srcVertex, const Edge edge, T& data){
-	    VAddr srcVAddr = locateVertex(srcVertex);
-	    return comm.asyncRecv(srcVAddr, edge.id, graphContext, data);
-
-	}
-
-	template <typename T>
-	Event asyncRecv(const Edge edge, T& data){
+	void recv(const Edge edge, T& data, std::vector<Event> &events){
 	    VAddr srcVAddr = locateVertex(edge.source);
-	    return comm.asyncRecv(srcVAddr, edge.id, graphContext, data);
+	    events.push_back(comm.asyncRecv(srcVAddr, edge.id, graphContext, data));
 
 	}
 
@@ -731,7 +696,7 @@ namespace graybat {
 	void spread(const Vertex vertex, const T& data, std::vector<Event> &events){
 	    std::vector<Edge> edges = getOutEdges(vertex);
 	    for(Edge edge: edges){
-		events.push_back(asyncSend(edge, data));
+		Cage::send(edge, data, events);
 	    }
 	}
 
@@ -740,7 +705,7 @@ namespace graybat {
 	    std::vector<Edge> edges = getInEdges(vertex);
 	    for(unsigned i = 0; i < edges.size(); ++i){
 		std::array<typename T::value_type, 1> element;
-		recv(edges[i], element);
+		Cage::recv(edges[i], element);
 		data[i] = element[0];
 	    }
 	    
