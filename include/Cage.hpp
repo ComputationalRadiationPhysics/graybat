@@ -728,16 +728,11 @@ namespace graybat {
 	}
 
 	template <typename T>
-	std::vector<Event> spread(const Vertex vertex, const T& data){
-	    std::vector<Event> events;
+	void spread(const Vertex vertex, const T& data, std::vector<Event> &events){
 	    std::vector<Edge> edges = getOutEdges(vertex);
 	    for(Edge edge: edges){
-		Event e = asyncSend(edge, data);
-		events.push_back(e);
+		events.push_back(asyncSend(edge, data));
 	    }
-	    
-	    return events;
-	
 	}
 
 	template <typename T>

@@ -36,18 +36,22 @@ struct CommunicationVertex {
     }
 
     
-    size_t nInEdges(){
+    size_t nInEdges() const {
 	return cage.getInEdges(*this).size();
     }
+
+    size_t nOutEdges() const {
+	return cage.getOutEdges(*this).size();
+    }
+
 
     /***************************************************************************
      * Communication Operations
      ****************************************************************************/
 
     template <typename T>
-    std::vector<Event> spread(const T& data){
-	return cage.spread(*this, data);
-	
+    void spread(const T& data, std::vector<Event> &events){
+	cage.spread(*this, data, events);
     }
 
     template <typename T>

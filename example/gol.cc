@@ -138,11 +138,10 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 	 // Send cell state to neighbor cells
 	 std::vector<Event> es;	 
 	 for(Vertex &cell : grid.hostedVertices){
-	     es = cell.spread(cell().isAlive);
-	     events.insert(events.end(), es.begin(), es.end());
+	     cell.spread(cell().isAlive, events);
 	 }
 
-	 // Recv cell state from neighbor cells
+	 // Recv cell state from neighbor cells and update own cell states
 	 for(Vertex &cell : grid.hostedVertices){
 	     cell().aliveNeighbors = cell.accumulate(std::plus<unsigned>(), 0);
 	     updateState(cell);
@@ -154,7 +153,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 	     events.pop_back();
 	 }
 
-	 //Gather state by vertex with id = 0
+	 // Gather state by vertex with id = 0
 	 for(Vertex &cell: grid.hostedVertices){
 	     grid.gather(root, cell, cell().isAlive, golDomain, true);
 	 }

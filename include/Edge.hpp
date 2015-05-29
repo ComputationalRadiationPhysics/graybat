@@ -40,7 +40,7 @@ struct CommunicationEdge {
     
     template <class T_Send>
     Event operator<<(const T_Send &data){
-	return cage.asyncSend(*this, data);
+	return cage.send(*this, data);
     }
 
     template <class T_Recv>
