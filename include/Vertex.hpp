@@ -21,6 +21,9 @@ struct CommunicationVertex {
 	    
     }
 
+    /***************************************************************************
+     * Graph Operations
+     ****************************************************************************/
     VertexProperty& operator()(){
 	return vertexProperty;
     }
@@ -30,6 +33,11 @@ struct CommunicationVertex {
 	vertexProperty = other.vertexProperty;
 
 	return *this;
+    }
+
+    
+    size_t nInEdges(){
+	return cage.getInEdges(*this).size();
     }
 
     /***************************************************************************
@@ -48,9 +56,12 @@ struct CommunicationVertex {
 	
     }
 
-    size_t nInEdges(){
-	return cage.getInEdges(*this).size();
+    template <typename T_Op>
+    typename T_Op::result_type accumulate(const T_Op op, const typename T_Op::result_type init){
+	std::vector<typename T_Op::result_type> data (nInEdges());
+	cage.collect(*this, data);
+	return std::accumulate(data.begin(), data.end(), init, op);
+	
     }
-
 	
 };

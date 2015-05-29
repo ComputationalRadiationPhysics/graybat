@@ -31,7 +31,6 @@ struct Cell {
 	if(random < 3125){
 	    isAlive[0] = 1;
 	}
-	
 
     }
 	
@@ -62,17 +61,6 @@ void printGolDomain(const std::vector<unsigned> domain, const unsigned width, co
     }
 
 }
-
-
-template <class T_Cell>
-void updateState(std::vector<T_Cell> &cells){
-    for(T_Cell &cell : cells){
-	updateState(cell);
-
-    }
-
-}
-
 
 template <class T_Cell>
 void updateState(T_Cell &cell){
@@ -156,9 +144,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 
 	 // Recv cell state from neighbor cells
 	 for(Vertex &cell : grid.hostedVertices){
-	     std::vector<unsigned> areAlive(cell.nInEdges());
-	     cell.collect(areAlive);
-	     cell().aliveNeighbors = std::accumulate(areAlive.begin(), areAlive.end(), 0);
+	     cell().aliveNeighbors = cell.accumulate(std::plus<unsigned>(), 0);
 	     updateState(cell);
 	 }
 
