@@ -59,21 +59,16 @@ BOOST_AUTO_TEST_CASE( send_recv ){
 
     // Send state to neighbor cells
     for(Vertex &v : star.hostedVertices){
-	for(auto link : star.getOutEdges(v)){
-	    Vertex destVertex = link.first;
-	    Edge   destEdge   = link.second;
-	    star.send(destVertex, destEdge, send);
+	for(Edge edge : star.getOutEdges(v)){
+	    star.send(edge, send);
 	    
 	}
     }
 
     // Recv state from neighbor cells
     for(Vertex &v : star.hostedVertices){
-	for(auto link : star.getInEdges(v)){
-	    Vertex srcVertex = link.first;
-	    Edge   srcEdge   = link.second;
-
-	    star.recv(srcVertex, srcEdge, recv);
+	for(Edge edge : star.getInEdges(v)){
+	    star.recv(edge, recv);
 	    for(unsigned i = 0; i < recv.size();++i){
 		BOOST_CHECK_EQUAL(recv.at(i), i);
 	    }
@@ -101,20 +96,15 @@ BOOST_AUTO_TEST_CASE( asyncSend_recv ){
 
     // Send state to neighbor cells
     for(Vertex &v : allToAll.hostedVertices){
-	for(auto link : allToAll.getOutEdges(v)){
-	    Vertex destVertex = link.first;
-	    Edge   destEdge   = link.second;
-	    events.push_back(allToAll.asyncSend(destVertex, destEdge, send));
+	for(Edge edge : allToAll.getOutEdges(v)){
+	    allToAll.send(edge, send, events);
 	}
     }
 
     // Recv state from neighbor cells
     for(Vertex &v : allToAll.hostedVertices){
-	for(auto link : allToAll.getInEdges(v)){
-	    Vertex srcVertex = link.first;
-	    Edge   srcEdge   = link.second;
-
-	    allToAll.recv(srcVertex, srcEdge, recv);
+	for(Edge edge : allToAll.getInEdges(v)){
+	    allToAll.recv(edge, recv);
 	    for(unsigned i = 0; i < recv.size();++i){
 		BOOST_CHECK_EQUAL(recv.at(i), i);
 	    }
@@ -137,6 +127,7 @@ BOOST_AUTO_TEST_SUITE_END()
 BOOST_AUTO_TEST_SUITE( collectives )
 
 MyCage grid(graybat::pattern::Grid(3,3));
+MyCage star(graybat::pattern::Star(20));
 
 BOOST_AUTO_TEST_CASE( reduce ){
 
@@ -147,7 +138,7 @@ BOOST_AUTO_TEST_CASE( reduce ){
     std::vector<unsigned> send(nElements, 1);
     std::vector<unsigned> recv(nElements, 0);
 
-    Vertex rootVertex = grid.getVertices().at(0);
+    Vertex rootVertex = grid.getVertex(0);
     
     for(Vertex v: grid.hostedVertices){
 	grid.reduce(rootVertex, v, std::plus<unsigned>(), send, recv);
@@ -193,7 +184,7 @@ BOOST_AUTO_TEST_CASE( gather ){
     std::vector<unsigned> send(nElements, testValue);
     std::vector<unsigned> recv(nElements * grid.getVertices().size(), 0);
 
-    Vertex rootVertex = grid.getVertices().at(0);
+    Vertex rootVertex = grid.getVertex(0);
     
     for(Vertex v: grid.hostedVertices){
 	grid.gather(rootVertex, v, send, recv, reorder);
@@ -228,6 +219,37 @@ BOOST_AUTO_TEST_CASE( allGather ){
 	BOOST_CHECK_EQUAL(receivedElement, testValue);
     }
         
+}
+
+BOOST_AUTO_TEST_CASE( spreadAndCollect ){
+
+    star.distribute(graybat::mapping::Consecutive());
+
+    const unsigned nElements = 1;
+    const unsigned testValue = 1;
+    std::vector<Event> events; 
+    
+    std::vector<unsigned> send(nElements, testValue);
+
+
+    for(Vertex v: star.hostedVertices){
+	v.spread(send, events);
+    }
+
+    for(Vertex v: star.hostedVertices){
+	std::vector<unsigned> recv(v.nInEdges(), 0);
+	v.collect(recv);
+	for(unsigned receivedElement: recv){
+	    BOOST_CHECK_EQUAL(receivedElement, testValue);
+	}
+	
+    }
+
+    for(unsigned i = 0; i < events.size(); ++i){
+	events.back().wait();
+	events.pop_back();
+    }
+  
 }
 
 BOOST_AUTO_TEST_SUITE_END()

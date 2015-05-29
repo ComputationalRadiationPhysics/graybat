@@ -633,51 +633,12 @@ namespace graybat {
 
 		// Reordering code
 		if(reorder){
-		    std::vector<unsigned> prefixsum(context.size(),0);
-
-		    unsigned sum = 0;
-		    for(unsigned count_i = 0; count_i < recvCount.size(); ++count_i){
-			prefixsum[count_i] = sum;
-			sum += recvCount[count_i];
-		    }
-		    
 		    std::vector<RecvValueType> recvDataReordered(recvData.size());
-		    for(unsigned vAddr = 0; vAddr < context.size(); vAddr++){
-			std::vector<Vertex> hostedVertices = getHostedVertices(vAddr);
-			unsigned nElementsPerVertex = recvCount.at(vAddr) / hostedVertices.size();
-
-			unsigned hVertex_i=0;
-			for(Vertex v: hostedVertices){
-
-			    std::copy(recvDatas[0]->begin()+(prefixsum[vAddr] + (hVertex_i * nElementsPerVertex)),
-				      recvDatas[0]->begin()+(prefixsum[vAddr] + (hVertex_i * nElementsPerVertex)) + (nElementsPerVertex),
-				      recvDataReordered.begin()+(v.id*nElementsPerVertex));
-			    hVertex_i++;
-
-			}
-			    
-		    }
-
+		    Cage::reorder(*(recvDatas[0]), recvCount, recvDataReordered);
+		    std::copy(recvDataReordered.begin(), recvDataReordered.end(), recvDatas[0]->begin());
+	
 		}
 		
-
-		// if(reorder){
-		//     std::vector<typename T_Recv::value_type> recvDataReordered(recvData.size());
-		//     unsigned vAddr = 0;
-		//     for(unsigned recv_i = 0; recv_i < recvData.size(); ){
-		// 	std::vector<Vertex> hostedVertices = getHostedVertices(vAddr);
-		// 	for(Vertex v: hostedVertices){
-		// 	    recvDataReordered.at(v.id) = recvDatas[0]->data()[recv_i];
-		// 	    recv_i++;
-		// 	}
-		// 	vAddr++;
-		//     }
-		//     for(unsigned i = 0; i < recvDataReordered.size(); ++i){
-		// 	recvDatas[0]->data()[i] = recvDataReordered[i];
-		//     }
-		    
-		// }
-
 		// Distribute Received Data to Hosted Vertices
 		//unsigned nElements = std::accumulate(recvCount.begin(), recvCount.end(), 0);
 		for(unsigned i = 1; i < recvDatas.size(); ++i){
@@ -686,7 +647,6 @@ namespace graybat {
 		}
 	    
 		gather.clear();
-
 
 	    }
 
