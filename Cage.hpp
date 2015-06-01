@@ -6,12 +6,14 @@
 #include <assert.h>   /* assert */
 #include <cstddef>    /* nullptr_t */
 #include <algorithm>  /* std::max */
+#include <stdexcept>  /* std::runtime_error */
+#include <tuple>      /* std::tie */
 
 #include <utils.hpp>  /* exclusivePrefixSum */
 #include <Vertex.hpp> /* CommunicationVertex */
 #include <Edge.hpp>   /* CommunicationEdge */
+#include <pattern/None.hpp> /* graybatt::pattern::None */
 
-#include <boost/optional.hpp> /* boost::optional */
 
 namespace graybat {
 
@@ -50,9 +52,14 @@ namespace graybat {
 	typedef typename Vertex::VertexID               VertexID;
 
 	typedef typename GraphPolicy::EdgeID            EdgeID;
+	typedef unsigned Peer;
 	
 	template <class T_Functor>
 	Cage(T_Functor graphFunctor) : graph(GraphPolicy(graphFunctor())){
+
+	}
+
+	Cage() : graph(GraphPolicy(graybat::pattern::None()())){
 
 	}
       
@@ -90,6 +97,12 @@ namespace graybat {
 	 * @{
 	 *
 	 ***************************************************************************/
+	template <class T_Functor>
+	void setGraph(T_Functor graphFunctor){
+	    graph = GraphPolicy(graphFunctor());
+
+	}
+
 	std::vector<Vertex> getVertices(){
 	    typedef typename GraphPolicy::AllVertexIter Iter;
 	    std::vector<Vertex> vertices;
@@ -137,10 +150,8 @@ namespace graybat {
 			    *this);
 	    }
 	    else {
-		return boost::none;
+		throw std::runtime_error("Edge between does not exist");
 	    }
-
-	    
 	    
 	}
 
@@ -391,6 +402,11 @@ namespace graybat {
 	    return false;
 	
 
+	}
+
+	std::vector<Peer> getPeers(){
+	    unsigned nPeers = comm.getGlobalContext().size();
+	    return std::vector<Peer>(nPeers);
 	}
 
 	/** @} */

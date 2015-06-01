@@ -54,8 +54,8 @@ endif(${CXX_COMPILER_IS_CLANG++})
 ###############################################################################
 # Build executables
 ###############################################################################
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include 
-		   ${CMAKE_CURRENT_SOURCE_DIR}/include/dout/include )
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/)
+		
 #add_executable(Main EXCLUDE_FROM_ALL src/main.cc)
 add_executable(GoL EXCLUDE_FROM_ALL example/gol.cc )
 add_executable(ZMQ1 EXCLUDE_FROM_ALL example/zmq/request_reply.cc )
