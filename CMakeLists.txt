@@ -17,7 +17,7 @@ set(LIBS ${LIBS} ${METIS_LIBRARIES})
 ###############################################################################
 # Boost
 ###############################################################################
-find_package(Boost 1.46.0 COMPONENTS mpi unit_test_framework REQUIRED)
+find_package(Boost 1.58.0 COMPONENTS mpi unit_test_framework serialization REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${Boost_LIBRARIES})
 
@@ -58,15 +58,15 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include
 		   ${CMAKE_CURRENT_SOURCE_DIR}/include/dout/include )
 #add_executable(Main EXCLUDE_FROM_ALL src/main.cc)
 add_executable(GoL EXCLUDE_FROM_ALL example/gol.cc )
+add_executable(ZMQ1 EXCLUDE_FROM_ALL example/zmq/request_reply.cc )
 add_executable(Test EXCLUDE_FROM_ALL utils/unittests/CageUT.cc )
 
 
 
 # add the libraries (Boost...) to this executable
 target_link_libraries(GoL ${LIBS})
+target_link_libraries(ZMQ1 ${LIBS})
 target_link_libraries(Test ${LIBS})
-
-
 
 
 ###############################################################################
