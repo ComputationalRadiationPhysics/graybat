@@ -12,6 +12,7 @@
 #include <Vertex.hpp> /* CommunicationVertex */
 #include <Edge.hpp>   /* CommunicationEdge */
 
+#include <boost/optional.hpp> /* boost::optional */
 
 namespace graybat {
 
@@ -49,7 +50,7 @@ namespace graybat {
 	typedef CommunicationVertex<Cage_T>             Vertex;
 	typedef typename Vertex::VertexID               VertexID;
 
-
+	typedef typename GraphPolicy::EdgeID            EdgeID;
 	
 	template <class T_Functor>
 	Cage(T_Functor graphFunctor) : graph(GraphPolicy(graphFunctor())){
@@ -120,6 +121,24 @@ namespace graybat {
 	    return Vertex(graph.getVertexProperty(*vi_first).first,
 			  graph.getVertexProperty(*vi_first).second,
 			  *this);
+	    
+	}
+
+	boost::optional<Edge> getEdge(const VertexID source, const VertexID target){
+	    std::pair<EdgeID, bool> edge = graph.getEdge(source, target);
+	    
+	    if(edge.second){
+		return Edge(graph.getEdgeProperty(edge.first).first,
+			    getVertex(graph.getEdgeSource(edge.first)),
+			    getVertex(graph.getEdgeTarget(edge.first)),
+			    graph.getEdgeProperty(edge.first).second,
+			    *this);
+	    }
+	    else {
+		return boost::none;
+	    }
+
+	    
 	    
 	}
 

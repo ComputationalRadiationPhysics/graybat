@@ -12,6 +12,7 @@
 #include <utility> /* std::pair, std::make_pair */
 
 
+
 namespace graybat {
     
     namespace graphPolicy {
@@ -113,6 +114,14 @@ namespace graybat {
 	    std::pair<AllVertexIter, AllVertexIter> getVertices(){
 		return boost::vertices((*graph));
 
+	    }
+
+	    /**
+	     * @brief Returns the edge between source and target vertex.
+	     * 
+	     */
+	    std::pair<EdgeID, bool> getEdge(const VertexID source, const VertexID target){
+		return boost::edge(source, target, *graph);
 	    }
 
 	    /**
