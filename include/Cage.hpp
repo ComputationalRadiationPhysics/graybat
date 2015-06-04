@@ -7,7 +7,6 @@
 #include <cstddef>    /* nullptr_t */
 #include <algorithm>  /* std::max */
 
-#include <dout.hpp>   /* dout::Dout::getInstance() */
 #include <utils.hpp>  /* exclusivePrefixSum */
 #include <Vertex.hpp> /* CommunicationVertex */
 #include <Edge.hpp>   /* CommunicationEdge */
