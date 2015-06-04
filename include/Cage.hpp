@@ -123,8 +123,11 @@ namespace graybat {
 	    
 	}
 
-	boost::optional<Edge> getEdge(const VertexID source, const VertexID target){
-	    std::pair<EdgeID, bool> edge = graph.getEdge(source, target);
+	// Optional or raise exception ?
+	// --> Optional makes code ugly
+	// --> Programmer should know that edge exists
+	boost::optional<Edge> getEdge(const Vertex source, const Vertex target){
+	    std::pair<EdgeID, bool> edge = graph.getEdge(source.id, target.id);
 	    
 	    if(edge.second){
 		return Edge(graph.getEdgeProperty(edge.first).first,

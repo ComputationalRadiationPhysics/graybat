@@ -1,5 +1,7 @@
 #pragma once
 
+#include <boost/optional.hpp> /* boost::optional */
+
 template <class T_Cage>
 struct CommunicationEdge {
 
@@ -30,8 +32,16 @@ struct CommunicationEdge {
 	    
     }
 
+    /***************************************************************************
+     * Graph Operations
+     ****************************************************************************/
+
     EdgeProperty& operator()(){
 	return edgeProperty;
+    }
+
+    boost::optional<CommunicationEdge> inverse(){
+	return cage.getEdge(target, source);
     }
 
     /***************************************************************************

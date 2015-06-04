@@ -44,6 +44,13 @@ struct CommunicationVertex {
 	return cage.getOutEdges(*this).size();
     }
 
+    bool operator==(CommunicationVertex v){
+	return (id == v.id);
+    }
+
+    bool operator!=(CommunicationVertex v){
+	return (id != v.id);
+    }
 
     /***************************************************************************
      * Communication Operations
@@ -53,6 +60,12 @@ struct CommunicationVertex {
     void spread(const T& data, std::vector<Event> &events){
 	cage.spread(*this, data, events);
     }
+
+    template <typename T>
+    void spread(const T& data){
+	cage.spread(*this, data);
+    }
+    
 
     template <typename T>
     void collect(T& data){
