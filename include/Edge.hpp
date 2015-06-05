@@ -40,8 +40,12 @@ struct CommunicationEdge {
 	return edgeProperty;
     }
 
-    boost::optional<CommunicationEdge> inverse(){
-	return cage.getEdge(target, source);
+     CommunicationEdge inverse(){
+	 boost::optional<CommunicationEdge> edge = cage.getEdge(target, source);
+	 if(edge){
+	     return *edge;
+	 }
+	 return *this;
     }
 
     /***************************************************************************
