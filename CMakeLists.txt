@@ -57,9 +57,11 @@ endif(${CXX_COMPILER_IS_CLANG++})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/)
 		
 #add_executable(Main EXCLUDE_FROM_ALL src/main.cc)
-add_executable(GoL EXCLUDE_FROM_ALL example/gol.cc )
+add_executable(GoL EXCLUDE_FROM_ALL  example/gol.cc )
 add_executable(ZMQ1 EXCLUDE_FROM_ALL example/zmq/request_reply.cc )
 add_executable(Test EXCLUDE_FROM_ALL utils/unittests/CageUT.cc )
+add_executable(Exp EXCLUDE_FROM_ALL  example/exp.cc )
+add_executable(Ring EXCLUDE_FROM_ALL  example/ring.cc )
 
 
 
@@ -67,6 +69,8 @@ add_executable(Test EXCLUDE_FROM_ALL utils/unittests/CageUT.cc )
 target_link_libraries(GoL ${LIBS})
 target_link_libraries(ZMQ1 ${LIBS})
 target_link_libraries(Test ${LIBS})
+target_link_libraries(Exp ${LIBS})
+target_link_libraries(Ring ${LIBS})
 
 
 ###############################################################################

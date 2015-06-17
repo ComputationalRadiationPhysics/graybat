@@ -115,6 +115,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 
     // Create GoL Graph
     Cage grid(graybat::pattern::GridDiagonal(height, width));
+
     
     // Distribute vertices
     grid.distribute(graybat::mapping::Consecutive());

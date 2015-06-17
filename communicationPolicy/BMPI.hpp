@@ -18,6 +18,10 @@
 #include <boost/mpi/datatype.hpp>
 #include <boost/optional.hpp>
 
+// Send std::tuple
+#include <utils/serialize_tuple.hpp>
+
+
 
 namespace mpi = boost::mpi;
 
