@@ -7,8 +7,8 @@
 #include <mapping/Consecutive.hpp>
 #include <mapping/Random.hpp>
 #include <mapping/Roundrobin.hpp>
+#include <mapping/GraphPartition.hpp>
 
-//#include <mapping/GraphPartition.hpp>
 // Pattern
 #include <pattern/GridDiagonal.hpp>
 #include <pattern/Chain.hpp>
@@ -28,11 +28,6 @@ struct Function {
     }
 
     std::function<void (unsigned&)> foo;
-
-    void operator()(std::array<unsigned, 1> &a){
-	foo(a[0]);
-    }
-    
 };
 
 
@@ -51,6 +46,7 @@ int exp() {
     typedef graybat::Cage<CP, GP> Cage;
     typedef typename Cage::Event  Event;
     typedef typename Cage::Vertex Vertex;
+    typedef typename Vertex::VertexProperty VertexProperty;
 
     /***************************************************************************
      * Initialize Communication
@@ -60,15 +56,17 @@ int exp() {
     // Create GoL Graph
     Cage cage;
 
+    // Set communication pattern
     cage.setGraph(graybat::pattern::Chain(nChainLinks));
+
+    // Distribute vertices
+    cage.distribute(graybat::mapping::Consecutive());
 
     // Set functions of vertices
     for(Vertex &v : cage.getVertices()){
 	v().foo = [v](unsigned &a)->void {a += v.id;};
     }
-    
-    // Distribute vertices
-    cage.distribute(graybat::mapping::Consecutive());
+        
 
     /***************************************************************************
      * Run Simulation
@@ -82,7 +80,8 @@ int exp() {
     const Vertex entry = cage.getVertex(0);
     const Vertex exit  = cage.getVertex(nChainLinks-1);
     
-
+    using namespace std::placeholders;
+    
     for(Vertex v : cage.hostedVertices){
 	if(v == entry){
 	    v.spread(input, events);
@@ -95,7 +94,7 @@ int exp() {
 	}
 
 	if(v != entry and v != exit){
-	    v.forward(intermediate, v());
+	    v.forward(intermediate, std::bind(&VertexProperty::process, v(), _1));
 	    std::cout << "Intermediate: " << intermediate[0] << std::endl;
 	}
 	
