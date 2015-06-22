@@ -7,7 +7,6 @@
 #include <mapping/Consecutive.hpp>
 #include <mapping/Random.hpp>
 #include <mapping/Roundrobin.hpp>
-#include <mapping/GraphPartition.hpp>
 
 // Pattern
 #include <pattern/GridDiagonal.hpp>
