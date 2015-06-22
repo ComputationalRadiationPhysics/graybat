@@ -62,7 +62,8 @@ namespace graybat {
         Cage() : graph(GraphPolicy(graybat::pattern::None()())){
 
         }
-      
+
+
 
         /***************************************************************************
          *
@@ -469,7 +470,19 @@ namespace graybat {
             VAddr srcVAddr   = locateVertex(edge.source);
             comm.recv(srcVAddr, edge.id, graphContext, data);
 
-        }       
+        }
+
+        template <typename T>
+        Edge recv(T& data){
+            Event event = comm.recv(graphContext, data);
+
+            return Edge(graph.getEdgeProperty(event.tag()).first,
+                        getVertex(graph.getEdgeSource(event.tag())),
+                        getVertex(graph.getEdgeTarget(event.tag())),
+                        graph.getEdgeProperty(event.tag()).second,
+                        *this);
+        }
+
 
         /**
          * @brief Asynchron receive of *data* from the *srcVertex* on *edge*.
