@@ -24,7 +24,7 @@ namespace graybat {
 			    break;
 			}
 			else {
-			    myVertices.push_back(graph.getVertices().at(vertex_i));
+			    myVertices.push_back(graph.getVertex(vertex_i));
 			}
 	
 		    }

@@ -48,11 +48,8 @@ namespace graybat {
 
 		
 		for(Vertex v : graph.getVertices()){
-		    for(auto link : graph.getOutEdges(v)){
-			Vertex destVertex = link.first;
-			Edge   destEdge   = link.second;
-
-			adjncy.push_back(destVertex.id);
+		    for(Edge link : graph.getOutEdges(v)){
+			adjncy.push_back(link.target.id);
 			i++;
 			
 		    }
@@ -82,7 +79,7 @@ namespace graybat {
 		idx_t nWeights  = 1;
 		idx_t objval;
 		std::vector<idx_t> part(nVertices, 0);
-		
+
 		METIS_PartGraphKway(&nVertices, &nWeights,
 				    csr.first.data(), csr.second.data(),
 				    NULL, NULL, NULL, &nParts, NULL,
@@ -93,7 +90,7 @@ namespace graybat {
 		
 		for(unsigned part_i = 0; part_i < part.size(); part_i++){
 		    if(part[part_i] == (int)processID){
-			myVertices.push_back(graph.getVertices().at(part_i));
+			myVertices.push_back(graph.getVertex(part_i));
 		    }
 		    
 		} 

@@ -20,7 +20,8 @@ algorithms.
 
 ## See Also ##
 
--  @ref cage
+ - @ref gol.cc "GoL Sources
+ - @ref cage
  - @ref communicationPolicy
  - @ref graphPolicy
  - @ref communicationPattern
