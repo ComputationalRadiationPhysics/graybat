@@ -734,7 +734,10 @@ namespace graybat {
         }
 
         /**
-         * @brief collects data from all incoming edges
+         * @brief Collects data from all incoming edges under the
+         *        assumption that all vertices send the same  number
+         *        of data.
+         *
          *
          * @param[in]  vertex that collects data
          * @param[in]  data were collected data will be stored

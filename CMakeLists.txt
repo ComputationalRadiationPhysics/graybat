@@ -55,12 +55,14 @@ endif(${CXX_COMPILER_IS_CLANG++})
 # Build executables
 ###############################################################################
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/)
-		
-#add_executable(Main EXCLUDE_FROM_ALL src/main.cc)
+
+# Unit tests
+file(GLOB TEST_CASES  utils/unittests/*.cc)
+add_executable(Test EXCLUDE_FROM_ALL ${TEST_CASES})
+
 add_executable(GoL EXCLUDE_FROM_ALL  example/gol.cc )
 add_executable(ZMQ1 EXCLUDE_FROM_ALL example/zmq/request_reply.cc )
 add_executable(ZMQ2 EXCLUDE_FROM_ALL example/zmq/publish_subscribe.cc )
-add_executable(Test EXCLUDE_FROM_ALL utils/unittests/CageUT.cc )
 add_executable(Forward EXCLUDE_FROM_ALL  example/forward.cc )
 add_executable(Ring EXCLUDE_FROM_ALL  example/ring.cc )
 

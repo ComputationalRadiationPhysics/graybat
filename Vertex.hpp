@@ -1,5 +1,8 @@
 #pragma once
 
+#include <numeric> // std::accumulate
+#include <iostream> // std::cout
+
 template <class T_Cage>
 struct CommunicationVertex {
 
@@ -81,14 +84,26 @@ struct CommunicationVertex {
 	
     }
 
-    template <class T_Data, class T_Functor>
+    template <class T_Data>
     void forward(T_Data& data){
+        assert(nInEdges() == nOutEdges());
 	cage.collect(*this, data);
 	cage.spread(*this, data);
 	
     }    
-    
 
+    /**
+     * @brief Collects from each incoming edge one elements and
+     *        reduces them by the binary operator op.
+     *
+     * @param op   binary operator used for reduction (e.g. std::plus).
+     * @param init initial value of the reduction.
+     *
+     * @hint Each adjacent vertex can send a most one element.
+     *
+     * @return reduced value
+     *
+     */
     template <typename T_Op>
     typename T_Op::result_type accumulate(const T_Op op, const typename T_Op::result_type init){
 	std::vector<typename T_Op::result_type> data (nInEdges());
