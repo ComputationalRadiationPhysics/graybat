@@ -1,17 +1,10 @@
 // GrayBat
-<<<<<<< HEAD
-#include <graybat.hpp>
-#include <mapping/Roundrobin.hpp>
-#include <pattern/StarBidirectional.hpp>
-=======
 #include <Cage.hpp>
 #include <communicationPolicy/BMPI.hpp>
 #include <graphPolicy/BGL.hpp>
 
 #include <mapping/Roundrobin.hpp>
-#include <pattern/BidirectionalStar.hpp>
->>>>>>> 49f4bd3... Adapted graybat to haseongpu so it can be used
-#include <boost/optional.hpp> /* boost::optional */
+#include <pattern/BiStar.hpp>
 
 /**
  * @brief Clients start communication with "Hello", Server answers with "World".
@@ -37,7 +30,6 @@ int main() {
     
     // Cage
     typedef graybat::Cage<CP, GP> Cage;
-    typedef typename Cage::Event  Event;
     typedef typename Cage::Vertex Vertex;
     typedef typename Cage::Edge   Edge;
 
@@ -48,7 +40,7 @@ int main() {
     Cage cage;
 
     // Set communication pattern
-    cage.setGraph(graybat::pattern::BidirectionalStar(cage.getPeers().size()));
+    cage.setGraph(graybat::pattern::BiStar(cage.getPeers().size()));
     
     // Map vertices to peers
     cage.distribute(graybat::mapping::Roundrobin());
@@ -67,15 +59,13 @@ int main() {
 
 	    // Server
 	    if(v == server){
-		for(Edge recvEdge : cage.getInEdges(v)){
-		    // Wait for next request from client
-		    cage.recv(recvEdge, hello);
-		    std::cout << "Received " << hello[0] << std::endl;
+                // Wait for next request from client
+                Edge recvEdge = cage.recv(hello);
+                std::cout << "Received " << hello[0] << std::endl;
 
-		    // Send reply back to client
-		    cage.send(recvEdge.inverse(), world);
-		    std::cout << "Send " << world[0] << std::endl;			
-		}
+                // Send reply back to client
+                cage.send(recvEdge.inverse(), world);
+                std::cout << "Send " << world[0] << std::endl;			
 		
 	    }
 

@@ -13,11 +13,11 @@ namespace graybat {
     typedef std::pair<std::vector<VertexID>, std::vector<EdgeDescription> > GraphDescription;
 
     
-    struct BidirectionalStar {
+    struct OutStar {
 
       const unsigned verticesCount;
 
-      BidirectionalStar(const unsigned verticesCount) :
+      OutStar(const unsigned verticesCount) :
 	verticesCount(verticesCount) {
 
       }
@@ -31,7 +31,6 @@ namespace graybat {
 	for(unsigned i = 0; i < vertices.size(); ++i){
 	  vertices.at(i) = i;
 	  if(i != 0){
-	    edges.push_back(std::make_pair(i, 0));
 	    edges.push_back(std::make_pair(0, i));
 	  }
 		
