@@ -43,7 +43,7 @@ int main() {
     cage.setGraph(graybat::pattern::BiStar(cage.getPeers().size()));
     
     // Map vertices to peers
-    cage.distribute(graybat::mapping::Roundrobin());
+    //cage.distribute(graybat::mapping::Roundrobin());
 
     /***************************************************************************
      * Run 
@@ -53,6 +53,10 @@ int main() {
     std::array<std::string, 1> hello{{"Hello"}};
     std::array<std::string, 1> world{{"World"}};
 
+
+    // Cage test
+
+    
     /*
     
     while(true){

@@ -6,10 +6,13 @@
 #include <numeric>    /* std::accumulate */
 #include <iostream>   /* std::cout */
 
-#include <map>          /* std::map */
-#include <exception>    /* std::out_of_range */
-#include <sstream>      /* std::stringstream */
-#include <algorithm>    /* std::transform */
+#include <map>        /* std::map */
+#include <exception>  /* std::out_of_range */
+#include <sstream>    /* std::stringstream, std::istringstream */
+#include <algorithm>  /* std::transform, std::copy */
+
+#include <cstdlib>    /* std::env */
+#include <string>     /* std::string, std::stoi */
 
 
 // ZMQ
@@ -38,43 +41,43 @@ namespace graybat {
 	    
 	    public:
 		Context() :
-		    id(0),
 		    isValid(false){
 
 		}
 
-		Context(ContextID contextID) : 
-		    id(contextID),
-		    isValid(true){
+		Context(VAddr vAddr, unsigned nPeers) : 
+		    isValid(true),
+                    vAddr(vAddr),
+                    nPeers(nPeers){
 		
 		}
 
-		Context& operator=(const Context& otherContext){
-		    id            = otherContext.getID();
-		    isValid       = otherContext.valid();
-		    return *this;
+		// Context& operator=(const Context& otherContext){
+		//     isValid       = otherContext.valid();
+		//     return *this;
 
-		}
+		// }
 
 		size_t size() const{
-                    // TODO 
+                    return nPeers;
 		}
 
 		VAddr getVAddr() const {
-		    // TODO
+                    return vAddr;
 		}
 
-		ContextID getID() const {
-		    return id;
-		}
+		// ContextID getID() const {
+		//     return 0;
+		// }
 
 		bool valid() const{
 		    return isValid;
 		}
 
 	    private:	
-		ContextID id;
-		bool      isValid;
+		bool  isValid;
+                VAddr vAddr;
+                unsigned nPeers;
 	    };
 
 	    /**
@@ -88,23 +91,16 @@ namespace graybat {
 	    class Event {
 	    public:
 		Event() {
-
 		}
 
 		~Event(){
-
 		}
 
 		void wait(){
-	
 		}
 
 		bool ready(){
-
-
 		}
-
-
 	    };
 
 
@@ -116,15 +112,63 @@ namespace graybat {
 	    typedef unsigned MsgType;
 	    typedef int      Uri;
 
-
-	    ZMQ() {
-                zmq::context_t context(1);
-                zmq::socket_t pull(context, ZMQ_PULL);
-                zmq::socket_t push(context, ZMQ_PUSH);
-
-                pull.bind("tcp://*:5555");
-
+            // Members
+            Context initialContext;
+            std::map<VAddr, zmq::socket_t> phoneBook;
+            zmq::context_t context;
+            zmq::socket_t socket;
+            
+            // Constructor
+	    ZMQ() :
+                context(1),
+                socket(context, ZMQ_SUB){
                 
+                const unsigned nPeers = std::stoi(std::getenv("OMPI_COMM_WORLD_SIZE"));
+                const unsigned peerID = std::stoi(std::getenv("OMPI_COMM_WORLD_RANK"));
+                VAddr vAddr(0);
+
+                {
+                    zmq::message_t reqMessage;
+
+                    // Master distributes vAddrs to peers
+                    if(peerID == 0){
+                        zmq::socket_t reply (context, ZMQ_REP);
+                        reply.bind("tcp://127.0.0.1:10000");
+
+                        for(VAddr vAddr = 1; vAddr < nPeers; ++vAddr){
+                            reply.recv(&reqMessage);
+                            toMessage(reqMessage, vAddr);
+                            reply.send(reqMessage);
+                        }
+                    
+                    }
+                    // Retrieve vAddr from master
+                    else {
+                        // Notify the master
+                        zmq::socket_t request (context, ZMQ_REQ);
+                        request.connect("tcp://127.0.0.1:10000");
+                        request.send(reqMessage);
+
+                        // Receive vAddr from master
+                        reqMessage.rebuild();
+                        request.recv(&reqMessage);
+                        std::istringstream iss(static_cast<char*>(reqMessage.data()));
+                        iss >> vAddr;
+                        
+                    }
+
+                }
+
+                // Create initial context from vAddr
+                initialContext = Context(vAddr, nPeers);
+                socket.bind((std::string("tcp://127.0.0.1:1000") + std::to_string(vAddr)).c_str());
+
+                // Fill phoneBook with information
+                for(VAddr vAddr = 0; vAddr < nPeers; ++vAddr){
+                    phoneBook.emplace(vAddr, zmq::socket_t (context, ZMQ_PUB));
+                    phoneBook.at(vAddr).connect((std::string("tcp://127.0.0.1:1000") + std::to_string(vAddr)).c_str());
+                    
+                }
 
 	    }
 
@@ -132,6 +176,24 @@ namespace graybat {
 	    ~ZMQ(){
 		
 	    }
+
+            /**
+             * @brief transforms primitive datatypes to a zmq message
+             *
+             */
+            template <class T>
+            void toMessage(zmq::message_t &message, const T data){
+                std::stringstream ss;
+                ss << data;
+
+                message.rebuild(ss.str().size());
+                memcpy ((void *) message.data (), ss.str().c_str(), ss.str().size());
+
+            }
+
+
+
+            
 	    /***********************************************************************//**
              *
 	     * @name Point to Point Communication Interface
@@ -507,7 +569,7 @@ namespace graybat {
 	     *
 	     */
 	    Context getGlobalContext(){
-	     	// TODO
+	     	return initialContext;
 	    }
 	    /** @} */
 

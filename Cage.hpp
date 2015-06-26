@@ -286,7 +286,6 @@ namespace graybat {
         
             // Each peer announces the vertices it hosts
             if(newContext.valid()){
-
                 std::array<unsigned, 1> nVertices {{vertices.size()}};
                 std::vector<unsigned> vertexIDs;
                 
