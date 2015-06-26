@@ -15,6 +15,13 @@ include_directories(SYSTEM ${METIS_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${METIS_LIBRARIES})
 
 ###############################################################################
+# ZMQ
+###############################################################################
+find_package(ZMQ 4.0.0)
+include_directories(SYSTEM ${ZMQ_INCLUDE_DIRS})
+set(LIBS ${LIBS} ${ZMQ_LIBRARIES})
+
+###############################################################################
 # Boost
 ###############################################################################
 find_package(Boost 1.58.0 COMPONENTS mpi unit_test_framework serialization REQUIRED)

@@ -1,6 +1,6 @@
 // GrayBat
 #include <Cage.hpp>
-#include <communicationPolicy/BMPI.hpp>
+#include <communicationPolicy/ZMQ.hpp>
 #include <graphPolicy/BGL.hpp>
 
 #include <mapping/Roundrobin.hpp>
@@ -23,7 +23,7 @@ int main() {
      ****************************************************************************/
 
     // CommunicationPolicy
-    typedef graybat::communicationPolicy::BMPI CP;
+    typedef graybat::communicationPolicy::ZMQ CP;
     
     // GraphPolicy
     typedef graybat::graphPolicy::BGL<>        GP;
@@ -52,6 +52,8 @@ int main() {
 
     std::array<std::string, 1> hello{{"Hello"}};
     std::array<std::string, 1> world{{"World"}};
+
+    /*
     
     while(true){
 
@@ -60,11 +62,11 @@ int main() {
 	    // Server
 	    if(v == server){
                 // Wait for next request from client
-                Edge recvEdge = cage.recv(hello);
+                 Edge recvEdge = cage.recv(hello);
                 std::cout << "Received " << hello[0] << std::endl;
 
                 // Send reply back to client
-                cage.send(recvEdge.inverse(), world);
+                 cage.send(recvEdge.inverse(), world);
                 std::cout << "Send " << world[0] << std::endl;			
 		
 	    }
@@ -73,11 +75,11 @@ int main() {
 	    if(v != server){
 		for(Edge sendEdge : cage.getOutEdges(v)){
 		    // Send a hello
-		    cage.send(sendEdge, hello);
+		     cage.send(sendEdge, hello);
 		    std::cout << "Send " << hello[0] << std::endl;
 		
 		    // Get the reply
-		    cage.recv(sendEdge.inverse(), world);
+		     cage.recv(sendEdge.inverse(), world);
 		    std::cout << "Received " << world[0] << std::endl;
 		}
 		
@@ -86,6 +88,8 @@ int main() {
 	}
 	
     }
+
+    */
     
     return 0;
 }

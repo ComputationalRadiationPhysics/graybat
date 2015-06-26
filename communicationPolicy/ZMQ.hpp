@@ -52,17 +52,16 @@ namespace graybat {
 		Context& operator=(const Context& otherContext){
 		    id            = otherContext.getID();
 		    isValid       = otherContext.valid();
-		    comm          = otherContext.comm;
 		    return *this;
 
 		}
 
 		size_t size() const{
-		    return comm.size();
+                    // TODO 
 		}
 
 		VAddr getVAddr() const {
-		    return comm.rank();
+		    // TODO
 		}
 
 		ContextID getID() const {
@@ -119,6 +118,13 @@ namespace graybat {
 
 
 	    ZMQ() {
+                zmq::context_t context(1);
+                zmq::socket_t pull(context, ZMQ_PULL);
+                zmq::socket_t push(context, ZMQ_PUSH);
+
+                pull.bind("tcp://*:5555");
+
+                
 
 	    }
 
@@ -310,7 +316,7 @@ namespace graybat {
 	     */
 	    template <typename T_Send, typename T_Recv>
 	    void allGather(const Context context, const T_Send& sendData, T_Recv& recvData){
-		mpi::all_gather(context.comm, sendData.data(), sendData.size(), recvData.data());
+		// TODO
 		
 	    }
 
@@ -432,7 +438,7 @@ namespace graybat {
 	     */
 	    template <typename T_Send, typename T_Recv, typename T_Op>
 	    void allReduce(const Context context, T_Op op, const T_Send& sendData, T_Recv& recvData){
-		mpi::all_reduce(context.comm, sendData.data(), sendData.size(), recvData.data(), op);
+                // TODO
 	     
 	    }
 
@@ -491,7 +497,7 @@ namespace graybat {
 	     *
 	     */
 	    Context createContext(const std::vector<VAddr> vAddrs, const Context oldContext){
-	    	    return Context();
+                return Context();
 		
 	    }
 
@@ -501,7 +507,7 @@ namespace graybat {
 	     *
 	     */
 	    Context getGlobalContext(){
-	     	return initialContext;
+	     	// TODO
 	    }
 	    /** @} */
 
