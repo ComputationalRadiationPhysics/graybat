@@ -114,39 +114,43 @@ namespace graybat {
 
             // Members
             Context initialContext;
-            std::map<VAddr, zmq::socket_t> phoneBook;
+            std::map<VAddr, zmq::socket_t> phoneBookIn;
+            std::map<VAddr, zmq::socket_t> phoneBookOut;
             zmq::context_t context;
-            zmq::socket_t socket;
+
             
             // Constructor
 	    ZMQ() :
-                context(1),
-                socket(context, ZMQ_SUB){
-                
-                const unsigned nPeers = std::stoi(std::getenv("OMPI_COMM_WORLD_SIZE"));
-                const unsigned peerID = std::stoi(std::getenv("OMPI_COMM_WORLD_RANK"));
+                context(1){
+
+                const std::string baseAddress = "tcp://127.0.0.1:1000";
+                const unsigned nPeers         = std::stoi(std::getenv("OMPI_COMM_WORLD_SIZE"));
+                const unsigned peerID         = std::stoi(std::getenv("OMPI_COMM_WORLD_RANK"));
                 VAddr vAddr(0);
 
+
                 {
+                    zmq::context_t context(1);
                     zmq::message_t reqMessage;
 
                     // Master distributes vAddrs to peers
                     if(peerID == 0){
                         zmq::socket_t reply (context, ZMQ_REP);
-                        reply.bind("tcp://127.0.0.1:10000");
+                        reply.bind((baseAddress + std::to_string(0)).c_str());
 
                         for(VAddr vAddr = 1; vAddr < nPeers; ++vAddr){
                             reply.recv(&reqMessage);
                             toMessage(reqMessage, vAddr);
                             reply.send(reqMessage);
+                            
                         }
-                    
+                        
                     }
                     // Retrieve vAddr from master
                     else {
                         // Notify the master
                         zmq::socket_t request (context, ZMQ_REQ);
-                        request.connect("tcp://127.0.0.1:10000");
+                        request.connect((baseAddress + std::to_string(0)).c_str());
                         request.send(reqMessage);
 
                         // Receive vAddr from master
@@ -161,15 +165,28 @@ namespace graybat {
 
                 // Create initial context from vAddr
                 initialContext = Context(vAddr, nPeers);
-                socket.bind((std::string("tcp://127.0.0.1:1000") + std::to_string(vAddr)).c_str());
 
-                // Fill phoneBook with information
-                for(VAddr vAddr = 0; vAddr < nPeers; ++vAddr){
-                    phoneBook.emplace(vAddr, zmq::socket_t (context, ZMQ_PUB));
-                    phoneBook.at(vAddr).connect((std::string("tcp://127.0.0.1:1000") + std::to_string(vAddr)).c_str());
+                {
+                    // Fill phoneBook with information
+                    for(VAddr remoteVAddr = 0; remoteVAddr < nPeers; ++remoteVAddr){
+
+                        // Create socket for outgoing connection to remote
+                        std::string outCon = baseAddress + std::to_string(remoteVAddr * nPeers + remoteVAddr);
+                        phoneBookOut.emplace(remoteVAddr, zmq::socket_t (context, ZMQ_PUB));
+                        phoneBookOut.at(remoteVAddr).connect (outCon.c_str());
+                        std::cout <<  "OUT [" << vAddr<< "]" << outCon << std::endl;
+
+                        // Create socket for incoming connection from remote
+                        std::string inCon = baseAddress + std::to_string(vAddr * nPeers + remoteVAddr);
+                        phoneBookIn.emplace(remoteVAddr, zmq::socket_t (context, ZMQ_SUB));
+                        phoneBookIn.at(remoteVAddr).connect (inCon.c_str());
+                        std::cout <<  "IN [" << vAddr<< "]" << inCon << std::endl;
+                        
+
+                    }
                     
                 }
-
+                
 	    }
 
 	    // Destructor
