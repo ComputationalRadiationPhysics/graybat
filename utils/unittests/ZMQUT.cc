@@ -1,13 +1,18 @@
-// GrayBat
+// boost 
+#include <boost/test/unit_test.hpp>
+
+// graybat
 #include <communicationPolicy/ZMQ.hpp>
 
+// STL
+#include <functional> /* std::plus */
+#include <iostream>   /* std::cout, std::endl */
+#include <array>      /* std::array */
 
-int main() {
-    /***************************************************************************
-     * Configuration
-     ****************************************************************************/
 
-    // CommunicationPolicy
+BOOST_AUTO_TEST_SUITE( zmq )
+
+BOOST_AUTO_TEST_CASE( allreduce ){
     typedef graybat::communicationPolicy::ZMQ ZMQ;
     typedef typename ZMQ::Context Context;
     
@@ -22,6 +27,6 @@ int main() {
 
     std::cout << recv[0] << std::endl;
     
-    
-    return 0;
 }
+
+BOOST_AUTO_TEST_SUITE_END()

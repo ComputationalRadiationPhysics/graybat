@@ -518,11 +518,12 @@ namespace graybat {
 	    template <typename T_Send, typename T_Recv, typename T_Op>
 	    void allReduce(const Context context, T_Op op, const T_Send& sendData, T_Recv& recvData){
                 if(context.getVAddr() == 0){
-                    for(zmq::socket_t &socket : phoneBookIn){
+                    for(auto &socket : phoneBookIn){
                         zmq::message_t message(recvData.size());
-                        socket.recv(&message);
-                        std::istringstream iss(static_cast<typename T_Recv::value_type*>(message.data()));
-                        iss >> recvData.data();
+                        socket.second.recv(&message);
+                        memcpy (recvData.data(), (void *) message.data(), recvData.size());
+                        //std::istringstream iss(static_cast<unsigned*>(message.data()));
+                        //iss >> (*recvData.data());
 
                         
                     }
