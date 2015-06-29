@@ -567,49 +567,46 @@ namespace graybat {
 	     *
 	     ***************************************************************************/
 	    /**
-	     * @brief Creates a new context from peer *ids* of an *oldContext*
+	     * @brief Creates a new context with all peers that declared isMember as true.
 	     *
 	     */
-	    Context createContext(const std::vector<VAddr> vAddrs, const Context oldContext){
-	    	assert(vAddrs.size() > 0);
-		
-		VAddr myVAddr = oldContext.getVAddr();
-		bool  isPartOfNewContext = false;
-		
-	    	for(VAddr vAddr : vAddrs){
-		    if(vAddr == myVAddr){
-			isPartOfNewContext = true;
-		    }
+            Context splitContext(const bool isMember, const Context oldContext){
+                mpi::communicator newComm = oldContext.comm.split(isMember);
 
-	    	}
-
-		mpi::communicator newComm = oldContext.comm.split(isPartOfNewContext);
-
-	    	if(isPartOfNewContext){
-	    	    std::array<Uri, 1> uri;
-
+                if(isMember){
 	    	    Context newContext(++contextCount, newComm);
-		    uri[0] = newContext.getVAddr();
+                    std::array<Uri, 1> uri {{ (int) newContext.getVAddr() }};
+                    uriMap.push_back(std::vector<Uri>(newContext.size()));
 
-	    	    // Update UriMap
-	    	    uriMap.push_back(std::vector<Uri>(newContext.size()));
-	    	    std::vector<Uri> otherUris(newContext.size());
+                    std::vector<Event> events;
+                    
+                    for(unsigned i = 0; i < newContext.size(); ++i){
+                        events.push_back(Event(newContext.comm.isend(i, 0, uri.data(), 1)));
+                        
+                    }
 
-		    allGather(newContext, uri, otherUris);
+                    for(unsigned i = 0; i < newContext.size(); ++i){
+                        std::array<Uri, 1> otherUri {{ 0 }};
+                        newContext.comm.recv(i, 0, otherUri.data(), 1);
+                        uriMap.at(newContext.getID()).at(i) = otherUri[0];
+                        
+                    }
 
-		    std::copy(otherUris.begin(), otherUris.end(), uriMap[newContext.getID()].begin());
+                    for(unsigned i = 0; i < events.size(); ++i){
+                        events.back().wait();
+                        events.pop_back();
+                    }
 
-	    	    return newContext;
+                    return newContext;
 
-	    	}
-	    	else {
-	    	    // return invalid context
-	    	    // for peers not anymore included
-	    	    return Context();
-		
-	    	}
-	    
-	    }
+                    
+                }
+                else {
+                    return Context();
+                }
+
+                
+            }
 
 	
 	    /**

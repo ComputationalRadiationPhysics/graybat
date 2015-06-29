@@ -277,72 +277,38 @@ namespace graybat {
 
             if(global){
                 oldContext = comm.getGlobalContext();
-
-            }
-                
-            if(!oldContext.valid()){
-
-            }
-            else {
-                //std::cout << "Has already context" << std::endl;
             }
 
             assert(oldContext.valid());
 
-            // Create new context for peers which host vertices
-            std::vector<unsigned> nVertices(1, vertices.size());
-            std::vector<unsigned> recvHasVertices(oldContext.size(), 0);
-            comm.allGather(oldContext, nVertices, recvHasVertices);
-
-            std::vector<VAddr> vAddrsWithVertices;
-
-            for(unsigned i = 0; i < recvHasVertices.size(); ++i){
-                if(recvHasVertices[i] > 0){
-                    vAddrsWithVertices.push_back(i);
-                }
-            }
-
-            Context newContext = comm.createContext(vAddrsWithVertices, oldContext);
+            Context newContext = comm.splitContext(vertices.size(), oldContext);
             graphContext = newContext;
         
             // Each peer announces the vertices it hosts
             if(newContext.valid()){
-                // Bound graph to new context
 
-            
-                // Retrieve maximum number of vertices per peer
-                std::vector<unsigned> nVertices(1,vertices.size());
-                std::vector<unsigned> maxVerticesCount(1,  0);
-                comm.allReduce(newContext, maximum<unsigned>(), nVertices, maxVerticesCount);
-
-                // Gather maxVerticesCount times vertex ids
-                std::vector<std::vector<Vertex> > newVertexMaps (newContext.size(), std::vector<Vertex>());
-                for(unsigned i = 0; i < maxVerticesCount[0]; ++i){
-                    std::vector<int> vertexID(1, -1);
-                    std::vector<int> recvData(newContext.size(), 0);
-
-                    if(i < vertices.size()){
-                        vertexID[0] = vertices.at(i).id;
-                    }
-
-                    comm.allGather(newContext, vertexID, recvData);
+                std::array<unsigned, 1> nVertices {{vertices.size()}};
+                std::vector<unsigned> vertexIDs;
                 
-                   
-                    for(unsigned vAddr = 0; vAddr < newVertexMaps.size(); ++vAddr){
-                        if(recvData[vAddr] != -1){
-                            VertexID vertexID = (VertexID) recvData[vAddr];
-                            Vertex v = getVertices().at(vertexID);
-                            vertexMap[v.id] = vAddr;
-                            newVertexMaps[vAddr].push_back(v);
-                    
-                        }
+                std::for_each(vertices.begin(), vertices.end(), [&vertexIDs](Vertex v){vertexIDs.push_back(v.id);});
+                
+                for(unsigned vAddr = 0; vAddr < newContext.size(); ++vAddr){
+                    comm.asyncSend(vAddr, 0, newContext, nVertices);
+                    comm.asyncSend(vAddr, 0, newContext, vertexIDs);
+                }
+                
+                for(unsigned vAddr = 0; vAddr < newContext.size(); ++vAddr){
+                    std::vector<Vertex>  remoteVertices;
+                    std::array<unsigned, 1> nVertices {{ 0 }};
+                    comm.recv(vAddr, 0, newContext, nVertices);
+                    std::vector<unsigned> vertexIDs(nVertices[0]);
+                    comm.recv(vAddr, 0, newContext, vertexIDs);
 
+                    for(unsigned u : vertexIDs){
+                        vertexMap[u] = vAddr;
+                        remoteVertices.push_back(Cage::getVertex(u));
                     }
-      
-                    for(unsigned vAddr = 0; vAddr < newVertexMaps.size(); ++vAddr){
-                        peerMap[vAddr] = newVertexMaps[vAddr];
-
-                    }
+                    peerMap[vAddr] = remoteVertices;
 
                 }
 
