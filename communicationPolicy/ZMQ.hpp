@@ -174,13 +174,13 @@ namespace graybat {
                         std::string outCon = baseAddress + std::to_string(remoteVAddr * nPeers + remoteVAddr);
                         phoneBookOut.emplace(remoteVAddr, zmq::socket_t (context, ZMQ_PUB));
                         phoneBookOut.at(remoteVAddr).connect (outCon.c_str());
-                        std::cout <<  "OUT [" << vAddr<< "]" << outCon << std::endl;
+                        // std::cout <<  "OUT [" << vAddr<< "]" << outCon << std::endl;
 
                         // Create socket for incoming connection from remote
                         std::string inCon = baseAddress + std::to_string(vAddr * nPeers + remoteVAddr);
                         phoneBookIn.emplace(remoteVAddr, zmq::socket_t (context, ZMQ_SUB));
                         phoneBookIn.at(remoteVAddr).connect (inCon.c_str());
-                        std::cout <<  "IN [" << vAddr<< "]" << inCon << std::endl;
+                        // std::cout <<  "IN [" << vAddr<< "]" << inCon << std::endl;
                         
 
                     }
@@ -395,7 +395,7 @@ namespace graybat {
 	     */
 	    template <typename T_Send, typename T_Recv>
 	    void allGather(const Context context, const T_Send& sendData, T_Recv& recvData){
-		// TODO
+                
 		
 	    }
 
@@ -517,6 +517,22 @@ namespace graybat {
 	     */
 	    template <typename T_Send, typename T_Recv, typename T_Op>
 	    void allReduce(const Context context, T_Op op, const T_Send& sendData, T_Recv& recvData){
+                if(context.getVAddr() == 0){
+                    for(zmq::socket_t &socket : phoneBookIn){
+                        zmq::message_t message(recvData.size());
+                        socket.recv(&message);
+                        std::istringstream iss(static_cast<typename T_Recv::value_type*>(message.data()));
+                        iss >> recvData.data();
+
+                        
+                    }
+                    
+                }
+                else {
+
+                }
+
+                
                 // TODO
 	     
 	    }
@@ -576,6 +592,10 @@ namespace graybat {
 	     *
 	     */
 	    Context createContext(const std::vector<VAddr> vAddrs, const Context oldContext){
+                
+
+
+                
                 return Context();
 		
 	    }
