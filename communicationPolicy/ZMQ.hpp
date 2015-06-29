@@ -103,6 +103,7 @@ namespace graybat {
 		}
 
 		bool ready(){
+                    return true;
 		}
 	    };
 
@@ -177,8 +178,8 @@ namespace graybat {
 
                         // Create socket for outgoing connection to remote
                         std::string outCon = baseAddress + std::to_string(vAddr * nPeers + remoteVAddr);
-                        phoneBookOut.emplace(remoteVAddr, zmq::socket_t (context, ZMQ_REQ));
-                        phoneBookOut.at(remoteVAddr).connect(outCon.c_str());
+                        phoneBookOut.emplace(remoteVAddr, zmq::socket_t (context, ZMQ_PUSH));
+                        phoneBookOut.at(remoteVAddr).bind(outCon.c_str());
                         std::cout <<  "OUT [" << vAddr<< "][" << remoteVAddr<< "]" << outCon << std::endl;
 
                     }
@@ -188,8 +189,8 @@ namespace graybat {
 
                         // Create socket for incoming connection from remote
                         std::string inCon = baseAddress + std::to_string(remoteVAddr * nPeers + vAddr);
-                        phoneBookIn.emplace(remoteVAddr, zmq::socket_t (context, ZMQ_REP));
-                        phoneBookIn.at(remoteVAddr).bind(inCon.c_str());
+                        phoneBookIn.emplace(remoteVAddr, zmq::socket_t (context, ZMQ_PULL));
+                        phoneBookIn.at(remoteVAddr).connect(inCon.c_str());
                         std::cout <<  "IN [" << vAddr << "][" << remoteVAddr << "]" << inCon << std::endl;
                         
                     }
@@ -408,11 +409,11 @@ namespace graybat {
 	     * @param[out] recvData Data from all *context* members, that all peers* will receive.
 	     *
 	     */
-	    template <typename T_Send, typename T_Recv>
-	    void allGather(const Context context, const T_Send& sendData, T_Recv& recvData){
+	    // template <typename T_Send, typename T_Recv>
+	    // void allGather(const Context context, const T_Send& sendData, T_Recv& recvData){
                 
 		
-	    }
+	    // }
 
 	
 	    /**
@@ -530,35 +531,11 @@ namespace graybat {
 	     *                       reduced sendData values.
 	     *
 	     */
-	    template <typename T_Send, typename T_Recv, typename T_Op>
-	    void allReduce(const Context context, T_Op op, const T_Send& sendData, T_Recv& recvData){
-                zmq::message_t message(sendData.size());
-                memcpy ((void *) message.data(), sendData.data(), sendData.size());
-                phoneBookOut.at(0).send(message);
-
-                if(context.getVAddr() == 0){
-                    for(auto &socket : phoneBookIn){
-                        zmq::message_t message(recvData.size());
-                        std::cout << "recv from " << socket.first << std::endl;
-
-                        socket.second.recv(&message);
-                        memcpy (recvData.data(), (void *) message.data(), recvData.size());
-                        std::cout << recvData[0] << std::endl;
-                        //std::istringstream iss(static_cast<unsigned*>(message.data()));
-                        //iss >> (*recvData.data());
-
-                        
-                    }
-                    
-                }
-                else {
-
-                }
-
-                
-                // TODO
+	    // template <typename T_Send, typename T_Recv, typename T_Op>
+	    // void allReduce(const Context context, T_Op op, const T_Send& sendData, T_Recv& recvData){
+      
 	     
-	    }
+	    // }
 
 	
 	    /**
@@ -611,15 +588,48 @@ namespace graybat {
 	     *
 	     ***************************************************************************/
 	    /**
-	     * @brief Creates a new context from peer *ids* of an *oldContext*
+	     * @todo peers of oldContext retain their vAddr in the newcontext
 	     *
 	     */
-	    Context createContext(const std::vector<VAddr> vAddrs, const Context oldContext){
-                
+	    Context splitContext(const bool isMember, const Context oldContext){
+                zmq::context_t context(1);
+                zmq::message_t reqMessage;
+
+                // Request old master for new context
+                std::array<unsigned, 1> member {{ isMember }};
+                ZMQ::asyncSend(0, 0, oldContext, member);
+
+                if( oldContext.getVAddr() == 0){
+                    std::array<unsigned, 1> nMembers {{ 0 }};
+                    std::vector<VAddr> vAddrs;
+                    
+                    for(unsigned vAddr = 0; vAddr < oldContext.size(); ++vAddr){
+                        std::array<unsigned, 1> remoteIsMember {{ 0 }};
+                        ZMQ::recv(vAddr, 0, oldContext, remoteIsMember);
 
 
-                
-                return Context();
+                        if(remoteIsMember[0]) {
+                            nMembers[0]++;
+                            vAddrs.push_back(vAddr);
+                        }
+                    }
+                    
+                    for(VAddr vAddr : vAddrs){
+                        ZMQ::asyncSend(vAddr, 0, oldContext, nMembers);
+                    }
+                        
+                }
+
+
+                if(isMember){
+                    std::array<unsigned, 1> nMembers {{ 0 }};
+                    ZMQ::recv(0, 0, oldContext, nMembers);
+                    return Context(oldContext.getVAddr(), nMembers[0]);
+                    
+                }
+                else{
+                    return Context();
+                }
 		
 	    }
 
