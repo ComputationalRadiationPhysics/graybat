@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE( send_recv){
     
     
     for(Vertex v : grid.hostedVertices){
-        for(Edge edge : cage.getOutEdges(v)){
+        for(Edge edge : grid.getOutEdges(v)){
             Event e = edge << send;
             events.push_back(e);
         }
@@ -62,7 +62,7 @@ BOOST_AUTO_TEST_CASE( send_recv){
     }
 
     for(Vertex v : grid.hostedVertices){
-        for(Edge edge : cage.getInEdges(v)){
+        for(Edge edge : grid.getInEdges(v)){
             edge >> recv;
             for(unsigned u : recv){
                 BOOST_CHECK_EQUAL(u, testValue);
