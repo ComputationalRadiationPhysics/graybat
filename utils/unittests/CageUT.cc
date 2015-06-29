@@ -10,7 +10,7 @@
 #include <mapping/Random.hpp>
 #include <mapping/Consecutive.hpp>
 #include <pattern/FullyConnected.hpp>
-#include <pattern/Star.hpp>
+#include <pattern/InStar.hpp>
 #include <pattern/Grid.hpp>
 
 
@@ -45,7 +45,7 @@ BOOST_AUTO_TEST_SUITE(point_to_point)
 
 
 MyCage allToAll(graybat::pattern::FullyConnected(2));
-MyCage star(graybat::pattern::Star(2));
+MyCage star(graybat::pattern::InStar(2));
 
 BOOST_AUTO_TEST_CASE( send_recv ){
     star.distribute(graybat::mapping::Consecutive());
@@ -129,7 +129,7 @@ BOOST_AUTO_TEST_SUITE_END()
 BOOST_AUTO_TEST_SUITE( collectives )
 
 MyCage grid(graybat::pattern::Grid(3,3));
-MyCage star(graybat::pattern::Star(20));
+MyCage star(graybat::pattern::InStar(20));
 
 BOOST_AUTO_TEST_CASE( reduce ){
 
