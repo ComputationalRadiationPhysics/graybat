@@ -14,6 +14,7 @@
 #include <cstdlib>    /* std::env */
 #include <string>     /* std::string, std::stoi */
 
+#include <assert.h>   /* assert */
 
 // ZMQ
 #include <zmq.hpp>
@@ -41,7 +42,9 @@ namespace graybat {
 	    
 	    public:
 		Context() :
-		    isValid(false){
+		    isValid(false),
+                    vAddr(0),
+                    nPeers(1){
 
 		}
 
@@ -162,31 +165,39 @@ namespace graybat {
                     }
 
                 }
+                
 
                 // Create initial context from vAddr
                 initialContext = Context(vAddr, nPeers);
 
                 {
-                    // Fill phoneBook with information
+                    // Fill phoneBookOut
                     for(VAddr remoteVAddr = 0; remoteVAddr < nPeers; ++remoteVAddr){
 
+
                         // Create socket for outgoing connection to remote
-                        std::string outCon = baseAddress + std::to_string(remoteVAddr * nPeers + remoteVAddr);
-                        phoneBookOut.emplace(remoteVAddr, zmq::socket_t (context, ZMQ_PUB));
-                        phoneBookOut.at(remoteVAddr).connect (outCon.c_str());
-                        // std::cout <<  "OUT [" << vAddr<< "]" << outCon << std::endl;
+                        std::string outCon = baseAddress + std::to_string(vAddr * nPeers + remoteVAddr);
+                        phoneBookOut.emplace(remoteVAddr, zmq::socket_t (context, ZMQ_REQ));
+                        phoneBookOut.at(remoteVAddr).connect(outCon.c_str());
+                        std::cout <<  "OUT [" << vAddr<< "][" << remoteVAddr<< "]" << outCon << std::endl;
+
+                    }
+
+                    // Fill phoneBookIN
+                    for(VAddr remoteVAddr = 0; remoteVAddr < nPeers; ++remoteVAddr){
 
                         // Create socket for incoming connection from remote
-                        std::string inCon = baseAddress + std::to_string(vAddr * nPeers + remoteVAddr);
-                        phoneBookIn.emplace(remoteVAddr, zmq::socket_t (context, ZMQ_SUB));
-                        phoneBookIn.at(remoteVAddr).connect (inCon.c_str());
-                        // std::cout <<  "IN [" << vAddr<< "]" << inCon << std::endl;
+                        std::string inCon = baseAddress + std::to_string(remoteVAddr * nPeers + vAddr);
+                        phoneBookIn.emplace(remoteVAddr, zmq::socket_t (context, ZMQ_REP));
+                        phoneBookIn.at(remoteVAddr).bind(inCon.c_str());
+                        std::cout <<  "IN [" << vAddr << "][" << remoteVAddr << "]" << inCon << std::endl;
                         
-
                     }
                     
                 }
-                
+
+
+
 	    }
 
 	    // Destructor
@@ -232,13 +243,16 @@ namespace graybat {
 	     *
 	     * @return Event
 	     */
-	    // template <typename T_Send>
-	    // Event asyncSend(const VAddr destVAddr, const Tag tag, const Context context, const T_Send& sendData){
-	    // 	Uri destUri = getVAddrUri(context, destVAddr);
-	    // 	mpi::request request = context.comm.isend(destUri, tag, sendData.data(), sendData.size());
-	    // 	return Event(request);
+            template <typename T_Send>
+            Event asyncSend(const VAddr destVAddr, const Tag tag, const Context context, const T_Send& sendData){
+                zmq::message_t message(sendData.size() * sizeof(typename T_Send::value_type));
+                memcpy (message.data(), sendData.data(), message.size());
+                phoneBookOut.at(destVAddr).send(message);
 
-	    // }
+                // TODO: fill event with information
+                return Event();
+                
+            }
 
 
 	    /**
@@ -295,12 +309,13 @@ namespace graybat {
 	     *                        return the amount of data elements to send. Notice, that
 	     *                        std::vector and std::array implement this interface.
 	     */
-	    // template <typename T_Recv>
-	    // void recv(const VAddr srcVAddr, const Tag tag, const Context context, T_Recv& recvData){
-	    // 	Uri srcUri = getVAddrUri(context, srcVAddr);
-	    // 	context.comm.recv(srcUri, tag, recvData.data(), recvData.size());
+	     template <typename T_Recv>
+	     void recv(const VAddr srcVAddr, const Tag tag, const Context context, T_Recv& recvData){
+                 zmq::message_t message;
+                 phoneBookIn.at(srcVAddr).recv(&message);
+                 memcpy (recvData.data(),  message.data(), message.size());
 
-	    // }
+	     }
 	    /** @} */
     
 	    /************************************************************************//**
@@ -517,11 +532,18 @@ namespace graybat {
 	     */
 	    template <typename T_Send, typename T_Recv, typename T_Op>
 	    void allReduce(const Context context, T_Op op, const T_Send& sendData, T_Recv& recvData){
+                zmq::message_t message(sendData.size());
+                memcpy ((void *) message.data(), sendData.data(), sendData.size());
+                phoneBookOut.at(0).send(message);
+
                 if(context.getVAddr() == 0){
                     for(auto &socket : phoneBookIn){
                         zmq::message_t message(recvData.size());
+                        std::cout << "recv from " << socket.first << std::endl;
+
                         socket.second.recv(&message);
                         memcpy (recvData.data(), (void *) message.data(), recvData.size());
+                        std::cout << recvData[0] << std::endl;
                         //std::istringstream iss(static_cast<unsigned*>(message.data()));
                         //iss >> (*recvData.data());
 
