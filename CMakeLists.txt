@@ -7,6 +7,12 @@ cmake_minimum_required(VERSION 2.8.5)
 ###############################################################################
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/utils/cmake/modules/" ${CMAKE_MODULE_PATH})
 
+################################################################################
+# Find PThreads
+################################################################################
+find_package(Threads REQUIRED)
+set(LIBS ${LIBS} ${CMAKE_THREAD_LIBS_INIT})
+
 ###############################################################################
 # METIS
 ###############################################################################
@@ -39,6 +45,7 @@ set(LIBS ${LIBS} ${MPI_C_LIBRARIES})
 if(MPI_CXX_FOUND)
   set(LIBS ${LIBS} ${MPI_CXX_LIBRARIES})
 endif(MPI_CXX_FOUND)
+
 
 ###############################################################################
 # Compiler Flags
