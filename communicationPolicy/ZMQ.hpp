@@ -505,6 +505,9 @@ namespace graybat {
                      memcpy (&remoteVAddr,      static_cast<char*>(message.data()) + msgOffset, sizeof(VAddr));     msgOffset += sizeof(VAddr);
                      memcpy (&remoteTag,        static_cast<char*>(message.data()) + msgOffset, sizeof(Tag));       msgOffset += sizeof(Tag);
 
+
+                     std::vector<zmq::message_t> messageBuffer;
+                     
                      // Recv rest of message
                      if(context.getID() == remoteContextID) {
                          if(srcVAddr == remoteVAddr) {
@@ -517,6 +520,7 @@ namespace graybat {
                                  msgReceived  = true;
                              }
                              else {
+                                 messageBuffer.push_back(message);
                                  std::cout << "Tag and remote tag are not the same: " << tag << " != " << remoteTag << std::endl;
                              }
                          }
