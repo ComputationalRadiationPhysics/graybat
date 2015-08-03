@@ -1,13 +1,19 @@
 #pragma once
+
+// STL
 #include <map>        /* map */
 #include <set>        /* set */
 #include <exception>  /* std::out_of_range */
 #include <sstream>    /* std::stringstream */
-#include <assert.h>   /* assert */
-#include <cstddef>    /* nullptr_t */
 #include <algorithm>  /* std::max */
 #include <stdexcept>  /* std::runtime_error */
 #include <tuple>      /* std::tie */
+#include <sstream>    /* std::sstream */
+
+// C LIB
+#include <assert.h>   /* assert */
+#include <cstddef>    /* nullptr_t */
+
 
 #include <utils.hpp>  /* exclusivePrefixSum */
 #include <Vertex.hpp> /* CommunicationVertex */
@@ -237,6 +243,8 @@ namespace graybat {
          */
         template<class T_Functor>
         void distribute(T_Functor distFunctor){
+            //std::cout << comm.getGlobalContext().getVAddr() << " " << comm.getGlobalContext().size() << std::endl;
+            
             hostedVertices = distFunctor(comm.getGlobalContext().getVAddr(),
                                          comm.getGlobalContext().size(),
                                          *this);
@@ -281,29 +289,36 @@ namespace graybat {
 
             assert(oldContext.valid());
 
-            Context newContext = comm.splitContext(vertices.size(), oldContext);
-            graphContext = newContext;
-        
+            graphContext = comm.splitContext(vertices.size(), oldContext);
+
+            /*
+            
             // Each peer announces the vertices it hosts
-            if(newContext.valid()){
+            if(graphContext.valid()){
                 std::array<unsigned, 1> nVertices {{vertices.size()}};
                 std::vector<unsigned> vertexIDs;
-                
+
                 std::for_each(vertices.begin(), vertices.end(), [&vertexIDs](Vertex v){vertexIDs.push_back(v.id);});
-                
-                for(unsigned vAddr = 0; vAddr < newContext.size(); ++vAddr){
-                    comm.asyncSend(vAddr, 0, newContext, nVertices);
-                    comm.asyncSend(vAddr, 0, newContext, vertexIDs);
+
+                // Send hostedVertices to all other peers
+                for(unsigned vAddr = 0; vAddr < graphContext.size(); ++vAddr){
+                    assert(nVertices[0] != 0);
+                    comm.asyncSend(vAddr, 0, graphContext, nVertices);
+                    comm.asyncSend(vAddr, 0, graphContext, vertexIDs);
                 }
-                
-                for(unsigned vAddr = 0; vAddr < newContext.size(); ++vAddr){
+
+                // Recv hostedVertices from all other peers
+                for(unsigned vAddr = 0; vAddr < graphContext.size(); ++vAddr){
                     std::vector<Vertex>  remoteVertices;
                     std::array<unsigned, 1> nVertices {{ 0 }};
-                    comm.recv(vAddr, 0, newContext, nVertices);
+                    comm.recv(vAddr, 0, graphContext, nVertices);
+                    assert(nVertices[0] != 0);
+                    std::cerr << nVertices[0] << std::endl;
                     std::vector<unsigned> vertexIDs(nVertices[0]);
-                    comm.recv(vAddr, 0, newContext, vertexIDs);
+                    comm.recv(vAddr, 0, graphContext, vertexIDs);
 
                     for(unsigned u : vertexIDs){
+                        std::cout << u << std::endl;
                         vertexMap[u] = vAddr;
                         remoteVertices.push_back(Cage::getVertex(u));
                     }
@@ -312,6 +327,8 @@ namespace graybat {
                 }
 
             }
+
+            */
 
         }
 
@@ -337,7 +354,15 @@ namespace graybat {
          *
          */
         VAddr locateVertex(Vertex vertex){
-            return vertexMap.at(vertex.id);
+            auto it = vertexMap.find(vertex.id);
+            if(it != vertexMap.end()){
+                return (*it).second;
+            }
+            else {
+                std::stringstream errorMsg;
+                errorMsg << "No host of vertex " << vertex.id << " known.";
+                throw std::runtime_error(errorMsg.str());
+            }
 
         }
 
@@ -414,7 +439,8 @@ namespace graybat {
         template <typename T>
         void send(const Edge edge, const T& data, std::vector<Event> &events){
             VAddr destVAddr  = locateVertex(edge.target);
-            events.push_back(comm.asyncSend(destVAddr, edge.id, graphContext, data));
+            std::cout << " vertex: " << edge.target.id << " host: " << destVAddr << std::endl;
+            //events.push_back(comm.asyncSend(destVAddr, edge.id, graphContext, data));
         
         }
 

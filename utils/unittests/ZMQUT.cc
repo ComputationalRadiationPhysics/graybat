@@ -8,6 +8,7 @@
 #include <graphPolicy/BGL.hpp>
 #include <mapping/Random.hpp>
 #include <mapping/Consecutive.hpp>
+#include <mapping/Roundrobin.hpp>
 #include <pattern/FullyConnected.hpp>
 #include <pattern/InStar.hpp>
 #include <pattern/Grid.hpp>
@@ -41,47 +42,52 @@ typedef typename Cage::Edge   Edge;
 
 BOOST_AUTO_TEST_SUITE( zmq )
 
-// BOOST_AUTO_TEST_CASE( send_recv ){
-//     typedef graybat::communicationPolicy::ZMQ ZMQ;
-//     typedef typename ZMQ::Context             Context;
-//     typedef typename ZMQ::Event               Event;
+BOOST_AUTO_TEST_CASE( send_recv ){
+    typedef graybat::communicationPolicy::ZMQ ZMQ;
+    typedef typename ZMQ::Context             Context;
+    typedef typename ZMQ::Event               Event;
 
-//     BOOST_TEST_MESSAGE("Entry");
+    BOOST_TEST_MESSAGE("Entry");
     
-//     ZMQ zmq;
+    ZMQ zmq;
 
-//     Context context = zmq.splitContext(true, zmq.getGlobalContext());
+    Context context = zmq.getGlobalContext();
 
-//     const unsigned nElements = 10;
-//     const unsigned testValue = 5;
+    const unsigned nElements = 10;
+    const unsigned testValue = 5;
 
-//     std::vector<unsigned> data (nElements, testValue);
-//     std::vector<unsigned> recv (nElements, 0);
+    std::vector<unsigned> data (nElements, testValue);
+    std::vector<unsigned> recv (nElements, 0);
 
 
-//     if(context.getVAddr() == 0){
-//         Event e = zmq.asyncSend(1, 0, context, data);
+    if(context.getVAddr() == 0){
+        for(unsigned vAddr = 1; vAddr < context.size(); ++vAddr){
+            Event e = zmq.asyncSend(vAddr, 99, context, data);
+            e.wait();
 
-//         e.wait();
-//     }
-//     else {
-//         zmq.recv(0, 0, context, recv);
+        }
 
-//         for(unsigned u : recv){
-//             BOOST_CHECK_EQUAL(u, testValue);
-//         }
+    }
+    else {
+        zmq.recv(0, 99, context, recv);
+
+        for(unsigned u : recv){
+            BOOST_CHECK_EQUAL(u, testValue);
+        }
         
-//     }
+    }
 
-//     std::cout << "Finished ZMQ test" << std::endl;
-    
-// }
+    std::cout << "Finished ZMQ test" << std::endl;
 
-Cage cage;
+    while(true){}
+}
 
-BOOST_AUTO_TEST_CASE( c ){
-    // cage.setGraph(graybat::pattern::FullyConnected(cage.getPeers().size()));
-    // cage.distribute(graybat::mapping::Consecutive());
+
+
+BOOST_AUTO_TEST_CASE( zmq_cage ){
+    Cage cage;
+    cage.setGraph(graybat::pattern::FullyConnected(cage.getPeers().size()));
+    cage.distribute(graybat::mapping::Roundrobin());
 
     // const unsigned nElements = 1000;
     
@@ -93,6 +99,8 @@ BOOST_AUTO_TEST_CASE( c ){
     //     send.at(i) = i;
     // }
 
+    // std::cout << "Hosted vertices: " << cage.hostedVertices.size() << std::endl;
+
     // // Send state to neighbor cells
     // for(Vertex &v : cage.hostedVertices){
     //     for(Edge edge : cage.getOutEdges(v)){
@@ -100,7 +108,7 @@ BOOST_AUTO_TEST_CASE( c ){
     //     }
     // }
 
-    // // Recv state from neighbor cells
+    // Recv state from neighbor cells
     // for(Vertex &v : cage.hostedVertices){
     //     for(Edge edge : cage.getInEdges(v)){
     //         cage.recv(edge, recv);
@@ -117,7 +125,13 @@ BOOST_AUTO_TEST_CASE( c ){
     //     events.back().wait();
     //     events.pop_back();
     // }
-   
+
+    //std::cout << "finished " << cage.hostedVertices.at(0).id << std::endl;
+
+    // This while true is still important,
+    // since the manager thread destructs when
+    // its peer destructs.
+    while(true){}
 }
 
 BOOST_AUTO_TEST_SUITE_END()
