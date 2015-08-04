@@ -60,16 +60,14 @@ BOOST_AUTO_TEST_CASE( send_recv ){
     std::vector<unsigned> recv (nElements, 0);
 
 
-    if(context.getVAddr() == 0){
-        for(unsigned vAddr = 1; vAddr < context.size(); ++vAddr){
-            Event e = zmq.asyncSend(vAddr, 99, context, data);
-            e.wait();
-
-        }
-
+    for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
+        Event e = zmq.asyncSend(vAddr, 99, context, data);
+        e.wait();
     }
-    else {
-        zmq.recv(0, 99, context, recv);
+
+    for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
+
+        zmq.recv(vAddr, 99, context, recv);
 
         for(unsigned u : recv){
             BOOST_CHECK_EQUAL(u, testValue);

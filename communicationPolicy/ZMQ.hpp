@@ -23,6 +23,7 @@
 
 // ZMQ
 #include <zmq.hpp>
+#include <MessageBox.hpp>
 
 namespace graybat {
     
@@ -151,7 +152,7 @@ namespace graybat {
             bool isMaster;
             Uri uri;
             
-            std::map<VAddr, std::vector<boost::any> > inBox;
+            MessageBox<zmq::message_t> inBox;
             
             // Const Members
             const std::string masterUri;
@@ -419,6 +420,7 @@ namespace graybat {
                 memcpy (static_cast<char*>(message.data()) + msgOffset, &tag,            sizeof(Tag));       msgOffset += sizeof(Tag);
                 memcpy (static_cast<char*>(message.data()) + msgOffset, sendData.data(), sizeof(typename T_Send::value_type) * sendData.size());
 
+                std::cout << "send [" << context.getVAddr() << "] ContextID:" << context.getID() << " DestVAddr:" << destVAddr << " Tag:" << tag << std::endl;
                 
                 zmq::context_t zmq_context(1);
                 zmq::socket_t socket(zmq_context, ZMQ_REQ);
@@ -493,50 +495,68 @@ namespace graybat {
 
                  while(!msgReceived){
 
+                     zmq::message_t message;
+                     // Get message either from the message box when it
+                     // was received before or directly from an other
+                     // peer.
+                     {
+                         if(inBox.test(context.getID(), srcVAddr, tag, message)){
+                             std::cout << "Found message in InBox" << std::endl;
+                         }
+                         else { 
+                             socket.recv(&message);
+
+                             // reply because of ZMQ req/rep pattern
+                             zmq::message_t emptyReply;
+                             socket.send(emptyReply);
+                         
+                         }
+                     }
+                     
                      // Copy data from message
                      // TODO: should be replaced by some good protocol framework (@see google protocol buffers
-                     zmq::message_t message;
-                     socket.recv(&message);
-                     size_t msgOffset = 0;
-                     ContextID remoteContextID;
-                     VAddr     remoteVAddr;
-                     Tag       remoteTag;
-                     memcpy (&remoteContextID,  static_cast<char*>(message.data()) + msgOffset, sizeof(ContextID)); msgOffset += sizeof(ContextID);
-                     memcpy (&remoteVAddr,      static_cast<char*>(message.data()) + msgOffset, sizeof(VAddr));     msgOffset += sizeof(VAddr);
-                     memcpy (&remoteTag,        static_cast<char*>(message.data()) + msgOffset, sizeof(Tag));       msgOffset += sizeof(Tag);
+                     {
+                         size_t msgOffset = 0;
+                         ContextID remoteContextID;
+                         VAddr     remoteVAddr;
+                         Tag       remoteTag;
+                         memcpy (&remoteContextID,  static_cast<char*>(message.data()) + msgOffset, sizeof(ContextID)); msgOffset += sizeof(ContextID);
+                         memcpy (&remoteVAddr,      static_cast<char*>(message.data()) + msgOffset, sizeof(VAddr));     msgOffset += sizeof(VAddr);
+                         memcpy (&remoteTag,        static_cast<char*>(message.data()) + msgOffset, sizeof(Tag));       msgOffset += sizeof(Tag);
 
+                         std::cout << "recv [" << context.getVAddr() << "] ContextID:" << remoteContextID << " RemoteVAddr:" << remoteVAddr << " SrcVAddr:" << srcVAddr << " Tag:" << remoteTag << std::endl;
+                         // Recv rest of message
+                         if(context.getID() == remoteContextID) {
+                             if(srcVAddr == remoteVAddr) {
+                                 if(tag  == remoteTag){
 
-                     std::vector<zmq::message_t> messageBuffer;
-                     
-                     // Recv rest of message
-                     if(context.getID() == remoteContextID) {
-                         if(srcVAddr == remoteVAddr) {
-                             if(tag  == remoteTag){
-
-                                 memcpy (recvData.data(),
-                                         static_cast<char*>(message.data()) + msgOffset,
-                                         sizeof(typename T_Recv::value_type) * recvData.size());
+                                     memcpy (recvData.data(),
+                                             static_cast<char*>(message.data()) + msgOffset,
+                                             sizeof(typename T_Recv::value_type) * recvData.size());
                                  
-                                 msgReceived  = true;
+                                     msgReceived  = true;
+                                 }
+                                 else {
+                                     inBox.push(remoteContextID, remoteVAddr, remoteTag, message);
+                                     std::cout << "Tag and remote tag are not the same: " << tag << " != " << remoteTag << std::endl;
+                                     
+                                 }
                              }
                              else {
-                                 messageBuffer.push_back(message);
-                                 std::cout << "Tag and remote tag are not the same: " << tag << " != " << remoteTag << std::endl;
+                                 inBox.push(remoteContextID, remoteVAddr, remoteTag, message);
+                                 std::cout << "Src VAddr and remote VAddr are not the same: " << srcVAddr << " != " << remoteVAddr << std::endl;
+                                 
                              }
                          }
                          else {
-                             std::cout << "Src VAddr and remote VAddr are not the same: " << srcVAddr << " != " << remoteVAddr << std::endl;
+                             inBox.push(remoteContextID, remoteVAddr, remoteTag, message);
+                             std::cout << "Context ID and remote context ID are not the same: " << context.getID() << " != " << remoteContextID << std::endl;
+                             
                          }
+                         
                      }
-                     else {
-                         std::cout << "Context ID and remote context ID are not the same: " << context.getID() << " != " << remoteContextID << std::endl;
-                     }
-      
-                     message.rebuild();
-                     socket.send(message);
-                     
+
                  }
-                 
 
 	     }
 	    /** @} */

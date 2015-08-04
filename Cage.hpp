@@ -14,7 +14,7 @@
 #include <assert.h>   /* assert */
 #include <cstddef>    /* nullptr_t */
 
-
+// GrayBat
 #include <utils.hpp>  /* exclusivePrefixSum */
 #include <Vertex.hpp> /* CommunicationVertex */
 #include <Edge.hpp>   /* CommunicationEdge */
