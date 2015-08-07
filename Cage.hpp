@@ -291,7 +291,7 @@ namespace graybat {
 
             graphContext = comm.splitContext(vertices.size(), oldContext);
 
-            /*
+            ///*
             
             // Each peer announces the vertices it hosts
             if(graphContext.valid()){
@@ -312,23 +312,23 @@ namespace graybat {
                     std::vector<Vertex>  remoteVertices;
                     std::array<unsigned, 1> nVertices {{ 0 }};
                     comm.recv(vAddr, 0, graphContext, nVertices);
-                    assert(nVertices[0] != 0);
-                    std::cerr << nVertices[0] << std::endl;
+                    // assert(nVertices[0] != 0);
+                    std::cerr << "nVertices: " << nVertices[0] << std::endl;
                     std::vector<unsigned> vertexIDs(nVertices[0]);
                     comm.recv(vAddr, 0, graphContext, vertexIDs);
 
                     for(unsigned u : vertexIDs){
-                        std::cout << u << std::endl;
-                        vertexMap[u] = vAddr;
-                        remoteVertices.push_back(Cage::getVertex(u));
+                        std::cout << "VertexID: " << u << std::endl;
+                        // vertexMap[u] = vAddr;
+                        // remoteVertices.push_back(Cage::getVertex(u));
                     }
-                    peerMap[vAddr] = remoteVertices;
+                    // peerMap[vAddr] = remoteVertices;
 
-                }
+                 }
 
             }
 
-            */
+            //*/
 
         }
 

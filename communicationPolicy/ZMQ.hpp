@@ -12,6 +12,8 @@
 #include <thread>     /* std::thread */
 #include <cstdlib>    /* std::env */
 #include <string>     /* std::string, std::stoi */
+#include <stack>      /* std::stack */
+#include <utility>    /* std::move */
 
 // Boost
 #include <boost/any.hpp>
@@ -23,7 +25,9 @@
 
 // ZMQ
 #include <zmq.hpp>
-#include <MessageBox.hpp>
+
+// GrayBat
+#include <utils.hpp>  /* utils::MultiKeyMap */
 
 namespace graybat {
     
@@ -151,8 +155,8 @@ namespace graybat {
             std::thread connectionManager;
             bool isMaster;
             Uri uri;
-            
-            MessageBox<zmq::message_t> inBox;
+
+            utils::MultiKeyMap<std::stack<zmq::message_t>, ContextID, VAddr, Tag> inBox;
             
             // Const Members
             const std::string masterUri;
@@ -500,7 +504,9 @@ namespace graybat {
                      // was received before or directly from an other
                      // peer.
                      {
-                         if(inBox.test(context.getID(), srcVAddr, tag, message)){
+                         if(inBox.test(context.getID(), srcVAddr, tag)){
+                             message = std::move(inBox.at(context.getID(), srcVAddr, tag).top());
+                             inBox.at(context.getID(), srcVAddr, tag).pop();
                              std::cout << "Found message in InBox" << std::endl;
                          }
                          else { 
@@ -537,19 +543,19 @@ namespace graybat {
                                      msgReceived  = true;
                                  }
                                  else {
-                                     inBox.push(remoteContextID, remoteVAddr, remoteTag, message);
+                                     inBox(remoteContextID, remoteVAddr, remoteTag).push(std::move(message));
                                      std::cout << "Tag and remote tag are not the same: " << tag << " != " << remoteTag << std::endl;
                                      
                                  }
                              }
                              else {
-                                 inBox.push(remoteContextID, remoteVAddr, remoteTag, message);
+                                 inBox(remoteContextID, remoteVAddr, remoteTag).push(std::move(message));
                                  std::cout << "Src VAddr and remote VAddr are not the same: " << srcVAddr << " != " << remoteVAddr << std::endl;
                                  
                              }
                          }
                          else {
-                             inBox.push(remoteContextID, remoteVAddr, remoteTag, message);
+                             inBox(remoteContextID, remoteVAddr, remoteTag).push(std::move(message));
                              std::cout << "Context ID and remote context ID are not the same: " << context.getID() << " != " << remoteContextID << std::endl;
                              
                          }

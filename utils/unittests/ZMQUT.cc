@@ -82,7 +82,7 @@ BOOST_AUTO_TEST_CASE( send_recv ){
 
 
 
-BOOST_AUTO_TEST_CASE( zmq_cage ){
+BOOST_AUTO_TEST_CASE( cage ){
     Cage cage;
     cage.setGraph(graybat::pattern::FullyConnected(cage.getPeers().size()));
     cage.distribute(graybat::mapping::Roundrobin());
@@ -106,7 +106,7 @@ BOOST_AUTO_TEST_CASE( zmq_cage ){
     //     }
     // }
 
-    // Recv state from neighbor cells
+    // //Recv state from neighbor cells
     // for(Vertex &v : cage.hostedVertices){
     //     for(Edge edge : cage.getInEdges(v)){
     //         cage.recv(edge, recv);
@@ -124,7 +124,7 @@ BOOST_AUTO_TEST_CASE( zmq_cage ){
     //     events.pop_back();
     // }
 
-    //std::cout << "finished " << cage.hostedVertices.at(0).id << std::endl;
+    // std::cout << "finished " << cage.hostedVertices.at(0).id << std::endl;
 
     // This while true is still important,
     // since the manager thread destructs when
