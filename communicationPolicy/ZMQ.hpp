@@ -112,6 +112,7 @@ namespace graybat {
 	     */
 	    class Event {
 	    public:
+                
 		Event(VAddr vAddr) : vAddr(vAddr) {
 		}
 
