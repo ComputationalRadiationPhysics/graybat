@@ -87,48 +87,47 @@ BOOST_AUTO_TEST_CASE( cage ){
     cage.setGraph(graybat::pattern::FullyConnected(cage.getPeers().size()));
     cage.distribute(graybat::mapping::Roundrobin());
 
-    // const unsigned nElements = 1000;
+    const unsigned nElements = 1000;
     
-    // std::vector<Event> events; 
-    // std::vector<unsigned> send(nElements,0);
-    // std::vector<unsigned> recv(nElements,0);
+    std::vector<Event> events; 
+    std::vector<unsigned> send(nElements,0);
+    std::vector<unsigned> recv(nElements,0);
 
-    // for(unsigned i = 0; i < send.size();++i){
-    //     send.at(i) = i;
-    // }
+    for(unsigned i = 0; i < send.size();++i){
+        send.at(i) = i;
+    }
 
-    // std::cout << "Hosted vertices: " << cage.hostedVertices.size() << std::endl;
+    std::cout << "Hosted vertices: " << cage.hostedVertices.size() << std::endl;
 
-    // // Send state to neighbor cells
-    // for(Vertex &v : cage.hostedVertices){
-    //     for(Edge edge : cage.getOutEdges(v)){
-    //         cage.send(edge, send, events);
-    //     }
-    // }
+    // Send state to neighbor cells
+    for(Vertex &v : cage.hostedVertices){
+        for(Edge edge : cage.getOutEdges(v)){
+            cage.send(edge, send, events);
+        }
+    }
 
-    // //Recv state from neighbor cells
-    // for(Vertex &v : cage.hostedVertices){
-    //     for(Edge edge : cage.getInEdges(v)){
-    //         cage.recv(edge, recv);
-    //         for(unsigned i = 0; i < recv.size();++i){
-    //     	BOOST_CHECK_EQUAL(recv.at(i), i);
-    //         }
+    //Recv state from neighbor cells
+    for(Vertex &v : cage.hostedVertices){
+        for(Edge edge : cage.getInEdges(v)){
+            cage.recv(edge, recv);
+            for(unsigned i = 0; i < recv.size();++i){
+        	BOOST_CHECK_EQUAL(recv.at(i), i);
+            }
 
-    //     }
+        }
 	
-    // }
+    }
     
-    // // Wait to finish events
-    // for(unsigned i = 0; i < events.size(); ++i){
-    //     events.back().wait();
-    //     events.pop_back();
-    // }
-
-    // std::cout << "finished " << cage.hostedVertices.at(0).id << std::endl;
+    // Wait to finish events
+    for(unsigned i = 0; i < events.size(); ++i){
+        events.back().wait();
+        events.pop_back();
+    }
 
     // This while true is still important,
     // since the manager thread destructs when
     // its peer destructs.
+    std::cout << "Finished ZMQ test" << std::endl;
     while(true){}
 }
 

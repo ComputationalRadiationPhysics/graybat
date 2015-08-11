@@ -12,7 +12,7 @@
 #include <thread>     /* std::thread */
 #include <cstdlib>    /* std::env */
 #include <string>     /* std::string, std::stoi */
-#include <stack>      /* std::stack */
+#include <queue>      /* std::queue */
 #include <utility>    /* std::move */
 
 // Boost
@@ -155,8 +155,9 @@ namespace graybat {
             std::thread connectionManager;
             bool isMaster;
             Uri uri;
+            std::map<VAddr, zmq::socket_t> reqSockets;
 
-            utils::MultiKeyMap<std::stack<zmq::message_t>, ContextID, VAddr, Tag> inBox;
+            utils::MultiKeyMap<std::queue<zmq::message_t>, ContextID, VAddr, Tag> inBox;
             
             // Const Members
             const std::string masterUri;
@@ -164,7 +165,8 @@ namespace graybat {
             // Constructor
 	    ZMQ() :
                 context(1),
-                socket(context, ZMQ_REP),
+                //socket(context, ZMQ_REP),
+                socket(context, ZMQ_PULL),
                 isMaster(false),
                 masterUri("tcp://127.0.0.1:5000"){
 
@@ -186,6 +188,7 @@ namespace graybat {
                     uri                      = localBaseUri + ":" + std::to_string(localPort);
                     
                     // Retrieve vAddr from master
+                    // --> Get own phonebook adress
                     {
                         VAddr vAddr(0);
                         
@@ -208,6 +211,7 @@ namespace graybat {
                     }
 
                     // Ask master for uris of other peers
+                    // --> Fill phonebook with information
                     {
                         zmq::context_t context(1);
                         zmq::socket_t  socket (context, ZMQ_REQ);
@@ -239,6 +243,20 @@ namespace graybat {
 
                         }
 
+                    }
+
+                    // Create sockets to the other peers
+                    {
+                        for(unsigned vAddr = 0; vAddr < nPeers; vAddr++){
+                            // zmq::context_t zmq_context(1);
+                            // zmq::socket_t socket(zmq_context, ZMQ_REQ);
+                            // socket.connect(phoneBook.at(destVAddr).c_str());
+                            // socket.send(message);
+                            //reqSockets.emplace(vAddr, zmq::socket_t(context, ZMQ_REQ) );
+                            reqSockets.emplace(vAddr, zmq::socket_t(context, ZMQ_PUSH) );
+                            reqSockets.at(vAddr).connect(phoneBook.at(vAddr).c_str());
+                        }
+                        
                     }
                     
                 }
@@ -277,6 +295,7 @@ namespace graybat {
                 while(!connected){
                     try {
                         std::string uri = localBaseUri + ":" + std::to_string(port);
+                        //socket.bind(uri.c_str());
                         socket.bind(uri.c_str());
                         connected = true;
                     }
@@ -424,14 +443,13 @@ namespace graybat {
                 memcpy (static_cast<char*>(message.data()) + msgOffset, &tag,            sizeof(Tag));       msgOffset += sizeof(Tag);
                 memcpy (static_cast<char*>(message.data()) + msgOffset, sendData.data(), sizeof(typename T_Send::value_type) * sendData.size());
 
-                std::cout << "send [" << context.getVAddr() << "] ContextID:" << context.getID() << " DestVAddr:" << destVAddr << " Tag:" << tag << std::endl;
+                //std::cout << "send [" << context.getVAddr() << "] ContextID:" << context.getID() << " DestVAddr:" << destVAddr << " Tag:" << tag << std::endl;
                 
-                zmq::context_t zmq_context(1);
-                zmq::socket_t socket(zmq_context, ZMQ_REQ);
+                //zmq::context_t zmq_context(1);
+                //zmq::socket_t socket(zmq_context, ZMQ_REQ);
 
-                socket.connect(phoneBook.at(destVAddr).c_str());
-                socket.send(message);
-
+                //socket.connect(phoneBook.at(destVAddr).c_str());
+                reqSockets.at(destVAddr).send(message);
 
                 // TODO: fill event with information
                 return Event();
@@ -505,16 +523,21 @@ namespace graybat {
                      // peer.
                      {
                          if(inBox.test(context.getID(), srcVAddr, tag)){
-                             message = std::move(inBox.at(context.getID(), srcVAddr, tag).top());
+                             //std::cerr << "Stack.size: " << inBox.at(context.getID(), srcVAddr, tag).size() << std::endl;
+                             message = std::move(inBox.at(context.getID(), srcVAddr, tag).front());
                              inBox.at(context.getID(), srcVAddr, tag).pop();
-                             std::cout << "Found message in InBox" << std::endl;
+                             //std::cout << "Found message in InBox" << std::endl;
+
+                             if(inBox.at(context.getID(), srcVAddr, tag).empty()){
+                                 inBox.erase(context.getID(), srcVAddr, tag);
+                             }
                          }
                          else { 
                              socket.recv(&message);
 
                              // reply because of ZMQ req/rep pattern
-                             zmq::message_t emptyReply;
-                             socket.send(emptyReply);
+                             //zmq::message_t emptyReply;
+                             //socket.send(emptyReply);
                          
                          }
                      }
@@ -530,12 +553,13 @@ namespace graybat {
                          memcpy (&remoteVAddr,      static_cast<char*>(message.data()) + msgOffset, sizeof(VAddr));     msgOffset += sizeof(VAddr);
                          memcpy (&remoteTag,        static_cast<char*>(message.data()) + msgOffset, sizeof(Tag));       msgOffset += sizeof(Tag);
 
-                         std::cout << "recv [" << context.getVAddr() << "] ContextID:" << remoteContextID << " RemoteVAddr:" << remoteVAddr << " SrcVAddr:" << srcVAddr << " Tag:" << remoteTag << std::endl;
+
                          // Recv rest of message
                          if(context.getID() == remoteContextID) {
                              if(srcVAddr == remoteVAddr) {
                                  if(tag  == remoteTag){
 
+                                     //std::cout << "recv [" << context.getVAddr() << "] ContextID:" << remoteContextID << " RemoteVAddr:" << remoteVAddr << " SrcVAddr:" << srcVAddr << " Tag:" << remoteTag << std::endl;
                                      memcpy (recvData.data(),
                                              static_cast<char*>(message.data()) + msgOffset,
                                              sizeof(typename T_Recv::value_type) * recvData.size());
@@ -544,19 +568,19 @@ namespace graybat {
                                  }
                                  else {
                                      inBox(remoteContextID, remoteVAddr, remoteTag).push(std::move(message));
-                                     std::cout << "Tag and remote tag are not the same: " << tag << " != " << remoteTag << std::endl;
+                                     //std::cout << "Tag and remote tag are not the same: " << tag << " != " << remoteTag << std::endl;
                                      
                                  }
                              }
                              else {
                                  inBox(remoteContextID, remoteVAddr, remoteTag).push(std::move(message));
-                                 std::cout << "Src VAddr and remote VAddr are not the same: " << srcVAddr << " != " << remoteVAddr << std::endl;
+                                 //std::cout << "Src VAddr and remote VAddr are not the same: " << srcVAddr << " != " << remoteVAddr << std::endl;
                                  
                              }
                          }
                          else {
                              inBox(remoteContextID, remoteVAddr, remoteTag).push(std::move(message));
-                             std::cout << "Context ID and remote context ID are not the same: " << context.getID() << " != " << remoteContextID << std::endl;
+                             //std::cout << "Context ID and remote context ID are not the same: " << context.getID() << " != " << remoteContextID << std::endl;
                              
                          }
                          
@@ -845,9 +869,12 @@ namespace graybat {
 
                 // Request old master for new context
                 std::array<unsigned, 1> member {{ isMember }};
+                //std::cout << "send 0" << std::endl;
                 ZMQ::asyncSend(0, 0, oldContext, member);
-                std::cout << "local: " << isMember << std::endl;
+                //std::cout << "local: " << isMember << std::endl;
 
+
+                
                 // Peer with VAddr 0 collects new members
                 if( oldContext.getVAddr() == 0){
                     std::array<unsigned, 1> nMembers {{ 0 }};
@@ -855,8 +882,9 @@ namespace graybat {
                     
                     for(unsigned vAddr = 0; vAddr < oldContext.size(); ++vAddr){
                         std::array<unsigned, 1> remoteIsMember {{ 0 }};
+                        //std::cout << "recv " << vAddr << std::endl;
                         ZMQ::recv(vAddr, 0, oldContext, remoteIsMember);
-                        std::cout << "remote: " << remoteIsMember[0] << std::endl;
+                        //std::cout << "remote: " << remoteIsMember[0] << std::endl;
 
 
                         if(remoteIsMember[0]) {
@@ -866,10 +894,12 @@ namespace graybat {
                     }
                     
                     for(VAddr vAddr : vAddrs){
+                        //std::cout << "send " << vAddr << std::endl;
                         ZMQ::asyncSend(vAddr, 0, oldContext, nMembers);
                     }
                         
                 }
+                
 
 
                 if(isMember){
@@ -881,6 +911,8 @@ namespace graybat {
                 else{
                     return Context();
                 }
+
+
 		
 	    }
 

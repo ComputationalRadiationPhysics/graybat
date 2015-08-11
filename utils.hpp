@@ -63,6 +63,17 @@ namespace utils {
             else
                 return true;
         }
+
+        bool erase(Keys_T ...keys){
+            auto it = traverse(multiKeyMap, keys...).find(lastArg(keys...));
+            if(it == traverse(multiKeyMap, keys...).end()){
+                return false;
+            }
+            else {
+                traverse(multiKeyMap, keys...).erase(it);
+                return true;
+            }
+        }
         
     private:
 
