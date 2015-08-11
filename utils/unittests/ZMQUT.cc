@@ -75,9 +75,9 @@ BOOST_AUTO_TEST_CASE( send_recv ){
         
     }
 
-    std::cout << "Finished ZMQ test" << std::endl;
+    //std::cout << "Finished ZMQ test" << std::endl;
 
-    while(true){}
+    //while(true){}
 }
 
 
@@ -127,8 +127,8 @@ BOOST_AUTO_TEST_CASE( cage ){
     // This while true is still important,
     // since the manager thread destructs when
     // its peer destructs.
-    std::cout << "Finished ZMQ test" << std::endl;
-    while(true){}
+    //std::cout << "Finished ZMQ test" << std::endl;
+    //while(true){}
 }
 
 BOOST_AUTO_TEST_SUITE_END()

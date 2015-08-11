@@ -364,7 +364,7 @@ namespace graybat {
             }
             else {
                 std::stringstream errorMsg;
-                errorMsg << "No host of vertex " << vertex.id << " known.";
+                errorMsg << "[" << comm.getGlobalContext().getVAddr() << "] No host of vertex " << vertex.id << " known.";
                 throw std::runtime_error(errorMsg.str());
             }
 

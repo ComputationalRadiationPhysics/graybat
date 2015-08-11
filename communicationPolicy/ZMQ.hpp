@@ -41,6 +41,15 @@ namespace graybat {
 	 *
 	 ***************************************************************************/
 	struct ZMQ {
+            
+	    // Type defs
+	    typedef unsigned Tag;                                            
+	    typedef unsigned ContextID;
+	    typedef unsigned VAddr;
+            typedef unsigned MsgType;
+	    typedef std::string Uri;
+
+            
 	    /**
 	     * @brief A context represents a set of peers which are
 	     *        able to communicate with each other.
@@ -103,18 +112,23 @@ namespace graybat {
 	     */
 	    class Event {
 	    public:
-		Event() {
+		Event(VAddr vAddr) : vAddr(vAddr) {
 		}
 
 		~Event(){
 		}
 
 		void wait(){
+
 		}
 
 		bool ready(){
                     return true;
 		}
+
+                VAddr vAddr;
+
+                
 	    };
 
 
@@ -131,15 +145,7 @@ namespace graybat {
                 
 
 
-	    // Type defs
-	    typedef unsigned Tag;                                            
-	    typedef unsigned ContextID;
-	    typedef unsigned VAddr;
 
-            
-            
-            typedef unsigned MsgType;
-	    typedef std::string Uri;
 
             static const MsgType VADDR_REQUEST = 0;
             static const MsgType VADDR_LOOKUP  = 1;
@@ -151,11 +157,11 @@ namespace graybat {
             Context initialContext;
             std::map<VAddr, Uri> phoneBook;
             zmq::context_t context;
-            zmq::socket_t socket;
+            zmq::socket_t recvSocket;
             std::thread connectionManager;
             bool isMaster;
             Uri uri;
-            std::map<VAddr, zmq::socket_t> reqSockets;
+            std::map<VAddr, zmq::socket_t> sendSockets;
 
             utils::MultiKeyMap<std::queue<zmq::message_t>, ContextID, VAddr, Tag> inBox;
             
@@ -165,8 +171,7 @@ namespace graybat {
             // Constructor
 	    ZMQ() :
                 context(1),
-                //socket(context, ZMQ_REP),
-                socket(context, ZMQ_PULL),
+                recvSocket(context, ZMQ_PULL),
                 isMaster(false),
                 masterUri("tcp://127.0.0.1:5000"){
 
@@ -182,9 +187,9 @@ namespace graybat {
                 // Create socket for incoming connections
                 {
 
-                    // Retrieve own uri
+                    // Retrieve and reserve own uri
                     const Uri localBaseUri   = getLocalUri();
-                    const unsigned localPort = searchBindPort(localBaseUri, 5001, socket);
+                    const unsigned localPort = searchBindPort(localBaseUri, 5001, recvSocket);
                     uri                      = localBaseUri + ":" + std::to_string(localPort);
                     
                     // Retrieve vAddr from master
@@ -248,13 +253,8 @@ namespace graybat {
                     // Create sockets to the other peers
                     {
                         for(unsigned vAddr = 0; vAddr < nPeers; vAddr++){
-                            // zmq::context_t zmq_context(1);
-                            // zmq::socket_t socket(zmq_context, ZMQ_REQ);
-                            // socket.connect(phoneBook.at(destVAddr).c_str());
-                            // socket.send(message);
-                            //reqSockets.emplace(vAddr, zmq::socket_t(context, ZMQ_REQ) );
-                            reqSockets.emplace(vAddr, zmq::socket_t(context, ZMQ_PUSH) );
-                            reqSockets.at(vAddr).connect(phoneBook.at(vAddr).c_str());
+                            sendSockets.emplace(vAddr, zmq::socket_t(context, ZMQ_PUSH) );
+                            sendSockets.at(vAddr).connect(phoneBook.at(vAddr).c_str());
                         }
                         
                     }
@@ -265,11 +265,11 @@ namespace graybat {
 
 	    // Destructor
 	    ~ZMQ(){
+                zmq::context_t context(1);
+                zmq::socket_t  socket (context, ZMQ_REQ);
+                socket.connect(masterUri.c_str());
+                s_send(socket, std::to_string(DESTRUCT).c_str());
                 if(isMaster){
-                    zmq::context_t context(1);
-                    zmq::socket_t  socket (context, ZMQ_REQ);
-                    socket.connect(masterUri.c_str());
-                    s_send(socket, std::to_string(DESTRUCT).c_str());
                     connectionManager.join();
                 }
 	    }
@@ -295,7 +295,6 @@ namespace graybat {
                 while(!connected){
                     try {
                         std::string uri = localBaseUri + ":" + std::to_string(port);
-                        //socket.bind(uri.c_str());
                         socket.bind(uri.c_str());
                         connected = true;
                     }
@@ -315,6 +314,7 @@ namespace graybat {
                 std::map<VAddr, Uri> phoneBook;
                 
                 VAddr maxVAddr = 0;
+                unsigned nPeers = 0;
 
                 while(true){
                     std::stringstream ss;
@@ -335,6 +335,7 @@ namespace graybat {
                             phoneBook[maxVAddr] = srcUri;
                             // Send requestet vAddr
                             s_send(socket, std::to_string(maxVAddr++).c_str());
+                            nPeers++;
                             break;
                         }
                         
@@ -361,8 +362,9 @@ namespace graybat {
 
 
                     case DESTRUCT:
+                        nPeers--;
                         s_send(socket, "");
-                        return;
+                        break;
                         
                     default:
                         // Reply empty message
@@ -371,9 +373,14 @@ namespace graybat {
                         break;
 
                     };
+
+                    // All peers have destructed, so stop managing Peers
+                    if(nPeers == 0){
+                        return;
+                    }
                     
-                 }
-                    
+                }
+                
             }
 
 
@@ -444,15 +451,10 @@ namespace graybat {
                 memcpy (static_cast<char*>(message.data()) + msgOffset, sendData.data(), sizeof(typename T_Send::value_type) * sendData.size());
 
                 //std::cout << "send [" << context.getVAddr() << "] ContextID:" << context.getID() << " DestVAddr:" << destVAddr << " Tag:" << tag << std::endl;
-                
-                //zmq::context_t zmq_context(1);
-                //zmq::socket_t socket(zmq_context, ZMQ_REQ);
-
-                //socket.connect(phoneBook.at(destVAddr).c_str());
-                reqSockets.at(destVAddr).send(message);
+                sendSockets.at(destVAddr).send(message);
 
                 // TODO: fill event with information
-                return Event();
+                return Event(destVAddr);
                 
             }
 
@@ -523,23 +525,20 @@ namespace graybat {
                      // peer.
                      {
                          if(inBox.test(context.getID(), srcVAddr, tag)){
-                             //std::cerr << "Stack.size: " << inBox.at(context.getID(), srcVAddr, tag).size() << std::endl;
                              message = std::move(inBox.at(context.getID(), srcVAddr, tag).front());
                              inBox.at(context.getID(), srcVAddr, tag).pop();
-                             //std::cout << "Found message in InBox" << std::endl;
 
                              if(inBox.at(context.getID(), srcVAddr, tag).empty()){
                                  inBox.erase(context.getID(), srcVAddr, tag);
+                                 
                              }
+                             
                          }
                          else { 
-                             socket.recv(&message);
-
-                             // reply because of ZMQ req/rep pattern
-                             //zmq::message_t emptyReply;
-                             //socket.send(emptyReply);
+                             recvSocket.recv(&message);
                          
                          }
+                         
                      }
                      
                      // Copy data from message
