@@ -17,6 +17,7 @@
 #include <functional> /* std::plus */
 #include <iostream>   /* std::cout, std::endl */
 #include <array>      /* std::array */
+#include <numeric>    /* std::iota */
 
 // ZMQ
 #include <zmq.hpp>
@@ -54,31 +55,92 @@ BOOST_AUTO_TEST_CASE( send_recv ){
     Context context = zmq.getGlobalContext();
 
     const unsigned nElements = 10;
-    const unsigned testValue = 5;
 
-    std::vector<unsigned> data (nElements, testValue);
     std::vector<unsigned> recv (nElements, 0);
 
 
     for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
+        std::vector<unsigned> data (nElements, 0);
+        std::iota(data.begin(), data.end(), context.getVAddr());
         Event e = zmq.asyncSend(vAddr, 99, context, data);
-        e.wait();
-    }
-
-    for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
-
-        zmq.recv(vAddr, 99, context, recv);
-
-        for(unsigned u : recv){
-            BOOST_CHECK_EQUAL(u, testValue);
-        }
         
     }
 
-    //std::cout << "Finished ZMQ test" << std::endl;
+    for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
+        zmq.recv(vAddr, 99, context, recv);
 
-    //while(true){}
+        for(unsigned i = 0; i < recv.size(); ++i){
+            BOOST_CHECK_EQUAL(recv[i], vAddr+i);
+            
+        }
+
+    }
+
 }
+
+BOOST_AUTO_TEST_CASE( send_recv_order ){
+    typedef graybat::communicationPolicy::ZMQ ZMQ;
+    typedef typename ZMQ::Context             Context;
+    typedef typename ZMQ::Event               Event;
+
+    BOOST_TEST_MESSAGE("Entry");
+    
+    ZMQ zmq;
+
+    Context context = zmq.getGlobalContext();
+
+    const unsigned nElements = 10;
+
+    std::vector<unsigned> recv1 (nElements, 0);
+    std::vector<unsigned> recv2 (nElements, 0);
+    std::vector<unsigned> recv3 (nElements, 0);
+
+
+    for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
+        std::vector<unsigned> data1 (nElements, context.getVAddr());
+        std::vector<unsigned> data2 (nElements, context.getVAddr() + 1);
+        std::vector<unsigned> data3 (nElements, context.getVAddr() + 2);
+        Event e1 = zmq.asyncSend(vAddr, 99, context, data1);
+        Event e2 = zmq.asyncSend(vAddr, 99, context, data2);
+        Event e3 = zmq.asyncSend(vAddr, 99, context, data3);
+        
+    }
+
+    for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
+        zmq.recv(vAddr, 99, context, recv1);
+        zmq.recv(vAddr, 99, context, recv2);
+        zmq.recv(vAddr, 99, context, recv3);
+
+        for(unsigned i = 0; i < recv1.size(); ++i){
+            BOOST_CHECK_EQUAL(recv1[i], vAddr);
+            
+        }
+
+        for(unsigned i = 0; i < recv1.size(); ++i){
+            BOOST_CHECK_EQUAL(recv2[i], vAddr + 1);
+            
+        }
+
+        for(unsigned i = 0; i < recv1.size(); ++i){
+            BOOST_CHECK_EQUAL(recv3[i], vAddr + 2);
+            
+        }
+
+    }
+
+}
+
+// NOT PASSING YET !
+// BOOST_AUTO_TEST_CASE( multi_cage ){
+//     Cage cage1;
+//     cage1.setGraph(graybat::pattern::FullyConnected(cage1.getPeers().size()));
+//     cage1.distribute(graybat::mapping::Roundrobin());
+
+//     Cage cage2;
+//     cage2.setGraph(graybat::pattern::FullyConnected(cage2.getPeers().size()));
+//     cage2.distribute(graybat::mapping::Roundrobin());
+
+// }
 
 
 
@@ -97,8 +159,6 @@ BOOST_AUTO_TEST_CASE( cage ){
         send.at(i) = i;
     }
 
-    std::cout << "Hosted vertices: " << cage.hostedVertices.size() << std::endl;
-
     // Send state to neighbor cells
     for(Vertex &v : cage.hostedVertices){
         for(Edge edge : cage.getOutEdges(v)){
@@ -106,7 +166,7 @@ BOOST_AUTO_TEST_CASE( cage ){
         }
     }
 
-    //Recv state from neighbor cells
+    // Recv state from neighbor cells
     for(Vertex &v : cage.hostedVertices){
         for(Edge edge : cage.getInEdges(v)){
             cage.recv(edge, recv);
@@ -124,11 +184,6 @@ BOOST_AUTO_TEST_CASE( cage ){
         events.pop_back();
     }
 
-    // This while true is still important,
-    // since the manager thread destructs when
-    // its peer destructs.
-    //std::cout << "Finished ZMQ test" << std::endl;
-    //while(true){}
 }
 
 BOOST_AUTO_TEST_SUITE_END()

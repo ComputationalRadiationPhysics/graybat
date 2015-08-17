@@ -43,6 +43,71 @@ BOOST_AUTO_TEST_SUITE( cage_point_to_point )
 Cage allToAll;
 Cage star;
 
+BOOST_AUTO_TEST_CASE( multi_cage ){
+    Cage cage1;
+    Cage cage2;
+
+    cage1.setGraph(graybat::pattern::InStar(cage1.getPeers().size()));
+    cage1.distribute(graybat::mapping::Consecutive());
+    cage2.setGraph(graybat::pattern::InStar(cage2.getPeers().size()));
+    cage2.distribute(graybat::mapping::Consecutive());
+
+
+    const unsigned nElements = 1000;
+    
+    std::vector<Event> events; 
+    std::vector<unsigned> send(nElements,0);
+    std::vector<unsigned> recv1(nElements,0);
+    std::vector<unsigned> recv2(nElements,0);
+
+    for(unsigned i = 0; i < send.size();++i){
+        send.at(i) = i;
+    }
+
+    // Send state to neighbor cells
+    for(Vertex &v : cage1.hostedVertices){
+        for(Edge edge : cage1.getOutEdges(v)){
+            cage1.send(edge, send);
+	    
+        }
+    }
+
+    for(Vertex &v : cage2.hostedVertices){
+        for(Edge edge : cage2.getOutEdges(v)){
+            cage2.send(edge, send);
+	    
+        }
+    }
+
+
+    // Recv state from neighbor cells
+    for(Vertex &v : cage1.hostedVertices){
+        for(Edge edge : cage1.getInEdges(v)){
+            cage1.recv(edge, recv1);
+            for(unsigned i = 0; i < recv1.size();++i){
+        	BOOST_CHECK_EQUAL(recv1.at(i), i);
+            }
+
+        }
+	
+    }
+
+    // Recv state from neighbor cells
+    for(Vertex &v : cage2.hostedVertices){
+        for(Edge edge : cage2.getInEdges(v)){
+            cage2.recv(edge, recv2);
+            for(unsigned i = 0; i < recv2.size();++i){
+        	BOOST_CHECK_EQUAL(recv2.at(i), i);
+            }
+
+        }
+	
+    }
+
+    
+}
+
+
 BOOST_AUTO_TEST_CASE( send_recv ){
     star.setGraph(graybat::pattern::InStar(star.getPeers().size()));
     star.distribute(graybat::mapping::Consecutive());

@@ -243,8 +243,6 @@ namespace graybat {
          */
         template<class T_Functor>
         void distribute(T_Functor distFunctor){
-            //std::cout << comm.getGlobalContext().getVAddr() << " " << comm.getGlobalContext().size() << std::endl;
-            
             hostedVertices = distFunctor(comm.getGlobalContext().getVAddr(),
                                          comm.getGlobalContext().size(),
                                          *this);
@@ -294,7 +292,7 @@ namespace graybat {
             
             // Each peer announces the vertices it hosts
             if(graphContext.valid()){
-                std::array<unsigned, 1> nVertices {{vertices.size()}};
+                std::array<unsigned, 1> nVertices {{static_cast<unsigned>(vertices.size())}};
                 std::vector<unsigned> vertexIDs;
 
                 std::for_each(vertices.begin(), vertices.end(), [&vertexIDs](Vertex v){vertexIDs.push_back(v.id);});
@@ -303,28 +301,18 @@ namespace graybat {
                 for(unsigned vAddr = 0; vAddr < graphContext.size(); ++vAddr){
                     assert(nVertices[0] != 0);
                     comm.asyncSend(vAddr, 0, graphContext, nVertices);
-                    //std::cout << "send [" << oldContext.getVAddr() <<"] VAddr: " << vAddr << " nVertices: " << nVertices[0] << std::endl;
-                    //std::cout << "nVertices.size()1: " << nVertices.size() << std::endl;
                     comm.asyncSend(vAddr, 0, graphContext, vertexIDs);
-                    // for(unsigned u : vertexIDs){
-                    //     std::cout << "send [" << oldContext.getVAddr() <<"] VAddr: " << vAddr << " VertexID: " << u << std::endl;
-                    // }
                 }
 
                 // Recv hostedVertices from all other peers
                 for(unsigned vAddr = 0; vAddr < graphContext.size(); ++vAddr){
                     std::vector<Vertex>  remoteVertices;
                     std::array<unsigned, 1> nVertices {{ 0 }};
-                    //std::cout << "nVertices.size()2: " << nVertices.size() << std::endl;
                     comm.recv(vAddr, 0, graphContext, nVertices);
-                    //std::cout << "recv [" << oldContext.getVAddr() <<"] VAddr: " << vAddr << " nVertices: " << nVertices[0] << std::endl;
-                    assert(nVertices[0] != 0);
-                    // std::cerr << "nVertices: " << nVertices[0] << std::endl;
                     std::vector<unsigned> vertexIDs(nVertices[0]);
                     comm.recv(vAddr, 0, graphContext, vertexIDs);
 
                     for(unsigned u : vertexIDs){
-                        //std::cout << "recv [" << oldContext.getVAddr() <<"] VAddr: " << vAddr << " VertexID: " << u << std::endl;
                         vertexMap[u] = vAddr;
                         remoteVertices.push_back(Cage::getVertex(u));
                     }
@@ -443,7 +431,6 @@ namespace graybat {
         template <typename T>
         void send(const Edge edge, const T& data, std::vector<Event> &events){
             VAddr destVAddr  = locateVertex(edge.target);
-            //std::cout << " vertex: " << edge.target.id << " host: " << destVAddr << std::endl;
             events.push_back(comm.asyncSend(destVAddr, edge.id, graphContext, data));
         
         }
@@ -468,10 +455,10 @@ namespace graybat {
         Edge recv(T& data){
             Event event = comm.recv(graphContext, data);
 
-            return Edge(graph.getEdgeProperty(event.tag()).first,
-                        getVertex(graph.getEdgeSource(event.tag())),
-                        getVertex(graph.getEdgeTarget(event.tag())),
-                        graph.getEdgeProperty(event.tag()).second,
+            return Edge(graph.getEdgeProperty(event.getTag()).first,
+                        getVertex(graph.getEdgeSource(event.getTag())),
+                        getVertex(graph.getEdgeTarget(event.getTag())),
+                        graph.getEdgeProperty(event.getTag()).second,
                         *this);
         }
 
@@ -756,6 +743,12 @@ namespace graybat {
             comm.synchronize(graphContext);
 
         }
+
+
+        int ContextID(){
+            return graphContext.getID();
+        }
+        
         /** @} */
 
     private:

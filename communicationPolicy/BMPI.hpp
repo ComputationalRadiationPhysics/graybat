@@ -147,7 +147,7 @@ namespace graybat {
                     return status.source();
                 }
 
-                Tag tag(){
+                Tag getTag(){
                     if(async){
                         status = request.wait();
                     }
