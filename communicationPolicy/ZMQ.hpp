@@ -67,8 +67,9 @@ namespace graybat {
 
 		}
 
-		Context(VAddr vAddr, unsigned nPeers) : 
+		Context(ContextID contextID, VAddr vAddr, unsigned nPeers) : 
 		    isValid(true),
+                    contextID(contextID),
                     vAddr(vAddr),
                     nPeers(nPeers){
 		
@@ -98,6 +99,7 @@ namespace graybat {
 
 	    private:	
                 bool  isValid;
+                ContextID contextID;
                 VAddr vAddr;
                 unsigned nPeers;
 	    };
@@ -215,7 +217,7 @@ namespace graybat {
                         sss << s_recv(socket);
                         sss >> vAddr;
 
-                        initialContext = Context(vAddr, nPeers);
+                        initialContext = Context(0, vAddr, nPeers);
                         
                     }
 
@@ -649,7 +651,7 @@ namespace graybat {
                 if(isMember){
                     std::array<unsigned, 1> nMembers {{ 0 }};
                     ZMQ::recv(0, 0, oldContext, nMembers);
-                    return Context(oldContext.getVAddr(), nMembers[0]);
+                    return Context(oldContext.getID() + 1, oldContext.getVAddr(), nMembers[0]);
                     
                 }
                 else{
