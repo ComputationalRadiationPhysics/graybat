@@ -3,28 +3,21 @@
 // STL
 #include <assert.h>   /* assert */
 #include <array>      /* array */
-#include <numeric>    /* std::accumulate */
 #include <iostream>   /* std::cout */
 #include <map>        /* std::map */
 #include <exception>  /* std::out_of_range */
 #include <sstream>    /* std::stringstream, std::istringstream */
-#include <algorithm>  /* std::transform, std::copy */
-#include <thread>     /* std::thread */
 #include <cstdlib>    /* std::env */
 #include <string>     /* std::string, std::stoi */
 #include <queue>      /* std::queue */
 #include <utility>    /* std::move */
 
-// Boost
-#include <boost/any.hpp>
-
 // CLIB
 #include <assert.h>   /* assert */
 #include <string.h>   /* strup */
 
-
 // ZMQ
-#include <zmq.hpp>
+#include <zmq.hpp>    /* zmq::socket_t, zmq::context_t */
 
 // GrayBat
 #include <utils.hpp>  /* utils::MultiKeyMap */
@@ -63,7 +56,7 @@ namespace graybat {
 		Context() :
 		    isValid(false),
                     vAddr(0),
-                    nPeers(1){
+                    nPeers(1) {
 
 		}
 
@@ -140,19 +133,6 @@ namespace graybat {
                 
 	    };
 
-
-            struct message {
-
-                message(const int srcUri) :
-                    srcUri(srcUri){
-
-                }
-
-                const int srcUri;
-                        
-            };
-                
-
             static const MsgType VADDR_REQUEST = 0;
             static const MsgType VADDR_LOOKUP  = 1;
             static const MsgType DESTRUCT      = 2;
@@ -161,43 +141,33 @@ namespace graybat {
             
             // Members
             Context initialContext;
-            std::map<VAddr, Uri> phoneBook;
+            bool isMaster;
+            
             zmq::context_t context;
             zmq::socket_t recvSocket;
-            std::thread connectionManager;
-            bool isMaster;
-            Uri uri;
             std::map<VAddr, zmq::socket_t> sendSockets;
-
+            std::map<VAddr, Uri> phoneBook;
             utils::MultiKeyMap<std::queue<zmq::message_t>, ContextID, VAddr, Tag> inBox;
             
-            // Const Members
-            const std::string masterUri;
+            // Uris
+            Uri masterUri;
             
             // Constructor
 	    ZMQ() :
+                isMaster(false),
                 context(1),
                 recvSocket(context, ZMQ_PULL),
-                isMaster(false),
-                masterUri("tcp://127.0.0.1:5000"){
+                masterUri(std::getenv("GRAYBAT_ZMQ_MASTER_URI")){
 
-                const unsigned nPeers         = std::stoi(std::getenv("OMPI_COMM_WORLD_SIZE"));
-                const unsigned peerID         = std::stoi(std::getenv("OMPI_COMM_WORLD_RANK"));
-
-                // Start thread that manages peers
-                if(peerID == 0){
-                    isMaster = true;
-                    connectionManager = std::thread(&ZMQ::managePeers, this);
-                }
+                const Uri      localBaseUri      = std::getenv("GRAYBAT_ZMQ_LOCAL_BASE_URI");
+                const unsigned localBasePort     = std::stoi(std::getenv("GRAYBAT_ZMQ_LOCAL_BASE_PORT"));
+                const unsigned localPort         = searchBindPort(localBaseUri, localBasePort, recvSocket);
+                const Uri      localUri          = localBaseUri + ":" + std::to_string(localPort);
+                const unsigned globalContextSize = std::stoi(std::getenv("GRAYBAT_ZMQ_GLOBAL_CONTEXT_SIZE"));
 
                 // Create socket for incoming connections
                 {
 
-                    // Retrieve and reserve own uri
-                    const Uri localBaseUri   = getLocalUri();
-                    const unsigned localPort = searchBindPort(localBaseUri, 5001, recvSocket);
-                    uri                      = localBaseUri + ":" + std::to_string(localPort);
-                    
                     // Retrieve vAddr from master
                     // --> Get own phonebook adress
                     {
@@ -209,7 +179,7 @@ namespace graybat {
 
                         // Send vAddr request
                         std::stringstream ss;
-                        ss << VADDR_REQUEST << " " << uri;
+                        ss << VADDR_REQUEST << " " << localUri;
                         s_send(socket, ss.str().c_str());
 
                         // Recv vAddr
@@ -217,7 +187,7 @@ namespace graybat {
                         sss << s_recv(socket);
                         sss >> vAddr;
 
-                        initialContext = Context(0, vAddr, nPeers);
+                        initialContext = Context(0, vAddr, globalContextSize);
                         
                     }
 
@@ -228,7 +198,7 @@ namespace graybat {
                         zmq::socket_t  socket (context, ZMQ_REQ);
                         socket.connect(masterUri.c_str());
 
-                        for(unsigned vAddr = 0; vAddr < nPeers; vAddr++){
+                        for(unsigned vAddr = 0; vAddr < globalContextSize; vAddr++){
 
                             MsgType type = RETRY;
                             
@@ -239,13 +209,13 @@ namespace graybat {
                                 s_send(socket, ss.str().c_str());
 
                                 // Recv uri
-                                std::string uri;
+                                std::string remoteUri;
                                 std::stringstream sss;
                                 sss << s_recv(socket);
                                 sss >> type;
                                 if(type == ACK){
-                                    sss >> uri;   
-                                    phoneBook[vAddr] = uri;
+                                    sss >> remoteUri;   
+                                    phoneBook[vAddr] = remoteUri;
                                     break;
                                 }
 
@@ -258,7 +228,7 @@ namespace graybat {
 
                     // Create sockets to the other peers
                     {
-                        for(unsigned vAddr = 0; vAddr < nPeers; vAddr++){
+                        for(unsigned vAddr = 0; vAddr < globalContextSize; vAddr++){
                             sendSockets.emplace(vAddr, zmq::socket_t(context, ZMQ_PUSH) );
                             sendSockets.at(vAddr).connect(phoneBook.at(vAddr).c_str());
                         }
@@ -275,9 +245,6 @@ namespace graybat {
                 zmq::socket_t  socket (context, ZMQ_REQ);
                 socket.connect(masterUri.c_str());
                 s_send(socket, std::to_string(DESTRUCT).c_str());
-                if(isMaster){
-                    connectionManager.join();
-                }
 	    }
 
 	    /***********************************************************************//**
@@ -311,84 +278,6 @@ namespace graybat {
 
                 return port;
             }
-
-            void managePeers(){
-                zmq::message_t request;
-                zmq::message_t reply;
-                zmq::socket_t socket (context, ZMQ_REP);
-                socket.bind(masterUri.c_str());
-                std::map<VAddr, Uri> phoneBook;
-                
-                VAddr maxVAddr = 0;
-                unsigned nPeers = 0;
-
-                while(true){
-                    std::stringstream ss;
-                    ss << s_recv(socket);
-
-                    Uri srcUri;
-                    MsgType type;
-                    ss >> type;
-
-                    switch(type){
-                        
-                    case VADDR_REQUEST:
-                        {
-                            // Reply with correct information
-                            ss >> srcUri;
-                            phoneBook[maxVAddr] = srcUri;
-                            // Send requestet vAddr
-                            s_send(socket, std::to_string(maxVAddr++).c_str());
-                            nPeers++;
-                            break;
-                        }
-                        
-                    case VADDR_LOOKUP:
-                        {
-                            VAddr remoteVAddr;
-                            ss >> remoteVAddr;
-
-                            std::stringstream sss;
-
-                            if(phoneBook.count(remoteVAddr) == 0){
-                                sss << RETRY;
-                                s_send(socket, sss.str().c_str());
-                            }
-                            else {
-                                sss << ACK << " " << phoneBook[remoteVAddr];
-                                s_send(socket, sss.str().c_str());
-                            }
-
-
-                            break;
-                        }
-
-
-                    case DESTRUCT:
-                        nPeers--;
-                        s_send(socket, "");
-                        break;
-                        
-                    default:
-                        // Reply empty message
-                        s_send(socket, "");
-                        // TODO: throw exceptions since type should be specified
-                        break;
-
-                    };
-
-                    // All peers have destructed, so stop managing Peers
-                    if(nPeers == 0){
-                        return;
-                    }
-                    
-                }
-                
-            }
-
-
-
-
 
             //  Receive 0MQ string from socket and convert into C string
             //  Caller must free returned string. Returns NULL if the context

@@ -75,12 +75,15 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/)
 file(GLOB TEST_CASES  utils/unittests/*.cc)
 add_executable(Test EXCLUDE_FROM_ALL ${TEST_CASES})
 
+# Examples
 add_executable(GoL EXCLUDE_FROM_ALL  example/gol.cc )
 add_executable(ZMQ1 EXCLUDE_FROM_ALL example/zmq/request_reply.cc )
 add_executable(ZMQ2 EXCLUDE_FROM_ALL example/zmq/publish_subscribe.cc )
 add_executable(Forward EXCLUDE_FROM_ALL  example/forward.cc )
 add_executable(Ring EXCLUDE_FROM_ALL  example/ring.cc )
 
+# ZMQ signaling server
+add_executable(ZMQ EXCLUDE_FROM_ALL  utils/zmq_signaling_server.cc )
 
 
 # add the libraries (Boost...) to this executable
@@ -90,6 +93,7 @@ target_link_libraries(ZMQ2 ${LIBS})
 target_link_libraries(Test ${LIBS})
 target_link_libraries(Forward ${LIBS})
 target_link_libraries(Ring ${LIBS})
+target_link_libraries(ZMQ ${LIBS})
 
 
 ###############################################################################
