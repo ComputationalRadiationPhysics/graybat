@@ -118,9 +118,14 @@ namespace graybat {
 
 		}
 
-		bool ready(){
-                    return true;
-		}
+		/* Ready can not be implemented easily in ZMQ
+		   because ZMQ does not provide non blocking
+		   receive functions.
+		   An idea would be the combination of c++ futures
+		   with a blocking receive method. */
+		// bool ready(){
+                //     return true;
+		// }
 
                 Tag getTag(){
                     return tag;
@@ -133,11 +138,16 @@ namespace graybat {
                 
 	    };
 
+	    // Message types for signaling server
             static const MsgType VADDR_REQUEST = 0;
             static const MsgType VADDR_LOOKUP  = 1;
             static const MsgType DESTRUCT      = 2;
             static const MsgType RETRY         = 3;
             static const MsgType ACK           = 4;
+
+	    // Message types between peers
+	    static const MsgType PEER          = 5;
+	    static const MsgType CONFIRM       = 6;
             
             // Members
             Context initialContext;
@@ -148,6 +158,7 @@ namespace graybat {
             std::map<VAddr, zmq::socket_t> sendSockets;
             std::map<VAddr, Uri> phoneBook;
             utils::MultiKeyMap<std::queue<zmq::message_t>, ContextID, VAddr, Tag> inBox;
+	    unsigned msgCount;
             
             // Uris
             Uri masterUri;
@@ -157,6 +168,7 @@ namespace graybat {
                 isMaster(false),
                 context(1),
                 recvSocket(context, ZMQ_PULL),
+		msgCount(0),
                 masterUri(std::getenv("GRAYBAT_ZMQ_MASTER_URI")){
 
                 const Uri      localBaseUri      = std::getenv("GRAYBAT_ZMQ_LOCAL_BASE_URI");
@@ -345,8 +357,15 @@ namespace graybat {
 	     *
 	     * @return Event
 	     */
+	    template <typename T_Send>
+	    Event asyncSend(const VAddr destVAddr, const Tag tag, const Context context, T_Send& sendData){
+		asyncSendImpl(PEER, msgCount++, context, destVAddr, tag, sendData);
+		return Event(destVAddr, tag);
+
+	    }
+	    
             template <typename T_Send>
-            Event asyncSend(const VAddr destVAddr, const Tag tag, const Context context, T_Send& sendData){
+		    void asyncSendImpl(const MsgType msgType, const unsigned msgCount, const Context context, const VAddr destVAddr, const Tag tag, T_Send& sendData){
                 // Create message
                 zmq::message_t message(sizeof(ContextID) +
                                        sizeof(VAddr) +
@@ -356,6 +375,8 @@ namespace graybat {
                 size_t msgOffset(0);
                 ContextID contextID = context.getID();
                 VAddr vAddr         = context.getVAddr();
+		memcpy (static_cast<char*>(message.data()) + msgOffset, &msgType,        sizeof(MsgType)); msgOffset += sizeof(MsgType);
+		memcpy (static_cast<char*>(message.data()) + msgOffset, &msgCount,        sizeof(unsigned)); msgOffset += sizeof(unsigned);		
                 memcpy (static_cast<char*>(message.data()) + msgOffset, &contextID,      sizeof(ContextID)); msgOffset += sizeof(ContextID);
                 memcpy (static_cast<char*>(message.data()) + msgOffset, &vAddr,          sizeof(VAddr));     msgOffset += sizeof(VAddr);
                 memcpy (static_cast<char*>(message.data()) + msgOffset, &tag,            sizeof(Tag));       msgOffset += sizeof(Tag);
@@ -364,8 +385,6 @@ namespace graybat {
 
                 sendSockets.at(destVAddr).send(message);
 
-                return Event(destVAddr, tag);
-                
             }
 
 
@@ -412,14 +431,27 @@ namespace graybat {
                      // Copy data from message
                      {
                          size_t msgOffset = 0;
+			 MsgType   remoteMsgType;
+			 unsigned  remoteMsgCount;
                          ContextID remoteContextID;
                          VAddr     remoteVAddr;
                          Tag       remoteTag;
+			 
+			 memcpy (&remoteMsgType,    static_cast<char*>(message.data()) + msgOffset, sizeof(MsgType)); msgOffset += sizeof(MsgType);
+			 memcpy (&remoteMsgCount,    static_cast<char*>(message.data()) + msgOffset, sizeof(unsigned)); msgOffset += sizeof(unsigned);
                          memcpy (&remoteContextID,  static_cast<char*>(message.data()) + msgOffset, sizeof(ContextID)); msgOffset += sizeof(ContextID);
                          memcpy (&remoteVAddr,      static_cast<char*>(message.data()) + msgOffset, sizeof(VAddr));     msgOffset += sizeof(VAddr);
                          memcpy (&remoteTag,        static_cast<char*>(message.data()) + msgOffset, sizeof(Tag));       msgOffset += sizeof(Tag);
 
-
+			 if(remoteMsgType == CONFIRM){
+			     
+			 }
+			 else {
+			     std::array<int,0> data;
+			     asyncSendImpl(CONFIRM, msgCount, context, remoteVAddr, remoteTag, data);
+			 }
+			 
+			 
                          // Recv rest of message
                          if(context.getID() == remoteContextID) {
                              if(srcVAddr == remoteVAddr) {
