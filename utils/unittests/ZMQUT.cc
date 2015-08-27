@@ -48,14 +48,12 @@ BOOST_AUTO_TEST_CASE( send_recv ){
     typedef typename ZMQ::Context             Context;
     typedef typename ZMQ::Event               Event;
 
-    BOOST_TEST_MESSAGE("Entry");
-    
     ZMQ zmq;
 
     Context context = zmq.getGlobalContext();
 
     const unsigned nElements = 10;
-
+    
     std::vector<unsigned> recv (nElements, 0);
 
 
@@ -75,6 +73,8 @@ BOOST_AUTO_TEST_CASE( send_recv ){
         }
 
     }
+
+    std::cout << "finished" << std::endl;
 
 }
 
@@ -157,12 +157,14 @@ BOOST_AUTO_TEST_CASE( cage ){
 
     for(unsigned i = 0; i < send.size();++i){
         send.at(i) = i;
+        std::cout << "send: " << send.at(i) << std::endl;
     }
 
     // Send state to neighbor cells
     for(Vertex &v : cage.hostedVertices){
         for(Edge edge : cage.getOutEdges(v)){
             cage.send(edge, send, events);
+
         }
     }
 
@@ -171,6 +173,7 @@ BOOST_AUTO_TEST_CASE( cage ){
         for(Edge edge : cage.getInEdges(v)){
             cage.recv(edge, recv);
             for(unsigned i = 0; i < recv.size();++i){
+                std::cout << "recv: " << recv.at(i) << std::endl;
         	BOOST_CHECK_EQUAL(recv.at(i), i);
             }
 
@@ -184,6 +187,8 @@ BOOST_AUTO_TEST_CASE( cage ){
         events.pop_back();
     }
 
+
+    std::cout << "finished" << std::endl;
 }
 
 BOOST_AUTO_TEST_SUITE_END()
