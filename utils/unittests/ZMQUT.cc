@@ -56,11 +56,12 @@ BOOST_AUTO_TEST_CASE( send_recv ){
     
     std::vector<unsigned> recv (nElements, 0);
 
+    std::vector<Event> events;
 
     for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
         std::vector<unsigned> data (nElements, 0);
         std::iota(data.begin(), data.end(), context.getVAddr());
-        Event e = zmq.asyncSend(vAddr, 99, context, data);
+        events.push_back(zmq.asyncSend(vAddr, 99, context, data));
         
     }
 
@@ -72,6 +73,11 @@ BOOST_AUTO_TEST_CASE( send_recv ){
             
         }
 
+    }
+
+
+    for(Event &e : events){
+        e.wait();
     }
 
     std::cout << "finished" << std::endl;

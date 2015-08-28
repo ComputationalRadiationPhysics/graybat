@@ -120,17 +120,14 @@ namespace graybat {
 		}
 
 		void wait(){
+                    comm.wait(msgID, context, vAddr, tag);
 
 		}
 
-		/* Ready can not be implemented easily in ZMQ
-		   because ZMQ does not provide non blocking
-		   receive functions.
-		   An idea would be the combination of c++ futures
-		   with a blocking receive method. */
-		// bool ready(){
-                //     return true;
-		// }
+                bool ready(){
+                    comm.ready(msgID, context, vAddr, tag);
+                    return true;
+                }
 
                 Tag getTag(){
                     return tag;
@@ -165,10 +162,11 @@ namespace graybat {
             zmq::socket_t recvSocket;
             std::map<VAddr, zmq::socket_t> sendSockets;
             std::map<VAddr, Uri> phoneBook;
-            utils::MultiKeyMap<std::queue<zmq::message_t>, ContextID, VAddr, Tag> inBox;
+            utils::MultiKeyMap<std::queue<zmq::message_t>, MsgType, ContextID, VAddr, Tag> inBox;
             //utils::MultiKeyMap<std::queue<zmq::message_t>, ContextID, VAddr, Tag, MsgID> confirmBox;
 	    unsigned msgID;
-            std::thread handler;
+            std::thread recvHandler;
+            std::mutex mtx;
             
             // Uris
             Uri masterUri;
@@ -261,7 +259,7 @@ namespace graybat {
 
                 // Create recv thread
                 {
-                    handler = std::thread(&ZMQ::recvHandler, this);
+                    recvHandler = std::thread(&ZMQ::handleRecv, this);
                         
                 }
 
@@ -269,11 +267,16 @@ namespace graybat {
 
 	    // Destructor
 	    ~ZMQ(){
+                // Send exit to signaling server
                 zmq::context_t context(1);
                 zmq::socket_t  socket (context, ZMQ_REQ);
                 socket.connect(masterUri.c_str());
                 s_send(socket, std::to_string(DESTRUCT).c_str());
-                handler.join();
+
+                // Send exit to receive handler
+                std::array<unsigned,0>  null;
+                asyncSendImpl(DESTRUCT, 0, initialContext, initialContext.getVAddr(), 0, null);
+                recvHandler.join();
 	    }
 
 	    /***********************************************************************//**
@@ -330,7 +333,7 @@ namespace graybat {
                 return size;
             }
 
-            void recvHandler(){
+            void handleRecv(){
 
                 while(true){
 
@@ -351,22 +354,19 @@ namespace graybat {
                         memcpy (&remoteVAddr,      static_cast<char*>(message.data()) + msgOffset, sizeof(VAddr));     msgOffset += sizeof(VAddr);
                         memcpy (&remoteTag,        static_cast<char*>(message.data()) + msgOffset, sizeof(Tag));       msgOffset += sizeof(Tag);
 
-                        std::cout << "recv: " << remoteMsgType << " " << remoteMsgID << " " << remoteContextID << " " << remoteVAddr << " " << remoteTag << std::endl;
+                        //std::cout << "recv: " << remoteMsgType << " " << remoteMsgID << " " << remoteContextID << " " << remoteVAddr << " " << remoteTag << std::endl;
 
-                        /*
-                          The following does not work because ZMQ is not thread safe!
-                          Only one thread is allowed send or recv data.
-
-                         */
-                        // if(remoteMsgType == CONFIRM){
-
-                        // }
-                        // else {
-                        //     std::array<unsigned, 1> nullData;
-                        //     asyncSendImpl(CONFIRM, remoteMsgID, initialContext, remoteVAddr, 999, nullData);
-                        //     inBox(remoteContextID, remoteVAddr, remoteTag).push(std::move(message));
+                        if(remoteMsgType == DESTRUCT){
+                            return;
+                        }
+                        
+                        if(remoteMsgType != CONFIRM){
+                            std::array<unsigned,0>  null;
+                            asyncSendImpl(CONFIRM, remoteMsgID, initialContext, remoteVAddr, remoteTag, null);
+                        }
+                        inBox(remoteMsgType, remoteContextID, remoteVAddr, remoteTag).push(std::move(message));
                             
-                        // }
+
               
                     }
 
@@ -431,7 +431,9 @@ namespace graybat {
 		    void asyncSendImpl(const MsgType msgType, const MsgID msgID, const Context context, const VAddr destVAddr, const Tag tag, T_Send& sendData){
 
                 // Create message
-                zmq::message_t message(sizeof(ContextID) +
+                zmq::message_t message(sizeof(MsgType) +
+                                       sizeof(MsgID) +
+                                       sizeof(ContextID) +
                                        sizeof(VAddr) +
                                        sizeof(Tag) +
                                        sendData.size() * sizeof(typename T_Send::value_type));
@@ -446,9 +448,11 @@ namespace graybat {
                 memcpy (static_cast<char*>(message.data()) + msgOffset, &tag,            sizeof(Tag));       msgOffset += sizeof(Tag);
                 memcpy (static_cast<char*>(message.data()) + msgOffset, sendData.data(), sizeof(typename T_Send::value_type) * sendData.size());
 
-                std::cout << "send: " << msgType << " " << msgID << " " << context.getID() << " " << destVAddr << " " << tag << std::endl;
+                //std::cout << "send: " << msgType << " " << msgID << " " << context.getID() << " " << destVAddr << " " << tag << std::endl;
 
+                mtx.lock();
                 sendSockets.at(destVAddr).send(message);
+                mtx.unlock();
 
             }
 
@@ -472,13 +476,18 @@ namespace graybat {
                 {
                     bool msgReceived = false;
                     while(!msgReceived){
-                        inBox.test(context.getID(), srcVAddr, tag);
-                        message = std::move(inBox.at(context.getID(), srcVAddr, tag).front());
-                        inBox.at(context.getID(), srcVAddr, tag).pop();
+                        if(inBox.test(PEER, context.getID(), srcVAddr, tag)){
+                            message = std::move(inBox.at(PEER, context.getID(), srcVAddr, tag).front());
+                            inBox.at(PEER, context.getID(), srcVAddr, tag).pop();
 
-                        if(inBox.at(context.getID(), srcVAddr, tag).empty()){
-                            inBox.erase(context.getID(), srcVAddr, tag);
+
+                            if(inBox.at(PEER, context.getID(), srcVAddr, tag).empty()){
+                                inBox.erase(PEER, context.getID(), srcVAddr, tag);
                                  
+                            }
+
+                            msgReceived = true;
+                            
                         }
                              
                     }
@@ -510,6 +519,50 @@ namespace graybat {
                 
             }
 
+            
+            void wait(const MsgType msgID, const Context context, const VAddr vAddr, const Tag tag){
+                while(!ready(msgID, context, vAddr, tag));
+                      
+            }
+
+            bool ready(const MsgType msgID, const Context context, const VAddr vAddr, const Tag tag){
+
+                zmq::message_t message;
+                if(inBox.test(CONFIRM, context.getID(), vAddr, tag)){
+                    message = std::move(inBox.at(CONFIRM, context.getID(), vAddr, tag).front());
+                    inBox.at(CONFIRM, context.getID(), vAddr, tag).pop();
+
+                    if(inBox.at(CONFIRM, context.getID(), vAddr, tag).empty()){
+                        inBox.erase(CONFIRM, context.getID(), vAddr, tag);
+                                 
+                    }
+                            
+                    size_t    msgOffset = 0;
+                    MsgType   remoteMsgType;
+                    MsgID     remoteMsgID;
+                    ContextID remoteContextID;
+                    VAddr     remoteVAddr;
+                    Tag       remoteTag;
+
+                    memcpy (&remoteMsgType,    static_cast<char*>(message.data()) + msgOffset, sizeof(MsgType));   msgOffset += sizeof(MsgType);
+                    memcpy (&remoteMsgID,      static_cast<char*>(message.data()) + msgOffset, sizeof(MsgID));     msgOffset += sizeof(MsgID);
+                    memcpy (&remoteContextID,  static_cast<char*>(message.data()) + msgOffset, sizeof(ContextID)); msgOffset += sizeof(ContextID);
+                    memcpy (&remoteVAddr,      static_cast<char*>(message.data()) + msgOffset, sizeof(VAddr));     msgOffset += sizeof(VAddr);
+                    memcpy (&remoteTag,        static_cast<char*>(message.data()) + msgOffset, sizeof(Tag));       msgOffset += sizeof(Tag);
+
+                    if(remoteMsgID == msgID){
+                        return true;
+                    }
+                    else {
+                        inBox(CONFIRM, context.getID(), vAddr, tag).push(std::move(message));
+                    }
+                            
+                }
+
+                return false;
+                             
+            }
+                
             // template <typename T_Recv>
 	    // Event recv(const Context context, T_Recv& recvData){
             //     bool msgReceived = false;
