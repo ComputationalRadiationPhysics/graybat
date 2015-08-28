@@ -40,6 +40,7 @@ namespace graybat {
 	    typedef unsigned ContextID;
 	    typedef unsigned VAddr;
             typedef unsigned MsgType;
+            typedef unsigned MsgID;
 	    typedef std::string Uri;
 
             
@@ -138,6 +139,10 @@ namespace graybat {
             static const MsgType DESTRUCT      = 2;
             static const MsgType RETRY         = 3;
             static const MsgType ACK           = 4;
+
+            static const MsgType CONFIRM       = 3;
+            static const MsgType PEER_MSG      = 4;
+            
             
             // Members
             Context initialContext;
@@ -147,7 +152,8 @@ namespace graybat {
             zmq::socket_t recvSocket;
             std::map<VAddr, zmq::socket_t> sendSockets;
             std::map<VAddr, Uri> phoneBook;
-            utils::MultiKeyMap<std::queue<zmq::message_t>, ContextID, VAddr, Tag> inBox;
+            utils::MultiKeyMap<std::queue<zmq::message_t>, MsgType, ContextID, VAddr, Tag> inBox;
+            MsgID msgID;
             
             // Uris
             Uri masterUri;
@@ -157,6 +163,7 @@ namespace graybat {
                 isMaster(false),
                 context(1),
                 recvSocket(context, ZMQ_PULL),
+                msgID(0),
                 masterUri(std::getenv("GRAYBAT_ZMQ_MASTER_URI")){
 
                 const Uri      localBaseUri      = std::getenv("GRAYBAT_ZMQ_LOCAL_BASE_URI");
@@ -325,11 +332,11 @@ namespace graybat {
 	     *                       return the amount of data elements to send. Notice, that
 	     *                       std::vector and std::array implement this interface.
 	     */
-	    template <typename T_Send>
-	    void send(const VAddr destVAddr, const Tag tag, const Context context, const T_Send& sendData){
-                Event e = asyncSend(destVAddr, tag, context, sendData);
-                e.wait();
-	    }
+	    // template <typename T_Send>
+	    // void send(const VAddr destVAddr, const Tag tag, const Context context, const T_Send& sendData){
+            //     Event e = asyncSend(destVAddr, tag, context, sendData);
+            //     e.wait();
+	    // }
             
 	    /** 
 	     * @brief Non blocking transmission of a message sendData to peer with virtual address destVAddr.
@@ -347,25 +354,33 @@ namespace graybat {
 	     */
             template <typename T_Send>
             Event asyncSend(const VAddr destVAddr, const Tag tag, const Context context, T_Send& sendData){
+                asyncSendImpl(PEER_MSG, msgID++, context, destVAddr, tag, sendData);
+                return Event(destVAddr, tag);
+
+            }
+            
+            template <typename T_Send>
+            void asyncSendImpl(const MsgType msgType, const MsgID msgID, const Context context, const VAddr destVAddr, const Tag tag,  T_Send& sendData){
                 // Create message
-                zmq::message_t message(sizeof(ContextID) +
+                zmq::message_t message(sizeof(MsgType) +
+                                       sizeof(MsgID) +
+                                       sizeof(ContextID) +
                                        sizeof(VAddr) +
                                        sizeof(Tag) +
                                        sendData.size() * sizeof(typename T_Send::value_type));
 
-                size_t msgOffset(0);
+                size_t    msgOffset = 0;
                 ContextID contextID = context.getID();
-                VAddr vAddr         = context.getVAddr();
+                VAddr     vAddr     = context.getVAddr();
+                memcpy (static_cast<char*>(message.data()) + msgOffset, &msgType,        sizeof(MsgType));   msgOffset += sizeof(MsgType);
+                memcpy (static_cast<char*>(message.data()) + msgOffset, &msgID,          sizeof(MsgID));     msgOffset += sizeof(MsgID);
                 memcpy (static_cast<char*>(message.data()) + msgOffset, &contextID,      sizeof(ContextID)); msgOffset += sizeof(ContextID);
                 memcpy (static_cast<char*>(message.data()) + msgOffset, &vAddr,          sizeof(VAddr));     msgOffset += sizeof(VAddr);
                 memcpy (static_cast<char*>(message.data()) + msgOffset, &tag,            sizeof(Tag));       msgOffset += sizeof(Tag);
                 memcpy (static_cast<char*>(message.data()) + msgOffset, sendData.data(), sizeof(typename T_Send::value_type) * sendData.size());
 
-
                 sendSockets.at(destVAddr).send(message);
 
-                return Event(destVAddr, tag);
-                
             }
 
 
@@ -381,109 +396,103 @@ namespace graybat {
 	     *                        return the amount of data elements to send. Notice, that
 	     *                        std::vector and std::array implement this interface.
 	     */
-	     template <typename T_Recv>
-	     void recv(const VAddr srcVAddr, const Tag tag, const Context context, T_Recv& recvData){
-                 bool msgReceived = false;
-
-                 while(!msgReceived){
-
-                     zmq::message_t message;
-                     // Get message either from the message box when it
-                     // was received before or directly from an other
-                     // peer.
-                     {
-                         if(inBox.test(context.getID(), srcVAddr, tag)){
-                             message = std::move(inBox.at(context.getID(), srcVAddr, tag).front());
-                             inBox.at(context.getID(), srcVAddr, tag).pop();
-
-                             if(inBox.at(context.getID(), srcVAddr, tag).empty()){
-                                 inBox.erase(context.getID(), srcVAddr, tag);
-                                 
-                             }
-                             
-                         }
-                         else { 
-                             recvSocket.recv(&message);
-                         
-                         }
-                         
-                     }
-                     
-                     // Copy data from message
-                     {
-                         size_t msgOffset = 0;
-                         ContextID remoteContextID;
-                         VAddr     remoteVAddr;
-                         Tag       remoteTag;
-                         memcpy (&remoteContextID,  static_cast<char*>(message.data()) + msgOffset, sizeof(ContextID)); msgOffset += sizeof(ContextID);
-                         memcpy (&remoteVAddr,      static_cast<char*>(message.data()) + msgOffset, sizeof(VAddr));     msgOffset += sizeof(VAddr);
-                         memcpy (&remoteTag,        static_cast<char*>(message.data()) + msgOffset, sizeof(Tag));       msgOffset += sizeof(Tag);
-
-
-                         // Recv rest of message
-                         if(context.getID() == remoteContextID) {
-                             if(srcVAddr == remoteVAddr) {
-                                 if(tag  == remoteTag){
-
-                                     memcpy (recvData.data(),
-                                             static_cast<char*>(message.data()) + msgOffset,
-                                             sizeof(typename T_Recv::value_type) * recvData.size());
-                                 
-                                     msgReceived  = true;
-                                 }
-                                 else {
-                                     inBox(remoteContextID, remoteVAddr, remoteTag).push(std::move(message));
-                                     
-                                 }
-                             }
-                             else {
-                                 inBox(remoteContextID, remoteVAddr, remoteTag).push(std::move(message));
-                                 
-                             }
-                         }
-                         else {
-                             inBox(remoteContextID, remoteVAddr, remoteTag).push(std::move(message));
-                             
-                         }
-                         
-                     }
-
-                 }
-
-	     }
-
             template <typename T_Recv>
-	    Event recv(const Context context, T_Recv& recvData){
+            void recv(const VAddr srcVAddr, const Tag tag, const Context context, T_Recv& recvData){
                 bool msgReceived = false;
 
                 while(!msgReceived){
+
                     zmq::message_t message;
-                    recvSocket.recv(&message);
-                
-                    size_t msgOffset = 0;
-                    ContextID remoteContextID;
-                    VAddr     remoteVAddr;
-                    Tag       remoteTag;
-                    memcpy (&remoteContextID,  static_cast<char*>(message.data()) + msgOffset, sizeof(ContextID)); msgOffset += sizeof(ContextID);
-                    memcpy (&remoteVAddr,      static_cast<char*>(message.data()) + msgOffset, sizeof(VAddr));     msgOffset += sizeof(VAddr);
-                    memcpy (&remoteTag,        static_cast<char*>(message.data()) + msgOffset, sizeof(Tag));       msgOffset += sizeof(Tag);
+                    // Get message either from the message box when it
+                    // was received before or directly from an other
+                    // peer.
+                    {
+                        if(inBox.test(PEER_MSG, context.getID(), srcVAddr, tag)){
+                            message = std::move(inBox.at(PEER_MSG, context.getID(), srcVAddr, tag).front());
+                            inBox.at(PEER_MSG, context.getID(), srcVAddr, tag).pop();
 
-                    if(context.getID() == remoteContextID) {
-                        memcpy (recvData.data(),
-                                static_cast<char*>(message.data()) + msgOffset,
-                                sizeof(typename T_Recv::value_type) * recvData.size());
+                            if(inBox.at(PEER_MSG, context.getID(), srcVAddr, tag).empty()){
+                                inBox.erase(PEER_MSG, context.getID(), srcVAddr, tag);
+                                 
+                            }
+                             
+                        }
+                        else { 
+                            recvSocket.recv(&message);
+                         
+                        }
+                         
+                    }
+                     
+                    // Copy data from message
+                    {
+                        size_t msgOffset = 0;
+                        MsgType   remoteMsgType;
+                        MsgID     remoteMsgID;
+                        ContextID remoteContextID;
+                        VAddr     remoteVAddr;
+                        Tag       remoteTag;
+                        memcpy (&remoteMsgType,   static_cast<char*>(message.data()) + msgOffset, sizeof(MsgType));   msgOffset += sizeof(MsgType);
+                        memcpy (&remoteMsgID,     static_cast<char*>(message.data()) + msgOffset, sizeof(MsgID));     msgOffset += sizeof(MsgID);
+                        memcpy (&remoteContextID, static_cast<char*>(message.data()) + msgOffset, sizeof(ContextID)); msgOffset += sizeof(ContextID);
+                        memcpy (&remoteVAddr,     static_cast<char*>(message.data()) + msgOffset, sizeof(VAddr));     msgOffset += sizeof(VAddr);
+                        memcpy (&remoteTag,       static_cast<char*>(message.data()) + msgOffset, sizeof(Tag));       msgOffset += sizeof(Tag);
 
-                        msgReceived = true;
-                        return Event(remoteVAddr, remoteTag);
-                    
+
+                        // Recv rest of message
+                        if(context.getID() == remoteContextID and
+                           srcVAddr == remoteVAddr and
+                           tag  == remoteTag){
+
+                            memcpy (recvData.data(),
+                                    static_cast<char*>(message.data()) + msgOffset,
+                                    sizeof(typename T_Recv::value_type) * recvData.size());
+                                 
+                            msgReceived  = true;
+                        }
+                        else {
+                            inBox(PEER_MSG, remoteContextID, remoteVAddr, remoteTag).push(std::move(message));
+                                     
+                        }
+
                     }
-                    else {
-                        inBox(remoteContextID, remoteVAddr, remoteTag).push(std::move(message));
-                    }
-                    
+
                 }
+                
+            }
 
-	    }
+            // template <typename T_Recv>
+	    // Event recv(const Context context, T_Recv& recvData){
+            //     bool msgReceived = false;
+
+            //     while(!msgReceived){
+            //         zmq::message_t message;
+            //         recvSocket.recv(&message);
+                
+            //         size_t msgOffset = 0;
+            //         ContextID remoteContextID;
+            //         VAddr     remoteVAddr;
+            //         Tag       remoteTag;
+            //         memcpy (&remoteContextID,  static_cast<char*>(message.data()) + msgOffset, sizeof(ContextID)); msgOffset += sizeof(ContextID);
+            //         memcpy (&remoteVAddr,      static_cast<char*>(message.data()) + msgOffset, sizeof(VAddr));     msgOffset += sizeof(VAddr);
+            //         memcpy (&remoteTag,        static_cast<char*>(message.data()) + msgOffset, sizeof(Tag));       msgOffset += sizeof(Tag);
+
+            //         if(context.getID() == remoteContextID) {
+            //             memcpy (recvData.data(),
+            //                     static_cast<char*>(message.data()) + msgOffset,
+            //                     sizeof(typename T_Recv::value_type) * recvData.size());
+
+            //             msgReceived = true;
+            //             return Event(remoteVAddr, remoteTag);
+                    
+            //         }
+            //         else {
+            //             inBox(remoteContextID, remoteVAddr, remoteTag).push(std::move(message));
+            //         }
+                    
+            //     }
+
+	    // }
 
             
 	    /** @} */
