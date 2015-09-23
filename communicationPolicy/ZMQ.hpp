@@ -525,23 +525,24 @@ namespace graybat {
                 zmq::message_t message;
                 {
                 
-                    std::vector<std::tuple<MsgType, ContextID, VAddr, Tag> > values;
+		    std::vector<std::reference_wrapper<std::queue<zmq::message_t> > > values;
+		
+		    while(values.empty()){
+			inBox.values(values, PEER, context.getID());
+		    }
+ 
+		    message = std::move(values.front().get().front());
+		    //values.front().get().pop();
 
-                    while(values.empty()){
-                        inBox.values(values, PEER, context.getID());
-                    }
-
-                    // for(auto v : values){
-                    //     std::cout << std::get<2>(v) << std::endl;
-                    // }
-
-                    // for(auto v : values){
-                    //     //message = std::move(v.second.front());
-                    // }
+		    
+		    // Now erase message
+		    if(values.front().get().empty()){
+			//inBox.erase();
+		    }
                     
                 }
 
-                // Copy data from message
+		//Copy data from message
                 {
                     size_t    msgOffset = 0;
                     MsgType   remoteMsgType;
@@ -555,7 +556,6 @@ namespace graybat {
                     memcpy (&remoteContextID,  static_cast<char*>(message.data()) + msgOffset, sizeof(ContextID)); msgOffset += sizeof(ContextID);
                     memcpy (&remoteVAddr,      static_cast<char*>(message.data()) + msgOffset, sizeof(VAddr));     msgOffset += sizeof(VAddr);
                     memcpy (&remoteTag,        static_cast<char*>(message.data()) + msgOffset, sizeof(Tag));       msgOffset += sizeof(Tag);
-
 
                     memcpy (recvData.data(),
                             static_cast<char*>(message.data()) + msgOffset,

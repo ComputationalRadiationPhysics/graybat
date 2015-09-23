@@ -111,10 +111,10 @@ BOOST_AUTO_TEST_CASE( send_recv_all ){
 
         std::cout << recv[0] << std::endl;
         
-        // for(unsigned i = 0; i < recv.size(); ++i){
-        //     BOOST_CHECK_EQUAL(recv[i], vAddr+i);
+        for(unsigned i = 0; i < recv.size(); ++i){
+            BOOST_CHECK_EQUAL(recv[i], vAddr+i);
             
-        // }
+        }
 
     }
 
@@ -205,7 +205,7 @@ BOOST_AUTO_TEST_CASE( cage ){
         send.at(i) = i;
     }
 
-    // Send state to neighbor cells
+    //Send state to neighbor cells
     for(Vertex &v : cage.hostedVertices){
         for(Edge edge : cage.getOutEdges(v)){
             cage.send(edge, send, events);
@@ -213,7 +213,7 @@ BOOST_AUTO_TEST_CASE( cage ){
         }
     }
 
-    // Recv state from neighbor cells
+    //Recv state from neighbor cells
     for(Vertex &v : cage.hostedVertices){
         for(Edge edge : cage.getInEdges(v)){
             cage.recv(edge, recv);
