@@ -519,6 +519,52 @@ namespace graybat {
                 
             }
 
+            template <typename T_Recv>
+            Event recv(const Context context, T_Recv& recvData){
+
+                zmq::message_t message;
+                {
+                
+                    std::vector<std::tuple<MsgType, ContextID, VAddr, Tag> > values;
+
+                    while(values.empty()){
+                        inBox.values(values, PEER, context.getID());
+                    }
+
+                    // for(auto v : values){
+                    //     std::cout << std::get<2>(v) << std::endl;
+                    // }
+
+                    // for(auto v : values){
+                    //     //message = std::move(v.second.front());
+                    // }
+                    
+                }
+
+                // Copy data from message
+                {
+                    size_t    msgOffset = 0;
+                    MsgType   remoteMsgType;
+                    MsgID     remoteMsgID;
+                    ContextID remoteContextID;
+                    VAddr     remoteVAddr;
+                    Tag       remoteTag;
+			 
+                    memcpy (&remoteMsgType,    static_cast<char*>(message.data()) + msgOffset, sizeof(MsgType));   msgOffset += sizeof(MsgType);
+                    memcpy (&remoteMsgID,      static_cast<char*>(message.data()) + msgOffset, sizeof(MsgID));     msgOffset += sizeof(MsgID);
+                    memcpy (&remoteContextID,  static_cast<char*>(message.data()) + msgOffset, sizeof(ContextID)); msgOffset += sizeof(ContextID);
+                    memcpy (&remoteVAddr,      static_cast<char*>(message.data()) + msgOffset, sizeof(VAddr));     msgOffset += sizeof(VAddr);
+                    memcpy (&remoteTag,        static_cast<char*>(message.data()) + msgOffset, sizeof(Tag));       msgOffset += sizeof(Tag);
+
+
+                    memcpy (recvData.data(),
+                            static_cast<char*>(message.data()) + msgOffset,
+                            sizeof(typename T_Recv::value_type) * recvData.size());
+                                 
+                        
+                }
+
+            }
             
             void wait(const MsgType msgID, const Context context, const VAddr vAddr, const Tag tag){
                 while(!ready(msgID, context, vAddr, tag));
@@ -563,38 +609,7 @@ namespace graybat {
                              
             }
                 
-            // template <typename T_Recv>
-	    // Event recv(const Context context, T_Recv& recvData){
-            //     bool msgReceived = false;
 
-            //     while(!msgReceived){
-            //         zmq::message_t message;
-            //         recvSocket.recv(&message);
-                
-            //         size_t msgOffset = 0;
-            //         ContextID remoteContextID;
-            //         VAddr     remoteVAddr;
-            //         Tag       remoteTag;
-            //         memcpy (&remoteContextID,  static_cast<char*>(message.data()) + msgOffset, sizeof(ContextID)); msgOffset += sizeof(ContextID);
-            //         memcpy (&remoteVAddr,      static_cast<char*>(message.data()) + msgOffset, sizeof(VAddr));     msgOffset += sizeof(VAddr);
-            //         memcpy (&remoteTag,        static_cast<char*>(message.data()) + msgOffset, sizeof(Tag));       msgOffset += sizeof(Tag);
-
-            //         if(context.getID() == remoteContextID) {
-            //             memcpy (recvData.data(),
-            //                     static_cast<char*>(message.data()) + msgOffset,
-            //                     sizeof(typename T_Recv::value_type) * recvData.size());
-
-            //             msgReceived = true;
-            //             return Event(remoteVAddr, remoteTag);
-                    
-            //         }
-            //         else {
-            //             inBox(remoteContextID, remoteVAddr, remoteTag).push(std::move(message));
-            //         }
-                    
-            //     }
-
-	    // }
 
             
 	    /** @} */

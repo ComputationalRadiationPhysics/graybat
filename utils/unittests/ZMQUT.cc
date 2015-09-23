@@ -83,6 +83,49 @@ BOOST_AUTO_TEST_CASE( send_recv ){
 
 }
 
+
+BOOST_AUTO_TEST_CASE( send_recv_all ){
+    typedef graybat::communicationPolicy::ZMQ ZMQ;
+    typedef typename ZMQ::Context             Context;
+    typedef typename ZMQ::Event               Event;
+
+    ZMQ zmq;
+
+    Context context = zmq.getGlobalContext();
+
+    const unsigned nElements = 1;
+    
+    std::vector<unsigned> recv (nElements, 0);
+
+    std::vector<Event> events;
+
+    for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
+        std::vector<unsigned> data (nElements, 0);
+        std::iota(data.begin(), data.end(), context.getVAddr());
+        events.push_back(zmq.asyncSend(vAddr, 99, context, data));
+        
+    }
+
+    for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
+        zmq.recv(context, recv);
+
+        std::cout << recv[0] << std::endl;
+        
+        // for(unsigned i = 0; i < recv.size(); ++i){
+        //     BOOST_CHECK_EQUAL(recv[i], vAddr+i);
+            
+        // }
+
+    }
+
+
+    for(Event &e : events){
+        e.wait();
+    }
+
+
+}
+
 BOOST_AUTO_TEST_CASE( send_recv_order ){
     typedef graybat::communicationPolicy::ZMQ ZMQ;
     typedef typename ZMQ::Context             Context;
