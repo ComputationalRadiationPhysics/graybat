@@ -9,6 +9,7 @@
 #include <typeinfo>   /* typeid */
 #include <functional> /* function */
 #include <iterator>   /* std::iterator_traits */
+
 // HANA
 #include <boost/hana.hpp>
 namespace hana = boost::hana;
@@ -53,24 +54,24 @@ struct MultiKeyMapType<Key, Tail...>  {
 template <int Left>
 struct SubTreeValues {
 
-    template <typename T_Map, typename T_Container, typename T_Tuple>
-    void operator()(T_Map &map, T_Container & values, T_Tuple & tuple){
+    template <typename T_Map, typename T_ValuesCT, typename T_KeysCT, typename T_Tuple>
+    void operator()(T_Map &map, T_ValuesCT & values, T_KeysCT& keys, T_Tuple & tuple){
         auto begin = map.begin();
         auto end   = map.end();
         for(auto it = begin; it != end; ++it){
-            auto nextTuple = std::tuple_cat(tuple, std::make_tuple(it->first));
-            SubTreeValues<Left-1>()(it->second, values, nextTuple);
+            auto nextTuple = hana::concat(tuple, hana::make_tuple(it->first));
+            SubTreeValues<Left-1>()(it->second, values, keys, nextTuple);
         }
         
     }
 
-    template <typename T_Map, typename T_Container>
-    void operator()(T_Map &map, T_Container & values){
+    template <typename T_Map, typename T_ValuesCT, typename T_Keys>
+    void operator()(T_Map &map, T_ValuesCT &values, T_Keys& keys){
         auto begin = map.begin();
         auto end   = map.end();
         for(auto it = begin; it != end; ++it){
-            auto t = std::make_tuple(it->first);
-            SubTreeValues<Left-1>()(it->second, values, t);
+            auto t = hana::make_tuple(it->first);
+            SubTreeValues<Left-1>()(it->second, values, keys, t);
         }
         
     }  
@@ -80,8 +81,9 @@ struct SubTreeValues {
 template <>
 struct SubTreeValues <0> {
     
-    template <typename T_Value, typename T_Container, typename T_Tuple>    
-    void operator()(T_Value &value, T_Container & values, T_Tuple &tuple){
+    template <typename T_Value, typename T_ValuesCT, typename T_KeysCT, typename T_Tuple>    
+    void operator()(T_Value &value, T_ValuesCT& values, T_KeysCT& keys, T_Tuple &tuple){
+	keys.push_back(tuple);
         values.push_back(value);
     }
     
@@ -162,20 +164,39 @@ struct MultiKeyMap {
 
     }
 
-    template <typename T_Values>
-    void values(T_Value &values){
-        constexpr size_t keysTupleSize = std::tuple_size<std::tuple<T_Keys...>>::value;
-        SubTreeValues<keysTupleSize>()(multiKeyMap, values);
+    template <typename T_KeysTPL>
+    bool erase(T_KeysTPL const keys){
+         auto firstKeysSize = hana::int_c<hana::minus(hana::int_c<hana::size(keys)>, 1)>;
+         auto firstKeys     = hana::take_c<firstKeysSize>(keys);
+         auto lastKey       = hana::back(keys);
+
+         auto it  = traverse(multiKeyMap, firstKeys).find(lastKey);
+         auto end = traverse(multiKeyMap, firstKeys).end();
+
+         if(it == end) return false;
+         else {
+             traverse(multiKeyMap, firstKeys).erase(it);
+             return true;
+         }
+
     }
+
     
-    template <typename T_Values, typename ...T_Sub_Keys>
-    void values(T_Values &values, T_Sub_Keys... subKeys){
+
+    // template <typename T_Values>
+    // void values(T_Value &values){
+    //     constexpr size_t keysTupleSize = std::tuple_size<std::tuple<T_Keys...>>::value;
+    //     SubTreeValues<keysTupleSize>()(multiKeyMap, values);
+    // }
+    
+    template <typename T_ValuesCT, typename T_KeysCT, typename ...T_Sub_Keys>
+    void values(T_ValuesCT &values, T_KeysCT& keys, T_Sub_Keys... subKeys){
         constexpr size_t subKeysTupleSize = std::tuple_size<std::tuple<T_Sub_Keys...>>::value;
         constexpr size_t keysTupleSize    = std::tuple_size<std::tuple<T_Keys...>>::value;
         constexpr size_t subTreeSize      = keysTupleSize - subKeysTupleSize;
-        std::tuple<T_Sub_Keys...> tuple(subKeys...);
+        auto tuple = hana::make_tuple(subKeys...);
         auto t = hana::make_tuple(subKeys...);
-        SubTreeValues<subTreeSize>()(traverse(multiKeyMap, t), values, tuple);
+        SubTreeValues<subTreeSize>()(traverse(multiKeyMap, t), values, keys, tuple);
     
     }
 

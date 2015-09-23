@@ -1,5 +1,9 @@
 #pragma once
 
+// CLIB
+#include <assert.h>   /* assert */
+#include <string.h>   /* strup */
+
 // STL
 #include <assert.h>   /* assert */
 #include <array>      /* array */
@@ -14,12 +18,12 @@
 #include <thread>     /* std::thread */
 #include <mutex>      /* std::mutex */
 
-// CLIB
-#include <assert.h>   /* assert */
-#include <string.h>   /* strup */
-
 // ZMQ
 #include <zmq.hpp>    /* zmq::socket_t, zmq::context_t */
+
+// HANA
+#include <boost/hana.hpp>
+namespace hana = boost::hana;
 
 // GrayBat
 #include <utils.hpp>  /* utils::MultiKeyMap */
@@ -524,20 +528,23 @@ namespace graybat {
 
                 zmq::message_t message;
                 {
-                
+
+		    std::vector<hana::tuple<MsgType, ContextID, VAddr, Tag> > keysList;
 		    std::vector<std::reference_wrapper<std::queue<zmq::message_t> > > values;
 		
 		    while(values.empty()){
-			inBox.values(values, PEER, context.getID());
+			inBox.values(values, keysList, PEER, context.getID());
 		    }
- 
-		    message = std::move(values.front().get().front());
-		    //values.front().get().pop();
 
+		    auto keys = keysList[0];
+		    message = std::move(values.front().get().front());
+		    values.front().get().pop();
+		    
+		    //std::cout << std::get<0>(keys) << " " << std::get<1>(keys) << std::endl;//" " << std::get<2>(keys) << " " << std::get<3>(keys) << " " << std::endl;
 		    
 		    // Now erase message
 		    if(values.front().get().empty()){
-			//inBox.erase();
+		     	inBox.erase(keys);
 		    }
                     
                 }
