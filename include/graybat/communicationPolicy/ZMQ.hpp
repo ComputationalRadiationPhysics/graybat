@@ -22,7 +22,8 @@
 #include <zmq.hpp>    /* zmq::socket_t, zmq::context_t */
 
 // HANA
-#include <boost/hana.hpp>
+// HANA will be part of boost in the future !
+#include <graybat/utils/hana/boost/hana.hpp>
 namespace hana = boost::hana;
 
 // GrayBat

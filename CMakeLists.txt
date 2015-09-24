@@ -70,7 +70,6 @@ endif(${CXX_COMPILER_IS_CLANG++})
 # Build executables
 ###############################################################################
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/utils/hana/include/)
 
 # Tests
 file(GLOB TESTS test/*.cpp)
