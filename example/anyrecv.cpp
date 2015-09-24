@@ -15,8 +15,7 @@
 // GRAYBAT pattern
 #include <graybat/pattern/GridDiagonal.hpp>
 #include <graybat/pattern/Chain.hpp>
-#include <graybat/pattern/Star.hpp>
-#include <graybat/pattern/BidirectionalStar.hpp>
+#include <graybat/pattern/BiStar.hpp>
 
 
 struct Function {
@@ -43,10 +42,8 @@ int exp() {
     
     // Cage
     typedef graybat::Cage<CP, GP> Cage;
-    typedef typename Cage::Event  Event;
     typedef typename Cage::Vertex Vertex;
     typedef typename Cage::Edge Edge;
-    typedef typename Vertex::VertexProperty VertexProperty;
 
     /***************************************************************************
      * Initialize Communication
@@ -57,7 +54,7 @@ int exp() {
     Cage cage;
 
     // Set communication pattern
-    cage.setGraph(graybat::pattern::BidirectionalStar(cage.getPeers().size()));
+    cage.setGraph(graybat::pattern::BiStar(cage.getPeers().size()));
 
     // Distribute vertices
     cage.distribute(graybat::mapping::Consecutive());

@@ -75,12 +75,6 @@ namespace graybat {
 		
 		}
 
-		// Context& operator=(const Context& otherContext){
-		//     isValid       = otherContext.valid();
-		//     return *this;
-
-		// }
-
 		size_t size() const{
                     return nPeers;
 		}
@@ -527,6 +521,8 @@ namespace graybat {
             Event recv(const Context context, T_Recv& recvData){
 
                 zmq::message_t message;
+		VAddr destVAddr;
+		Tag tag;
                 {
 
 		    std::vector<hana::tuple<MsgType, ContextID, VAddr, Tag> > keysList;
@@ -536,16 +532,16 @@ namespace graybat {
 			inBox.values(values, keysList, PEER, context.getID());
 		    }
 
-		    auto keys = keysList[0];
+		    auto keys = keysList.front();
 		    message = std::move(values.front().get().front());
 		    values.front().get().pop();
 		    
-		    //std::cout << std::get<0>(keys) << " " << std::get<1>(keys) << std::endl;//" " << std::get<2>(keys) << " " << std::get<3>(keys) << " " << std::endl;
-		    
-		    // Now erase message
 		    if(values.front().get().empty()){
 		     	inBox.erase(keys);
 		    }
+
+		    destVAddr = hana::at(keys, hana::size_c<2>);
+		    tag = hana::at(keys, hana::size_c<3>);
                     
                 }
 
@@ -570,7 +566,7 @@ namespace graybat {
                                  
                         
                 }
-
+		return Event(msgID++, context, destVAddr, tag, *this);
             }
             
             void wait(const MsgType msgID, const Context context, const VAddr vAddr, const Tag tag){

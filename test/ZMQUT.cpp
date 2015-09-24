@@ -106,11 +106,11 @@ BOOST_AUTO_TEST_CASE( send_recv_all ){
         
     }
 
-    for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
-        zmq.recv(context, recv);
+    for(unsigned i = 0; i < context.size(); ++i){
+        Event e = zmq.recv(context, recv);
 
-        //std::cout << recv[0] << std::endl;
-        
+	unsigned vAddr = e.vAddr;
+
         for(unsigned i = 0; i < recv.size(); ++i){
             BOOST_CHECK_EQUAL(recv[i], vAddr+i);
             
@@ -137,6 +137,8 @@ BOOST_AUTO_TEST_CASE( send_recv_order ){
 
     const unsigned nElements = 10;
 
+    std::vector<Event> events;
+
     std::vector<unsigned> recv1 (nElements, 0);
     std::vector<unsigned> recv2 (nElements, 0);
     std::vector<unsigned> recv3 (nElements, 0);
@@ -146,9 +148,9 @@ BOOST_AUTO_TEST_CASE( send_recv_order ){
         std::vector<unsigned> data1 (nElements, context.getVAddr());
         std::vector<unsigned> data2 (nElements, context.getVAddr() + 1);
         std::vector<unsigned> data3 (nElements, context.getVAddr() + 2);
-        Event e1 = zmq.asyncSend(vAddr, 99, context, data1);
-        Event e2 = zmq.asyncSend(vAddr, 99, context, data2);
-        Event e3 = zmq.asyncSend(vAddr, 99, context, data3);
+        events.push_back( zmq.asyncSend(vAddr, 99, context, data1));
+        events.push_back( zmq.asyncSend(vAddr, 99, context, data2));
+	events.push_back( zmq.asyncSend(vAddr, 99, context, data3));
         
     }
 
@@ -172,6 +174,10 @@ BOOST_AUTO_TEST_CASE( send_recv_order ){
             
         }
 
+    }
+
+    for(Event &e : events){
+        e.wait();
     }
 
 }

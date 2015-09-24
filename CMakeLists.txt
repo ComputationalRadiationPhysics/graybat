@@ -72,29 +72,29 @@ endif(${CXX_COMPILER_IS_CLANG++})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/utils/hana/include/)
 
-# Unit tests
-file(GLOB TEST_CASES  utils/unittests/*.cc)
-add_executable(Test EXCLUDE_FROM_ALL ${TEST_CASES})
+# Tests
+file(GLOB TESTS test/*.cpp)
+add_executable(check EXCLUDE_FROM_ALL ${TESTS})
+target_link_libraries(check ${LIBS})
+
+enable_testing()
+add_test(graybat_test_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target check)
+add_test(graybat_test_run mpiexec -n 2 check --run_test=cage_point_to_point)
+SET_TESTS_PROPERTIES (graybat_test_run PROPERTIES DEPENDS graybat_test_build)
 
 # Examples
-add_executable(GoL EXCLUDE_FROM_ALL  example/gol.cc )
-add_executable(ZMQ1 EXCLUDE_FROM_ALL example/zmq/request_reply.cc )
-add_executable(ZMQ2 EXCLUDE_FROM_ALL example/zmq/publish_subscribe.cc )
-add_executable(Forward EXCLUDE_FROM_ALL  example/forward.cc )
-add_executable(Ring EXCLUDE_FROM_ALL  example/ring.cc )
+add_custom_target(example)
+file(GLOB EXAMPLES  example/*.cpp)
+foreach(EXAMPLE ${EXAMPLES})
+	get_filename_component(DEP ${EXAMPLE} NAME_WE)
+	add_executable(${DEP} EXCLUDE_FROM_ALL ${EXAMPLE})
+	target_link_libraries(${DEP} ${LIBS})	
+	add_dependencies(example ${DEP})
+endforeach(EXAMPLE)
 
 # ZMQ signaling server
-add_executable(ZMQ_Signaling_Server EXCLUDE_FROM_ALL  utils/zmq_signaling_server.cc )
-
-# add the libraries (Boost...) to this executable
-target_link_libraries(GoL ${LIBS})
-target_link_libraries(ZMQ1 ${LIBS})
-target_link_libraries(ZMQ2 ${LIBS})
-target_link_libraries(Test ${LIBS})
-target_link_libraries(Forward ${LIBS})
-target_link_libraries(Ring ${LIBS})
-target_link_libraries(ZMQ_Signaling_Server ${LIBS})
-
+add_executable(zmq_signaling_server EXCLUDE_FROM_ALL utils/zmq_signaling_server.cc )
+target_link_libraries(zmq_signaling_server ${LIBS})
 
 ###############################################################################
 # Custom targets
