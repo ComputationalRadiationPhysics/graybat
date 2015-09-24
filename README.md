@@ -71,9 +71,9 @@ like `#include <graybat/Cage.hpp>`.
 
 ##Predefined Targets##
 
- * **GoL**: Game of Life simulation
+ * **example**: All example applications.
 
- * **Test** : Unit and integration test
+ * **test** : Unit and integration test
 
  * **doc**: Build documentation in doc/
 
@@ -85,7 +85,8 @@ The project is organized in a couple of subdirectories.
 
  * The [example](example) directory contains examples produced during development of Graybat.
  * The [include](include) directory contains the library itself, which is header only.
- * The [utils](utils) directory contains cmake modules, doxygen files and unit tests.
+ * The [test](test) directory contains unit and integration tests (might me used as examples)
+ * The [utils](utils) directory contains cmake modules and doxygen files.
 
 ##Related Material##
  * Talk by Erik Zenker of his diploma defence [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.16306.svg)](http://dx.doi.org/10.5281/zenodo.16306)
