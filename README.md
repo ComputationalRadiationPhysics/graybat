@@ -42,8 +42,8 @@ GrayBat  is licensed under the <b>GPLv3+</b>. Please refer to our [LICENSE.md](L
 ##Usage##
 
 Graybat is a header only library so nothing has to be build. To use
-Graybat within your application you need to be included
-`<PATH-TO-GRAYBAT-LIB>/include/`. Finally, the project can use Graybat
+Graybat within your application you need to include:
+`<PATH-TO-GRAYBAT-LIB>/include/`. Finally, the application can use Graybat
 like `#include <graybat/Cage.hpp>`.
 
 ##Compiling Tests/Examples##
