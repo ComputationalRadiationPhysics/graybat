@@ -1,21 +1,21 @@
-// boost 
+// BOOST
 #include <boost/test/unit_test.hpp>
 
-// graybat
-#include <Cage.hpp>
-#include <communicationPolicy/BMPI.hpp>
-#include <graphPolicy/BGL.hpp>
-#include <mapping/Random.hpp>
-#include <mapping/Consecutive.hpp>
-#include <pattern/FullyConnected.hpp>
-#include <pattern/InStar.hpp>
-#include <pattern/Grid.hpp>
-
-// stl
+// STL
 #include <array>
 #include <vector>
 #include <iostream>
 #include <functional>
+
+// GRAYBAT
+#include <graybat/Cage.hpp>
+#include <graybat/communicationPolicy/BMPI.hpp>
+#include <graybat/graphPolicy/BGL.hpp>
+#include <graybat/mapping/Random.hpp>
+#include <graybat/mapping/Consecutive.hpp>
+#include <graybat/pattern/FullyConnected.hpp>
+#include <graybat/pattern/InStar.hpp>
+#include <graybat/pattern/Grid.hpp>
 
 /***************************************************************************
  * Configuration

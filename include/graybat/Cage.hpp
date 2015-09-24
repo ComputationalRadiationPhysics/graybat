@@ -1,5 +1,9 @@
 #pragma once
 
+// CLIB
+#include <assert.h>   /* assert */
+#include <cstddef>    /* nullptr_t */
+
 // STL
 #include <map>        /* map */
 #include <set>        /* set */
@@ -10,15 +14,11 @@
 #include <tuple>      /* std::tie */
 #include <sstream>    /* std::sstream */
 
-// C LIB
-#include <assert.h>   /* assert */
-#include <cstddef>    /* nullptr_t */
-
-// GrayBat
-#include <utils.hpp>  /* exclusivePrefixSum */
-#include <Vertex.hpp> /* CommunicationVertex */
-#include <Edge.hpp>   /* CommunicationEdge */
-#include <pattern/None.hpp> /* graybatt::pattern::None */
+// GRAYBAT
+#include <graybat/utils/exclusivePrefixSum.hpp>  /* exclusivePrefixSum */
+#include <graybat/Vertex.hpp> /* CommunicationVertex */
+#include <graybat/Edge.hpp>   /* CommunicationEdge */
+#include <graybat/pattern/None.hpp> /* graybatt::pattern::None */
 
 
 namespace graybat {

@@ -1,17 +1,17 @@
-// boost 
+// BOOST
 #include <boost/test/unit_test.hpp>
 
-// graybat
-#include <Cage.hpp>
-#include <communicationPolicy/BMPI.hpp>
-#include <graphPolicy/BGL.hpp>
-#include <mapping/Consecutive.hpp>
-#include <pattern/Grid.hpp>
-#include <pattern/Chain.hpp>
-
-// stl
+// STL
 #include <vector>
 #include <functional> // std::plus
+
+// GRAYBAT
+#include <graybat/Cage.hpp>
+#include <graybat/communicationPolicy/BMPI.hpp>
+#include <graybat/graphPolicy/BGL.hpp>
+#include <graybat/mapping/Consecutive.hpp>
+#include <graybat/pattern/Grid.hpp>
+#include <graybat/pattern/Chain.hpp>
 
 
 /***************************************************************************

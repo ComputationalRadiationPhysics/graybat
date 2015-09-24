@@ -1,13 +1,16 @@
-// GrayBat
-#include <Cage.hpp>
-#include <communicationPolicy/BMPI.hpp>
-#include <graphPolicy/BGL.hpp>
-
-#include <mapping/Roundrobin.hpp>
-#include <pattern/OutStar.hpp>
-
+// CLIB
 #include <time.h>
+
+// STL
 #include <tuple>
+
+// GRAYBAT
+#include <graybat/Cage.hpp>
+#include <graybat/communicationPolicy/BMPI.hpp>
+#include <graybat/graphPolicy/BGL.hpp>
+
+#include <graybat/mapping/Roundrobin.hpp>
+#include <graybat/pattern/OutStar.hpp>
 
 /**
  * @brief Subscriber receive messages from publisher
@@ -57,8 +60,6 @@ int main() {
     srandom ((unsigned) time (NULL));
 
     std::array<std::tuple<int,int,int>, 1> msg;
-
-    
 
     for(Vertex v : cage.hostedVertices){
 

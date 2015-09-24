@@ -1,23 +1,20 @@
-// GrayBat
-#include <Cage.hpp>
-#include <communicationPolicy/BMPI.hpp>
-#include <graphPolicy/BGL.hpp>
-
-// Mappings
-#include <mapping/Consecutive.hpp>
-#include <mapping/Random.hpp>
-#include <mapping/Roundrobin.hpp>
-
-// Pattern
-#include <pattern/GridDiagonal.hpp>
-#include <pattern/Chain.hpp>
-
 // STL
 #include <iostream>   /* std::cout */
 #include <vector>     /* std::vector */
 #include <array>      /* std::array */
 #include <functional> /* std::bind */
 
+// GRAYBAT
+#include <graybat/Cage.hpp>
+#include <graybat/communicationPolicy/BMPI.hpp>
+#include <graybat/graphPolicy/BGL.hpp>
+// GRAYBAT mappings
+#include <graybat/mapping/Consecutive.hpp>
+#include <graybat/mapping/Random.hpp>
+#include <graybat/mapping/Roundrobin.hpp>
+// GRAYBAT pattern
+#include <graybat/pattern/GridDiagonal.hpp>
+#include <graybat/pattern/Chain.hpp>
 
 struct Function {
     

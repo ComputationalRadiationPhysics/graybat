@@ -1,10 +1,9 @@
-// GrayBat
-#include <Cage.hpp>
-#include <communicationPolicy/ZMQ.hpp>
-#include <graphPolicy/BGL.hpp>
-
-#include <mapping/Roundrobin.hpp>
-#include <pattern/BiStar.hpp>
+// GRAYBAT
+#include <graybat/Cage.hpp>
+#include <graybat/communicationPolicy/ZMQ.hpp>
+#include <graybat/graphPolicy/BGL.hpp>
+#include <graybat/mapping/Roundrobin.hpp>
+#include <graybat/pattern/BiStar.hpp>
 
 /**
  * @brief Clients start communication with "Hello", Server answers with "World".

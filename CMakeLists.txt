@@ -69,7 +69,7 @@ endif(${CXX_COMPILER_IS_CLANG++})
 ###############################################################################
 # Build executables
 ###############################################################################
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/utils/hana/include/)
 
 # Unit tests
@@ -84,8 +84,7 @@ add_executable(Forward EXCLUDE_FROM_ALL  example/forward.cc )
 add_executable(Ring EXCLUDE_FROM_ALL  example/ring.cc )
 
 # ZMQ signaling server
-add_executable(ZMQ EXCLUDE_FROM_ALL  utils/zmq_signaling_server.cc )
-
+add_executable(ZMQ_Signaling_Server EXCLUDE_FROM_ALL  utils/zmq_signaling_server.cc )
 
 # add the libraries (Boost...) to this executable
 target_link_libraries(GoL ${LIBS})
@@ -94,7 +93,7 @@ target_link_libraries(ZMQ2 ${LIBS})
 target_link_libraries(Test ${LIBS})
 target_link_libraries(Forward ${LIBS})
 target_link_libraries(Ring ${LIBS})
-target_link_libraries(ZMQ ${LIBS})
+target_link_libraries(ZMQ_Signaling_Server ${LIBS})
 
 
 ###############################################################################

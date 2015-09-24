@@ -1,22 +1,3 @@
-// GrayBat
-#include <Cage.hpp>
-#include <communicationPolicy/BMPI.hpp>
-#include <graphPolicy/BGL.hpp>
-
-// Mappings
-#include <mapping/Consecutive.hpp>
-#include <mapping/Random.hpp>
-#include <mapping/Roundrobin.hpp>
-//#include <mapping/GraphPartition.hpp>
-
-// Pattern
-#include <pattern/GridDiagonal.hpp>
-
-/** @name Game of Life Example
- *
- */
-
-
 // STL
 #include <iostream>   /* std::cout */
 #include <vector>     /* std::vector */
@@ -24,6 +5,22 @@
 #include <cmath>      /* sqrt */
 #include <cstdlib>    /* atoi */
 #include <numeric>    /* std::accumulate */
+
+// GRAYBAT
+#include <graybat/Cage.hpp>
+#include <graybat/communicationPolicy/BMPI.hpp>
+#include <graybat/graphPolicy/BGL.hpp>
+// GRAYBAT mappings
+#include <graybat/mapping/Consecutive.hpp>
+#include <graybat/mapping/Random.hpp>
+#include <graybat/mapping/Roundrobin.hpp>
+// GRAYBAT patterns
+#include <graybat/pattern/GridDiagonal.hpp>
+
+/** @name Game of Life Example
+ *
+ */
+
 
 struct Cell {
     Cell() : isAlive{{0}}, aliveNeighbors(0){

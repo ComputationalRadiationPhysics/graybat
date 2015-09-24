@@ -1,25 +1,29 @@
 #pragma once
+
+// CLIB
 #include <assert.h>   /* assert */
+
+// STL
 #include <array>      /* array */
 #include <numeric>    /* std::accumulate */
 #include <iostream>   /* std::cout */
-
 #include <map>          /* std::map */
 #include <exception>    /* std::out_of_range */
 #include <sstream>      /* std::stringstream */
 #include <algorithm>    /* std::transform */
+
+// MPI
 #include <mpi.h>        /* MPI_* */
 
-
-// Boost mpi stuff
+// BOOST
 #include <boost/mpi/environment.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/datatype.hpp>
 #include <boost/optional.hpp>
 
-// Send std::tuple
-#include <utils/serialize_tuple.hpp>
+// GRAYBAT
+#include <graybat/utils/serialize_tuple.hpp>
 
 
 

@@ -1,17 +1,5 @@
-// boost 
+// BOOST
 #include <boost/test/unit_test.hpp>
-
-// graybat
-#include <Cage.hpp>
-#include <communicationPolicy/ZMQ.hpp>
-#include <communicationPolicy/BMPI.hpp>
-#include <graphPolicy/BGL.hpp>
-#include <mapping/Random.hpp>
-#include <mapping/Consecutive.hpp>
-#include <mapping/Roundrobin.hpp>
-#include <pattern/FullyConnected.hpp>
-#include <pattern/InStar.hpp>
-#include <pattern/Grid.hpp>
 
 // STL
 #include <functional> /* std::plus */
@@ -21,6 +9,18 @@
 
 // ZMQ
 #include <zmq.hpp>
+
+// GRAYBAT
+#include <graybat/Cage.hpp>
+#include <graybat/communicationPolicy/ZMQ.hpp>
+#include <graybat/communicationPolicy/BMPI.hpp>
+#include <graybat/graphPolicy/BGL.hpp>
+#include <graybat/mapping/Random.hpp>
+#include <graybat/mapping/Consecutive.hpp>
+#include <graybat/mapping/Roundrobin.hpp>
+#include <graybat/pattern/FullyConnected.hpp>
+#include <graybat/pattern/InStar.hpp>
+#include <graybat/pattern/Grid.hpp>
 
 
 /***************************************************************************
@@ -93,7 +93,7 @@ BOOST_AUTO_TEST_CASE( send_recv_all ){
 
     Context context = zmq.getGlobalContext();
 
-    const unsigned nElements = 1;
+    const unsigned nElements = 10;
     
     std::vector<unsigned> recv (nElements, 0);
 
@@ -109,7 +109,7 @@ BOOST_AUTO_TEST_CASE( send_recv_all ){
     for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
         zmq.recv(context, recv);
 
-        std::cout << recv[0] << std::endl;
+        //std::cout << recv[0] << std::endl;
         
         for(unsigned i = 0; i < recv.size(); ++i){
             BOOST_CHECK_EQUAL(recv[i], vAddr+i);

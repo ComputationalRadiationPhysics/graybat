@@ -26,7 +26,7 @@
 namespace hana = boost::hana;
 
 // GrayBat
-#include <utils.hpp>  /* utils::MultiKeyMap */
+#include <graybat/utils/MultiKeyMap.hpp>  /* utils::MultiKeyMap */
 
 namespace graybat {
     
