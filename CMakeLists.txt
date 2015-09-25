@@ -1,51 +1,23 @@
-project(genericCommunicator)
-cmake_minimum_required(VERSION 2.8.5)
-
-
 ###############################################################################
-# CMAKE module path in utils/cmake/modules/
+# Graybat examples and tests
 ###############################################################################
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/utils/cmake/modules/" ${CMAKE_MODULE_PATH})
-
-################################################################################
-# Find PThreads
-################################################################################
-find_package(Threads REQUIRED)
-set(LIBS ${LIBS} ${CMAKE_THREAD_LIBS_INIT})
-
-###############################################################################
-# METIS
-###############################################################################
-find_package(METIS 5.1.0)
-include_directories(SYSTEM ${METIS_INCLUDE_DIRS})
-set(LIBS ${LIBS} ${METIS_LIBRARIES})
-
-###############################################################################
-# ZMQ
-###############################################################################
-find_package(ZMQ 4.0.0)
-include_directories(SYSTEM ${ZMQ_INCLUDE_DIRS})
-set(LIBS ${LIBS} ${ZMQ_LIBRARIES})
+cmake_minimum_required(VERSION 3.3.1)
+project("graybat examples and tests")
 
 ###############################################################################
 # Boost
 ###############################################################################
-find_package(Boost 1.58.0 COMPONENTS mpi unit_test_framework serialization REQUIRED)
+find_package(Boost 1.58.0 COMPONENTS unit_test_framework  REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${Boost_LIBRARIES})
 
-################################################################################
-# MPI
-################################################################################
-find_package(MPI REQUIRED)
-  include_directories(SYSTEM ${MPI_C_INCLUDE_PATH})
-set(LIBS ${LIBS} ${MPI_C_LIBRARIES})
-
-# bullxmpi fails if it can not find its c++ counter part
-if(MPI_CXX_FOUND)
-  set(LIBS ${LIBS} ${MPI_CXX_LIBRARIES})
-endif(MPI_CXX_FOUND)
-
+###############################################################################
+# Graybat
+###############################################################################
+set(graybat_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+find_package(graybat REQUIRED CONFIG)
+include_directories(SYSTEM ${graybat_INCLUDE_DIRS})
+set(LIBS ${LIBS} ${graybat_LIBRARIES})
 
 ###############################################################################
 # Compiler Flags
@@ -67,9 +39,8 @@ if(${CXX_COMPILER_IS_CLANG++})
 endif(${CXX_COMPILER_IS_CLANG++})
 
 ###############################################################################
-# Build executables
+# Targets
 ###############################################################################
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/)
 
 # Tests
 file(GLOB TESTS test/*.cpp)
@@ -87,6 +58,7 @@ file(GLOB EXAMPLES  example/*.cpp)
 foreach(EXAMPLE ${EXAMPLES})
 	get_filename_component(DEP ${EXAMPLE} NAME_WE)
 	add_executable(${DEP} EXCLUDE_FROM_ALL ${EXAMPLE})
+	target_link_libraries(${DEP} LINK_INTERFACE_LIBRARIES graybat)	
 	target_link_libraries(${DEP} ${LIBS})	
 	add_dependencies(example ${DEP})
 endforeach(EXAMPLE)
@@ -95,11 +67,7 @@ endforeach(EXAMPLE)
 add_executable(zmq_signaling_server EXCLUDE_FROM_ALL utils/zmq_signaling_server.cc )
 target_link_libraries(zmq_signaling_server ${LIBS})
 
-###############################################################################
-# Custom targets
-###############################################################################
-
-# doc
+# Doxygen
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/doxygen.conf ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
