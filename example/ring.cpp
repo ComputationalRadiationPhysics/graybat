@@ -1,3 +1,11 @@
+/**
+ * @example ring.cpp
+ *
+ * @brief Data is send through a ring of nodes and every node
+ *        transforms data with own function.
+ *
+ */
+
 // STL
 #include <iostream>   /* std::cout */
 #include <vector>     /* std::vector */

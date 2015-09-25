@@ -79,11 +79,11 @@ Finally, the application can use graybat like `#include <graybat/Cage.hpp>`.
 
  * **example**: All example applications.
 
- * **test** : Unit and integration test
+ * **test** : Build, unit and integration test.
 
- * **doc**: Build documentation in doc/
+ * **doc**: Build documentation in `doc/`.
 
- * **clean**: Cleanup build directory
+ * **clean**: Cleanup build directory.
 
 ##Project Organization##
 

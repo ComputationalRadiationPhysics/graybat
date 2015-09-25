@@ -1,16 +1,19 @@
-// STL
-#include <iostream>   /* std::cout */
-#include <vector>     /* std::vector */
-#include <array>      /* std::array */
-#include <cmath>      /* sqrt */
-#include <cstdlib>    /* atoi */
-#include <numeric>    /* std::accumulate */
+/**
+ * @example chain.cpp
+ *
+ * @brief Data is send through a chain of compute 
+ *        nodes and every node increments the value.
+ *
+ */
 
 // STL
 #include <iostream>   /* std::cout */
 #include <vector>     /* std::vector */
 #include <array>      /* std::array */
 #include <functional> /* std::bind */
+#include <cmath>      /* sqrt */
+#include <cstdlib>    /* atoi */
+#include <numeric>    /* std::accumulate */
 
 // GRAYBAT
 #include <graybat/Cage.hpp>

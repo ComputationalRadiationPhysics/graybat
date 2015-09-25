@@ -1,3 +1,11 @@
+/**
+ * @example forward.cpp
+ *
+ * @brief Data is forwarded through a chain of compute 
+ *        nodes.
+ *
+ */
+
 // STL
 #include <iostream>   /* std::cout */
 #include <vector>     /* std::vector */

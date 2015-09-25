@@ -785,9 +785,4 @@ namespace graybat {
 } // namespace graybat
 
 
-/**
- * @example gol.cc
- *
- * @brief Simple example that shows how to instantiate and use the Cage.
- *
- */
+

@@ -1,3 +1,10 @@
+/**
+ * @example anyrecv.cpp
+ *
+ * @brief A master recv messages from all slaves and answers.
+ *
+ */
+
 // STL
 #include <iostream>   /* std::cout */
 #include <vector>     /* std::vector */
@@ -16,7 +23,6 @@
 #include <graybat/pattern/GridDiagonal.hpp>
 #include <graybat/pattern/Chain.hpp>
 #include <graybat/pattern/BiStar.hpp>
-
 
 struct Function {
     

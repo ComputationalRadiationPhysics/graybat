@@ -1,3 +1,11 @@
+/**
+ * @name Game of Life 
+ * @example gol.cpp
+ *
+ * @brief Simple example that shows how to instantiate and use the Cage within a game of life.
+ *
+ */
+
 // STL
 #include <iostream>   /* std::cout */
 #include <vector>     /* std::vector */
@@ -16,11 +24,6 @@
 #include <graybat/mapping/Roundrobin.hpp>
 // GRAYBAT patterns
 #include <graybat/pattern/GridDiagonal.hpp>
-
-/** @name Game of Life Example
- *
- */
-
 
 struct Cell {
     Cell() : isAlive{{0}}, aliveNeighbors(0){
