@@ -287,41 +287,46 @@ namespace graybat {
 
             assert(oldContext.valid());
 
+	    std::cerr << "checkpoint 0" << std::endl;
             graphContext = comm.splitContext(vertices.size(), oldContext);
+	    std::cerr << "checkpoint 2" << std::endl;
 
             
             // Each peer announces the vertices it hosts
-            if(graphContext.valid()){
-                std::array<unsigned, 1> nVertices {{static_cast<unsigned>(vertices.size())}};
-                std::vector<unsigned> vertexIDs;
+	    // std::cout << "checkpoint" << std::endl;
+            // if(graphContext.valid()){
+	    // 	std::cout << "checkpoint" << std::endl;
 
-                std::for_each(vertices.begin(), vertices.end(), [&vertexIDs](Vertex v){vertexIDs.push_back(v.id);});
+            //     std::array<unsigned, 1> nVertices {{static_cast<unsigned>(vertices.size())}};
+            //     std::vector<unsigned> vertexIDs;
 
-                // Send hostedVertices to all other peers
-	    	// TODO: Set tag to unique tag for management !
-                for(unsigned vAddr = 0; vAddr < graphContext.size(); ++vAddr){
-                    assert(nVertices[0] != 0);
-                    comm.asyncSend(vAddr, 0, graphContext, nVertices);
-                    comm.asyncSend(vAddr, 0, graphContext, vertexIDs);
-                }
+            //     std::for_each(vertices.begin(), vertices.end(), [&vertexIDs](Vertex v){vertexIDs.push_back(v.id);});
 
-                // Recv hostedVertices from all other peers
-                for(unsigned vAddr = 0; vAddr < graphContext.size(); ++vAddr){
-                    std::vector<Vertex>  remoteVertices;
-                    std::array<unsigned, 1> nVertices {{ 0 }};
-                    comm.recv(vAddr,0, graphContext, nVertices);
-                    std::vector<unsigned> vertexIDs(nVertices[0]);
-                    comm.recv(vAddr, 0, graphContext, vertexIDs);
+            //     // Send hostedVertices to all other peers
+	    // 	// TODO: Set tag to unique tag for management !
+            //     for(unsigned vAddr = 0; vAddr < graphContext.size(); ++vAddr){
+            //         assert(nVertices[0] != 0);
+            //         comm.asyncSend(vAddr, 0, graphContext, nVertices);
+            //         comm.asyncSend(vAddr, 0, graphContext, vertexIDs);
+            //     }
 
-                    for(unsigned u : vertexIDs){
-                        vertexMap[u] = vAddr;
-                        remoteVertices.push_back(Cage::getVertex(u));
-                    }
-                    peerMap[vAddr] = remoteVertices;
+            //     // Recv hostedVertices from all other peers
+            //     for(unsigned vAddr = 0; vAddr < graphContext.size(); ++vAddr){
+            //         std::vector<Vertex>  remoteVertices;
+            //         std::array<unsigned, 1> nVertices {{ 0 }};
+            //         comm.recv(vAddr, 0, graphContext, nVertices);
+            //         std::vector<unsigned> vertexIDs(nVertices[0]);
+            //         comm.recv(vAddr, 0, graphContext, vertexIDs);
 
-                 }
+            //         for(unsigned u : vertexIDs){
+            //             vertexMap[u] = vAddr;
+            //             remoteVertices.push_back(Cage::getVertex(u));
+            //         }
+            //         peerMap[vAddr] = remoteVertices;
 
-            }
+            //      }
+
+            // }
 
         }
 

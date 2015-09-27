@@ -90,9 +90,10 @@ int main(){
 
 	case CONTEXT_REQUEST:
 	    {
-		ss >> size;
-		maxVAddr[maxContextID] = 0;
-		s_send(socket, std::to_string(++maxContextID).c_str());
+		//ss >> size;
+		maxVAddr[++maxContextID] = 0;
+		s_send(socket, std::to_string(maxContextID).c_str());
+		std::cout << "CONTEXT REQUEST [size:" << size << "]: " << maxContextID << std::endl;				
 		break;
 
 	    }
