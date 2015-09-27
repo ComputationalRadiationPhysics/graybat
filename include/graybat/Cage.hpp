@@ -62,7 +62,7 @@ namespace graybat {
         
         template <class T_Functor>
         Cage(T_Functor graphFunctor) : graph(GraphPolicy(graphFunctor())){
-
+	    
         }
 
         Cage() : graph(GraphPolicy(graybat::pattern::None()())){
@@ -298,19 +298,20 @@ namespace graybat {
                 std::for_each(vertices.begin(), vertices.end(), [&vertexIDs](Vertex v){vertexIDs.push_back(v.id);});
 
                 // Send hostedVertices to all other peers
+		// TODO: Set tag to unique tag for management !
                 for(unsigned vAddr = 0; vAddr < graphContext.size(); ++vAddr){
                     assert(nVertices[0] != 0);
-                    comm.asyncSend(vAddr, 0, graphContext, nVertices);
-                    comm.asyncSend(vAddr, 0, graphContext, vertexIDs);
+                    comm.asyncSend(vAddr, 99, graphContext, nVertices);
+                    comm.asyncSend(vAddr, 99, graphContext, vertexIDs);
                 }
 
                 // Recv hostedVertices from all other peers
                 for(unsigned vAddr = 0; vAddr < graphContext.size(); ++vAddr){
                     std::vector<Vertex>  remoteVertices;
                     std::array<unsigned, 1> nVertices {{ 0 }};
-                    comm.recv(vAddr, 0, graphContext, nVertices);
+                    comm.recv(vAddr, 99, graphContext, nVertices);
                     std::vector<unsigned> vertexIDs(nVertices[0]);
-                    comm.recv(vAddr, 0, graphContext, vertexIDs);
+                    comm.recv(vAddr, 99, graphContext, vertexIDs);
 
                     for(unsigned u : vertexIDs){
                         vertexMap[u] = vAddr;

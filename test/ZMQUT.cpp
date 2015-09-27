@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_CASE( send_recv ){
     for(Event &e : events){
         e.wait();
     }
-
+    
 
 }
 
@@ -182,17 +182,17 @@ BOOST_AUTO_TEST_CASE( send_recv_order ){
 
 }
 
-// NOT PASSING YET !
-// BOOST_AUTO_TEST_CASE( multi_cage ){
-//     Cage cage1;
-//     cage1.setGraph(graybat::pattern::FullyConnected(cage1.getPeers().size()));
-//     cage1.distribute(graybat::mapping::Roundrobin());
 
-//     Cage cage2;
-//     cage2.setGraph(graybat::pattern::FullyConnected(cage2.getPeers().size()));
-//     cage2.distribute(graybat::mapping::Roundrobin());
+BOOST_AUTO_TEST_CASE( multi_cage ){
+    Cage cage1;
+    cage1.setGraph(graybat::pattern::FullyConnected(cage1.getPeers().size()));
+    cage1.distribute(graybat::mapping::Roundrobin());
 
-// }
+    Cage cage2;
+    cage2.setGraph(graybat::pattern::FullyConnected(cage2.getPeers().size()));
+    cage2.distribute(graybat::mapping::Roundrobin());
+
+}
 
 
 
@@ -222,6 +222,7 @@ BOOST_AUTO_TEST_CASE( cage ){
     //Recv state from neighbor cells
     for(Vertex &v : cage.hostedVertices){
         for(Edge edge : cage.getInEdges(v)){
+    	    std::cout << "recv" << std::endl;
             cage.recv(edge, recv);
             for(unsigned i = 0; i < recv.size();++i){
         	BOOST_CHECK_EQUAL(recv.at(i), i);
@@ -239,6 +240,7 @@ BOOST_AUTO_TEST_CASE( cage ){
 
 
     std::cout << "finished" << std::endl;
+    //while(true);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

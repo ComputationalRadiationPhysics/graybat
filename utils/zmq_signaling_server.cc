@@ -1,10 +1,11 @@
+
+// CLIB
+#include <string.h>   /* strup */
+
 // STL
 #include <iostream> /* std::cout, std::endl */
 #include <map>      /* std::map */
 #include <sstream>  /* std::stringstream */
-
-// CLIB
-#include <string.h>   /* strup */
 
 // ZMQ
 #include <zmq.hpp>
@@ -17,11 +18,13 @@ typedef unsigned MsgType;
 typedef std::string Uri;
 
 // Message tags
-static const MsgType VADDR_REQUEST = 0;
-static const MsgType VADDR_LOOKUP  = 1;
-static const MsgType DESTRUCT      = 2;
-static const MsgType RETRY         = 3;
-static const MsgType ACK           = 4;
+static const MsgType VADDR_REQUEST   = 0;
+static const MsgType VADDR_LOOKUP    = 1;
+static const MsgType DESTRUCT        = 2;
+static const MsgType RETRY           = 3;
+static const MsgType ACK             = 4;
+static const MsgType CONTEXT_INIT    = 5;
+static const MsgType CONTEXT_REQUEST = 6;
 
 //  Receive 0MQ string from socket and convert into C string
 //  Caller must free returned string. Returns NULL if the context
@@ -46,7 +49,8 @@ static int s_send (void *socket, const char *string) {
 int main(){
     std::cout << "Start zmq connection manager" << std::endl;
 
-    std::map<VAddr, Uri> phoneBook;
+    std::map<ContextID, std::map<VAddr, Uri> > phoneBook;
+    std::map<ContextID, VAddr> maxVAddr;
     std::string masterUri = std::getenv("GRAYBAT_ZMQ_MASTER_URI");
     zmq::context_t context(1);
     
@@ -55,8 +59,7 @@ int main(){
     zmq::socket_t socket (context, ZMQ_REP);
     socket.bind(masterUri.c_str());
 
-                
-    VAddr maxVAddr = 0;
+    ContextID maxContextID = 0;
     unsigned nPeers = 0;
 
     while(true){
@@ -65,34 +68,58 @@ int main(){
 
         Uri srcUri;
         MsgType type;
+	ContextID contextID;
+	unsigned size;
         ss >> type;
 
         switch(type){
-                        
+
+	case CONTEXT_INIT:
+	    {
+		s_send(socket, std::to_string(0).c_str());
+		break;
+	    }
+
+	case CONTEXT_REQUEST:
+	    {
+		ss >> size;
+		maxVAddr[maxContextID] = 0;
+		s_send(socket, std::to_string(++maxContextID).c_str());
+		break;
+
+	    }
+	    
         case VADDR_REQUEST:
             {
                 // Reply with correct information
+		ss >> contextID;
                 ss >> srcUri;
-                phoneBook[maxVAddr] = srcUri;
+		std::cout << "VADDR REQUEST [" << contextID << "][" << srcUri << "]: " << maxVAddr[contextID] << std::endl;
+                phoneBook[contextID][maxVAddr[contextID]] = srcUri;
                 // Send requestet vAddr
-                s_send(socket, std::to_string(maxVAddr++).c_str());
-                nPeers++;
+		
+                s_send(socket, std::to_string(maxVAddr[contextID]).c_str());
+		maxVAddr[contextID]++;
                 break;
             }
                         
         case VADDR_LOOKUP:
             {
                 VAddr remoteVAddr;
-                ss >> remoteVAddr;
+		ss >> contextID;
+                ss >> remoteVAddr;		
 
+
+		
                 std::stringstream sss;
 
-                if(phoneBook.count(remoteVAddr) == 0){
+                if(phoneBook[contextID].count(remoteVAddr) == 0){
                     sss << RETRY;
                     s_send(socket, sss.str().c_str());
                 }
                 else {
-                    sss << ACK << " " << phoneBook[remoteVAddr];
+		    std::cout << "VADDR LOOKUP [" << contextID << "][" << remoteVAddr << "]: " << phoneBook[contextID][remoteVAddr] << std::endl;
+                    sss << ACK << " " << phoneBook[contextID][remoteVAddr];
                     s_send(socket, sss.str().c_str());
                 }
 
@@ -102,7 +129,7 @@ int main(){
 
 
         case DESTRUCT:
-            nPeers--;
+            //nPeers--;
             s_send(socket, "");
             break;
                         
@@ -115,9 +142,9 @@ int main(){
         };
 
         // All peers have destructed, so stop managing Peers
-        if(nPeers == 0){
-            return 0;
-        }
+        // if(nPeers == 0){
+        //     return 0;
+        // }
                     
     }
 

@@ -2,19 +2,14 @@
 
 // STL
 #include <map>        /* std::map */
-#include <iostream>   /* std::cout, std::endl */
-#include <string>     /* std::string */
-#include <tuple>      /* std::tuple, std::get */
-#include <vector>     /* std::vector */
-#include <typeinfo>   /* typeid */
-#include <functional> /* function */
-#include <iterator>   /* std::iterator_traits */
+#include <functional> /* std::function */
 
 // HANA
 #include <boost/hana.hpp>
 namespace hana = boost::hana;
 
 namespace utils {
+
     template <typename... Tail> struct MultiKeyMapType;
 
     template <typename Key, typename Value>
@@ -29,10 +24,11 @@ namespace utils {
     
 
     /**
-     * @brief Collects all values of a map subtree into the values container
+     * @brief Collects all values of a map subtree into the values container and its
+     *        corresponding keys into the key container
      *
      */
-    template <int Left>
+    template <int KeysLeft>
     struct SubTreeValues {
 
 	template <typename T_Map, typename T_ValuesCT, typename T_KeysCT, typename T_Tuple>
@@ -41,7 +37,7 @@ namespace utils {
 	    auto end   = map.end();
 	    for(auto it = begin; it != end; ++it){
 		auto nextTuple = hana::concat(tuple, hana::make_tuple(it->first));
-		SubTreeValues<Left-1>()(it->second, values, keys, nextTuple);
+		SubTreeValues<KeysLeft-1>()(it->second, values, keys, nextTuple);
 	    }
         
 	}
@@ -52,7 +48,7 @@ namespace utils {
 	    auto end   = map.end();
 	    for(auto it = begin; it != end; ++it){
 		auto t = hana::make_tuple(it->first);
-		SubTreeValues<Left-1>()(it->second, values, keys, t);
+		SubTreeValues<KeysLeft-1>()(it->second, values, keys, t);
 	    }
         
 	}  
@@ -70,14 +66,18 @@ namespace utils {
     
     };
 
-
-    auto at = [] (auto &map,  const auto &key) mutable -> auto& {
+    /**
+     * @brief Traverse through a map of map of ... and 
+     *        return the value of the last key.
+     *
+     */
+    auto at = [] (auto &map,  const auto &key) -> auto& {
 	return map[key];
     };
 
 
     template <typename T_Map, typename T_Keys>
-    auto& traverse(T_Map& map, T_Keys const& keys){
+    auto& traverse(T_Map& map, T_Keys const& keys) {
 	return hana::fold_left(keys, map, at);
     }
 
@@ -86,6 +86,11 @@ namespace utils {
     /**
      * @brief A map with multiple keys, implemented by cascading several 
      *        std::maps.
+     *
+     * The MultiKeyMap has the goal to provide the look and feel of
+     * a usual std::map by the at and () methods. Furthermore, it
+     * provides the possibility to retrieve the values of subtrees
+     * by specifying not all keys by the values method.
      *
      */
     template <typename T_Value, typename... T_Keys>
@@ -97,90 +102,112 @@ namespace utils {
 
 	}
 
-	T_Value& operator()(T_Keys... keys){
-	    auto  keysTuple = hana::make_tuple(keys...);
-	    return traverse(multiKeyMap, keysTuple);
+	T_Value& operator()(const T_Keys... keys){
+	    return traverse(multiKeyMap, hana::make_tuple(keys...));
 	}
 
-	T_Value& at(T_Keys... keys){
-	    auto  keysTuple = hana::make_tuple(keys...);
+	/***************************************************************************
+         * at
+         ***************************************************************************/
+	template <typename T_KeysTpl>
+	T_Value& at(const T_KeysTpl keysTuple){
+	    return atImpl(keysTuple);
+	}
 
-	    auto firstKeysSize = hana::int_c<hana::minus(hana::int_c<hana::size(keysTuple)>, 1)>;
+	
+	T_Value& at(const T_Keys... keys){
+	    return atImpl(hana::make_tuple(keys...));
+	    
+	}
+
+	template <typename T_KeysTpl>
+	T_Value& atImpl(const T_KeysTpl keysTuple){
+	    auto firstKeysSize = hana::int_c<hana::minus(hana::int_c<hana::size(keysTuple)>, 1)>;	    
 	    auto firstKeys     = hana::take_c<firstKeysSize>(keysTuple);
 	    auto lastKey       = hana::back(keysTuple);
 
-	    using namespace std::placeholders;
-             
 	    return traverse(multiKeyMap, firstKeys).at(lastKey);
 	}
 
-	auto test(T_Keys... keys){
-	    auto  keysTuple = hana::make_tuple(keys...);
-
-	    auto firstKeysSize = hana::int_c<hana::minus(hana::int_c<hana::size(keysTuple)>, 1)>;
-	    auto firstKeys     = hana::take_c<firstKeysSize>(keysTuple);
-	    auto lastKey       = hana::back(keysTuple);
-        
-	    auto it  = traverse(multiKeyMap, firstKeys).find(lastKey);
-	    auto end = traverse(multiKeyMap, firstKeys).end();
-	    if(it == end) return false;
-	    else          return true;
+	/***************************************************************************
+         * test
+         ***************************************************************************/
+	bool test(const T_Keys ...keys) {
+	    return testImpl(hana::make_tuple(keys...));
 	}
 
-	bool erase(T_Keys ...keys){
-	    auto  keysTuple = hana::make_tuple(keys...);
+	template <typename T_KeysTpl>
+	bool test(const T_KeysTpl keysTuple) {
+	    return testImpl(keysTuple);
+	}
 
+	
+	template <typename T_KeysTpl>
+	bool testImpl(const T_KeysTpl keysTuple) {
 	    auto firstKeysSize = hana::int_c<hana::minus(hana::int_c<hana::size(keysTuple)>, 1)>;
 	    auto firstKeys     = hana::take_c<firstKeysSize>(keysTuple);
 	    auto lastKey       = hana::back(keysTuple);
 
-	    auto it  = traverse(multiKeyMap, firstKeys).find(lastKey);
-	    auto end = traverse(multiKeyMap, firstKeys).end();
+	    auto &subMap = traverse(multiKeyMap, firstKeys);
+	    auto it  = subMap.find(lastKey);
+	    auto end = subMap.end();
+	    
+	    return (it == end) ? false : true;
 
-	    if(it == end) return false;
-	    else {
-		traverse(multiKeyMap, firstKeys).erase(it);
-		return true;
-	    }
+	}
 
+	/***************************************************************************
+         * erase
+         ***************************************************************************/
+	bool erase(const T_Keys ...keys) {
+	    return eraseImpl(hana::make_tuple(keys...));
 	}
 
 	template <typename T_KeysTPL>
-	bool erase(T_KeysTPL const keys){
-	    auto firstKeysSize = hana::int_c<hana::minus(hana::int_c<hana::size(keys)>, 1)>;
-	    auto firstKeys     = hana::take_c<firstKeysSize>(keys);
-	    auto lastKey       = hana::back(keys);
+	bool erase(const T_KeysTPL keysTuple) {
+	    return eraseImpl(keysTuple);	    
+	}
 
-	    auto it  = traverse(multiKeyMap, firstKeys).find(lastKey);
-	    auto end = traverse(multiKeyMap, firstKeys).end();
+	
+	template <typename T_KeysTpl>
+	bool eraseImpl(const T_KeysTpl keysTuple) {
+	    auto firstKeysSize = hana::int_c<hana::minus(hana::int_c<hana::size(keysTuple)>, 1)>;
+	    auto firstKeys     = hana::take_c<firstKeysSize>(keysTuple);
+	    auto lastKey       = hana::back(keysTuple);
+
+	    
+	    auto &lastMap = traverse(multiKeyMap, firstKeys);
+	    auto it  = lastMap.find(lastKey);
+	    auto end = lastMap.end();
 
 	    if(it == end) return false;
 	    else {
-		traverse(multiKeyMap, firstKeys).erase(it);
+		lastMap.erase(it);
 		return true;
 	    }
 
 	}
 
-    
-
-	template <typename T_ValuesCT, typename T_KeysCT>
+	
+	/***************************************************************************
+         * values
+         ***************************************************************************/
+    	template <typename T_ValuesCT, typename T_KeysCT>
 	void values(T_Value &values, T_KeysCT& keys){
 	    constexpr size_t keysTupleSize = std::tuple_size<std::tuple<T_Keys...>>::value;
 	    SubTreeValues<keysTupleSize>()(multiKeyMap, values, keys);
 	}
     
 	template <typename T_ValuesCT, typename T_KeysCT, typename ...T_Sub_Keys>
-	void values(T_ValuesCT &values, T_KeysCT& keys, T_Sub_Keys... subKeys){
+	void values(T_ValuesCT &values, T_KeysCT& keys, const T_Sub_Keys... subKeys){
 	    constexpr size_t subKeysTupleSize = std::tuple_size<std::tuple<T_Sub_Keys...>>::value;
 	    constexpr size_t keysTupleSize    = std::tuple_size<std::tuple<T_Keys...>>::value;
 	    constexpr size_t subTreeSize      = keysTupleSize - subKeysTupleSize;
 	    auto tuple = hana::make_tuple(subKeys...);
-	    auto t = hana::make_tuple(subKeys...);
-	    SubTreeValues<subTreeSize>()(traverse(multiKeyMap, t), values, keys, tuple);
+	    SubTreeValues<subTreeSize>()(traverse(multiKeyMap, tuple), values, keys, tuple);
     
 	}
 
     };
-    
+
 } /* utils */
