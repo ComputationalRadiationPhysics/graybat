@@ -154,7 +154,7 @@ namespace graybat {
 	    // Message types between peers
 	    static const MsgType PEER            = 7;
 	    static const MsgType CONFIRM         = 8;
-	    static const MsgType SPLIT           = 8;	    
+	    static const MsgType SPLIT           = 9;	    
             
             // Members
             Context initialContext;
@@ -162,8 +162,10 @@ namespace graybat {
             
             zmq::context_t context;
             zmq::socket_t recvSocket;
-            std::map<ContextID, std::map<VAddr, zmq::socket_t> >sendSockets;
+            std::map<ContextID, std::map<VAddr, std::size_t> >sendSocketMappings;
+	    std::vector<zmq::socket_t> sendSockets;
             std::map<ContextID, std::map<VAddr, Uri> >phoneBook;
+	    std::map<ContextID, Context> contexts;
             utils::MultiKeyMap<std::queue<zmq::message_t>, MsgType, ContextID, VAddr, Tag> inBox;
 	    unsigned msgID;
             std::thread recvHandler;
@@ -199,12 +201,9 @@ namespace graybat {
 		    VAddr vAddr = getVAddr(contextID, localUri);
 
 		    initialContext = Context(contextID, vAddr, globalContextSize);
-
-		    std::cout << initialContext.getID() << " " << initialContext.getVAddr() << " " << initialContext.size() << std::endl;
-
+		    contexts[initialContext.getID()] = initialContext;
 
 		    // Ask master for uris of other peers
-		    // --> Fill phonebook with information
 		    for(unsigned vAddr = 0; vAddr < initialContext.size(); vAddr++){
 			phoneBook[initialContext.getID()][vAddr] = getUri(initialContext.getID(), vAddr);
 		    }
@@ -212,8 +211,9 @@ namespace graybat {
 
                     // Create sockets to the other peers
 		    for(unsigned vAddr = 0; vAddr < initialContext.size(); vAddr++){
-			sendSockets[initialContext.getID()].emplace(vAddr, zmq::socket_t(context, ZMQ_PUSH) );
-			sendSockets[initialContext.getID()].at(vAddr).connect(phoneBook[initialContext.getID()].at(vAddr).c_str());
+		    	sendSockets.emplace_back(zmq::socket_t(context, ZMQ_PUSH));
+		    	sendSocketMappings[initialContext.getID()][vAddr] = sendSockets.size() - 1;
+			sendSockets.at(sendSocketMappings[initialContext.getID()].at(vAddr)).connect(phoneBook[initialContext.getID()].at(vAddr).c_str());
 		    }
 
 		}
@@ -223,6 +223,8 @@ namespace graybat {
                     recvHandler = std::thread(&ZMQ::handleRecv, this);
                         
                 }
+
+		std::cout << initialContext.getID() << " " << initialContext.getVAddr() << " " << initialContext.size() << std::endl;
 
 	    }
 
@@ -407,7 +409,7 @@ namespace graybat {
                         memcpy (&remoteVAddr,      static_cast<char*>(message.data()) + msgOffset, sizeof(VAddr));     msgOffset += sizeof(VAddr);
                         memcpy (&remoteTag,        static_cast<char*>(message.data()) + msgOffset, sizeof(Tag));       msgOffset += sizeof(Tag);
 
-                        //std::cout << "recv: " << remoteMsgType << " " << remoteMsgID << " " << remoteContextID << " " << remoteVAddr << " " << remoteTag << std::endl;
+                        std::cout << "recv handler: " << remoteMsgType << " " << remoteMsgID << " " << remoteContextID << " " << remoteVAddr << " " << remoteTag << std::endl;
 
                         if(remoteMsgType == DESTRUCT){
                             return;
@@ -415,7 +417,11 @@ namespace graybat {
                         
                         if(remoteMsgType != CONFIRM){
                             std::array<unsigned,0>  null;
-                            asyncSendImpl(CONFIRM, remoteMsgID, initialContext, remoteVAddr, remoteTag, null);
+			    // Temporary just to generate a context
+			    std::cout << contexts.size() << " " << remoteContextID << std::endl;
+			    Context context = contexts.at(remoteContextID);
+                            asyncSendImpl(CONFIRM, remoteMsgID, context, remoteVAddr, remoteTag, null);
+			    //asyncSendImpl(CONFIRM, remoteMsgID, initialContext, remoteVAddr, remoteTag, null);
                         }
                         inBox(remoteMsgType, remoteContextID, remoteVAddr, remoteTag).push(std::move(message));
                             
@@ -474,6 +480,7 @@ namespace graybat {
 	     */
 	    template <typename T_Send>
 	    Event asyncSend(const VAddr destVAddr, const Tag tag, const Context context, T_Send& sendData){
+		std::cout << "send method:" << context.getID() << " " << destVAddr << " " << tag << std::endl;		
 		asyncSendImpl(PEER, msgID, context, destVAddr, tag, sendData);
                 return Event(msgID++, context, destVAddr, tag, *this);
 
@@ -504,7 +511,7 @@ namespace graybat {
                 //std::cout << "send: " << msgType << " " << msgID << " " << context.getID() << " " << destVAddr << " " << tag << std::endl;
 
                 mtx.lock();
-                sendSockets.at(context.getID()).at(destVAddr).send(message);
+		sendSockets.at(sendSocketMappings[context.getID()].at(destVAddr)).send(message);
                 mtx.unlock();
 
             }
@@ -524,6 +531,7 @@ namespace graybat {
 	     */
 	    template <typename T_Recv>
             void recv(const VAddr srcVAddr, const Tag tag, const Context context, T_Recv& recvData){
+		std::cout << "recv method:" << context.getID() << " " << srcVAddr << " " << tag << std::endl;
 		recvImpl(PEER, context, srcVAddr, tag, recvData);
 		
 	    }
@@ -535,6 +543,7 @@ namespace graybat {
 	    
             template <typename T_Recv>
             void recvImpl(const MsgType msgType, const Context context, const VAddr srcVAddr, const Tag tag, T_Recv& recvData){
+
 
                 zmq::message_t message;
                 {
@@ -636,6 +645,7 @@ namespace graybat {
             }
             
             void wait(const MsgType msgID, const Context context, const VAddr vAddr, const Tag tag){
+		std::cout << "wait method: " << msgID << " " << context.getID() << " " << vAddr << " " << tag << std::endl;
                 while(!ready(msgID, context, vAddr, tag));
                       
             }
@@ -713,10 +723,7 @@ namespace graybat {
                 // Peer with VAddr 0 collects new members
                 if( oldContext.getVAddr() == 0){
                     std::array<unsigned, 2> nMembers {{ 0 }};
-                    //std::vector<ContextID> newContextID(1, 0/*getContextID()*/);
-		    //std::cout << "newContextID: " << newContextID[0] << std::endl;
                     std::vector<VAddr> vAddrs;
-
                     
                     for(unsigned vAddr = 0; vAddr < oldContext.size(); ++vAddr){
                         std::array<unsigned, 1> remoteIsMember {{ 0 }};
@@ -733,13 +740,6 @@ namespace graybat {
                     for(VAddr vAddr : vAddrs){
                         ZMQ::asyncSendImpl(SPLIT, msgID++, oldContext, vAddr, 0, nMembers);
                     }
-
-		    // // Leeds sometimes to deadlock
-		    // for(VAddr vAddr : vAddrs){
-		    // 	std::cout << "send newContextID: " << newContextID[0] << " to " << vAddr << std::endl;
-		    //  	ZMQ::asyncSend(vAddr, 0, oldContext, newContextID);
-		    // }
-
                         
                 }
 
@@ -750,9 +750,9 @@ namespace graybat {
 		    
                     ZMQ::recvImpl(SPLIT, oldContext, 0, 0, nMembers);
 		    ContextID newContextID = nMembers[1];
-		    std::cout << "nMembers: " << nMembers[0] << " newContextID: " << newContextID <<std::endl;
 
 		    Context newContext(newContextID, getVAddr(newContextID, localUri), nMembers[0]);
+		    contexts[newContext.getID()] = newContext;
 
 		    // Update phonebook for new context
 		    for(unsigned vAddr = 0; vAddr < initialContext.size(); vAddr++){
@@ -762,22 +762,15 @@ namespace graybat {
 		    
 		    // Create socket connections in new context
 		    for(unsigned vAddr = 0; vAddr < newContext.size(); vAddr++){
-			//sendSockets[newContext.getID()][vAddr] = sendSockets[oldContext.getID()].at(vAddr);
-			sendSockets[newContext.getID()].emplace(vAddr, sendSockets[oldContext.getID()].at(vAddr));
-		    	//sendSockets[newContext.getID()].emplace(vAddr, zmq::socket_t(context, ZMQ_PUSH) );
-		    	//sendSockets[newContext.getID()].at(vAddr).connect(phoneBook[newContext.getID()].at(vAddr).c_str());
+			sendSocketMappings[newContext.getID()][vAddr] = sendSocketMappings[oldContext.getID()].at(vAddr);
 		    }
 		    
-		    std::cerr << "checkpoint 1" << std::endl;
-                //     return newContext;
-
+		    return newContext;
 		    
-                 }
-                // else{
-                //     return Context();
-                // }
-
-		return Context();		
+		 }
+		 else{
+		     return Context();
+		 }
 
 	    }
 
