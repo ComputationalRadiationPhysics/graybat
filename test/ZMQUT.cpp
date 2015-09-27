@@ -53,6 +53,8 @@ BOOST_AUTO_TEST_CASE( send_recv ){
     Context context = zmq.getGlobalContext();
 
     const unsigned nElements = 10;
+
+    const unsigned tag = 99;
     
     std::vector<unsigned> recv (nElements, 0);
 
@@ -61,12 +63,12 @@ BOOST_AUTO_TEST_CASE( send_recv ){
     for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
         std::vector<unsigned> data (nElements, 0);
         std::iota(data.begin(), data.end(), context.getVAddr());
-        events.push_back(zmq.asyncSend(vAddr, 99, context, data));
+        events.push_back(zmq.asyncSend(vAddr, tag, context, data));
         
     }
 
     for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
-        zmq.recv(vAddr, 99, context, recv);
+        zmq.recv(vAddr, tag, context, recv);
 
         for(unsigned i = 0; i < recv.size(); ++i){
             BOOST_CHECK_EQUAL(recv[i], vAddr+i);
@@ -74,7 +76,6 @@ BOOST_AUTO_TEST_CASE( send_recv ){
         }
 
     }
-
 
     for(Event &e : events){
         e.wait();

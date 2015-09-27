@@ -60,6 +60,7 @@ int main(){
     socket.bind(masterUri.c_str());
 
     ContextID maxContextID = 0;
+    ContextID maxInitialContextID = maxContextID;    
     unsigned nPeers = 0;
 
     while(true){
@@ -76,7 +77,14 @@ int main(){
 
 	case CONTEXT_INIT:
 	    {
-		s_send(socket, std::to_string(0).c_str());
+
+		ss >> size;
+		if(maxVAddr[maxInitialContextID]  == size){
+		    maxInitialContextID = ++maxContextID;
+		    maxVAddr[maxInitialContextID] = 0;
+		}
+		s_send(socket, std::to_string(maxInitialContextID).c_str());
+		std::cout << "CONTEXT INIT [size:" << size << "]: " << maxInitialContextID << std::endl;		
 		break;
 	    }
 
@@ -94,7 +102,7 @@ int main(){
                 // Reply with correct information
 		ss >> contextID;
                 ss >> srcUri;
-		std::cout << "VADDR REQUEST [" << contextID << "][" << srcUri << "]: " << maxVAddr[contextID] << std::endl;
+		std::cout << "VADDR REQUEST [contextID:" << contextID << "][srcUri:" << srcUri << "]: " << maxVAddr[contextID] << std::endl;
                 phoneBook[contextID][maxVAddr[contextID]] = srcUri;
                 // Send requestet vAddr
 		
@@ -118,7 +126,7 @@ int main(){
                     s_send(socket, sss.str().c_str());
                 }
                 else {
-		    std::cout << "VADDR LOOKUP [" << contextID << "][" << remoteVAddr << "]: " << phoneBook[contextID][remoteVAddr] << std::endl;
+		    std::cout << "VADDR LOOKUP [contextID:" << contextID << "][remoteVAddr:" << remoteVAddr << "]: " << phoneBook[contextID][remoteVAddr] << std::endl;
                     sss << ACK << " " << phoneBook[contextID][remoteVAddr];
                     s_send(socket, sss.str().c_str());
                 }
@@ -129,6 +137,7 @@ int main(){
 
 
         case DESTRUCT:
+	    std::cout << "DESTRUCT" << std::endl;
             //nPeers--;
             s_send(socket, "");
             break;

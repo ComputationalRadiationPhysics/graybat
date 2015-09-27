@@ -153,6 +153,7 @@ namespace graybat {
 	    // Message types between peers
 	    static const MsgType PEER            = 7;
 	    static const MsgType CONFIRM         = 8;
+	    static const MsgType SPLIT           = 8;	    
             
             // Members
             Context initialContext;
@@ -475,7 +476,7 @@ namespace graybat {
 
             
             template <typename T_Send>
-		    void asyncSendImpl(const MsgType msgType, const MsgID msgID, const Context context, const VAddr destVAddr, const Tag tag, T_Send& sendData){
+	    void asyncSendImpl(const MsgType msgType, const MsgID msgID, const Context context, const VAddr destVAddr, const Tag tag, T_Send& sendData){
 
                 // Create message
                 zmq::message_t message(sizeof(MsgType) +
@@ -516,20 +517,31 @@ namespace graybat {
 	     *                        return the amount of data elements to send. Notice, that
 	     *                        std::vector and std::array implement this interface.
 	     */
-            template <typename T_Recv>
+	    template <typename T_Recv>
             void recv(const VAddr srcVAddr, const Tag tag, const Context context, T_Recv& recvData){
+		recvImpl(PEER, context, srcVAddr, tag, recvData);
+		
+	    }
+
+	    template <typename T_Recv>
+            Event recv(const Context context, T_Recv& recvData){
+		return recvImpl(context, recvData);
+	    }
+	    
+            template <typename T_Recv>
+            void recvImpl(const MsgType msgType, const Context context, const VAddr srcVAddr, const Tag tag, T_Recv& recvData){
 
                 zmq::message_t message;
                 {
                     bool msgReceived = false;
                     while(!msgReceived){
-                        if(inBox.test(PEER, context.getID(), srcVAddr, tag)){
-                            message = std::move(inBox.at(PEER, context.getID(), srcVAddr, tag).front());
-                            inBox.at(PEER, context.getID(), srcVAddr, tag).pop();
+                        if(inBox.test(msgType, context.getID(), srcVAddr, tag)){
+                            message = std::move(inBox.at(msgType, context.getID(), srcVAddr, tag).front());
+                            inBox.at(msgType, context.getID(), srcVAddr, tag).pop();
+			    
 
-
-                            if(inBox.at(PEER, context.getID(), srcVAddr, tag).empty()){
-                                inBox.erase(PEER, context.getID(), srcVAddr, tag);
+                            if(inBox.at(msgType, context.getID(), srcVAddr, tag).empty()){
+                                inBox.erase(msgType, context.getID(), srcVAddr, tag);
                                  
                             }
 
@@ -567,7 +579,7 @@ namespace graybat {
             }
 
             template <typename T_Recv>
-            Event recv(const Context context, T_Recv& recvData){
+            Event recvImpl(const Context context, T_Recv& recvData){
 
                 zmq::message_t message;
 		VAddr destVAddr;
@@ -691,7 +703,7 @@ namespace graybat {
 
                 // Request old master for new context
                 std::array<unsigned, 2> member {{ isMember }};
-                ZMQ::asyncSend(0, 0, oldContext, member);
+                ZMQ::asyncSendImpl(SPLIT, msgID++, oldContext, 0, 0, member);
                 
                 // Peer with VAddr 0 collects new members
                 if( oldContext.getVAddr() == 0){
@@ -703,7 +715,7 @@ namespace graybat {
                     
                     for(unsigned vAddr = 0; vAddr < oldContext.size(); ++vAddr){
                         std::array<unsigned, 1> remoteIsMember {{ 0 }};
-                        ZMQ::recv(vAddr, 0, oldContext, remoteIsMember);
+                        ZMQ::recvImpl(SPLIT, oldContext, vAddr, 0, remoteIsMember);
 
                         if(remoteIsMember[0]) {
                             nMembers[0]++;
@@ -714,7 +726,7 @@ namespace graybat {
 		    //nMembers[1] = getContextID();
 
                     for(VAddr vAddr : vAddrs){
-                        ZMQ::asyncSend(vAddr, 0, oldContext, nMembers);
+                        ZMQ::asyncSendImpl(SPLIT, msgID++, oldContext, vAddr, 0, nMembers);
                     }
 
 		    // // Leeds sometimes to deadlock
@@ -731,7 +743,7 @@ namespace graybat {
                     std::array<unsigned, 2> nMembers {{ 0 , 0 }};
                     //std::array<ContextID, 1> newContextID {{ 0 }};
 		    
-                    ZMQ::recv(0, 0, oldContext, nMembers);
+                    ZMQ::recvImpl(SPLIT, oldContext, 0, 0, nMembers);
 		    std::cout << "Got nMembers: " << nMembers[0] << std::endl;
 
 		    // Leeds sometimes to deadlock		    
