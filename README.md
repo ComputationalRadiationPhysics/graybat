@@ -1,4 +1,4 @@
-GrayBat
+Graybat
 =======
 
 <b>Gr</b>aph <b>A</b>pproach  for Highl<b>y</b>  Generic Communication
@@ -6,7 +6,7 @@ Schemes <b>B</b>ased on <b>A</b>daptive <b>T</b>opologies
 
 ##Description##
 
-**GrayBat** is a C++ library that presents a graph-based communication
+**Graybat** is a C++ library that presents a graph-based communication
 approach, which enables a mapping of algorithms to communication
 patterns and further a mapping of these communication patterns to
 varying hardware architectures. Therefore, a flexible and configurable
@@ -21,13 +21,13 @@ Have a look at the documentation that is available [here](https://ComputationalR
 
 ##Referencing##
 
-GrayBat is a scientific project. If you **present and/or publish** scientific
-results that used GrayBat, you should set this as a **reference**.
+Graybat is a scientific project. If you **present and/or publish** scientific
+results that used graybat, you should set this as a **reference**.
 
 ##Software License##
 
 
-GrayBat  is licensed under the <b>GPLv3+</b>. Please refer to our [LICENSE.md](LICENSE.md)
+Graybat is licensed under the <b>LGPLv3+</b>. Please refer to our [LICENSE.md](LICENSE.md)
 
 
 ##Dependencies##
@@ -35,10 +35,24 @@ GrayBat  is licensed under the <b>GPLv3+</b>. Please refer to our [LICENSE.md](L
  * cmake 3.0.2
  * Boost 1.57.0
  * OpenMPI 1.8.0 (mpi communication policy)
- * g++ 4.9.2
+ * zeromq 4.1.3 (zeromq communication policy) 
+ * g++ 4.9.2 or clang 3.5
  * metis 5.1 (graph partitioning)
 
-##Compiling##
+##Usage##
+
+Graybat is a header only library so nothing has to be build.
+The most easy way to include graybat into your application
+is to use the CMAKE `find_package()` interface:
+
+    set(graybat_DIR <PATH-TO-GRAYBAT-LIB>)
+    find_package(graybat REQUIRED CONFIG)
+    include_directories(SYSTEM ${graybat_INCLUDE_DIRS})
+    set(LIBS ${LIBS} ${graybat_LIBRARIES})
+
+Finally, the application can use graybat like `#include <graybat/Cage.hpp>`.
+
+##Compiling Tests/Examples##
 
  * Clone the repository: `git clone https://github.com/computationalradiationphysics/graybat.git`
  * Change directory: `cd graybat`
@@ -61,15 +75,26 @@ GrayBat  is licensed under the <b>GPLv3+</b>. Please refer to our [LICENSE.md](L
 | **master** | [![Build Status](http://haseongpu.mooo.com/api/badge/github.com/erikzenker/GrayBat/status.svg?branch=master)](http://haseongpu.mooo.com/github.com/erikzenker/GrayBat) |  stable releases |
 | **dev**  | [![Build Status](http://haseongpu.mooo.com/api/badge/github.com/erikzenker/GrayBat/status.svg?branch=dev)](http://haseongpu.mooo.com/github.com/erikzenker/GrayBat) |development branch |
 
-##Example Targets##
+##Predefined Targets##
 
- * **GoL**: Game of Life simulation
+ * **example**: All example applications.
 
- * **doc**: Build documentation in doc/
+ * **test** : Build, unit and integration test.
 
- * **clean**: Cleanup build directory
+ * **doc**: Build documentation in `doc/`.
 
-##Literature##
+ * **clean**: Cleanup build directory.
+
+##Project Organization##
+
+The project is organized in a couple of subdirectories.
+
+ * The [example](example) directory contains examples produced during development of graybat.
+ * The [include](include) directory contains the library itself, which is header only.
+ * The [test](test) directory contains unit and integration tests (might me used as examples)
+ * The [utils](utils) directory contains cmake modules and doxygen files.
+
+##Related Material##
  * Talk by Erik Zenker of his diploma defence [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.16306.svg)](http://dx.doi.org/10.5281/zenodo.16306)
 
 

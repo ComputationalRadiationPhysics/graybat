@@ -17,18 +17,16 @@ script:
   - echo "Clang++ build test"
   - export CXX=clang++
   - cmake ..
-  - make Test
-  - ./Test
-  - make GoL
-  - mpiexec --allow-run-as-root ./GoL 90 10
+  - make test
+  - make example
+  - mpiexec --allow-run-as-root ./gol 90 10
   - rm * -rf
   - echo "G++ build test"
   - export CXX=g++
   - cmake ..
-  - make Test
-  - ./Test
-  - make GoL
-  - mpiexec --allow-run-as-root ./GoL 90 10
+  - make test
+  - make examaple
+  - mpiexec --allow-run-as-root ./gol 90 10
 
 before_script:
   - echo "# BEFORE SCRIPT"
