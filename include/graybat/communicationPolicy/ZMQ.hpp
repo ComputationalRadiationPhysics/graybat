@@ -206,6 +206,7 @@ namespace graybat {
 		    // Ask master for uris of other peers
 		    for(unsigned vAddr = 0; vAddr < initialContext.size(); vAddr++){
 			phoneBook[initialContext.getID()][vAddr] = getUri(initialContext.getID(), vAddr);
+			std::cout << phoneBook[initialContext.getID()][vAddr] << std::endl;
 		    }
 		    
 
@@ -299,7 +300,7 @@ namespace graybat {
 
 		// Send vAddr request
 		std::stringstream ss;
-		ss << VADDR_REQUEST << " " << contextID << " " << uri;
+		ss << VADDR_REQUEST << " " << contextID << " " << uri << " ";
 		s_send(socket, ss.str().c_str());
 
 		// Recv vAddr
@@ -366,27 +367,50 @@ namespace graybat {
                 return port;
             }
 
-            //  Receive 0MQ string from socket and convert into C string
-            //  Caller must free returned string. Returns NULL if the context
-            //  is being terminated.
-            static char *
-            s_recv (void *socket) {
-                char buffer [256];
-                int size = zmq_recv (socket, buffer, 255, 0);
-                if (size == -1)
-                    return NULL;
-                if (size > 255)
-                    size = 255;
-                buffer [size] = 0;
-                return strdup (buffer);
-            }
+            // //  Receive 0MQ string from socket and convert into C string
+            // //  Caller must free returned string. Returns NULL if the context
+            // //  is being terminated.
+            // static char *
+            // s_recv (void *socket) {
+            //     char buffer [256];
+            //     int size = zmq_recv (socket, buffer, 255, 0);
+            //     if (size == -1)
+            //         return NULL;
+            //     if (size > 255)
+            //         size = 255;
+            //     buffer [size] = 0;
+            //     return strdup (buffer);
+            // }
 
-            //  Convert C string to 0MQ string and send to socket
-            static int
-            s_send (void *socket, const char *string) {
-                int size = zmq_send (socket, string, strlen (string), 0);
-                return size;
-            }
+            // //  Convert C string to 0MQ string and send to socket
+            // static int
+            // s_send (void *socket, const char *string) {
+            //     int size = zmq_send (socket, string, strlen (string), 0);
+            //     return size;
+            // }
+
+	    //  Receive 0MQ string from socket and convert into C string
+	    //  Caller must free returned string. Returns NULL if the context
+	    //  is being terminated.
+	    static char * s_recv (zmq::socket_t& socket) {
+		zmq::message_t message(256);
+		socket.recv(&message);
+		if (message.size() == -1)
+		    return NULL;
+		if (message.size() > 255)
+		    static_cast<char*>(message.data())[255] = 0;
+		return strdup (static_cast<char*>(message.data()));
+	    }
+
+	    //  Convert C string to 0MQ string and send to socket
+	    static int s_send (zmq::socket_t& socket, const char *string) {
+		zmq::message_t message(sizeof(char) * strlen(string));
+		memcpy (static_cast<char*>(message.data()), string, sizeof(char) * strlen(string));
+		socket.send(message);
+		return 0;
+	    }
+
+	    
 
             void handleRecv(){
 
@@ -511,6 +535,7 @@ namespace graybat {
                 //std::cout << "send: " << msgType << " " << msgID << " " << context.getID() << " " << destVAddr << " " << tag << std::endl;
 
                 mtx.lock();
+		// It is possible that mapping for destVAddr is not set up to this point
 		sendSockets.at(sendSocketMappings[context.getID()].at(destVAddr)).send(message);
                 mtx.unlock();
 

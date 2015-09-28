@@ -29,21 +29,22 @@ static const MsgType CONTEXT_REQUEST = 6;
 //  Receive 0MQ string from socket and convert into C string
 //  Caller must free returned string. Returns NULL if the context
 //  is being terminated.
-static char * s_recv (void *socket) {
-    char buffer [256];
-    int size = zmq_recv (socket, buffer, 255, 0);
-    if (size == -1)
-        return NULL;
-    if (size > 255)
-        size = 255;
-    buffer [size] = 0;
-    return strdup (buffer);
+static char * s_recv (zmq::socket_t& socket) {
+    zmq::message_t message(256);
+    socket.recv(&message);
+    if (message.size() == -1)
+	return NULL;
+    if (message.size() > 255)
+	static_cast<char*>(message.data())[255] = 0;
+    return strdup (static_cast<char*>(message.data()));
 }
 
 //  Convert C string to 0MQ string and send to socket
-static int s_send (void *socket, const char *string) {
-    int size = zmq_send (socket, string, strlen (string), 0);
-    return size;
+static int s_send (zmq::socket_t& socket, const char *string) {
+    zmq::message_t message(sizeof(char) * strlen(string));
+    memcpy (static_cast<char*>(message.data()), string, sizeof(char) * strlen(string));
+    socket.send(message);
+    return 0;
 }
 
 int main(){
@@ -127,8 +128,8 @@ int main(){
                     s_send(socket, sss.str().c_str());
                 }
                 else {
-		    std::cout << "VADDR LOOKUP [contextID:" << contextID << "][remoteVAddr:" << remoteVAddr << "]: " << phoneBook[contextID][remoteVAddr] << std::endl;
-                    sss << ACK << " " << phoneBook[contextID][remoteVAddr];
+		    std::cout << "VADDR LOOKUP [contextID:" << contextID << "][remoteVAddr:" << remoteVAddr << "]:" << phoneBook[contextID][remoteVAddr] << "|" << std::endl;
+                    sss << ACK << " " << phoneBook[contextID][remoteVAddr] << " ";
                     s_send(socket, sss.str().c_str());
                 }
 
@@ -140,7 +141,7 @@ int main(){
         case DESTRUCT:
 	    std::cout << "DESTRUCT" << std::endl;
             //nPeers--;
-            s_send(socket, "");
+            s_send(socket, " ");
             break;
                         
         default:
