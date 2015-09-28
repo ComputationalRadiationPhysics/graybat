@@ -740,7 +740,8 @@ namespace graybat {
 	    Context splitContext(const bool isMember, const Context oldContext){
                 zmq::context_t context(1);
                 zmq::message_t reqMessage;
-
+		Context newContext;
+		
                 // Request old master for new context
                 std::array<unsigned, 2> member {{ isMember }};
                 ZMQ::asyncSendImpl(SPLIT, msgID++, oldContext, 0, 0, member);
@@ -776,7 +777,7 @@ namespace graybat {
                     ZMQ::recvImpl(SPLIT, oldContext, 0, 0, nMembers);
 		    ContextID newContextID = nMembers[1];
 
-		    Context newContext(newContextID, getVAddr(newContextID, localUri), nMembers[0]);
+		    newContext = Context(newContextID, getVAddr(newContextID, localUri), nMembers[0]);
 		    contexts[newContext.getID()] = newContext;
 
 		    // Update phonebook for new context
@@ -790,12 +791,22 @@ namespace graybat {
 			sendSocketMappings[newContext.getID()][vAddr] = sendSocketMappings[oldContext.getID()].at(vAddr);
 		    }
 		    
-		    return newContext;
-		    
 		 }
 		 else{
-		     return Context();
+		     // Invalid context for "not members"
+		     newContext = Context();
 		 }
+
+		 // Barrier thus recvHandler is up to date with sendSocketMappings
+		 std::array<unsigned, 0> null;
+		 for(unsigned vAddr = 0; vAddr < oldContext.size(); ++vAddr){
+		     ZMQ::asyncSendImpl(SPLIT, msgID++, oldContext, vAddr, 0, null);
+		 }
+		 for(unsigned vAddr = 0; vAddr < oldContext.size(); ++vAddr){
+		     ZMQ::recvImpl(SPLIT, oldContext, vAddr, 0, null);
+		 }
+
+		 return newContext;
 
 	    }
 
