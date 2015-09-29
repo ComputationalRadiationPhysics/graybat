@@ -142,6 +142,28 @@ namespace graybat {
                 
 	    };
 
+	    // struct dummy1 {
+	    // 	dummy1(){
+	    // 	    std::cout << "Costrunct dummy1" << std::endl;
+	    // 	}
+	    // 	~dummy1(){
+	    // 	    std::cout << "Destrunct dummy1" << std::endl;
+	    // 	}
+
+	    // };
+
+	    // struct dummy2 {
+	    // 	dummy2(){
+	    // 	    std::cout << "Costrunct dummy2" << std::endl;
+	    // 	}
+	    // 	~dummy2(){
+	    // 	    std::cout << "Destrunct dummy2" << std::endl;
+	    // 	}
+
+	    // };
+
+	    
+
 	    // Message types for signaling server
             static const MsgType VADDR_REQUEST   = 0;
             static const MsgType VADDR_LOOKUP    = 1;
@@ -159,17 +181,25 @@ namespace graybat {
             // Members
             Context initialContext;
             bool isMaster;
-            
+
+	    //dummy1 d1;	    	    
             zmq::context_t context;
+	    //dummy2 d2;	    	    
+	    
             zmq::socket_t recvSocket;
             std::map<ContextID, std::map<VAddr, std::size_t> >sendSocketMappings;
 	    std::vector<zmq::socket_t> sendSockets;
             std::map<ContextID, std::map<VAddr, Uri> >phoneBook;
+            std::map<ContextID, std::map<Uri, VAddr> >inversePhoneBook;	    
 	    std::map<ContextID, Context> contexts;
             utils::MultiKeyMap<std::queue<zmq::message_t>, MsgType, ContextID, VAddr, Tag> inBox;
 	    unsigned msgID;
+	    const int zmqHwm;
+	    
+
             std::thread recvHandler;
-            std::mutex mtx;
+            std::mutex sendMtx;
+            std::mutex recvMtx;	    
             
             // Uris
             Uri masterUri;
@@ -181,6 +211,7 @@ namespace graybat {
                 context(1),
                 recvSocket(context, ZMQ_PULL),
 		msgID(0),
+		zmqHwm(10000),
                 masterUri(std::getenv("GRAYBAT_ZMQ_MASTER_URI")){
 
                 const Uri      localBaseUri      = std::getenv("GRAYBAT_ZMQ_LOCAL_BASE_URI");
@@ -189,24 +220,29 @@ namespace graybat {
                                localUri          = localBaseUri + ":" + std::to_string(localPort);
                 const unsigned globalContextSize = std::stoi(std::getenv("GRAYBAT_ZMQ_GLOBAL_CONTEXT_SIZE"));
 
-		std::cout << " globalContextSize: " << globalContextSize << std::endl;
-		
                 // Create socket for incoming connections
                 {
-		    
-		    // Retrieve Context id from master
-		    ContextID contextID = getInitialContextID(globalContextSize);
+		    // Request socket 
+		    zmq::context_t zmqMasterContext(1);
+		    zmq::socket_t  masterSocket (zmqMasterContext, ZMQ_REQ);
+		    masterSocket.setsockopt( ZMQ_RCVHWM, &zmqHwm, sizeof(zmqHwm));
+		    masterSocket.setsockopt( ZMQ_SNDHWM, &zmqHwm, sizeof(zmqHwm));		
+		    masterSocket.connect(masterUri.c_str());		    
 
+		    // Retrieve Context id from master
+		    ContextID contextID = getInitialContextID(masterSocket, globalContextSize);
+		    
                     // Retrieve vAddr from master
-		    VAddr vAddr = getVAddr(contextID, localUri);
+		    VAddr vAddr = getVAddr(masterSocket, contextID, localUri);
 
 		    initialContext = Context(contextID, vAddr, globalContextSize);
 		    contexts[initialContext.getID()] = initialContext;
 
 		    // Ask master for uris of other peers
 		    for(unsigned vAddr = 0; vAddr < initialContext.size(); vAddr++){
-			phoneBook[initialContext.getID()][vAddr] = getUri(initialContext.getID(), vAddr);
-			std::cout << phoneBook[initialContext.getID()][vAddr] << std::endl;
+			Uri remoteUri = getUri(masterSocket, initialContext.getID(), vAddr);
+			phoneBook[initialContext.getID()][vAddr] = remoteUri;
+			inversePhoneBook[initialContext.getID()][remoteUri] = vAddr;
 		    }
 		    
 
@@ -222,10 +258,8 @@ namespace graybat {
                 // Create recv thread
                 {
                     recvHandler = std::thread(&ZMQ::handleRecv, this);
-                        
-                }
 
-		std::cout << initialContext.getID() << " " << initialContext.getVAddr() << " " << initialContext.size() << std::endl;
+                }
 
 	    }
 
@@ -238,9 +272,10 @@ namespace graybat {
                 s_send(socket, std::to_string(DESTRUCT).c_str());
 
                 // Send exit to receive handler
-                std::array<unsigned,0>  null;
+                std::array<unsigned ,1>  null;
                 asyncSendImpl(DESTRUCT, 0, initialContext, initialContext.getVAddr(), 0, null);
                 recvHandler.join();
+
 	    }
 
 	    /***********************************************************************//**
@@ -251,13 +286,8 @@ namespace graybat {
 	     *
 	     ***************************************************************************/
 
-	    ContextID getInitialContextID(const size_t contextSize){
+	    ContextID getInitialContextID(zmq::socket_t &socket, const size_t contextSize){
 		ContextID contextID = 0;
-                        
-		zmq::context_t context(1);
-		zmq::socket_t  socket (context, ZMQ_REQ);
-		socket.connect(masterUri.c_str());
-
 		// Send vAddr request
 		std::stringstream ss;
 		ss << CONTEXT_INIT << " " << contextSize;
@@ -271,12 +301,8 @@ namespace graybat {
 
 	    }
 
-	    ContextID getContextID(){
+	    ContextID getContextID(zmq::socket_t &socket){
 		ContextID contextID = 0;
-                        
-		zmq::context_t context(1);
-		zmq::socket_t  socket (context, ZMQ_REQ);
-		socket.connect(masterUri.c_str());
 
 		// Send vAddr request
 		std::stringstream ss;
@@ -291,13 +317,9 @@ namespace graybat {
 
 	    }
 
-	    VAddr getVAddr(const ContextID contextID, const Uri uri){
+	    VAddr getVAddr(zmq::socket_t &socket, const ContextID contextID, const Uri uri){
 		VAddr vAddr(0);
                         
-		zmq::context_t context(1);
-		zmq::socket_t  socket (context, ZMQ_REQ);
-		socket.connect(masterUri.c_str());
-
 		// Send vAddr request
 		std::stringstream ss;
 		ss << VADDR_REQUEST << " " << contextID << " " << uri << " ";
@@ -312,11 +334,7 @@ namespace graybat {
                         
 	    }	    
 
-	    Uri getUri(const ContextID contextID, const VAddr vAddr){
-		zmq::context_t context(1);
-		zmq::socket_t  socket (context, ZMQ_REQ);
-		socket.connect(masterUri.c_str());
-
+	    Uri getUri(zmq::socket_t &socket, const ContextID contextID, const VAddr vAddr){
 		MsgType type = RETRY;
                             
 		while(type == RETRY){
@@ -341,9 +359,6 @@ namespace graybat {
 
 	    }
 
-	    
-	    
-            
             std::string getLocalUri() const{
                 return std::string("tcp://127.0.0.1");
             }
@@ -367,31 +382,7 @@ namespace graybat {
                 return port;
             }
 
-            // //  Receive 0MQ string from socket and convert into C string
-            // //  Caller must free returned string. Returns NULL if the context
-            // //  is being terminated.
-            // static char *
-            // s_recv (void *socket) {
-            //     char buffer [256];
-            //     int size = zmq_recv (socket, buffer, 255, 0);
-            //     if (size == -1)
-            //         return NULL;
-            //     if (size > 255)
-            //         size = 255;
-            //     buffer [size] = 0;
-            //     return strdup (buffer);
-            // }
 
-            // //  Convert C string to 0MQ string and send to socket
-            // static int
-            // s_send (void *socket, const char *string) {
-            //     int size = zmq_send (socket, string, strlen (string), 0);
-            //     return size;
-            // }
-
-	    //  Receive 0MQ string from socket and convert into C string
-	    //  Caller must free returned string. Returns NULL if the context
-	    //  is being terminated.
 	    static char * s_recv (zmq::socket_t& socket) {
 		zmq::message_t message(256);
 		socket.recv(&message);
@@ -402,7 +393,6 @@ namespace graybat {
 		return strdup (static_cast<char*>(message.data()));
 	    }
 
-	    //  Convert C string to 0MQ string and send to socket
 	    static int s_send (zmq::socket_t& socket, const char *string) {
 		zmq::message_t message(sizeof(char) * strlen(string));
 		memcpy (static_cast<char*>(message.data()), string, sizeof(char) * strlen(string));
@@ -433,23 +423,22 @@ namespace graybat {
                         memcpy (&remoteVAddr,      static_cast<char*>(message.data()) + msgOffset, sizeof(VAddr));     msgOffset += sizeof(VAddr);
                         memcpy (&remoteTag,        static_cast<char*>(message.data()) + msgOffset, sizeof(Tag));       msgOffset += sizeof(Tag);
 
-                        std::cout << "recv handler: " << remoteMsgType << " " << remoteMsgID << " " << remoteContextID << " " << remoteVAddr << " " << remoteTag << std::endl;
+			std::cout << "recv handler: " << remoteMsgType << " " << remoteMsgID << " " << remoteContextID << " " << remoteVAddr << " " << remoteTag << std::endl;
 
                         if(remoteMsgType == DESTRUCT){
                             return;
                         }
-                        
-                        if(remoteMsgType != CONFIRM){
-                            std::array<unsigned,0>  null;
-			    // Temporary just to generate a context
-			    std::cout << contexts.size() << " " << remoteContextID << std::endl;
-			    Context context = contexts.at(remoteContextID);
-                            asyncSendImpl(CONFIRM, remoteMsgID, context, remoteVAddr, remoteTag, null);
-			    //asyncSendImpl(CONFIRM, remoteMsgID, initialContext, remoteVAddr, remoteTag, null);
-                        }
-                        inBox(remoteMsgType, remoteContextID, remoteVAddr, remoteTag).push(std::move(message));
-                            
 
+			// DEBUG: for testing zmq construct
+                        // if((remoteMsgType != CONFIRM)){
+			// if(remoteMsgType == PEER){
+                        //     std::array<unsigned,0>  null;
+			//     Context context = contexts.at(remoteContextID);
+                        //     asyncSendImpl(CONFIRM, remoteMsgID, context, remoteVAddr, remoteTag, null);
+			// }
+			recvMtx.lock();
+                        inBox(remoteMsgType, remoteContextID, remoteVAddr, remoteTag).push(std::move(message));
+			recvMtx.unlock();			
               
                     }
 
@@ -504,7 +493,7 @@ namespace graybat {
 	     */
 	    template <typename T_Send>
 	    Event asyncSend(const VAddr destVAddr, const Tag tag, const Context context, T_Send& sendData){
-		std::cout << "send method:" << context.getID() << " " << destVAddr << " " << tag << std::endl;		
+		std::cout << "send method[" << context.getVAddr() << "]: " << context.getID() << " " << destVAddr << " " << tag << std::endl;		
 		asyncSendImpl(PEER, msgID, context, destVAddr, tag, sendData);
                 return Event(msgID++, context, destVAddr, tag, *this);
 
@@ -524,20 +513,21 @@ namespace graybat {
 
                 size_t    msgOffset(0);
                 ContextID contextID(context.getID());
-                VAddr     vAddr(context.getVAddr());
+                VAddr     srcVAddr(context.getVAddr());
 		memcpy (static_cast<char*>(message.data()) + msgOffset, &msgType,        sizeof(MsgType));   msgOffset += sizeof(MsgType);
 		memcpy (static_cast<char*>(message.data()) + msgOffset, &msgID,          sizeof(MsgID));     msgOffset += sizeof(MsgID);		
                 memcpy (static_cast<char*>(message.data()) + msgOffset, &contextID,      sizeof(ContextID)); msgOffset += sizeof(ContextID);
-                memcpy (static_cast<char*>(message.data()) + msgOffset, &vAddr,          sizeof(VAddr));     msgOffset += sizeof(VAddr);
+                memcpy (static_cast<char*>(message.data()) + msgOffset, &srcVAddr,       sizeof(VAddr));     msgOffset += sizeof(VAddr);
                 memcpy (static_cast<char*>(message.data()) + msgOffset, &tag,            sizeof(Tag));       msgOffset += sizeof(Tag);
                 memcpy (static_cast<char*>(message.data()) + msgOffset, sendData.data(), sizeof(typename T_Send::value_type) * sendData.size());
 
-                //std::cout << "send: " << msgType << " " << msgID << " " << context.getID() << " " << destVAddr << " " << tag << std::endl;
-
-                mtx.lock();
-		// It is possible that mapping for destVAddr is not set up to this point
-		sendSockets.at(sendSocketMappings[context.getID()].at(destVAddr)).send(message);
-                mtx.unlock();
+                std::cout << "sendImpl: " << msgType << " " << msgID << " " << context.getID() << " " << destVAddr << " " << tag << std::endl;
+		
+		std::size_t sendSocket_i  = sendSocketMappings.at(context.getID()).at(destVAddr);
+		zmq::socket_t &sendSocket = sendSockets.at(sendSocket_i);
+		sendMtx.lock();
+		sendSocket.send(message);
+		sendMtx.unlock();
 
             }
 
@@ -556,7 +546,7 @@ namespace graybat {
 	     */
 	    template <typename T_Recv>
             void recv(const VAddr srcVAddr, const Tag tag, const Context context, T_Recv& recvData){
-		std::cout << "recv method:" << context.getID() << " " << srcVAddr << " " << tag << std::endl;
+		std::cout << "recv method[" << context.getVAddr() << "]:" << context.getID() << " " << srcVAddr << " " << tag << std::endl;
 		recvImpl(PEER, context, srcVAddr, tag, recvData);
 		
 	    }
@@ -568,12 +558,13 @@ namespace graybat {
 	    
             template <typename T_Recv>
             void recvImpl(const MsgType msgType, const Context context, const VAddr srcVAddr, const Tag tag, T_Recv& recvData){
-
-
+                std::cout << "recvImpl: " << msgType << " " << context.getID() << " " << srcVAddr << " " << tag << std::endl;
+		
                 zmq::message_t message;
                 {
                     bool msgReceived = false;
                     while(!msgReceived){
+			recvMtx.lock();
                         if(inBox.test(msgType, context.getID(), srcVAddr, tag)){
                             message = std::move(inBox.at(msgType, context.getID(), srcVAddr, tag).front());
                             inBox.at(msgType, context.getID(), srcVAddr, tag).pop();
@@ -587,6 +578,7 @@ namespace graybat {
                             msgReceived = true;
                             
                         }
+			recvMtx.unlock();
                              
                     }
                          
@@ -629,9 +621,12 @@ namespace graybat {
 		    std::vector<std::reference_wrapper<std::queue<zmq::message_t> > > values;
 		
 		    while(values.empty()){
+			recvMtx.lock();
 			inBox.values(values, keysList, PEER, context.getID());
+			recvMtx.unlock();
 		    }
 
+		    recvMtx.lock();
 		    auto keys = keysList.front();
 		    message = std::move(values.front().get().front());
 		    values.front().get().pop();
@@ -639,6 +634,7 @@ namespace graybat {
 		    if(values.front().get().empty()){
 		     	inBox.erase(keys);
 		    }
+		    recvMtx.unlock();		    
 
 		    destVAddr = hana::at(keys, hana::size_c<2>);
 		    tag = hana::at(keys, hana::size_c<3>);
@@ -678,6 +674,7 @@ namespace graybat {
             bool ready(const MsgType msgID, const Context context, const VAddr vAddr, const Tag tag){
 
                 zmq::message_t message;
+		recvMtx.lock();		
                 if(inBox.test(CONFIRM, context.getID(), vAddr, tag)){
                     message = std::move(inBox.at(CONFIRM, context.getID(), vAddr, tag).front());
                     inBox.at(CONFIRM, context.getID(), vAddr, tag).pop();
@@ -708,7 +705,8 @@ namespace graybat {
                     }
                             
                 }
-
+		recvMtx.unlock();
+		
                 return false;
             }
                 
@@ -738,14 +736,17 @@ namespace graybat {
 	     *
 	     */
 	    Context splitContext(const bool isMember, const Context oldContext){
-                zmq::context_t context(1);
+		zmq::context_t zmqMasterContext(1);
+		zmq::socket_t  masterSocket (zmqMasterContext, ZMQ_REQ);
+		masterSocket.connect(masterUri.c_str());
+
                 zmq::message_t reqMessage;
 		Context newContext;
-		
+
                 // Request old master for new context
                 std::array<unsigned, 2> member {{ isMember }};
                 ZMQ::asyncSendImpl(SPLIT, msgID++, oldContext, 0, 0, member);
-                
+
                 // Peer with VAddr 0 collects new members
                 if( oldContext.getVAddr() == 0){
                     std::array<unsigned, 2> nMembers {{ 0 }};
@@ -761,7 +762,7 @@ namespace graybat {
                         }
                     }
 
-		    nMembers[1] = getContextID();
+		    nMembers[1] = getContextID(masterSocket);
 
                     for(VAddr vAddr : vAddrs){
                         ZMQ::asyncSendImpl(SPLIT, msgID++, oldContext, vAddr, 0, nMembers);
@@ -769,26 +770,26 @@ namespace graybat {
                         
                 }
 
-		
-				    
                  if(isMember){
                     std::array<unsigned, 2> nMembers {{ 0 , 0 }};
 		    
                     ZMQ::recvImpl(SPLIT, oldContext, 0, 0, nMembers);
 		    ContextID newContextID = nMembers[1];
 
-		    newContext = Context(newContextID, getVAddr(newContextID, localUri), nMembers[0]);
+		    newContext = Context(newContextID, getVAddr(masterSocket, newContextID, localUri), nMembers[0]);
 		    contexts[newContext.getID()] = newContext;
 
 		    // Update phonebook for new context
-		    for(unsigned vAddr = 0; vAddr < initialContext.size(); vAddr++){
-			phoneBook[newContext.getID()][vAddr] = getUri(newContext.getID(), vAddr);
+		    for(unsigned vAddr = 0; vAddr < newContext.size(); vAddr++){
+			Uri remoteUri = getUri(masterSocket, newContext.getID(), vAddr);
+		    	phoneBook[newContext.getID()][vAddr] = remoteUri;
+			inversePhoneBook[newContext.getID()][remoteUri] = vAddr;
 		    }
 		    
-		    
-		    // Create socket connections in new context
 		    for(unsigned vAddr = 0; vAddr < newContext.size(); vAddr++){
-			sendSocketMappings[newContext.getID()][vAddr] = sendSocketMappings[oldContext.getID()].at(vAddr);
+			Uri uri = phoneBook[newContext.getID()][vAddr];
+			VAddr oldVAddr = inversePhoneBook[oldContext.getID()].at(uri);
+			sendSocketMappings[newContext.getID()][vAddr] = sendSocketMappings[oldContext.getID()].at(oldVAddr);
 		    }
 		    
 		 }

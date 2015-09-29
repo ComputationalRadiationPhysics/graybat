@@ -37,7 +37,9 @@ namespace graybat {
 	    } 
 	    else {
 	      edges.push_back(std::make_pair(i, j));
+	      
 	    }
+	    
 	  }
 
 	}

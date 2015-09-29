@@ -58,6 +58,11 @@ int main(){
     zmq::message_t request;
     zmq::message_t reply;
     zmq::socket_t socket (context, ZMQ_REP);
+    const int hwm = 10000;
+    socket.setsockopt( ZMQ_RCVHWM, &hwm, sizeof(hwm));
+    socket.setsockopt( ZMQ_SNDHWM, &hwm, sizeof(hwm));
+
+    
     socket.bind(masterUri.c_str());
 
     ContextID maxContextID = 0;
@@ -84,16 +89,16 @@ int main(){
 		    maxInitialContextID = ++maxContextID;
 		    maxVAddr[maxInitialContextID] = 0;
 		}
-		s_send(socket, std::to_string(maxInitialContextID).c_str());
+		s_send(socket, (std::to_string(maxInitialContextID) + " ").c_str());
 		std::cout << "CONTEXT INIT [size:" << size << "]: " << maxInitialContextID << std::endl;		
 		break;
 	    }
 
 	case CONTEXT_REQUEST:
 	    {
-		//ss >> size;
+		ss >> size;
 		maxVAddr[++maxContextID] = 0;
-		s_send(socket, std::to_string(maxContextID).c_str());
+		s_send(socket, (std::to_string(maxContextID) + " ").c_str());
 		std::cout << "CONTEXT REQUEST [size:" << size << "]: " << maxContextID << std::endl;				
 		break;
 
@@ -104,12 +109,11 @@ int main(){
                 // Reply with correct information
 		ss >> contextID;
                 ss >> srcUri;
-		std::cout << "VADDR REQUEST [contextID:" << contextID << "][srcUri:" << srcUri << "]: " << maxVAddr[contextID] << std::endl;
+
                 phoneBook[contextID][maxVAddr[contextID]] = srcUri;
-                // Send requestet vAddr
-		
-                s_send(socket, std::to_string(maxVAddr[contextID]).c_str());
+                s_send(socket, (std::to_string(maxVAddr[contextID]) + " ").c_str());
 		maxVAddr[contextID]++;
+		std::cout << "VADDR REQUEST [contextID:" << contextID << "][srcUri:" << srcUri << "]: " << maxVAddr[contextID] << std::endl;				
                 break;
             }
                         
@@ -118,8 +122,6 @@ int main(){
                 VAddr remoteVAddr;
 		ss >> contextID;
                 ss >> remoteVAddr;		
-
-
 		
                 std::stringstream sss;
 
@@ -128,36 +130,28 @@ int main(){
                     s_send(socket, sss.str().c_str());
                 }
                 else {
-		    std::cout << "VADDR LOOKUP [contextID:" << contextID << "][remoteVAddr:" << remoteVAddr << "]:" << phoneBook[contextID][remoteVAddr] << "|" << std::endl;
                     sss << ACK << " " << phoneBook[contextID][remoteVAddr] << " ";
                     s_send(socket, sss.str().c_str());
+		    std::cout << "VADDR LOOKUP [contextID:" << contextID << "][remoteVAddr:" << remoteVAddr << "]:" << phoneBook[contextID][remoteVAddr] << "|" << std::endl;
                 }
-
 
                 break;
             }
 
-
         case DESTRUCT:
-	    std::cout << "DESTRUCT" << std::endl;
-            //nPeers--;
             s_send(socket, " ");
+	    std::cout << "DESTRUCT" << std::endl;
             break;
                         
         default:
             // Reply empty message
-            s_send(socket, "");
-            // TODO: throw exceptions since type should be specified
+            s_send(socket, " ");
+	    std::cout << "UNKNOWN MESSAGE TYPE" << std::endl;
+	    exit(0);
             break;
 
         };
-
-        // All peers have destructed, so stop managing Peers
-        // if(nPeers == 0){
-        //     return 0;
-        // }
                     
     }
-
 
 }

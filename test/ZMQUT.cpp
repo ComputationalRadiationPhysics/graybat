@@ -43,43 +43,81 @@ typedef typename Cage::Edge   Edge;
 
 BOOST_AUTO_TEST_SUITE( zmq )
 
+BOOST_AUTO_TEST_CASE( construct ){
+    typedef graybat::communicationPolicy::ZMQ ZMQ;
+
+    const unsigned nConstructions = 10000;
+
+    for(unsigned i = 0; i < nConstructions; ++i){
+	std::cout << "Construction #" << i << std::endl;
+	ZMQ zmq;
+	
+    }
+
+}
+
+BOOST_AUTO_TEST_CASE( context ){
+    typedef graybat::communicationPolicy::ZMQ ZMQ;
+    typedef typename ZMQ::Context             Context;
+
+    ZMQ zmq;
+
+    Context oldContext = zmq.getGlobalContext();
+    const unsigned nContextCreations = 10000;
+
+    for(unsigned i = 0; i < nContextCreations; ++i){
+    	Context newContext = zmq.splitContext(true, oldContext);
+	oldContext = newContext;
+	
+    }
+
+}
+
+
 BOOST_AUTO_TEST_CASE( send_recv ){
     typedef graybat::communicationPolicy::ZMQ ZMQ;
     typedef typename ZMQ::Context             Context;
     typedef typename ZMQ::Event               Event;
 
-    ZMQ zmq;
-
-    Context context = zmq.getGlobalContext();
-
-    const unsigned nElements = 10;
-
-    const unsigned tag = 99;
     
-    std::vector<unsigned> recv (nElements, 0);
 
-    std::vector<Event> events;
+    const unsigned nRuns = 1000;
+    const unsigned nElements = 10;
+    const unsigned tag = 99;
 
-    for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
-        std::vector<unsigned> data (nElements, 0);
-        std::iota(data.begin(), data.end(), context.getVAddr());
-        events.push_back(zmq.asyncSend(vAddr, tag, context, data));
+    for(unsigned i = 0; i < nRuns; ++i){
+    
+	ZMQ zmq;
+	Context context = zmq.getGlobalContext();
+    
+	std::vector<unsigned> recv (nElements, 0);
+
+	std::vector<Event> events;
+
+	for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
+	    std::vector<unsigned> data (nElements, 0);
+	    std::iota(data.begin(), data.end(), context.getVAddr());
+	    events.push_back(zmq.asyncSend(vAddr, tag, context, data));
         
-    }
+	}
 
-    for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
-        zmq.recv(vAddr, tag, context, recv);
+	for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
+	    zmq.recv(vAddr, tag, context, recv);
 
-        for(unsigned i = 0; i < recv.size(); ++i){
-            BOOST_CHECK_EQUAL(recv[i], vAddr+i);
+	    for(unsigned i = 0; i < recv.size(); ++i){
+		BOOST_CHECK_EQUAL(recv[i], vAddr+i);
             
-        }
+	    }
 
+	}
+
+	// for(Event &e : events){
+	//     e.wait();
+	// }
+	
     }
 
-    for(Event &e : events){
-        e.wait();
-    }
+
     
 
 }
@@ -198,51 +236,64 @@ BOOST_AUTO_TEST_CASE( multi_cage ){
 
 
 BOOST_AUTO_TEST_CASE( cage ){
-    Cage cage;
-    cage.setGraph(graybat::pattern::FullyConnected(cage.getPeers().size()));
-    cage.distribute(graybat::mapping::Roundrobin());
 
-    const unsigned nElements = 1000;
+
+	std::cout << "ZMQ/CAGE testcase" << std::endl;
+	Cage cage;
+	cage.setGraph(graybat::pattern::FullyConnected(cage.getPeers().size()));
+	cage.distribute(graybat::mapping::Roundrobin());
+
+	const unsigned nElements = 1000;
     
-    std::vector<Event> events; 
-    std::vector<unsigned> send(nElements,0);
-    std::vector<unsigned> recv(nElements,0);
+	std::vector<Event> events; 
+	std::vector<unsigned> send(nElements,0);
+	std::vector<unsigned> recv(nElements,0);
 
-    for(unsigned i = 0; i < send.size();++i){
-        send.at(i) = i;
-    }
+	for(unsigned i = 0; i < send.size();++i){
+	    send.at(i) = i;
+	}
 
-    //Send state to neighbor cells
-    for(Vertex &v : cage.hostedVertices){
-    	std::cout << "send" << std::endl;
-        for(Edge edge : cage.getOutEdges(v)){
-            cage.send(edge, send, events);
+	for(Vertex &v : cage.hostedVertices){
+	    std::cout << v.id << " ";
+	}
+	std::cout << std::endl;
+    
+	//Send state to neighbor cells
+	for(Vertex &v : cage.hostedVertices){
+	    std::cout << "send" << std::endl;
+	    for(Edge edge : cage.getOutEdges(v)){
+		cage.send(edge, send, events);
 
-        }
-    }
+	    }
+	}
 
-    //Recv state from neighbor cells
-    for(Vertex &v : cage.hostedVertices){
-        for(Edge edge : cage.getInEdges(v)){
-    	    std::cout << "recv" << std::endl;
-            cage.recv(edge, recv);
-            for(unsigned i = 0; i < recv.size();++i){
-        	BOOST_CHECK_EQUAL(recv.at(i), i);
-            }
+	//Recv state from neighbor cells
+	for(Vertex &v : cage.hostedVertices){
+	    for(Edge edge : cage.getInEdges(v)){
+		std::cout << "recv" << std::endl;
+		cage.recv(edge, recv);
+		for(unsigned i = 0; i < recv.size();++i){
+		    BOOST_CHECK_EQUAL(recv.at(i), i);
+		}
 
-        }
+	    }
 	
-    }
+	}
     
-    // Wait to finish events
-    for(unsigned i = 0; i < events.size(); ++i){
-        events.back().wait();
-        events.pop_back();
-    }
+	// // Wait to finish events
+	// for(unsigned i = 0; i < events.size(); ++i){
+	//     events.back().wait();
+	//     events.pop_back();
+	// }
 
 
-    std::cout << "finished" << std::endl;
-    //while(true);
+	std::cout << "finished" << std::endl;
+	//while(true);
+	cage.~Cage();
+	std::cout << "Finished Scope" << std::endl;	
+	exit(0);
+
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()

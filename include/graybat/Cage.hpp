@@ -69,6 +69,9 @@ namespace graybat {
 
         }
 
+	~Cage(){
+	    //std::cout << "Destruct Cage" << std::endl;
+	}
 
 
         /***************************************************************************
@@ -300,24 +303,23 @@ namespace graybat {
 	    	// TODO: Set tag to unique tag for management !
                 for(unsigned vAddr = 0; vAddr < graphContext.size(); ++vAddr){
                     assert(nVertices[0] != 0);
-                    comm.asyncSend(vAddr, 999, graphContext, nVertices);
-                    comm.asyncSend(vAddr, 999, graphContext, vertexIDs);
+                    comm.asyncSend(vAddr, 0, graphContext, nVertices);
+                    comm.asyncSend(vAddr, 0, graphContext, vertexIDs);
                 }
 
                 // Recv hostedVertices from all other peers
                 for(unsigned vAddr = 0; vAddr < graphContext.size(); ++vAddr){
                     std::vector<Vertex>  remoteVertices;
                     std::array<unsigned, 1> nVertices {{ 0 }};
-                    comm.recv(vAddr, 999, graphContext, nVertices);
+                    comm.recv(vAddr, 0, graphContext, nVertices);
                     std::vector<unsigned> vertexIDs(nVertices[0]);
-                    comm.recv(vAddr, 999, graphContext, vertexIDs);
+                    comm.recv(vAddr, 0, graphContext, vertexIDs);
 
                     for(unsigned u : vertexIDs){
                         vertexMap[u] = vAddr;
                         remoteVertices.push_back(Cage::getVertex(u));
                     }
                     peerMap[vAddr] = remoteVertices;
-		    std::cout << "checkpoint" << std::endl;
                  }
 
             }
@@ -430,6 +432,7 @@ namespace graybat {
          */
         template <typename T>
         void send(const Edge edge, const T& data, std::vector<Event> &events){
+	    std::cout << "send cage:" << edge.target.id << " " << edge.id << std::endl;
             VAddr destVAddr  = locateVertex(edge.target);
             events.push_back(comm.asyncSend(destVAddr, edge.id, graphContext, data));
         
@@ -446,6 +449,7 @@ namespace graybat {
          */
         template <typename T>
         void recv(const Edge edge, T& data){
+	    std::cout << "recv cage:" << edge.source.id << " " << edge.id << std::endl;
             VAddr srcVAddr   = locateVertex(edge.source);
             comm.recv(srcVAddr, edge.id, graphContext, data);
 

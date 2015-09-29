@@ -105,7 +105,10 @@ namespace graybat {
 	    }	    
 
 	    ~BGL(){
-
+		// Delete of graph not possible since it
+		// is often called by value !
+		// std::cout << "Destruct BGL" << std::cout
+		//delete graph;
 	    }
 
   
