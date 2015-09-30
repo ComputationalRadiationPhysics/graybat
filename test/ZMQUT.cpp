@@ -111,9 +111,9 @@ BOOST_AUTO_TEST_CASE( send_recv ){
 
 	}
 
-	// for(Event &e : events){
-	//     e.wait();
-	// }
+	for(Event &e : events){
+	    e.wait();
+	}
 	
     }
 

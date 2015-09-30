@@ -431,11 +431,12 @@ namespace graybat {
 
 			// DEBUG: for testing zmq construct
                         // if((remoteMsgType != CONFIRM)){
-			// if(remoteMsgType == PEER){
-                        //     std::array<unsigned,0>  null;
-			//     Context context = contexts.at(remoteContextID);
-                        //     asyncSendImpl(CONFIRM, remoteMsgID, context, remoteVAddr, remoteTag, null);
-			// }
+			if(remoteMsgType == PEER){
+                            std::array<unsigned,0>  null;
+			    Context context = contexts.at(remoteContextID);
+                            asyncSendImpl(CONFIRM, remoteMsgID, context, remoteVAddr, remoteTag, null);
+			}
+			
 			recvMtx.lock();
                         inBox(remoteMsgType, remoteContextID, remoteVAddr, remoteTag).push(std::move(message));
 			recvMtx.unlock();			
@@ -674,8 +675,9 @@ namespace graybat {
             bool ready(const MsgType msgID, const Context context, const VAddr vAddr, const Tag tag){
 
                 zmq::message_t message;
-		recvMtx.lock();		
+
                 if(inBox.test(CONFIRM, context.getID(), vAddr, tag)){
+		    recvMtx.lock();		
                     message = std::move(inBox.at(CONFIRM, context.getID(), vAddr, tag).front());
                     inBox.at(CONFIRM, context.getID(), vAddr, tag).pop();
 
@@ -683,7 +685,8 @@ namespace graybat {
                         inBox.erase(CONFIRM, context.getID(), vAddr, tag);
                                  
                     }
-                            
+		    recvMtx.unlock();            
+		    
                     size_t    msgOffset = 0;
                     MsgType   remoteMsgType;
                     MsgID     remoteMsgID;
@@ -697,15 +700,19 @@ namespace graybat {
                     memcpy (&remoteVAddr,      static_cast<char*>(message.data()) + msgOffset, sizeof(VAddr));     msgOffset += sizeof(VAddr);
                     memcpy (&remoteTag,        static_cast<char*>(message.data()) + msgOffset, sizeof(Tag));       msgOffset += sizeof(Tag);
 
+
                     if(remoteMsgID == msgID){
                         return true;
                     }
                     else {
+			recvMtx.lock();					
                         inBox(CONFIRM, context.getID(), vAddr, tag).push(std::move(message));
+			recvMtx.unlock();            		    			
                     }
-                            
+
+
                 }
-		recvMtx.unlock();
+		
 		
                 return false;
             }
