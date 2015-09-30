@@ -20,7 +20,7 @@ algorithms.
 
 ## See Also ##
 
- - @ref gol.cc "GoL Sources
+ - @ref gol.cpp "GoL Sources
  - @ref cage
  - @ref communicationPolicy
  - @ref graphPolicy
