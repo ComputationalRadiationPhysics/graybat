@@ -300,7 +300,6 @@ namespace graybat {
                 std::for_each(vertices.begin(), vertices.end(), [&vertexIDs](Vertex v){vertexIDs.push_back(v.id);});
 
                 // Send hostedVertices to all other peers
-	    	// TODO: Set tag to unique tag for management !
                 for(unsigned vAddr = 0; vAddr < graphContext.size(); ++vAddr){
                     assert(nVertices[0] != 0);
                     comm.asyncSend(vAddr, 0, graphContext, nVertices);
@@ -432,7 +431,7 @@ namespace graybat {
          */
         template <typename T>
         void send(const Edge edge, const T& data, std::vector<Event> &events){
-	    std::cout << "send cage:" << edge.target.id << " " << edge.id << std::endl;
+	    //std::cout << "send cage:" << edge.target.id << " " << edge.id << std::endl;
             VAddr destVAddr  = locateVertex(edge.target);
             events.push_back(comm.asyncSend(destVAddr, edge.id, graphContext, data));
         
@@ -449,7 +448,7 @@ namespace graybat {
          */
         template <typename T>
         void recv(const Edge edge, T& data){
-	    std::cout << "recv cage:" << edge.source.id << " " << edge.id << std::endl;
+	    //std::cout << "recv cage:" << edge.source.id << " " << edge.id << std::endl;
             VAddr srcVAddr   = locateVertex(edge.source);
             comm.recv(srcVAddr, edge.id, graphContext, data);
 

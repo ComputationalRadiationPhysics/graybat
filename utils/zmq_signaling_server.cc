@@ -112,8 +112,8 @@ int main(){
 
                 phoneBook[contextID][maxVAddr[contextID]] = srcUri;
                 s_send(socket, (std::to_string(maxVAddr[contextID]) + " ").c_str());
-		maxVAddr[contextID]++;
-		std::cout << "VADDR REQUEST [contextID:" << contextID << "][srcUri:" << srcUri << "]: " << maxVAddr[contextID] << std::endl;				
+		std::cout << "VADDR REQUEST [contextID:" << contextID << "][srcUri:" << srcUri << "]: " << maxVAddr[contextID] << std::endl;
+		maxVAddr[contextID]++;		
                 break;
             }
                         
