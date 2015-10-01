@@ -38,14 +38,16 @@ typedef typename Cage::Edge   Edge;
  * Test Cases
  ****************************************************************************/
 
-BOOST_AUTO_TEST_SUITE( cage_point_to_point )
+BOOST_AUTO_TEST_SUITE( bmpi )
 
-Cage allToAll;
-Cage star;
+CP communicationPolicy;
+Cage allToAll(communicationPolicy);
+Cage star(communicationPolicy);
+Cage grid(communicationPolicy);
 
 BOOST_AUTO_TEST_CASE( multi_cage ){
-    Cage cage1;
-    Cage cage2;
+    Cage cage1(communicationPolicy);
+    Cage cage2(communicationPolicy);
 
     cage1.setGraph(graybat::pattern::InStar(cage1.getPeers().size()));
     cage1.distribute(graybat::mapping::Consecutive());
@@ -184,14 +186,6 @@ BOOST_AUTO_TEST_CASE( asyncSend_recv ){
     }
 
 }
-
-
-BOOST_AUTO_TEST_SUITE_END()
-
-BOOST_AUTO_TEST_SUITE( cage_collectives )
-
-Cage grid;
-Cage star;
 
 BOOST_AUTO_TEST_CASE( reduce ){
     grid.setGraph(graybat::pattern::Grid(3,3));

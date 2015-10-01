@@ -42,15 +42,10 @@ endif(${CXX_COMPILER_IS_CLANG++})
 # Targets
 ###############################################################################
 
-# Tests
+# Test cases
 file(GLOB TESTS test/*.cpp)
 add_executable(check EXCLUDE_FROM_ALL ${TESTS})
 target_link_libraries(check ${LIBS})
-
-enable_testing()
-add_test(graybat_test_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target check)
-add_test(graybat_test_run mpiexec -n 2 check --run_test=cage_point_to_point)
-SET_TESTS_PROPERTIES (graybat_test_run PROPERTIES DEPENDS graybat_test_build)
 
 # Examples
 add_custom_target(example)
@@ -64,8 +59,14 @@ foreach(EXAMPLE ${EXAMPLES})
 endforeach(EXAMPLE)
 
 # ZMQ signaling server
-add_executable(zmq_signaling_server EXCLUDE_FROM_ALL utils/zmq_signaling_server.cc )
-target_link_libraries(zmq_signaling_server ${LIBS})
+add_executable(zmq_signaling EXCLUDE_FROM_ALL utils/zmq_signaling_server.cpp )
+target_link_libraries(zmq_signaling ${LIBS})
+
+# CTest
+enable_testing()
+add_test(graybat_check_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target check)
+add_test(graybat_test_run  mpiexec -n 2 check )
+set_tests_properties(graybat_test_run PROPERTIES DEPENDS graybat_check_build)
 
 # Doxygen
 find_package(Doxygen)
@@ -75,6 +76,6 @@ if(DOXYGEN_FOUND)
     COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
     SOURCES ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    COMMENT "Generating API documentation with Doxygen" VERBATIM
+    COMMENT "Generating API documentation with Doxygen." VERBATIM
     )
 endif(DOXYGEN_FOUND)

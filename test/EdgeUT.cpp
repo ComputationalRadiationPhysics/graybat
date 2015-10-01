@@ -37,7 +37,8 @@ typedef typename Cage::Edge   Edge;
 
 BOOST_AUTO_TEST_SUITE(edge)
 
-Cage grid;
+CP communicationPolicy;
+Cage grid(communicationPolicy);
 
 BOOST_AUTO_TEST_CASE( send_recv){
     std::vector<Event> events;

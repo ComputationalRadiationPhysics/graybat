@@ -6,6 +6,8 @@
 #include <iostream>   /* std::cout, std::endl */
 #include <array>      /* std::array */
 #include <numeric>    /* std::iota */
+#include <cstdlib>    /* std::getenv */
+#include <string>     /* std::string, std::stoi */
 
 // ZMQ
 #include <zmq.hpp>
@@ -29,7 +31,9 @@
 
 // CommunicationPolicy
 typedef graybat::communicationPolicy::ZMQ CP;
-    
+typedef typename CP::Context              Context;
+typedef typename CP::Event                Event;
+
 // GraphPolicy
 typedef graybat::graphPolicy::BGL<>        GP;
     
@@ -40,31 +44,27 @@ typedef typename Cage::Vertex Vertex;
 typedef typename Cage::Edge   Edge;
 
 
-
 BOOST_AUTO_TEST_SUITE( zmq )
 
+// Global test variables
+const unsigned nRuns = 100;
+const std::string masterUri   = "tcp://127.0.0.1:5000";
+const std::string peerUri     = "tcp://127.0.0.1:5001";
+const unsigned contextSize    = std::stoi(std::getenv("OMPI_COMM_WORLD_SIZE"));	    
+
+
 BOOST_AUTO_TEST_CASE( construct ){
-    typedef graybat::communicationPolicy::ZMQ ZMQ;
-
-    const unsigned nConstructions = 1000;
-
-    for(unsigned i = 0; i < nConstructions; ++i){
-	ZMQ zmq;
-	
+    for(unsigned i = 0; i < nRuns; ++i){
+	CP zmq(masterUri, peerUri, contextSize);
     }
 
 }
 
 BOOST_AUTO_TEST_CASE( context ){
-    typedef graybat::communicationPolicy::ZMQ ZMQ;
-    typedef typename ZMQ::Context             Context;
-
-    ZMQ zmq;
-
+    CP zmq(masterUri, peerUri, contextSize);    
     Context oldContext = zmq.getGlobalContext();
-    const unsigned nContextCreations = 1000;
 
-    for(unsigned i = 0; i < nContextCreations; ++i){
+    for(unsigned i = 0; i < nRuns; ++i){
     	Context newContext = zmq.splitContext(true, oldContext);
 	oldContext = newContext;
 	
@@ -74,21 +74,14 @@ BOOST_AUTO_TEST_CASE( context ){
 
 
 BOOST_AUTO_TEST_CASE( send_recv ){
-    typedef graybat::communicationPolicy::ZMQ ZMQ;
-    typedef typename ZMQ::Context             Context;
-    typedef typename ZMQ::Event               Event;
-
     const unsigned nElements = 10;
     const unsigned tag = 99;
-    const unsigned nRuns = 10;    
 
+    CP zmq(masterUri, peerUri, contextSize);  
+    Context context = zmq.getGlobalContext();
+    
     for(unsigned i = 0; i < nRuns; ++i){
-    
-	ZMQ zmq;
-	Context context = zmq.getGlobalContext();
-    
-	std::vector<unsigned> recv (nElements, 0);
-
+    	std::vector<unsigned> recv (nElements, 0);
 	std::vector<Event> events;
 
 	for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
@@ -118,15 +111,10 @@ BOOST_AUTO_TEST_CASE( send_recv ){
 
 
 BOOST_AUTO_TEST_CASE( send_recv_all ){
-    typedef graybat::communicationPolicy::ZMQ ZMQ;
-    typedef typename ZMQ::Context             Context;
-    typedef typename ZMQ::Event               Event;
-
-    ZMQ zmq;
+    CP zmq(masterUri, peerUri, contextSize);  
     Context context = zmq.getGlobalContext();
 
     const unsigned nElements = 10;
-    const unsigned nRuns = 1000;    
     
     for(unsigned i = 0; i < nRuns; ++i){
 	std::vector<unsigned> recv (nElements, 0);
@@ -161,17 +149,11 @@ BOOST_AUTO_TEST_CASE( send_recv_all ){
 }
 
 BOOST_AUTO_TEST_CASE( send_recv_order ){
-    typedef graybat::communicationPolicy::ZMQ ZMQ;
-    typedef typename ZMQ::Context             Context;
-    typedef typename ZMQ::Event               Event;
-
-    ZMQ zmq;
-
+    CP zmq(masterUri, peerUri, contextSize);      
     Context context = zmq.getGlobalContext();
 
     const unsigned nElements = 10;
     const unsigned tag = 99;    
-    const unsigned nRuns = 1000;
 
     for(unsigned run_i = 0; run_i < nRuns; ++run_i){
     
@@ -223,18 +205,15 @@ BOOST_AUTO_TEST_CASE( send_recv_order ){
 }
 
 BOOST_AUTO_TEST_CASE( cage ){
-
-
     const unsigned nElements = 1000;
-    const unsigned nRuns = 1000;
+    const unsigned nRuns = 100;
 
-    for(unsigned run_i = 0; run_i < nRuns; ++run_i){
-	
-	Cage cage;
-	cage.setGraph(graybat::pattern::FullyConnected(cage.getPeers().size()));
-	cage.distribute(graybat::mapping::Roundrobin());
-
+    CP communicationPolicy(masterUri, peerUri, contextSize);      
+    Cage cage (communicationPolicy);
+    cage.setGraph(graybat::pattern::FullyConnected(cage.getPeers().size()));
+    cage.distribute(graybat::mapping::Roundrobin());
     
+    for(unsigned run_i = 0; run_i < nRuns; ++run_i){
 	std::vector<Event> events; 
 	std::vector<unsigned> send(nElements,0);
 	std::vector<unsigned> recv(nElements,0);
@@ -271,20 +250,19 @@ BOOST_AUTO_TEST_CASE( cage ){
 
 }
 
-
 BOOST_AUTO_TEST_CASE( multi_cage ){
-    Cage cage1;
-    cage1.setGraph(graybat::pattern::FullyConnected(cage1.getPeers().size()));
-    cage1.distribute(graybat::mapping::Roundrobin());
 
-    Cage cage2;
-    cage2.setGraph(graybat::pattern::FullyConnected(cage2.getPeers().size()));
-    cage2.distribute(graybat::mapping::Roundrobin());
+	CP communicationPolicy1(masterUri, peerUri, contextSize);          
+	Cage cage1(communicationPolicy1);
+	cage1.setGraph(graybat::pattern::FullyConnected(cage1.getPeers().size()));
+	cage1.distribute(graybat::mapping::Roundrobin());
 
+	CP communicationPolicy2(masterUri, peerUri, contextSize);              
+	Cage cage2(communicationPolicy2);
+	cage2.setGraph(graybat::pattern::FullyConnected(cage2.getPeers().size()));
+	cage2.distribute(graybat::mapping::Roundrobin());
+	
 }
-
-
-
 
 
 BOOST_AUTO_TEST_SUITE_END()
