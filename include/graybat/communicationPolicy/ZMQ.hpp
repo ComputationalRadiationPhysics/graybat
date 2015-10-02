@@ -11,8 +11,7 @@
 #include <map>        /* std::map */
 #include <exception>  /* std::out_of_range */
 #include <sstream>    /* std::stringstream, std::istringstream */
-#include <cstdlib>    /* std::env */
-#include <string>     /* std::string, std::stoi */
+#include <string>     /* std::string */
 #include <queue>      /* std::queue */
 #include <utility>    /* std::move */
 #include <thread>     /* std::thread */
@@ -161,7 +160,7 @@ namespace graybat {
 	    // zmq related
             zmq::context_t zmqContext;
 	    zmq::context_t zmqSignalingContext;
-            zmq::socket_t  recvSocket;
+             zmq::socket_t  recvSocket;
 	    zmq::socket_t  signalingSocket;
 	    const int zmqHwm;
 
@@ -179,43 +178,34 @@ namespace graybat {
             std::mutex recvMtx;	    
             
             // Uris
-            Uri masterUri;
-	    Uri localUri; 
-            
-            // Constructor
-	    ZMQ() :
-                zmqContext(1),
+            const Uri masterUri;
+	    const Uri peerUri; 
+
+	    ZMQ(const std::string masterUri,
+		const std::string peerBaseUri,
+		const unsigned initialContextSize) :
+		
+		zmqContext(1),
 		zmqSignalingContext(1),
                 recvSocket(zmqContext, ZMQ_PULL),
 		signalingSocket(zmqSignalingContext, ZMQ_REQ),
 		maxMsgID(0),
 		zmqHwm(10000),
-                masterUri(std::getenv("GRAYBAT_ZMQ_MASTER_URI")){
+                masterUri(masterUri),
+		peerUri(bindToNextFreePort(recvSocket, peerBaseUri)){
 
+		// Connect to signaling process
+		signalingSocket.connect(masterUri.c_str());
 
-		// Read environment variables
-		// TODO: should be replaced by template/class arguments!
-                const Uri      localBaseUri      = std::getenv("GRAYBAT_ZMQ_LOCAL_BASE_URI");
-                const unsigned localBasePort     = std::stoi(std::getenv("GRAYBAT_ZMQ_LOCAL_BASE_PORT"));
-                const unsigned localPort         = searchBindPort(localBaseUri, localBasePort, recvSocket);
-		localUri          = localBaseUri + ":" + std::to_string(localPort);
-                const unsigned globalContextSize = std::stoi(std::getenv("GRAYBAT_ZMQ_GLOBAL_CONTEXT_SIZE"));
-
-
-		// Configure socket to signaling
-		signalingSocket.setsockopt( ZMQ_RCVHWM, &zmqHwm, sizeof(zmqHwm));
-		signalingSocket.setsockopt( ZMQ_SNDHWM, &zmqHwm, sizeof(zmqHwm));		
-		signalingSocket.connect(masterUri.c_str());		    
-
-		// Retrieve Context id for initial context from master
-		ContextID contextID = getInitialContextID(signalingSocket, globalContextSize);
+		// Retrieve Context id for initial context from signaling process
+		ContextID contextID = getInitialContextID(signalingSocket, initialContextSize);
 		    
-		// Retrieve own vAddr from master for initial context
-		VAddr vAddr = getVAddr(signalingSocket, contextID, localUri);
-		initialContext = Context(contextID, vAddr, globalContextSize);
+		// Retrieve own vAddr from signaling process for initial context
+		VAddr vAddr = getVAddr(signalingSocket, contextID, peerUri);
+		initialContext = Context(contextID, vAddr, initialContextSize);
 		contexts[initialContext.getID()] = initialContext;
 
-		// Retrieve for uris of other peers from master for the initial context
+		// Retrieve for uris of other peers from signaling process for the initial context
 		for(unsigned vAddr = 0; vAddr < initialContext.size(); vAddr++){
 		    Uri remoteUri = getUri(signalingSocket, initialContext.getID(), vAddr);
 		    phoneBook[initialContext.getID()][vAddr] = remoteUri;
@@ -235,6 +225,9 @@ namespace graybat {
 
 	    }
 
+	    ZMQ(ZMQ &&other) = delete;
+	    ZMQ(ZMQ &other)  = delete;
+
 	    // Destructor
 	    ~ZMQ(){
                 // Send exit to signaling server
@@ -244,6 +237,8 @@ namespace graybat {
                 std::array<unsigned, 1>  null;
                 asyncSendImpl(DESTRUCT, 0, initialContext, initialContext.getVAddr(), 0, null);
                 recvHandler.join();
+
+		//std::cout << "Destruct ZMQ" << std::endl;
 
 	    }
 
@@ -288,7 +283,6 @@ namespace graybat {
 
 	    VAddr getVAddr(zmq::socket_t &socket, const ContextID contextID, const Uri uri){
 		VAddr vAddr(0);
-                        
 		// Send vAddr request
 		std::stringstream ss;
 		ss << VADDR_REQUEST << " " << contextID << " " << uri << " ";
@@ -332,32 +326,6 @@ namespace graybat {
 		return maxMsgID++;
 	    }
 	    
-
-            std::string getLocalUri() const{
-                return std::string("tcp://127.0.0.1");
-            }
-
-
-            unsigned searchBindPort(const std::string localBaseUri, const unsigned localBasePort, zmq::socket_t &socket){
-                bool connected = false;
-
-                unsigned port = localBasePort;
-                
-                while(!connected){
-                    try {
-                        std::string uri = localBaseUri + ":" + std::to_string(port);
-                        socket.bind(uri.c_str());
-                        connected = true;
-                    }
-                    catch(zmq::error_t e){
-                        port++;
-                    }
-                }
-
-                return port;
-            }
-
-
 	    static char * s_recv (zmq::socket_t& socket) {
 		zmq::message_t message(256);
 		socket.recv(&message);
@@ -395,6 +363,29 @@ namespace graybat {
 			sizeof(typename T_Data::value_type) * data.size());
                         
 	    }
+
+	    Uri bindToNextFreePort(zmq::socket_t &socket, const std::string peerUri){
+		std::string peerBaseUri = peerUri.substr(0, peerUri.rfind(":"));
+		unsigned peerBasePort   = std::stoi(peerUri.substr(peerUri.rfind(":") + 1));		
+		bool connected          = false;
+
+		std::string uri;
+		while(!connected){
+                    try {
+                        uri = peerBaseUri + ":" + std::to_string(peerBasePort);
+                        socket.bind(uri.c_str());
+                        connected = true;
+                    }
+                    catch(zmq::error_t e){
+			//std::cout << e.what() << ". PeerUri \"" << uri << "\". Try to increment port and rebind." << std::endl;
+                        peerBasePort++;
+                    }
+		    
+                }
+
+		return uri;
+		
+            }
                 
             void handleRecv(){
 
@@ -714,13 +705,15 @@ namespace graybat {
                         
                 }
 
+
+
                  if(isMember){
                     std::array<unsigned, 2> nMembers {{ 0 , 0 }};
 		    
                     ZMQ::recvImpl(SPLIT, oldContext, 0, 0, nMembers);
 		    ContextID newContextID = nMembers[1];
 
-		    newContext = Context(newContextID, getVAddr(signalingSocket, newContextID, localUri), nMembers[0]);
+		    newContext = Context(newContextID, getVAddr(signalingSocket, newContextID, peerUri), nMembers[0]);
 		    contexts[newContext.getID()] = newContext;
 
 		    // Update phonebook for new context

@@ -37,8 +37,9 @@ typedef typename Cage::Edge   Edge;
 
 BOOST_AUTO_TEST_SUITE(vertex)
 
-Cage grid;
-Cage chain;
+CP communicationPolicy;
+Cage grid(communicationPolicy);
+Cage chain(communicationPolicy);
 
 BOOST_AUTO_TEST_CASE( spread_collect ){
     std::vector<Event> events;

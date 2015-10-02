@@ -52,7 +52,7 @@ int main(){
 
     std::map<ContextID, std::map<VAddr, Uri> > phoneBook;
     std::map<ContextID, VAddr> maxVAddr;
-    std::string masterUri = std::getenv("GRAYBAT_ZMQ_MASTER_URI");
+    std::string masterUri = "tcp://127.0.0.1:5000";
     zmq::context_t context(1);
     
     zmq::message_t request;
@@ -67,7 +67,6 @@ int main(){
 
     ContextID maxContextID = 0;
     ContextID maxInitialContextID = maxContextID;    
-    unsigned nPeers = 0;
 
     while(true){
         std::stringstream ss;
@@ -132,7 +131,7 @@ int main(){
                 else {
                     sss << ACK << " " << phoneBook[contextID][remoteVAddr] << " ";
                     s_send(socket, sss.str().c_str());
-		    std::cout << "VADDR LOOKUP [contextID:" << contextID << "][remoteVAddr:" << remoteVAddr << "]:" << phoneBook[contextID][remoteVAddr] << "|" << std::endl;
+		    std::cout << "VADDR LOOKUP [contextID:" << contextID << "][remoteVAddr:" << remoteVAddr << "]: " << phoneBook[contextID][remoteVAddr] << std::endl;
                 }
 
                 break;

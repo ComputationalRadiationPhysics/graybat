@@ -1,25 +1,22 @@
 #pragma once
 
 // CLIB
-#include <assert.h>   /* assert */
-#include <cstddef>    /* nullptr_t */
+#include <assert.h>  /* assert */
+#include <cstddef>   /* nullptr_t */
 
 // STL
-#include <map>        /* map */
-#include <set>        /* set */
-#include <exception>  /* std::out_of_range */
-#include <sstream>    /* std::stringstream */
-#include <algorithm>  /* std::max */
-#include <stdexcept>  /* std::runtime_error */
-#include <tuple>      /* std::tie */
-#include <sstream>    /* std::sstream */
+#include <map>       /* map */
+#include <exception> /* std::out_of_range */
+#include <algorithm> /* std::max */
+#include <stdexcept> /* std::runtime_error */
+#include <tuple>     /* std::tie */
+#include <memory>    /* std::shared_memory */
 
 // GRAYBAT
-#include <graybat/utils/exclusivePrefixSum.hpp>  /* exclusivePrefixSum */
-#include <graybat/Vertex.hpp> /* CommunicationVertex */
-#include <graybat/Edge.hpp>   /* CommunicationEdge */
-#include <graybat/pattern/None.hpp> /* graybatt::pattern::None */
-
+#include <graybat/utils/exclusivePrefixSum.hpp> /* exclusivePrefixSum */
+#include <graybat/Vertex.hpp>                   /* CommunicationVertex */
+#include <graybat/Edge.hpp>                     /* CommunicationEdge */
+#include <graybat/pattern/None.hpp>             /* graybatt::pattern::None */
 
 namespace graybat {
 
@@ -61,15 +58,19 @@ namespace graybat {
         typedef unsigned Peer;
         
         template <class T_Functor>
-        Cage(T_Functor graphFunctor) : graph(GraphPolicy(graphFunctor())){
+        Cage(CommunicationPolicy& comm, T_Functor graphFunctor) :
+	    comm(comm),
+	    graph(GraphPolicy(graphFunctor())){
 	    
         }
+	
+	Cage(CommunicationPolicy& comm) :
+	    comm(comm),
+	    graph(GraphPolicy(graybat::pattern::None()())){
 
-        Cage() : graph(GraphPolicy(graybat::pattern::None()())){
+	}
 
-        }
-
-	~Cage(){
+ 	~Cage(){
 	    //std::cout << "Destruct Cage" << std::endl;
 	}
 
@@ -79,10 +80,10 @@ namespace graybat {
          * MEMBER
          *
          ***************************************************************************/
-        CommunicationPolicy comm;
-        GraphPolicy         graph;
-        Context             graphContext;
-        std::vector<Vertex> hostedVertices;
+	CommunicationPolicy& comm;
+        GraphPolicy          graph;
+        Context              graphContext;
+        std::vector<Vertex>  hostedVertices;
 
 
         /***************************************************************************
