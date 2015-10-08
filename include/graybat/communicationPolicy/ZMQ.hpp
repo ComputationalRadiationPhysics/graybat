@@ -189,8 +189,8 @@ namespace graybat {
 		zmqSignalingContext(1),
                 recvSocket(zmqContext, ZMQ_PULL),
 		signalingSocket(zmqSignalingContext, ZMQ_REQ),
+		zmqHwm(10000),		
 		maxMsgID(0),
-		zmqHwm(10000),
                 masterUri(masterUri),
 		peerUri(bindToNextFreePort(recvSocket, peerBaseUri)){
 
@@ -314,8 +314,6 @@ namespace graybat {
 		    if(type == ACK){
 			sss >> remoteUri;   
 			return remoteUri;
-			break;
-			
 		    }
 
 		}
@@ -329,7 +327,7 @@ namespace graybat {
 	    static char * s_recv (zmq::socket_t& socket) {
 		zmq::message_t message(256);
 		socket.recv(&message);
-		if (message.size() == -1)
+		if (message.size() == static_cast<size_t>(-1))
 		    return NULL;
 		if (message.size() > 255)
 		    static_cast<char*>(message.data())[255] = 0;
