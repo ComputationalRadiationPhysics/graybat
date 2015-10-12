@@ -1,7 +1,7 @@
 ###############################################################################
 # Graybat examples and tests
 ###############################################################################
-cmake_minimum_required(VERSION 3.3.1)
+cmake_minimum_required(VERSION 3.3.0)
 project("graybat examples and tests")
 
 ###############################################################################
@@ -15,7 +15,7 @@ set(LIBS ${LIBS} ${Boost_LIBRARIES})
 # Graybat
 ###############################################################################
 set(graybat_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
-find_package(graybat REQUIRED CONFIG)
+find_package(graybat 1.0.0 REQUIRED CONFIG)
 include_directories(SYSTEM ${graybat_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${graybat_LIBRARIES})
 
@@ -70,6 +70,19 @@ enable_testing()
 add_test(graybat_check_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target check)
 add_test(graybat_test_run  mpiexec -n 2 check )
 set_tests_properties(graybat_test_run PROPERTIES DEPENDS graybat_check_build)
+
+# Install
+file(GLOB CMAKE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cmake")
+
+install(
+  DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include"
+  DESTINATION "lib/graybat"
+  )
+
+install(
+  FILES ${CMAKE_FILES}
+  DESTINATION "lib/graybat"
+  )
 
 # Doxygen
 find_package(Doxygen)

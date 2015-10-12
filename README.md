@@ -16,6 +16,8 @@ applications. These mappings are established as an intermediate layer
 between an application and communication libraries and are dynamically
 adptable during run-time.
 
+The graybat API is currently unstable.
+
 
 ##Documentation##
 
@@ -36,28 +38,57 @@ Graybat is licensed under the <b>LGPLv3+</b>. Please refer to our [LICENSE.md](L
 
 ###Mandatory###
  * cmake 3.0.2
- * Boost 1.57.0
+ * Boost 1.56.0
  * g++ 5.2.0 or clang 3.5
  * c++14
 
 ###Optional###
  * OpenMPI 1.8.0 (mpi communication policy)
- * zeromq 4.1.3  (zeromq communication policy) 
+ * zeromq 4.1.3 (zeromq communication policy) 
  * metis 5.1 (graph partitioning mapping)
+ * [Boost Hana 1.0](https://github.com/ldionne/hana) (zeromq communication policy) 
 
 
-##Usage##
+##Installation##
 
-Graybat is a header only library so nothing has to be build.
-The most easy way to include graybat into your application
-is to use the CMAKE `find_package()` interface:
+###System Installion###
 
-    set(graybat_DIR <ABSOLUT-PATH-TO-GRAYBAT-LIB>)
-    find_package(graybat REQUIRED CONFIG)
-    include_directories(SYSTEM ${graybat_INCLUDE_DIRS})
-    set(LIBS ${LIBS} ${graybat_LIBRARIES})
+Installation into the operating system libery path e.g.
+to `/usr/lib/graybat`:
 
-Finally, the application can use graybat like `#include <graybat/Cage.hpp>`.
+    git clone https://github.com/ComputationalRadiationPhysics/graybat.git
+    cd graybat && mkdir build && cd build
+	cmake -DCMAKE_INSTALL_DIR=/usr ..
+	sudo make install
+	
+###Package Install###
+
+* Graybat AUR package
+
+##Usage as Library##
+
+
+
+###CMAKE-Configfile###
+Graybat is a header only library so nothing has to be build.  The most
+easy way to include graybat into your application is to use the shiped
+[CMAKE-Configfile](https://cmake.org/cmake/help/v3.4/manual/cmake-packages.7.html#config-file-packages),
+that can be used if your project is built with CMake.  If graybat was
+not installed to a path where CMake usually has a look then the path
+to graybat need to be set, otherwise the path to graybat will be
+obtained automatically.
+
+     set(graybat_DIR <ABSOLUT-PATH-TO-GRAYBAT-LIB>)
+
+The CMAKE-Configfile of graybat provides the CMAKE variables `${graybat_INCLUDE_DIRS}` and
+`${graybat_LIBRARIES}`, which can be used to include graybat headers and to link against
+graybat depdendencies.
+
+     find_package(graybat REQUIRED CONFIG)
+     include_directories(SYSTEM ${graybat_INCLUDE_DIRS})
+     set(LIBS ${LIBS} ${graybat_LIBRARIES})
+
+Finally, the application can use graybat e.g. `#include <graybat/Cage.hpp>`.
 
 
 ##Compiling Tests/Examples##
