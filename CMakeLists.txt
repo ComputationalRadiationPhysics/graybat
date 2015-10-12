@@ -76,12 +76,12 @@ file(GLOB CMAKE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cmake")
 
 install(
   DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include"
-  DESTINATION "${CMAKE_INSTALL_DIR}/lib/graybat"
+  DESTINATION "lib/graybat"
   )
 
 install(
   FILES ${CMAKE_FILES}
-  DESTINATION "${CMAKE_INSTALL_DIR}/lib/graybat"
+  DESTINATION "lib/graybat"
   )
 
 # Doxygen
