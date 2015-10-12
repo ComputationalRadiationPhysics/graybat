@@ -63,10 +63,9 @@ to `/usr/lib/graybat`:
 	
 ###Package Install###
 
-* Graybat AUR package
+* Graybat [AUR package](https://aur.archlinux.org/packages/graybat-git/)
 
 ##Usage as Library##
-
 
 
 ###CMAKE-Configfile###
