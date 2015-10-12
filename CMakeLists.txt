@@ -72,7 +72,7 @@ add_test(graybat_test_run  mpiexec -n 2 check )
 set_tests_properties(graybat_test_run PROPERTIES DEPENDS graybat_check_build)
 
 # Install
-file(GLOB CMAKE_FILES test/*.cmake)
+file(GLOB CMAKE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cmake")
 
 install(
   DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include"

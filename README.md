@@ -16,6 +16,8 @@ applications. These mappings are established as an intermediate layer
 between an application and communication libraries and are dynamically
 adptable during run-time.
 
+The graybat API is currently unstable.
+
 
 ##Documentation##
 
