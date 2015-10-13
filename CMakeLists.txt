@@ -14,8 +14,7 @@ set(LIBS ${LIBS} ${Boost_LIBRARIES})
 ###############################################################################
 # Graybat
 ###############################################################################
-set(graybat_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
-find_package(graybat 1.0.0 REQUIRED CONFIG)
+find_package(graybat 1.0.0 REQUIRED CONFIG PATHS ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(SYSTEM ${graybat_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${graybat_LIBRARIES})
 
