@@ -49,7 +49,6 @@ inline std::string fancyProgressBar(
     ){
 
   using namespace std::chrono;
-  typedef duration<long long int, std::milli> milliseconds;
 
   static unsigned maxNTotal = 0;
   static unsigned part = 0;
@@ -61,7 +60,7 @@ inline std::string fancyProgressBar(
   auto const now = steady_clock::now();
 
   maxNTotal = std::max(maxNTotal, nTotal);
-  part = current ? current : ++part;
+  part = current ? current : part+1;
 
   //limit the update intervall (not faster than every 35ms. This would be madness.)
   duration<float> const timeSpent = now - startTime;
