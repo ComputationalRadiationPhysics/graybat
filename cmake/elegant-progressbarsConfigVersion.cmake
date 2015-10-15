@@ -1,6 +1,6 @@
-file(STRINGS "${CMAKE_CURRENT_LIST_DIR}/../include/elegantProgressbars/version.hpp" elegantProgressbars_VERSION_MAJOR_HPP REGEX "#define ELEGANTPROGRESSBARS_VERSION_MAJOR ")
-file(STRINGS "${CMAKE_CURRENT_LIST_DIR}/../include/elegantProgressbars/version.hpp"  elegantProgressbars_VERSION_MINOR_HPP REGEX "#define ELEGANTPROGRESSBARS_VERSION_MINOR ")
-file(STRINGS "${CMAKE_CURRENT_LIST_DIR}/../include/elegantProgressbars/version.hpp"  elegantProgressbars_VERSION_PATCH_HPP REGEX "#define ELEGANTPROGRESSBARS_VERSION_PATCH ")
+file(STRINGS "${CMAKE_CURRENT_LIST_DIR}/../include/elegant-progressbars/version.hpp" elegantProgressbars_VERSION_MAJOR_HPP REGEX "#define ELEGANTPROGRESSBARS_VERSION_MAJOR ")
+file(STRINGS "${CMAKE_CURRENT_LIST_DIR}/../include/elegant-progressbars/version.hpp"  elegantProgressbars_VERSION_MINOR_HPP REGEX "#define ELEGANTPROGRESSBARS_VERSION_MINOR ")
+file(STRINGS "${CMAKE_CURRENT_LIST_DIR}/../include/elegant-progressbars/version.hpp"  elegantProgressbars_VERSION_PATCH_HPP REGEX "#define ELEGANTPROGRESSBARS_VERSION_PATCH ")
 
 string(REGEX MATCH "([0-9]+)" elegantProgressbars_VERSION_MAJOR  ${elegantProgressbars_VERSION_MAJOR_HPP})
 string(REGEX MATCH "([0-9]+)" elegantProgressbars_VERSION_MINOR  ${elegantProgressbars_VERSION_MINOR_HPP})

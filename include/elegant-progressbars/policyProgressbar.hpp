@@ -62,12 +62,10 @@ std::tuple<std::string, unsigned> iteratePolicies(unsigned part, unsigned const 
  *
  */
 template<typename... PolicyList>
-inline std::string policyProgressbar(unsigned const nTotal){
+inline std::string policyProgressbar(unsigned const nTotal, unsigned const current = 0){
 
   using namespace std::chrono;
-  typedef duration<long long int, std::milli> milliseconds;
 
-  unsigned current = 0;
   static unsigned maxNTotal = 0;
   static unsigned part = 0;
   static unsigned tic  = 0;
@@ -78,7 +76,7 @@ inline std::string policyProgressbar(unsigned const nTotal){
   auto const now = steady_clock::now();
 
   maxNTotal = std::max(maxNTotal, nTotal);
-  part = current ? current : ++part;
+  part = current ? current : part+1;
 
   //limit the update intervall (not faster than every 35ms. This would be madness.)
   duration<float> const timeSpent = now - startTime;

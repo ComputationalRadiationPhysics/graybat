@@ -64,8 +64,8 @@ class Time{
    */
   inline static std::string printTime(std::chrono::duration<float> const tSpent, float const percentage){
     using std::chrono::duration;
-    typedef duration<int, std::ratio<60,1>> minutes;
-    typedef duration<int, std::ratio<3600,1>> hours;
+    //typedef duration<int, std::ratio<60,1>> minutes;
+    //typedef duration<int, std::ratio<3600,1>> hours;
     std::stringstream stream;
 
     assert(percentage <= 1.f);
