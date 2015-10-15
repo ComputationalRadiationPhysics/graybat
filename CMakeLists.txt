@@ -12,6 +12,13 @@ include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${Boost_LIBRARIES})
 
 ###############################################################################
+# Elegant Progressbars for a More Cililized Age
+###############################################################################
+set(elegant-progressbars_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/elegant-progressbars/cmake")
+find_package(elegant-progressbars 1.0.0 REQUIRED CONFIG)
+
+
+###############################################################################
 # Graybat
 ###############################################################################
 find_package(graybat 1.0.0 REQUIRED CONFIG PATHS ${CMAKE_CURRENT_SOURCE_DIR})

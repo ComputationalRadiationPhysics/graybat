@@ -12,6 +12,10 @@
 // ZMQ
 #include <zmq.hpp>
 
+// ELEGANT-PROGRESSBARS
+#include "elegantProgressbars/policyProgressbar.hpp"
+#include "elegantProgressbars/all_policies.hpp"
+
 // GRAYBAT
 #include <graybat/Cage.hpp>
 #include <graybat/communicationPolicy/ZMQ.hpp>
@@ -52,12 +56,17 @@ const std::string masterUri   = "tcp://127.0.0.1:5000";
 const std::string peerUri     = "tcp://127.0.0.1:5001";
 const unsigned contextSize    = std::stoi(std::getenv("OMPI_COMM_WORLD_SIZE"));	    
 
+using namespace ElegantProgressbars;
 
 BOOST_AUTO_TEST_CASE( construct ){
     for(unsigned i = 0; i < nRuns; ++i){
 	CP zmq(masterUri, peerUri, contextSize);
+	if(zmq.getGlobalContext().getVAddr() == 0){
+	    std::cerr << policyProgressbar<Label, Spinner<>, Percentage>(nRuns);
+	}
     }
-
+    std::cout << std::endl;
+    
 }
 
 BOOST_AUTO_TEST_CASE( context ){
@@ -67,8 +76,14 @@ BOOST_AUTO_TEST_CASE( context ){
     for(unsigned i = 0; i < nRuns; ++i){
     	Context newContext = zmq.splitContext(true, oldContext);
 	oldContext = newContext;
+
+	if(zmq.getGlobalContext().getVAddr() == 0){
+	    std::cerr << policyProgressbar<Label, Spinner<>, Percentage>(nRuns);
+	}
+	
 	
     }
+    std::cout << std::endl;
 
 }
 
