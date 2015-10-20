@@ -13,8 +13,8 @@
 #include <zmq.hpp>
 
 // ELEGANT-PROGRESSBARS
-#include "elegantProgressbars/policyProgressbar.hpp"
-#include "elegantProgressbars/all_policies.hpp"
+#include "elegant-progressbars/policyProgressbar.hpp"
+#include "elegant-progressbars/all_policies.hpp"
 
 // GRAYBAT
 #include <graybat/Cage.hpp>
@@ -51,22 +51,30 @@ typedef typename Cage::Edge   Edge;
 BOOST_AUTO_TEST_SUITE( zmq )
 
 // Global test variables
-const unsigned nRuns = 100;
+const unsigned nRuns = 1000;
 const std::string masterUri   = "tcp://127.0.0.1:5000";
 const std::string peerUri     = "tcp://127.0.0.1:5001";
 const unsigned contextSize    = std::stoi(std::getenv("OMPI_COMM_WORLD_SIZE"));	    
 
 using namespace ElegantProgressbars;
 
+// Peer with VAddr 0 prints progress
+CP printCP(masterUri, peerUri, contextSize);
+bool isMaster = printCP.getGlobalContext().getVAddr() == 0 ? true : false;
+
+void printProgress(bool const isMaster, unsigned const total, unsigned const current){
+    if(isMaster){
+	std::cerr << policyProgressbar<Label, Spinner<>, Percentage>(total, current);
+    }
+}
+
+
 BOOST_AUTO_TEST_CASE( construct ){
     for(unsigned i = 0; i < nRuns; ++i){
 	CP zmq(masterUri, peerUri, contextSize);
-	if(zmq.getGlobalContext().getVAddr() == 0){
-	    std::cerr << policyProgressbar<Label, Spinner<>, Percentage>(nRuns);
-	}
+	printProgress(isMaster, nRuns, i);
     }
-    std::cout << std::endl;
-    
+
 }
 
 BOOST_AUTO_TEST_CASE( context ){
@@ -76,15 +84,9 @@ BOOST_AUTO_TEST_CASE( context ){
     for(unsigned i = 0; i < nRuns; ++i){
     	Context newContext = zmq.splitContext(true, oldContext);
 	oldContext = newContext;
-
-	if(zmq.getGlobalContext().getVAddr() == 0){
-	    std::cerr << policyProgressbar<Label, Spinner<>, Percentage>(nRuns);
-	}
-	
+	printProgress(isMaster, nRuns, i);
 	
     }
-    std::cout << std::endl;
-
 }
 
 
@@ -119,6 +121,7 @@ BOOST_AUTO_TEST_CASE( send_recv ){
 	for(Event &e : events){
 	    e.wait();
 	}
+	printProgress(isMaster, nRuns, i);
 	
     }
 
