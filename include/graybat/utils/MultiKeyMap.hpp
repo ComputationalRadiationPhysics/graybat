@@ -1,8 +1,12 @@
 #pragma once
 
 // STL
-#include <map>        /* std::map */
-#include <functional> /* std::function */
+#include <map>                /* std::map */
+#include <functional>         /* std::function */
+#include <condition_variable> /* std::condition_variable */
+#include <mutex>              /* std::mutex, std::lock_guard, std::unique_lock*/
+#include <queue>              /* std::queue */
+#include <utility>            /* std::forward */
 
 // HANA
 #include <boost/hana.hpp>
@@ -207,6 +211,77 @@ namespace utils {
 	    SubTreeValues<subTreeSize>()(traverse(multiKeyMap, tuple), values, keys, tuple);
     
 	}
+
+    };
+
+    
+    template <typename T_Value, typename... T_Keys>
+    struct MessageBox {
+
+
+	std::mutex mutex;
+	std::condition_variable condition;
+    
+	using Queue = std::queue<T_Value>;
+	MultiKeyMap<Queue, T_Keys...> multiKeyMap;
+
+	auto enqueue(T_Value&& value, const T_Keys... keys) -> void {
+	    {
+		std::lock_guard<std::mutex> lock(mutex);
+		multiKeyMap(keys...).push(std::forward<T_Value>(value));
+	    }
+	    condition.notify_one();
+	}
+
+	auto waitDequeue(const T_Keys... keys) -> T_Value& {
+	    std::unique_lock<std::mutex> lock(mutex);
+	    while(!multiKeyMap.test(keys...)){
+		condition.wait(lock);
+	    }
+
+	    auto& queue = multiKeyMap.at(keys...);
+	    
+	    while(queue.empty()){
+		condition.wait(lock);
+	    }
+	    
+	    {
+	    	std::lock_guard<std::mutex> lock(mutex);
+		T_Value& value = queue.front();
+		queue.pop();
+	    
+		return value;
+	    }
+	}
+
+	template <typename... SubKeys>
+	auto waitDequeue(hana::tuple<T_Keys...> &allKeys, const SubKeys... someKeys) -> T_Value& {
+	    std::unique_lock<std::mutex> lock(mutex);
+	    bool foundValue = false;
+	    while(!foundValue){
+		std::vector<std::reference_wrapper<Queue>> values;
+		std::vector<hana::tuple<T_Keys...> > keysList;
+		while(values.empty()){
+		    multiKeyMap.values(values, keysList, someKeys...);
+		    condition.wait(lock);
+		}
+
+		for(auto &keys : keysList ){
+		    auto& queue = multiKeyMap.at(keys);
+		    if(!queue.empty()) {
+			allKeys = keys;
+			T_Value& value = queue.front();
+			queue.pop();
+			return value;
+		    }
+
+		}
+		condition.wait(lock);
+	    
+	    }
+	
+	}
+     
 
     };
 

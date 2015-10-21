@@ -59,8 +59,8 @@ const unsigned contextSize    = std::stoi(std::getenv("OMPI_COMM_WORLD_SIZE"));
 using namespace ElegantProgressbars;
 
 // Peer with VAddr 0 prints progress
-CP printCP(masterUri, peerUri, contextSize);
-bool isMaster = printCP.getGlobalContext().getVAddr() == 0 ? true : false;
+//CP printCP(masterUri, peerUri, contextSize);
+//bool isMaster = printCP.getGlobalContext().getVAddr() == 0 ? true : false;
 
 void printProgress(bool const isMaster, unsigned const total, unsigned const current){
     if(isMaster){
@@ -72,7 +72,7 @@ void printProgress(bool const isMaster, unsigned const total, unsigned const cur
 BOOST_AUTO_TEST_CASE( construct ){
     for(unsigned i = 0; i < nRuns; ++i){
 	CP zmq(masterUri, peerUri, contextSize);
-	printProgress(isMaster, nRuns, i);
+	//printProgress(isMaster, nRuns, i);
     }
 
 }
@@ -81,12 +81,12 @@ BOOST_AUTO_TEST_CASE( context ){
     CP zmq(masterUri, peerUri, contextSize);    
     Context oldContext = zmq.getGlobalContext();
 
-    for(unsigned i = 0; i < nRuns; ++i){
-    	Context newContext = zmq.splitContext(true, oldContext);
-	oldContext = newContext;
-	printProgress(isMaster, nRuns, i);
+    //for(unsigned i = 0; i < nRuns; ++i){
+    Context newContext = zmq.splitContext(true, oldContext);
+    	// oldContext = newContext;
+    	// printProgress(isMaster, nRuns, i);
 	
-    }
+	// }
 }
 
 
@@ -121,7 +121,7 @@ BOOST_AUTO_TEST_CASE( send_recv ){
 	for(Event &e : events){
 	    e.wait();
 	}
-	printProgress(isMaster, nRuns, i);
+	//printProgress(isMaster, nRuns, i);
 	
     }
 
