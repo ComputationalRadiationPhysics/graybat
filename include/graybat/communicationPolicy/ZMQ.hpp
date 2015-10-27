@@ -544,7 +544,7 @@ namespace graybat {
             void recvImpl(const MsgType msgType, const Context context, const VAddr srcVAddr, const Tag tag, T_Recv& recvData){
                 std::cout << "recvImpl: " << msgType << " " << context.getID() << " " << srcVAddr << " " << tag << std::endl;
 		zmq::message_t message(std::move(inBox.waitDequeue(msgType, context.getID(), srcVAddr, tag)));
-		zmqMessageToData(message, recvData);
+		//zmqMessageToData(message, recvData);
 		
             }
 
