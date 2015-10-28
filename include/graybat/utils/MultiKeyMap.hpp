@@ -218,7 +218,7 @@ namespace utils {
     template <typename T_Value, typename... T_Keys>
     struct MessageBox {
 
-	std::mutex mutex;
+	std::mutex access;
 	std::mutex notify;	
 	std::condition_variable condition;
     
@@ -227,45 +227,45 @@ namespace utils {
 
 	auto enqueue(T_Value&& value, const T_Keys... keys) -> void {
 	    {
-		std::lock_guard<std::mutex> lock(mutex);
+		//std::cout << "Try to enqueue message." << std::endl;
+		std::lock_guard<std::mutex> accessLock(access);
 		multiKeyMap(keys...).push(std::forward<T_Value>(value));
 	    }
 	    std::cout << "notify on condition variable." << std::endl;
-	    condition.notify_all();
+	    condition.notify_one();
 	}
 
 	auto waitDequeue(const T_Keys... keys) -> T_Value {
 	    bool queueExist = false;
 
 	    {
-		std::lock_guard<std::mutex> lock(mutex);
+		std::lock_guard<std::mutex> accessLock(access);
 		queueExist = multiKeyMap.test(keys...);
 	    }
 	    
 	    while(!queueExist){
-		std::unique_lock<std::mutex> lock(notify);
+		std::unique_lock<std::mutex> notifyLock(notify);
 		std::cout << "wait for multikeymap enqueue." << std::endl;
-		condition.wait(lock);
+		condition.wait(notifyLock);
 		{
-		    std::cout << "before lock" << std::endl;
-		    std::lock_guard<std::mutex> lock2(mutex);
-		    std::cout << "after lock" << std::endl;		    
+		    //std::cout << "Check if correct queue is available." << std::endl;
+		    std::lock_guard<std::mutex> accessLock(access);
 		    queueExist = multiKeyMap.test(keys...);
 		}
 	    }
 
 	    bool queueIsEmpty = true;
 	    {
-		std::lock_guard<std::mutex> lock(mutex);
+		std::lock_guard<std::mutex> accessLock(access);
 		queueIsEmpty = multiKeyMap.at(keys...).empty();
 	    }
 
 	    while(queueIsEmpty){
-		std::unique_lock<std::mutex> lock(notify);
+		std::unique_lock<std::mutex> notifyLock(notify);
 		std::cout << "wait for queue to be filled." << std::endl;		
-		condition.wait(lock);
+		condition.wait(notifyLock);
 		{
-		    std::lock_guard<std::mutex> lock2(mutex);
+		    std::lock_guard<std::mutex> accessLock(access);
 		    queueIsEmpty = multiKeyMap.at(keys...).empty();
 
 		}
@@ -273,8 +273,8 @@ namespace utils {
 	    }
 	    
 	    {
-	    	std::lock_guard<std::mutex> lock(mutex);
-		std::cout << "get message from queue" << std::endl;
+	    	std::lock_guard<std::mutex> accessLock(access);
+		//std::cout << "get message from queue" << std::endl;
 		T_Value value = std::move(multiKeyMap.at(keys...).front());
 		multiKeyMap.at(keys...).pop();
 		return value;
@@ -284,7 +284,7 @@ namespace utils {
 
 	template <typename... SubKeys>
 	auto waitDequeue(hana::tuple<T_Keys...> &allKeys, const SubKeys... someKeys) -> T_Value {
-	    std::unique_lock<std::mutex> lock(mutex);
+	    std::unique_lock<std::mutex> lock(access);
 	    bool foundValue = false;
 	    while(!foundValue){
 		std::vector<std::reference_wrapper<Queue>> values;
