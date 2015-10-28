@@ -231,10 +231,10 @@ namespace utils {
 		multiKeyMap(keys...).push(std::forward<T_Value>(value));
 	    }
 	    std::cout << "notify on condition variable." << std::endl;
-	    condition.notify_one();
+	    condition.notify_all();
 	}
 
-	auto waitDequeue(const T_Keys... keys) -> T_Value& {
+	auto waitDequeue(const T_Keys... keys) -> T_Value {
 	    bool queueExist = false;
 
 	    {
@@ -275,10 +275,11 @@ namespace utils {
 	    {
 	    	std::lock_guard<std::mutex> lock(mutex);
 		std::cout << "get message from queue" << std::endl;
-		T_Value& value = multiKeyMap.at(keys...).front();
+		T_Value value = std::move(multiKeyMap.at(keys...).front());
 		multiKeyMap.at(keys...).pop();
 		return value;
 	    }
+	    
 	}
 
 	template <typename... SubKeys>

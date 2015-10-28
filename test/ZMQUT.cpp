@@ -81,12 +81,12 @@ BOOST_AUTO_TEST_CASE( context ){
     CP zmq(masterUri, peerUri, contextSize);    
     Context oldContext = zmq.getGlobalContext();
 
-    //for(unsigned i = 0; i < nRuns; ++i){
+    for(unsigned i = 0; i < nRuns; ++i){
     Context newContext = zmq.splitContext(true, oldContext);
-    	// oldContext = newContext;
+     oldContext = newContext;
     	// printProgress(isMaster, nRuns, i);
 	
-	// }
+    }
 }
 
 
