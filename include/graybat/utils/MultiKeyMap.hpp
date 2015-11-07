@@ -7,6 +7,8 @@
 #include <mutex>              /* std::mutex, std::lock_guard, std::unique_lock*/
 #include <queue>              /* std::queue */
 #include <utility>            /* std::forward */
+#include <chrono>             /* std::chrono::milliseconds */
+
 
 // HANA
 #include <boost/hana.hpp>
@@ -227,7 +229,7 @@ namespace utils {
 
 	auto enqueue(T_Value&& value, const T_Keys... keys) -> void {
 	    {
-		//std::cout << "Try to enqueue message." << std::endl;
+		std::cout << "Try to enqueue message." << std::endl;
 		std::lock_guard<std::mutex> accessLock(access);
 		multiKeyMap(keys...).push(std::forward<T_Value>(value));
 	    }
@@ -236,39 +238,29 @@ namespace utils {
 	}
 
 	auto waitDequeue(const T_Keys... keys) -> T_Value {
-	    bool queueExist = false;
 
+	    bool test = false;
+	    
 	    {
 		std::lock_guard<std::mutex> accessLock(access);
-		queueExist = multiKeyMap.test(keys...);
+		test = !multiKeyMap.test(keys...);
 	    }
 	    
-	    while(!queueExist){
+	    while(test){
 		std::unique_lock<std::mutex> notifyLock(notify);
-		std::cout << "wait for multikeymap enqueue." << std::endl;
-		condition.wait(notifyLock);
+		//std::cout << "wait for multikeymap enqueue." << std::endl;
+		condition.wait_for(notifyLock, std::chrono::milliseconds(100));
 		{
-		    //std::cout << "Check if correct queue is available." << std::endl;
 		    std::lock_guard<std::mutex> accessLock(access);
-		    queueExist = multiKeyMap.test(keys...);
+		    test = !multiKeyMap.test(keys...);
 		}
+		
 	    }
 
-	    bool queueIsEmpty = true;
-	    {
-		std::lock_guard<std::mutex> accessLock(access);
-		queueIsEmpty = multiKeyMap.at(keys...).empty();
-	    }
-
-	    while(queueIsEmpty){
+	    while(multiKeyMap.at(keys...).empty()){
 		std::unique_lock<std::mutex> notifyLock(notify);
 		std::cout << "wait for queue to be filled." << std::endl;		
-		condition.wait(notifyLock);
-		{
-		    std::lock_guard<std::mutex> accessLock(access);
-		    queueIsEmpty = multiKeyMap.at(keys...).empty();
-
-		}
+		condition.wait_for(notifyLock, std::chrono::milliseconds(100));
 		
 	    }
 	    
@@ -284,27 +276,36 @@ namespace utils {
 
 	template <typename... SubKeys>
 	auto waitDequeue(hana::tuple<T_Keys...> &allKeys, const SubKeys... someKeys) -> T_Value {
-	    std::unique_lock<std::mutex> lock(access);
-	    bool foundValue = false;
-	    while(!foundValue){
+
+	    while(true){
+
 		std::vector<std::reference_wrapper<Queue>> values;
 		std::vector<hana::tuple<T_Keys...> > keysList;
 		while(values.empty()){
-		    multiKeyMap.values(values, keysList, someKeys...);
-		    condition.wait(lock);
-		}
+		    std::unique_lock<std::mutex> notifyLock(notify);
+		    {
+			std::lock_guard<std::mutex> accessLock(access);
+			multiKeyMap.values(values, keysList, someKeys...);
 
-		for(auto &keys : keysList ){
-		    auto& queue = multiKeyMap.at(keys);
-		    if(!queue.empty()) {
-			allKeys = keys;
-			T_Value value = std::move(queue.front());
-			queue.pop();
-			return value;
 		    }
-
+		    condition.wait_for(notifyLock, std::chrono::milliseconds(100));
 		}
-		condition.wait(lock);
+
+		{
+		    std::lock_guard<std::mutex> accessLock(access);
+		    for(auto &keys : keysList ){
+			auto& queue = multiKeyMap.at(keys);
+			if(!queue.empty()) {
+			    allKeys = keys;
+			    T_Value value = std::move(queue.front());
+			    queue.pop();
+			    return value;
+			}
+
+		    }
+		}
+		std::unique_lock<std::mutex> notifyLock(notify);
+		condition.wait_for(notifyLock, std::chrono::milliseconds(100));
 	    
 	    }
 	
