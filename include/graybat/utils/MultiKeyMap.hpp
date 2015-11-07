@@ -229,11 +229,11 @@ namespace utils {
 
 	auto enqueue(T_Value&& value, const T_Keys... keys) -> void {
 	    {
-		std::cout << "Try to enqueue message." << std::endl;
+		//std::cout << "Try to enqueue message." << std::endl;
 		std::lock_guard<std::mutex> accessLock(access);
 		multiKeyMap(keys...).push(std::forward<T_Value>(value));
 	    }
-	    std::cout << "notify on condition variable." << std::endl;
+	    //std::cout << "notify on condition variable." << std::endl;
 	    condition.notify_one();
 	}
 
@@ -259,7 +259,7 @@ namespace utils {
 
 	    while(multiKeyMap.at(keys...).empty()){
 		std::unique_lock<std::mutex> notifyLock(notify);
-		std::cout << "wait for queue to be filled." << std::endl;		
+		//std::cout << "wait for queue to be filled." << std::endl;		
 		condition.wait_for(notifyLock, std::chrono::milliseconds(100));
 		
 	    }
