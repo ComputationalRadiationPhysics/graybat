@@ -51,7 +51,7 @@ typedef typename Cage::Edge   Edge;
 BOOST_AUTO_TEST_SUITE( zmq )
 
 // Global test variables
-const unsigned nRuns = 10000;
+const unsigned nRuns = 1000;
 const std::string masterUri   = "tcp://127.0.0.1:5000";
 const std::string peerUri     = "tcp://127.0.0.1:5001";
 const unsigned contextSize    = std::stoi(std::getenv("OMPI_COMM_WORLD_SIZE"));	    
@@ -226,7 +226,7 @@ BOOST_AUTO_TEST_CASE( send_recv_order ){
 
 BOOST_AUTO_TEST_CASE( cage ){
     const unsigned nElements = 1000;
-    const unsigned nRuns = 100;
+    //const unsigned nRuns = 100;
 
     CP communicationPolicy(masterUri, peerUri, contextSize);      
     Cage cage (communicationPolicy);
