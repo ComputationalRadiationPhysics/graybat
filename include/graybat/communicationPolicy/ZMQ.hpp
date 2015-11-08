@@ -688,15 +688,15 @@ namespace graybat {
 
 		 //std::cout  << oldContext.getVAddr() << " check 3" << std::endl;
 
-		 // TODO: not shure whether this following lines are necessary
 		 // Barrier thus recvHandler is up to date with sendSocketMappings
-		 // std::array<unsigned, 0> null;
-		 // for(unsigned vAddr = 0; vAddr < oldContext.size(); ++vAddr){
-		 //     ZMQ::asyncSendImpl(SPLIT, getMsgID(), oldContext, vAddr, 0, null);
-		 // }
-		 // for(unsigned vAddr = 0; vAddr < oldContext.size(); ++vAddr){
-		 //     ZMQ::recvImpl(SPLIT, oldContext, vAddr, 0, null);
-		 // }
+		 // Necessary in environment with multiple zmq objects
+		 std::array<unsigned, 0> null;
+		 for(unsigned vAddr = 0; vAddr < oldContext.size(); ++vAddr){
+		     ZMQ::asyncSendImpl(SPLIT, getMsgID(), oldContext, vAddr, 0, null);
+		 }
+		 for(unsigned vAddr = 0; vAddr < oldContext.size(); ++vAddr){
+		     ZMQ::recvImpl(SPLIT, oldContext, vAddr, 0, null);
+		 }
 
 		 //std::cout  << oldContext.getVAddr() << " splitContext end" << std::endl;		 
 		return newContext;

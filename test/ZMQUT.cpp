@@ -56,12 +56,10 @@ const std::string masterUri   = "tcp://127.0.0.1:5000";
 const std::string peerUri     = "tcp://127.0.0.1:5001";
 const unsigned contextSize    = std::stoi(std::getenv("OMPI_COMM_WORLD_SIZE"));	    
 
-using namespace ElegantProgressbars;
-
+// using namespace ElegantProgressbars;
 // Peer with VAddr 0 prints progress
 // CP printCP(masterUri, peerUri, contextSize);
 // bool isMaster = printCP.getGlobalContext().getVAddr() == 0 ? true : false;
-
 // void printProgress(bool const isMaster, unsigned const total, unsigned const current){
 //     if(isMaster){
 // 	std::cerr << policyProgressbar<Label, Spinner<>, Percentage>(total, current);

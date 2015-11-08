@@ -8,23 +8,24 @@ script:
   - echo "# SCRIPT"
   - pwd
   - ls -lah
-  - pacman -Sy
-  - pacman -S gcc clang boost openmpi --noconfirm
-  - git submodule init
-  - git submodule update
   - mkdir build
   - cd build
   - echo "Clang++ build test"
   - export CXX=clang++
   - cmake ..
+  - make zmq_signaling
+  - ./zmq_signaling&
   - make test
+  - killall zmq_signaling
   - make example
   - mpiexec --allow-run-as-root ./gol 90 10
   - rm * -rf
   - echo "G++ build test"
   - export CXX=g++
   - cmake ..
+  - ./zmq_signaling&
   - make test
+  - killall zmq_signaling
   - make examaple
   - mpiexec --allow-run-as-root ./gol 90 10
 
