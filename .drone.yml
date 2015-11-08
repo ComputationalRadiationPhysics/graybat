@@ -24,6 +24,7 @@ script:
   - echo "G++ build test"
   - export CXX=g++
   - cmake ..
+  - make zmq_signaling
   - ./zmq_signaling&
   - make check
   - mpiexec --allow-run-as-root -n 2 ./check
