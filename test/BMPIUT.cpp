@@ -46,6 +46,7 @@ Cage star(communicationPolicy);
 Cage grid(communicationPolicy);
 
 BOOST_AUTO_TEST_CASE( multi_cage ){
+    
     Cage cage1(communicationPolicy);
     Cage cage2(communicationPolicy);
 
@@ -107,10 +108,14 @@ BOOST_AUTO_TEST_CASE( multi_cage ){
     }
 
     
-}
+ }
 
 
 BOOST_AUTO_TEST_CASE( send_recv ){
+    CP communicationPolicy;
+    Cage star(communicationPolicy);
+
+    
     star.setGraph(graybat::pattern::InStar(star.getPeers().size()));
     star.distribute(graybat::mapping::Consecutive());
     const unsigned nElements = 1000;
