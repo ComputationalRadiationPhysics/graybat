@@ -15,7 +15,8 @@ script:
   - cmake ..
   - make zmq_signaling
   - ./zmq_signaling&
-  - make test
+  - make check
+  - mpiexec -n 2 ./check
   - killall zmq_signaling
   - make example
   - mpiexec --allow-run-as-root ./gol 90 10
@@ -24,7 +25,8 @@ script:
   - export CXX=g++
   - cmake ..
   - ./zmq_signaling&
-  - make test
+  - make check
+  - mpiexec -n 2 ./check
   - killall zmq_signaling
   - make examaple
   - mpiexec --allow-run-as-root ./gol 90 10
