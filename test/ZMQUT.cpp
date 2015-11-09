@@ -12,6 +12,10 @@
 // ZMQ
 #include <zmq.hpp>
 
+// ELEGANT-PROGRESSBARS
+#include "elegant-progressbars/policyProgressbar.hpp"
+#include "elegant-progressbars/all_policies.hpp"
+
 // GRAYBAT
 #include <graybat/Cage.hpp>
 #include <graybat/communicationPolicy/ZMQ.hpp>
@@ -52,10 +56,21 @@ const std::string masterUri   = "tcp://127.0.0.1:5000";
 const std::string peerUri     = "tcp://127.0.0.1:5001";
 const unsigned contextSize    = std::stoi(std::getenv("OMPI_COMM_WORLD_SIZE"));	    
 
+// using namespace ElegantProgressbars;
+// Peer with VAddr 0 prints progress
+// CP printCP(masterUri, peerUri, contextSize);
+// bool isMaster = printCP.getGlobalContext().getVAddr() == 0 ? true : false;
+// void printProgress(bool const isMaster, unsigned const total, unsigned const current){
+//     if(isMaster){
+// 	std::cerr << policyProgressbar<Label, Spinner<>, Percentage>(total, current);
+//     }
+// }
+
 
 BOOST_AUTO_TEST_CASE( construct ){
     for(unsigned i = 0; i < nRuns; ++i){
 	CP zmq(masterUri, peerUri, contextSize);
+	//printProgress(isMaster, nRuns, i);
     }
 
 }
@@ -65,11 +80,11 @@ BOOST_AUTO_TEST_CASE( context ){
     Context oldContext = zmq.getGlobalContext();
 
     for(unsigned i = 0; i < nRuns; ++i){
-    	Context newContext = zmq.splitContext(true, oldContext);
-	oldContext = newContext;
+    Context newContext = zmq.splitContext(true, oldContext);
+     oldContext = newContext;
+     //printProgress(isMaster, nRuns, i);
 	
     }
-
 }
 
 
@@ -104,6 +119,7 @@ BOOST_AUTO_TEST_CASE( send_recv ){
 	for(Event &e : events){
 	    e.wait();
 	}
+	//printProgress(isMaster, nRuns, i);
 	
     }
 
@@ -143,6 +159,7 @@ BOOST_AUTO_TEST_CASE( send_recv_all ){
 	for(Event &e : events){
 	    e.wait();
 	}
+	//printProgress(isMaster, nRuns, i);	
 
     }
 
@@ -199,6 +216,7 @@ BOOST_AUTO_TEST_CASE( send_recv_order ){
 	for(Event &e : events){
 	    e.wait();
 	}
+	//printProgress(isMaster, nRuns, run_i);	
 
     }
 
@@ -206,7 +224,7 @@ BOOST_AUTO_TEST_CASE( send_recv_order ){
 
 BOOST_AUTO_TEST_CASE( cage ){
     const unsigned nElements = 1000;
-    const unsigned nRuns = 100;
+    //const unsigned nRuns = 100;
 
     CP communicationPolicy(masterUri, peerUri, contextSize);      
     Cage cage (communicationPolicy);
@@ -245,24 +263,25 @@ BOOST_AUTO_TEST_CASE( cage ){
 	for(Event &e : events){
 	    e.wait();
 	}
+	//printProgress(isMaster, nRuns, run_i);	
 
     }
 
 }
 
-BOOST_AUTO_TEST_CASE( multi_cage ){
+// BOOST_AUTO_TEST_CASE( multi_cage ){
 
-	CP communicationPolicy1(masterUri, peerUri, contextSize);          
-	Cage cage1(communicationPolicy1);
-	cage1.setGraph(graybat::pattern::FullyConnected(cage1.getPeers().size()));
-	cage1.distribute(graybat::mapping::Roundrobin());
+// 	CP communicationPolicy1(masterUri, peerUri, contextSize);          
+// 	Cage cage1(communicationPolicy1);
+// 	cage1.setGraph(graybat::pattern::FullyConnected(cage1.getPeers().size()));
+// 	cage1.distribute(graybat::mapping::Roundrobin());
 
-	CP communicationPolicy2(masterUri, peerUri, contextSize);              
-	Cage cage2(communicationPolicy2);
-	cage2.setGraph(graybat::pattern::FullyConnected(cage2.getPeers().size()));
-	cage2.distribute(graybat::mapping::Roundrobin());
+// 	CP communicationPolicy2(masterUri, peerUri, contextSize);              
+// 	Cage cage2(communicationPolicy2);
+// 	cage2.setGraph(graybat::pattern::FullyConnected(cage2.getPeers().size()));
+// 	cage2.distribute(graybat::mapping::Roundrobin());
 	
-}
+// }
 
 
 BOOST_AUTO_TEST_SUITE_END()

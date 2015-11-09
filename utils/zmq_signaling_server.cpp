@@ -127,6 +127,7 @@ int main(){
                 if(phoneBook[contextID].count(remoteVAddr) == 0){
                     sss << RETRY;
                     s_send(socket, sss.str().c_str());
+		    std::cout << "VADDR LOOKUP [contextID:" << contextID << "][remoteVAddr:" << remoteVAddr << "]: " << " RETRY"<< std::endl;		    		    
                 }
                 else {
                     sss << ACK << " " << phoneBook[contextID][remoteVAddr] << " ";

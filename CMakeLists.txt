@@ -12,6 +12,13 @@ include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${Boost_LIBRARIES})
 
 ###############################################################################
+# Elegant Progressbars for a More Cililized Age
+###############################################################################
+set(elegant-progressbars_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/elegant-progressbars/cmake")
+find_package(elegant-progressbars 1.0.0 REQUIRED CONFIG)
+
+
+###############################################################################
 # Graybat
 ###############################################################################
 find_package(graybat 1.0.0 REQUIRED CONFIG PATHS ${CMAKE_CURRENT_SOURCE_DIR})
@@ -75,7 +82,7 @@ target_link_libraries(zmq_signaling ${LIBS})
 # CTest
 enable_testing()
 add_test(graybat_check_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target check)
-add_test(graybat_test_run  mpiexec -n 2 check )
+add_test(graybat_test_run  mpiexec --allow-run-as-root -n 2 check )
 set_tests_properties(graybat_test_run PROPERTIES DEPENDS graybat_check_build)
 
 # Install
