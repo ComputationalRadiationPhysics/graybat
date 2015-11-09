@@ -10,27 +10,31 @@ script:
   - ls -lah
   - mkdir build
   - cd build
-  - echo "Clang++ build test"
+  - echo "######################"
+  - echo "# Clang++ build test #"
+  - echo "######################"  
   - export CXX=clang++
   - cmake ..
   - make zmq_signaling
-  - ./zmq_signaling&
-  - make check
-  - mpiexec --allow-run-as-root -n 2 ./check
-  - killall zmq_signaling
   - make example
+  - ./zmq_signaling&
+  - make test
   - mpiexec --allow-run-as-root ./gol 90 10
+  - killall zmq_signaling
   - rm * -rf
-  - echo "G++ build test"
+  - echo "##################"
+  - echo "# G++ build test #"
+  - echo "##################"  
   - export CXX=g++
   - cmake ..
   - make zmq_signaling
-  - ./zmq_signaling&
   - make check
-  - mpiexec --allow-run-as-root -n 2 ./check
-  - killall zmq_signaling
-  - make examaple
+  - make example
+  - ./zmq_signaling&
+  - make test
   - mpiexec --allow-run-as-root ./gol 90 10
+  - killall zmq_signaling
+  - rm * -rf
 
 before_script:
   - echo "# BEFORE SCRIPT"
