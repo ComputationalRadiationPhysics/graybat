@@ -269,19 +269,19 @@ BOOST_AUTO_TEST_CASE( cage ){
 
 }
 
-BOOST_AUTO_TEST_CASE( multi_cage ){
+// BOOST_AUTO_TEST_CASE( multi_cage ){
 
-	CP communicationPolicy1(masterUri, peerUri, contextSize);          
-	Cage cage1(communicationPolicy1);
-	cage1.setGraph(graybat::pattern::FullyConnected(cage1.getPeers().size()));
-	cage1.distribute(graybat::mapping::Roundrobin());
+// 	CP communicationPolicy1(masterUri, peerUri, contextSize);          
+// 	Cage cage1(communicationPolicy1);
+// 	cage1.setGraph(graybat::pattern::FullyConnected(cage1.getPeers().size()));
+// 	cage1.distribute(graybat::mapping::Roundrobin());
 
-	CP communicationPolicy2(masterUri, peerUri, contextSize);              
-	Cage cage2(communicationPolicy2);
-	cage2.setGraph(graybat::pattern::FullyConnected(cage2.getPeers().size()));
-	cage2.distribute(graybat::mapping::Roundrobin());
+// 	CP communicationPolicy2(masterUri, peerUri, contextSize);              
+// 	Cage cage2(communicationPolicy2);
+// 	cage2.setGraph(graybat::pattern::FullyConnected(cage2.getPeers().size()));
+// 	cage2.distribute(graybat::mapping::Roundrobin());
 	
-}
+// }
 
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -72,7 +72,7 @@ target_link_libraries(zmq_signaling ${LIBS})
 # CTest
 enable_testing()
 add_test(graybat_check_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target check)
-add_test(graybat_test_run  mpiexec -n 2 check )
+add_test(graybat_test_run  mpiexec --allow-run-as-root -n 2 check )
 set_tests_properties(graybat_test_run PROPERTIES DEPENDS graybat_check_build)
 
 # Install
