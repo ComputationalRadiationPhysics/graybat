@@ -127,6 +127,10 @@ namespace graybat {
                     return true;
                 }
 
+                VAddr source(){
+		    return vAddr;
+		}
+
                 Tag getTag(){
                     return tag;
 
@@ -182,11 +186,10 @@ namespace graybat {
             
             // Uris
             const Uri masterUri;
-	    const Uri peerUri; 
-
-	    ZMQ(const std::string masterUri,
-		const std::string peerBaseUri,
-		const unsigned initialContextSize) :
+	    const Uri peerUri;
+	    
+	    template<typename T_Config>
+	    ZMQ(T_Config const config) :
 		
 		zmqContext(1),
 		zmqSignalingContext(1),
@@ -194,18 +197,18 @@ namespace graybat {
 		signalingSocket(zmqSignalingContext, ZMQ_REQ),
 		zmqHwm(10000),		
 		maxMsgID(0),
-                masterUri(masterUri),
-		peerUri(bindToNextFreePort(recvSocket, peerBaseUri)){
+                masterUri(config.masterUri),
+		peerUri(bindToNextFreePort(recvSocket, config.peerUri)){
 
 		// Connect to signaling process
 		signalingSocket.connect(masterUri.c_str());
 
 		// Retrieve Context id for initial context from signaling process
-		ContextID contextID = getInitialContextID(signalingSocket, initialContextSize);
+		ContextID contextID = getInitialContextID(signalingSocket, config.contextSize);
 		    
 		// Retrieve own vAddr from signaling process for initial context
 		VAddr vAddr = getVAddr(signalingSocket, contextID, peerUri);
-		initialContext = Context(contextID, vAddr, initialContextSize);
+		initialContext = Context(contextID, vAddr, config.contextSize);
 		contexts[initialContext.getID()] = initialContext;
 
 		// Retrieve for uris of other peers from signaling process for the initial context

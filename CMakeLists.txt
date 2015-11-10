@@ -9,6 +9,7 @@ project("graybat examples and tests")
 ###############################################################################
 find_package(Boost 1.58.0 COMPONENTS unit_test_framework  REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/include/graybat/utils/hana/include/")
 set(LIBS ${LIBS} ${Boost_LIBRARIES})
 
 ###############################################################################
