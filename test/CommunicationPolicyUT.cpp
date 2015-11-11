@@ -81,18 +81,20 @@ BOOST_AUTO_TEST_SUITE( graybat_communication_policy_point_to_point_test )
 /*******************************************************************************
  * Communication Policies to Test
  ******************************************************************************/
-typedef graybat::communicationPolicy::ZMQ  ZMQ;
-typedef graybat::communicationPolicy::BMPI BMPI;
+namespace hana = boost::hana;
+using ZMQ  = graybat::communicationPolicy::ZMQ;
+using BMPI = graybat::communicationPolicy::BMPI;
 
 BMPI bmpiCP(config);
 ZMQ zmqCP(config);
 
-namespace hana = boost::hana;
-
-hana::tuple<std::reference_wrapper<BMPI>,
-	    std::reference_wrapper<ZMQ>  > communicationPolicies(bmpiCP, zmqCP);
+auto communicationPolicies = hana::make_tuple(std::ref(bmpiCP),
+					      std::ref(zmqCP));
 
 
+/***************************************************************************
+ * Test Cases
+ ****************************************************************************/
 BOOST_AUTO_TEST_CASE( context ){
     hana::for_each(communicationPolicies, [](auto refWrap){
 	    // Test setup

@@ -45,16 +45,15 @@ BOOST_AUTO_TEST_SUITE( vertex )
 /*******************************************************************************
  * Communication Policies to Test
  ******************************************************************************/
-typedef graybat::communicationPolicy::BMPI BMPI;
-typedef graybat::communicationPolicy::ZMQ  ZMQ;
+namespace hana = boost::hana;
+using ZMQ  = graybat::communicationPolicy::ZMQ;
+using BMPI = graybat::communicationPolicy::BMPI;
 
 BMPI bmpiCP(config);
 ZMQ zmqCP(config);
 
-namespace hana = boost::hana;
-
-hana::tuple<std::reference_wrapper<BMPI>,
-	    std::reference_wrapper<ZMQ>  > communicationPolicies(bmpiCP, zmqCP);
+auto communicationPolicies = hana::make_tuple(std::ref(bmpiCP),
+					      std::ref(zmqCP));
 
 
 /***************************************************************************

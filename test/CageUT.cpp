@@ -1,14 +1,15 @@
-// BOOST
-#include <boost/test/unit_test.hpp>
-#include <boost/hana/tuple.hpp>
-
 // STL
 #include <array>
 #include <vector>
 #include <iostream>   /* std::cout, std::endl */
-#include <functional> /* std::plus */
+#include <functional> /* std::plus, std::ref */
 #include <cstdlib>    /* std::getenv */
 #include <string>     /* std::string, std::stoi */
+
+// BOOST
+#include <boost/test/unit_test.hpp>
+#include <boost/hana/tuple.hpp>
+#include <boost/hana/append.hpp>
 
 // ELEGANT-PROGRESSBARS
 #include <elegant-progressbars/policyProgressbar.hpp>
@@ -88,16 +89,15 @@ BOOST_AUTO_TEST_SUITE( graybat_cage_point_to_point_test )
 /*******************************************************************************
  * Communication Policies to Test
  ******************************************************************************/
-typedef graybat::communicationPolicy::ZMQ  ZMQ;
-typedef graybat::communicationPolicy::BMPI BMPI;
+namespace hana = boost::hana;
+using ZMQ  = graybat::communicationPolicy::ZMQ;
+using BMPI = graybat::communicationPolicy::BMPI;
 
 BMPI bmpiCP(config);
 ZMQ zmqCP(config);
 
-namespace hana = boost::hana;
-
-hana::tuple<std::reference_wrapper<BMPI>,
-	    std::reference_wrapper<ZMQ>  > communicationPolicies(bmpiCP, zmqCP);
+auto communicationPolicies = hana::make_tuple(std::ref(bmpiCP),
+					      std::ref(zmqCP));
 
 
 /***************************************************************************

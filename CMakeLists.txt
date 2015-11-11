@@ -82,9 +82,12 @@ target_link_libraries(zmq_signaling ${LIBS})
 
 # CTest
 enable_testing()
-add_test(graybat_check_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target check)
+add_test(graybat_check_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target example)
+add_test(graybat_example_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target check)
 add_test(graybat_test_run  mpiexec --allow-run-as-root -n 2 check )
+add_test(graybat_gol_run  mpiexec --allow-run-as-root gol 90 4 )
 set_tests_properties(graybat_test_run PROPERTIES DEPENDS graybat_check_build)
+set_tests_properties(graybat_gol_run PROPERTIES DEPENDS graybat_example_build)
 
 # Install
 file(GLOB CMAKE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cmake")
