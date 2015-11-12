@@ -18,7 +18,6 @@ set(LIBS ${LIBS} ${Boost_LIBRARIES})
 set(elegant-progressbars_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/elegant-progressbars/cmake")
 find_package(elegant-progressbars 1.0.0 REQUIRED CONFIG)
 
-
 ###############################################################################
 # Graybat
 ###############################################################################
@@ -55,7 +54,6 @@ if(CCACHE_FOUND)
   set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
 endif(CCACHE_FOUND)
 
-
 ###############################################################################
 # Targets
 ###############################################################################
@@ -82,8 +80,8 @@ target_link_libraries(zmq_signaling ${LIBS})
 
 # CTest
 enable_testing()
-add_test(graybat_check_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target example)
-add_test(graybat_example_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target check)
+add_test(graybat_check_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target check)
+add_test(graybat_example_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target example)
 add_test(graybat_test_run  mpiexec --allow-run-as-root -n 2 check )
 add_test(graybat_gol_run  mpiexec --allow-run-as-root gol 90 4 )
 set_tests_properties(graybat_test_run PROPERTIES DEPENDS graybat_check_build)

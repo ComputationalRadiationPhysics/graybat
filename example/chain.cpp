@@ -26,10 +26,6 @@
 // GRAYBAT pattern
 #include <graybat/pattern/Chain.hpp>
 
-struct Config {
-
-};
-
 int exp() {
     /***************************************************************************
      * Configuration
@@ -37,6 +33,7 @@ int exp() {
 
     // CommunicationPolicy
     typedef graybat::communicationPolicy::BMPI CP;
+    typedef CP::Config                         Config;    
     
     // GraphPolicy
     typedef graybat::graphPolicy::BGL<>    GP;
@@ -54,8 +51,7 @@ int exp() {
 
     // Create GoL Graph
     Config config;
-    CP communicationPolicy(config);
-    Cage cage(communicationPolicy);
+    Cage cage(config);
 
     cage.setGraph(graybat::pattern::Chain(nChainLinks));
     

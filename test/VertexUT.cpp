@@ -16,27 +16,6 @@
 #include <graybat/pattern/Chain.hpp>
 
 /*******************************************************************************
- * CommunicationPolicy configuration
- ******************************************************************************/
-struct Config {
-
-    Config() :
-	masterUri("tcp://127.0.0.1:5000"),
-	peerUri("tcp://127.0.0.1:5001"),
-	contextSize(std::stoi(std::getenv("OMPI_COMM_WORLD_SIZE"))){
-
-    }
-
-    std::string const masterUri;
-    std::string const peerUri;
-    size_t const contextSize;	    
-
-};
-
-Config const config;
-
-
-/*******************************************************************************
  * Test Suites
  *******************************************************************************/
 BOOST_AUTO_TEST_SUITE( vertex )
@@ -46,35 +25,42 @@ BOOST_AUTO_TEST_SUITE( vertex )
  * Communication Policies to Test
  ******************************************************************************/
 namespace hana = boost::hana;
-using ZMQ  = graybat::communicationPolicy::ZMQ;
-using BMPI = graybat::communicationPolicy::BMPI;
 
-BMPI bmpiCP(config);
-ZMQ zmqCP(config);
+using ZMQ        = graybat::communicationPolicy::ZMQ;
+using BMPI       = graybat::communicationPolicy::BMPI;
+using GP         = graybat::graphPolicy::BGL<>;
+using ZMQCage    = graybat::Cage<ZMQ, GP>;
+using BMPICage   = graybat::Cage<BMPI, GP>;
+using ZMQConfig  = ZMQ::Config;
+using BMPIConfig = BMPI::Config;
 
-auto communicationPolicies = hana::make_tuple(std::ref(bmpiCP),
-					      std::ref(zmqCP));
+ZMQConfig zmqConfig = {"tcp://127.0.0.1:5000",
+                       "tcp://127.0.0.1:5001",
+                       static_cast<size_t>(std::stoi(std::getenv("OMPI_COMM_WORLD_SIZE")))};
 
+BMPIConfig bmpiConfig;
+
+ZMQCage zmqCage(zmqConfig);
+BMPICage bmpiCage(bmpiConfig);
+
+auto cages = hana::make_tuple(std::ref(zmqCage),
+                              std::ref(bmpiCage) );
 
 /***************************************************************************
  * Test Cases
  ****************************************************************************/
 BOOST_AUTO_TEST_CASE( spread_collect ){
-    hana::for_each(communicationPolicies, [](auto refWrap){
+    hana::for_each(cages, [](auto cageRef){
 	    // Test setup
-	    using CP      = typename decltype(refWrap)::type;
-	    using GP      = graybat::graphPolicy::BGL<>;
-	    using Cage    = graybat::Cage<CP, GP>;
+            using Cage    = typename decltype(cageRef)::type;            
 	    using Event   = typename Cage::Event;
 	    using Vertex  = typename Cage::Vertex;
-	    using Edge    = typename Cage::Edge;
-	    CP& cp = refWrap.get();
 
 	    // Test run
 	    {	
     
 		std::vector<Event> events;
-		Cage grid(cp);
+                auto& grid = cageRef.get();
 
 		grid.setGraph(graybat::pattern::Grid(grid.getPeers().size(),
 						     grid.getPeers().size()));
@@ -116,21 +102,18 @@ BOOST_AUTO_TEST_CASE( spread_collect ){
 
 
 BOOST_AUTO_TEST_CASE( accumulate ){
-    hana::for_each(communicationPolicies, [](auto refWrap){
+    hana::for_each(cages, [](auto cageRef){
 	    // Test setup
-	    using CP      = typename decltype(refWrap)::type;
-	    using GP      = graybat::graphPolicy::BGL<>;
-	    using Cage    = graybat::Cage<CP, GP>;
+            using Cage    = typename decltype(cageRef)::type;            
 	    using Event   = typename Cage::Event;
 	    using Vertex  = typename Cage::Vertex;
-	    using Edge    = typename Cage::Edge;
-	    CP& cp = refWrap.get();
 
 	    // Test run
 	    {	
+    
 		std::vector<Event> events;
-
-		Cage grid(cp);
+                auto& grid = cageRef.get();
+                
 		grid.setGraph(graybat::pattern::Grid(grid.getPeers().size(),
 						     grid.getPeers().size()));
 		
@@ -166,22 +149,18 @@ BOOST_AUTO_TEST_CASE( accumulate ){
 }
 
 BOOST_AUTO_TEST_CASE( forward ){
-    hana::for_each(communicationPolicies, [](auto refWrap){
+    hana::for_each(cages, [](auto cageRef){
 	    // Test setup
-	    using CP      = typename decltype(refWrap)::type;
-	    using GP      = graybat::graphPolicy::BGL<>;
-	    using Cage    = graybat::Cage<CP, GP>;
+            using Cage    = typename decltype(cageRef)::type;            
 	    using Event   = typename Cage::Event;
 	    using Vertex  = typename Cage::Vertex;
-	    using Edge    = typename Cage::Edge;
-	    CP& cp = refWrap.get();
 
 	    // Test run
-	    {
+	    {	
     
 		std::vector<Event> events;
-
-		Cage chain(cp);
+                auto& chain = cageRef.get();
+                
 		chain.setGraph(graybat::pattern::Chain(chain.getPeers().size()));
 		chain.distribute(graybat::mapping::Consecutive());
     

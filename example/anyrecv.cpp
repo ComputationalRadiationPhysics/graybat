@@ -35,10 +35,6 @@ struct Function {
 };
 
 
-struct Config {
-
-};
-
 int exp() {
     /***************************************************************************
      * Configuration
@@ -46,6 +42,7 @@ int exp() {
 
     // CommunicationPolicy
     typedef graybat::communicationPolicy::BMPI CP;
+    typedef CP::Config                         Config;    
     
     // GraphPolicy
     typedef graybat::graphPolicy::BGL<Function>    GP;
@@ -60,8 +57,7 @@ int exp() {
      ****************************************************************************/
     // Create GoL Graph
     Config config;
-    CP communicationPolicy(config);
-    Cage cage(communicationPolicy);
+    Cage cage(config);
 
     // Set communication pattern
     cage.setGraph(graybat::pattern::BiStar(cage.getPeers().size()));
