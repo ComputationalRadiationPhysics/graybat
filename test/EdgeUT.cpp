@@ -53,7 +53,8 @@ auto cages = hana::make_tuple(std::ref(zmqCage),
 BOOST_AUTO_TEST_CASE( send_recv ){
         hana::for_each(cages, [](auto cageRef){
 	    // Test setup
-            using Cage    = typename decltype(cageRef)::type;            
+            using Cage    = typename decltype(cageRef)::type;
+            using GP      = typename Cage::GraphPolicy;            
 	    using Event   = typename Cage::Event;
 	    using Vertex  = typename Cage::Vertex;
 	    using Edge    = typename Cage::Edge;
@@ -64,8 +65,8 @@ BOOST_AUTO_TEST_CASE( send_recv ){
 		std::vector<Event> events;
                 auto& grid = cageRef.get();
  
-		grid.setGraph(graybat::pattern::Grid(grid.getPeers().size(),
-						     grid.getPeers().size()));
+		grid.setGraph(graybat::pattern::Grid<GP>(grid.getPeers().size(),
+                                                         grid.getPeers().size()));
 		
 		grid.distribute(graybat::mapping::Consecutive());
 

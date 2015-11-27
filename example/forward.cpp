@@ -63,7 +63,7 @@ int exp() {
     Cage cage(config);
 
     // Set communication pattern
-    cage.setGraph(graybat::pattern::Chain(nChainLinks));
+    cage.setGraph(graybat::pattern::Chain<GP>(nChainLinks));
 
     // Distribute vertices
     cage.distribute(graybat::mapping::Consecutive());

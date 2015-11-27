@@ -117,7 +117,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     // Create GoL Graph
     Config config;
     Cage grid(config);
-    grid.setGraph(graybat::pattern::GridDiagonal(height, width));
+    grid.setGraph(graybat::pattern::GridDiagonal<GP>(height, width));
 
     
     // Distribute vertices

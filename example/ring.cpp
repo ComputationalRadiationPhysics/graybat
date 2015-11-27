@@ -61,7 +61,7 @@ int exp() {
     assert(cage.getPeers().size() >= nRingLinks);
 
     // Create ring communication pattern
-    cage.setGraph(graybat::pattern::Ring(nRingLinks));
+    cage.setGraph(graybat::pattern::Ring<GP>(nRingLinks));
 
     
     // Distribute vertices
