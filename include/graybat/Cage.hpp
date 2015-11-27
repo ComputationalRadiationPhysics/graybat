@@ -68,7 +68,7 @@ namespace graybat {
 	
 	Cage(CPConfig const cpConfig) :
 	    comm(cpConfig),
-	    graph(GraphPolicy(graybat::pattern::None()())){
+	    graph(GraphPolicy(graybat::pattern::None<GraphPolicy>()())){
 
 	}
 

@@ -101,6 +101,7 @@ BOOST_AUTO_TEST_CASE( send_recv ){
     hana::for_each(cages, [](auto cageRef){
 	    // Test setup
             using Cage    = typename decltype(cageRef)::type;
+            using GP      = typename Cage::GraphPolicy;
 	    using Event   = typename Cage::Event;
 	    using Vertex  = typename Cage::Vertex;
 	    using Edge    = typename Cage::Edge;
@@ -110,7 +111,7 @@ BOOST_AUTO_TEST_CASE( send_recv ){
     		const unsigned nElements = 1000;
 
 		auto& cage = cageRef.get();
-		cage.setGraph(graybat::pattern::FullyConnected(cage.getPeers().size()));
+		cage.setGraph(graybat::pattern::FullyConnected<GP>(cage.getPeers().size()));
 		cage.distribute(graybat::mapping::Roundrobin());
     
 		for(unsigned run_i = 0; run_i < nRuns; ++run_i){
@@ -244,6 +245,7 @@ BOOST_AUTO_TEST_CASE( asyncSend_recv ){
     hana::for_each(cages, [](auto cageRef){
 	    // Test setup
             using Cage    = typename decltype(cageRef)::type;
+            using GP      = typename Cage::GraphPolicy;            
 	    using Event   = typename Cage::Event;
 	    using Vertex  = typename Cage::Vertex;
 	    using Edge    = typename Cage::Edge;
@@ -253,7 +255,7 @@ BOOST_AUTO_TEST_CASE( asyncSend_recv ){
 
 		auto& cage = cageRef.get();                
     
-		cage.setGraph(graybat::pattern::FullyConnected(cage.getPeers().size()));
+		cage.setGraph(graybat::pattern::FullyConnected<GP>(cage.getPeers().size()));
 		cage.distribute(graybat::mapping::Consecutive());
 
 		const unsigned nElements = 1000;

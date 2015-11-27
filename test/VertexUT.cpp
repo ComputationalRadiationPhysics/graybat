@@ -52,7 +52,8 @@ auto cages = hana::make_tuple(std::ref(zmqCage),
 BOOST_AUTO_TEST_CASE( spread_collect ){
     hana::for_each(cages, [](auto cageRef){
 	    // Test setup
-            using Cage    = typename decltype(cageRef)::type;            
+            using Cage    = typename decltype(cageRef)::type;
+            using GP      = typename Cage::GraphPolicy;
 	    using Event   = typename Cage::Event;
 	    using Vertex  = typename Cage::Vertex;
 
@@ -62,8 +63,8 @@ BOOST_AUTO_TEST_CASE( spread_collect ){
 		std::vector<Event> events;
                 auto& grid = cageRef.get();
 
-		grid.setGraph(graybat::pattern::Grid(grid.getPeers().size(),
-						     grid.getPeers().size()));
+		grid.setGraph(graybat::pattern::Grid<GP>(grid.getPeers().size(),
+                                                         grid.getPeers().size()));
 		
 		grid.distribute(graybat::mapping::Consecutive());
     
@@ -104,7 +105,8 @@ BOOST_AUTO_TEST_CASE( spread_collect ){
 BOOST_AUTO_TEST_CASE( accumulate ){
     hana::for_each(cages, [](auto cageRef){
 	    // Test setup
-            using Cage    = typename decltype(cageRef)::type;            
+            using Cage    = typename decltype(cageRef)::type;
+            using GP      = typename Cage::GraphPolicy;            
 	    using Event   = typename Cage::Event;
 	    using Vertex  = typename Cage::Vertex;
 
@@ -114,8 +116,8 @@ BOOST_AUTO_TEST_CASE( accumulate ){
 		std::vector<Event> events;
                 auto& grid = cageRef.get();
                 
-		grid.setGraph(graybat::pattern::Grid(grid.getPeers().size(),
-						     grid.getPeers().size()));
+		grid.setGraph(graybat::pattern::Grid<GP>(grid.getPeers().size(),
+                                                         grid.getPeers().size()));
 		
 		grid.distribute(graybat::mapping::Consecutive());
     
@@ -151,7 +153,8 @@ BOOST_AUTO_TEST_CASE( accumulate ){
 BOOST_AUTO_TEST_CASE( forward ){
     hana::for_each(cages, [](auto cageRef){
 	    // Test setup
-            using Cage    = typename decltype(cageRef)::type;            
+            using Cage    = typename decltype(cageRef)::type;
+            using GP      = typename Cage::GraphPolicy;            
 	    using Event   = typename Cage::Event;
 	    using Vertex  = typename Cage::Vertex;
 
@@ -161,7 +164,7 @@ BOOST_AUTO_TEST_CASE( forward ){
 		std::vector<Event> events;
                 auto& chain = cageRef.get();
                 
-		chain.setGraph(graybat::pattern::Chain(chain.getPeers().size()));
+		chain.setGraph(graybat::pattern::Chain<GP>(chain.getPeers().size()));
 		chain.distribute(graybat::mapping::Consecutive());
     
 		const unsigned nElements = 100;
