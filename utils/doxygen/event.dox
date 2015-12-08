@@ -23,7 +23,13 @@ struct EventSkeleton {
 	void wait() {...}
 
 	// Ask for current state of the event
-	bool ready(){...}
+	bool ready() {...}
+
+        // Ask for VAddr where message of event comes from
+        VAddr source() {...}
+
+        // Ask for the tag the message of this event was send with
+        Tag getTag() {...}
 };
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

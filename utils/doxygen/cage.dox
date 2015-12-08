@@ -36,7 +36,8 @@ with predefined [communication policy] and [graph policy].
 
 2. Define communication policy to use (boost.MPI).
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
-typedef graybat::communicationPolicy::BMPI CommunicationPolicy;
+typedef graybat::communicationPolicy::BMPI   CommunicationPolicy;
+typedef typename CommunicationPolicy::Config Config;
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 3. Define graph policy to use (boost graph library).
@@ -52,8 +53,7 @@ typedef graybat::Cage<CommunicatonPolicy, GraphPolicy> Cage;
 5. Create Cage instance and set graph creation functor that describes the
    communication [pattern].
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
-CommunicationPolicy communicationPolicy;
-Cage cage(communicationPolicy);
+Cage cage;
 cage.setGraph(graybat::pattern::GridDiagonal(100,100))
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -134,15 +134,15 @@ std::vector<int> data(100,1);
 for(Vertex vertex: cage.hostedVertices){
 	for(Edge outEdge : cage.getOutEdges(vertex)){
 
-		// Synchronous
-		cage.send(outEdge, data);
+          // Synchronous
+	  cage.send(outEdge, data);
 
-	    // Asynchronous
-	    cage.send(outEdge, data, events);
+	  // Asynchronous
+	  cage.send(outEdge, data, events);
 
-        // Wait for and test event
-		events.back().wait();
-		bool eventState = events.back().ready();
+          // Wait for and test event
+	  events.back().wait();
+	  bool eventState = events.back().ready();
 	}
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -165,14 +165,14 @@ for(Vertex vertex: cage.hostedVertices){
 	for(Edge inEdge : cage.getInEdges(vertex)){
 
 	    // Synchronous receive
-		cage.recv(inEdge, data);
+	    cage.recv(inEdge, data);
 
 	    // Asynchronous receive
-		cage.recv(inEdge, data, events);
+	    cage.recv(inEdge, data, events);
 
 	    // Wait for and test event
-		events.back().wait();
-		bool eventState = events.back().ready();
+	    events.back().wait();
+	    bool eventState = events.back().ready();
 	}
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -10,10 +10,10 @@ graybat::Cage::distribute function and can strongly influence the application
 performance.GrayBat defines a handful of predefined mappings:
 
 - graybat::mapping::Consecutive
+- graybat::mapping::Filter
 - graybat::mapping::GraphPartition
 - graybat::mapping::Random
 - graybat::mapping::Roundrobin
-
 
 Own vertex mappings can be build from the following mapping
 skeleton:
@@ -25,8 +25,8 @@ namespace graybat {
     
 		struct MappingSkeleton {
 	
-			template<typename T_Graph>
-			std::vector<typename T_Graph::Vertex> operator()(const unsigned processID, const unsigned processCount, T_Graph &graph) {...}
+			template<typename T_Cage>
+			std::vector<typename T_Graph::Vertex> operator()(const unsigned processID, const unsigned processCount, T_Cage &cage) {...}
 			
 		};
 
@@ -35,5 +35,14 @@ namespace graybat {
 } /* graybat */
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+## Further Links ##
+
+- graybat::mapping::Consecutive
+- graybat::mapping::Filter
+- graybat::mapping::GraphPartition
+- graybat::mapping::Random
+- graybat::mapping::Roundrobin
+
 
 */

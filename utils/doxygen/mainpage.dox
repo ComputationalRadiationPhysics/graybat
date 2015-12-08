@@ -37,7 +37,8 @@ simulation which provides a full demonstration of utilizing GrayBat.
 
 ##Further Links##
 
-- @ref cage
-- @ref gol
+- \subpage cage
+- \subpage tutorial
+
 
 */

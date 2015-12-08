@@ -35,7 +35,7 @@ namespace hana = boost::hana;
 namespace graybat {
     
     namespace communicationPolicy {
-    
+
 	/************************************************************************//**
 	 * @class ZMQ
 	 *
@@ -419,11 +419,11 @@ namespace graybat {
 	    void asyncSendImpl(const MsgType msgType, const MsgID msgID, const Context context, const VAddr destVAddr, const Tag tag, T_Send& sendData){
                 // Create message
                 ::zmq::message_t message(sizeof(MsgType) +
-                                       sizeof(MsgID) +
-                                       sizeof(ContextID) +
-                                       sizeof(VAddr) +
-                                       sizeof(Tag) +
-                                       sendData.size() * sizeof(typename T_Send::value_type));
+                                         sizeof(MsgID) +
+                                         sizeof(ContextID) +
+                                         sizeof(VAddr) +
+                                         sizeof(Tag) +
+                                         sendData.size() * sizeof(typename T_Send::value_type));
 
                 size_t    msgOffset(0);
                 ContextID contextID(context.getID());
@@ -555,7 +555,7 @@ namespace graybat {
 		Context newContext;
 
                 // Request old master for new context
-                std::array<unsigned, 2> member {{ isMember }};
+                std::array<unsigned, 1> member {{ isMember }};
                 ZMQ::asyncSendImpl(SPLIT, getMsgID(), oldContext, 0, 0, member);
 
                 // Peer with VAddr 0 collects new members

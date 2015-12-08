@@ -1,0 +1,30 @@
+/**
+
+\page edge Edge Communication Interface
+
+[cage]: @ref cage
+
+Next to the communication methods provided by the [cage] a edge
+also provides methods to communicate with its connected vertex
+
+It is assume that a [cage] has allready been instantiated
+and initialised.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
+// Just get a vertex from the cage
+Edge edge = cage.getVertex(0).getOutEdges()[0]
+
+// Prepare send container
+std::vector<T_Data> sendData(10);
+
+// Send data over edge
+edge << sendData;
+
+// Recv data over inverse edge
+edge.inverse() >> recvData
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+## Further Links ##
+- graybat::CommunicationEdge
+
+*/
