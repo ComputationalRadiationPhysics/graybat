@@ -1,0 +1,269 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event" kind="class" language="C++" prot="public">
+    <compoundname>graybat::communicationPolicy::zmq::Event</compoundname>
+    <includes refid="zmq_2Event_8hpp" local="no">Event.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>typename T_CP</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1abac7cfd781f899c18bed620ae2aabc0e" prot="public" static="no">
+        <type>typename graybat::communicationPolicy::ContextID&lt; T_CP &gt;</type>
+        <definition>using graybat::communicationPolicy::zmq::Event&lt; T_CP &gt;::ContextID =  typename graybat::communicationPolicy::ContextID&lt;T_CP&gt;</definition>
+        <argsstring></argsstring>
+        <name>ContextID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/zmq/Event.hpp" line="23" column="1" bodyfile="include/graybat/communicationPolicy/zmq/Event.hpp" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1afb7d4ce6764c022a84e3a22bd1d50f3f" prot="public" static="no">
+        <type>typename graybat::communicationPolicy::VAddr&lt; T_CP &gt;</type>
+        <definition>using graybat::communicationPolicy::zmq::Event&lt; T_CP &gt;::VAddr =  typename graybat::communicationPolicy::VAddr&lt;T_CP&gt;</definition>
+        <argsstring></argsstring>
+        <name>VAddr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/zmq/Event.hpp" line="24" column="1" bodyfile="include/graybat/communicationPolicy/zmq/Event.hpp" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a8cb4e8b979b2fe2fa412f517675f8890" prot="public" static="no">
+        <type>typename graybat::communicationPolicy::Tag&lt; T_CP &gt;</type>
+        <definition>using graybat::communicationPolicy::zmq::Event&lt; T_CP &gt;::Tag =  typename graybat::communicationPolicy::Tag&lt;T_CP&gt;</definition>
+        <argsstring></argsstring>
+        <name>Tag</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/zmq/Event.hpp" line="25" column="1" bodyfile="include/graybat/communicationPolicy/zmq/Event.hpp" bodystart="25" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1ab7b22a4bd40908151efa65a1b6971ca3" prot="public" static="no">
+        <type>typename graybat::communicationPolicy::MsgType&lt; T_CP &gt;</type>
+        <definition>using graybat::communicationPolicy::zmq::Event&lt; T_CP &gt;::MsgType =  typename graybat::communicationPolicy::MsgType&lt;T_CP&gt;</definition>
+        <argsstring></argsstring>
+        <name>MsgType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/zmq/Event.hpp" line="26" column="1" bodyfile="include/graybat/communicationPolicy/zmq/Event.hpp" bodystart="26" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a00cb2d84a07cc107f528387819c672d8" prot="public" static="no">
+        <type>typename graybat::communicationPolicy::MsgID&lt; T_CP &gt;</type>
+        <definition>using graybat::communicationPolicy::zmq::Event&lt; T_CP &gt;::MsgID =  typename graybat::communicationPolicy::MsgID&lt;T_CP&gt;</definition>
+        <argsstring></argsstring>
+        <name>MsgID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/zmq/Event.hpp" line="27" column="1" bodyfile="include/graybat/communicationPolicy/zmq/Event.hpp" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a0eec360c31102d48a4e966036d8dd83e" prot="public" static="no">
+        <type>typename graybat::communicationPolicy::Context&lt; T_CP &gt;</type>
+        <definition>using graybat::communicationPolicy::zmq::Event&lt; T_CP &gt;::Context =  typename graybat::communicationPolicy::Context&lt;T_CP&gt;</definition>
+        <argsstring></argsstring>
+        <name>Context</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/zmq/Event.hpp" line="28" column="1" bodyfile="include/graybat/communicationPolicy/zmq/Event.hpp" bodystart="28" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a130837551c5bc7dc99c5eb903af51800" prot="public" static="no" mutable="no">
+        <type>MsgID</type>
+        <definition>MsgID graybat::communicationPolicy::zmq::Event&lt; T_CP &gt;::msgID</definition>
+        <argsstring></argsstring>
+        <name>msgID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/zmq/Event.hpp" line="57" column="1" bodyfile="include/graybat/communicationPolicy/zmq/Event.hpp" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1ac1b5b3731edc737a711ecd8a39e9dbdb" prot="public" static="no" mutable="no">
+        <type>Context</type>
+        <definition>Context graybat::communicationPolicy::zmq::Event&lt; T_CP &gt;::context</definition>
+        <argsstring></argsstring>
+        <name>context</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/zmq/Event.hpp" line="58" column="1" bodyfile="include/graybat/communicationPolicy/zmq/Event.hpp" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1afcec320309760aecc842a3aaec4788db" prot="public" static="no" mutable="no">
+        <type>VAddr</type>
+        <definition>VAddr graybat::communicationPolicy::zmq::Event&lt; T_CP &gt;::vAddr</definition>
+        <argsstring></argsstring>
+        <name>vAddr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/zmq/Event.hpp" line="59" column="1" bodyfile="include/graybat/communicationPolicy/zmq/Event.hpp" bodystart="59" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a10cce3d646304e6d88c16b7bbb3335b2" prot="public" static="no" mutable="no">
+        <type><ref refid="structTag" kindref="compound">Tag</ref></type>
+        <definition>Tag graybat::communicationPolicy::zmq::Event&lt; T_CP &gt;::tag</definition>
+        <argsstring></argsstring>
+        <name>tag</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/zmq/Event.hpp" line="60" column="1" bodyfile="include/graybat/communicationPolicy/zmq/Event.hpp" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a8fa41e1ea108ad4cb994b0ca8681d4a8" prot="public" static="no" mutable="no">
+        <type>T_CP &amp;</type>
+        <definition>T_CP&amp; graybat::communicationPolicy::zmq::Event&lt; T_CP &gt;::comm</definition>
+        <argsstring></argsstring>
+        <name>comm</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/zmq/Event.hpp" line="61" column="1" bodyfile="include/graybat/communicationPolicy/zmq/Event.hpp" bodystart="61" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a68e55ef0b3ba442d201beb0eb5841f65" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::communicationPolicy::zmq::Event&lt; T_CP &gt;::Event</definition>
+        <argsstring>(MsgID msgID, Context context, VAddr vAddr, Tag tag, T_CP &amp;comm)</argsstring>
+        <name>Event</name>
+        <param>
+          <type>MsgID</type>
+          <declname>msgID</declname>
+        </param>
+        <param>
+          <type>Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>VAddr</type>
+          <declname>vAddr</declname>
+        </param>
+        <param>
+          <type><ref refid="structTag" kindref="compound">Tag</ref></type>
+          <declname>tag</declname>
+        </param>
+        <param>
+          <type>T_CP &amp;</type>
+          <declname>comm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/zmq/Event.hpp" line="30" column="1" bodyfile="include/graybat/communicationPolicy/zmq/Event.hpp" bodystart="30" bodyend="36"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a083375e5e2dd4d6cd200b21e612feb9c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::zmq::Event&lt; T_CP &gt;::wait</definition>
+        <argsstring>()</argsstring>
+        <name>wait</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/zmq/Event.hpp" line="38" column="1" bodyfile="include/graybat/communicationPolicy/zmq/Event.hpp" bodystart="38" bodyend="41"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a7c0c7257ac081d5ca6573ca4000df052" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool graybat::communicationPolicy::zmq::Event&lt; T_CP &gt;::ready</definition>
+        <argsstring>()</argsstring>
+        <name>ready</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/zmq/Event.hpp" line="43" column="1" bodyfile="include/graybat/communicationPolicy/zmq/Event.hpp" bodystart="43" bodyend="46"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a557def3edeff3a7626903d843587ac38" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>VAddr</type>
+        <definition>VAddr graybat::communicationPolicy::zmq::Event&lt; T_CP &gt;::source</definition>
+        <argsstring>()</argsstring>
+        <name>source</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/zmq/Event.hpp" line="48" column="1" bodyfile="include/graybat/communicationPolicy/zmq/Event.hpp" bodystart="48" bodyend="50"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1abd0aef53191c196467a01e388788cc49" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="structTag" kindref="compound">Tag</ref></type>
+        <definition>Tag graybat::communicationPolicy::zmq::Event&lt; T_CP &gt;::getTag</definition>
+        <argsstring>()</argsstring>
+        <name>getTag</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/zmq/Event.hpp" line="52" column="1" bodyfile="include/graybat/communicationPolicy/zmq/Event.hpp" bodystart="52" bodyend="55"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>An event is returned by non-blocking communication operations and can be asked whether an operation has finished or it can be waited for this operation to be finished. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/communicationPolicy/zmq/Event.hpp" line="20" column="1" bodyfile="include/graybat/communicationPolicy/zmq/Event.hpp" bodystart="20" bodyend="64"/>
+    <listofallmembers>
+      <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a8fa41e1ea108ad4cb994b0ca8681d4a8" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::zmq::Event</scope><name>comm</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a0eec360c31102d48a4e966036d8dd83e" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::zmq::Event</scope><name>Context</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1ac1b5b3731edc737a711ecd8a39e9dbdb" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::zmq::Event</scope><name>context</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1abac7cfd781f899c18bed620ae2aabc0e" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::zmq::Event</scope><name>ContextID</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a68e55ef0b3ba442d201beb0eb5841f65" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::zmq::Event</scope><name>Event</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1abd0aef53191c196467a01e388788cc49" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::zmq::Event</scope><name>getTag</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a00cb2d84a07cc107f528387819c672d8" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::zmq::Event</scope><name>MsgID</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a130837551c5bc7dc99c5eb903af51800" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::zmq::Event</scope><name>msgID</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1ab7b22a4bd40908151efa65a1b6971ca3" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::zmq::Event</scope><name>MsgType</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a7c0c7257ac081d5ca6573ca4000df052" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::zmq::Event</scope><name>ready</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a557def3edeff3a7626903d843587ac38" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::zmq::Event</scope><name>source</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a8cb4e8b979b2fe2fa412f517675f8890" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::zmq::Event</scope><name>Tag</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a10cce3d646304e6d88c16b7bbb3335b2" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::zmq::Event</scope><name>tag</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1afb7d4ce6764c022a84e3a22bd1d50f3f" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::zmq::Event</scope><name>VAddr</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1afcec320309760aecc842a3aaec4788db" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::zmq::Event</scope><name>vAddr</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a083375e5e2dd4d6cd200b21e612feb9c" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::zmq::Event</scope><name>wait</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

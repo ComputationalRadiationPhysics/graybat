@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="namespacegraybat_1_1communicationPolicy_1_1zmq" kind="namespace" language="C++">
+    <compoundname>graybat::communicationPolicy::zmq</compoundname>
+    <innerclass refid="structgraybat_1_1communicationPolicy_1_1zmq_1_1Config" prot="public">graybat::communicationPolicy::zmq::Config</innerclass>
+    <innerclass refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Context" prot="public">graybat::communicationPolicy::zmq::Context</innerclass>
+    <innerclass refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event" prot="public">graybat::communicationPolicy::zmq::Event</innerclass>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacegraybat_1_1communicationPolicy_1_1zmq_1a56697ce90e0fcf0c70dddd54a53c87cb" prot="public" static="no" mutable="no">
+        <type>ContextID</type>
+        <definition>ContextID graybat::communicationPolicy::zmq::contextID</definition>
+        <argsstring></argsstring>
+        <name>contextID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/zmq/Context.hpp" line="115" column="1" bodyfile="include/graybat/communicationPolicy/zmq/Context.hpp" bodystart="115" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacegraybat_1_1communicationPolicy_1_1zmq_1a1d3b074ebe1e14b574dd0b408fc7c636" prot="public" static="no" mutable="no">
+        <type>VAddr</type>
+        <definition>VAddr graybat::communicationPolicy::zmq::vAddr</definition>
+        <argsstring></argsstring>
+        <name>vAddr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/zmq/Context.hpp" line="116" column="1" bodyfile="include/graybat/communicationPolicy/zmq/Context.hpp" bodystart="116" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacegraybat_1_1communicationPolicy_1_1zmq_1a80214eae0c2f65a8eeb556be0ac0c5ea" prot="public" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned graybat::communicationPolicy::zmq::nPeers</definition>
+        <argsstring></argsstring>
+        <name>nPeers</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/zmq/Context.hpp" line="117" column="1" bodyfile="include/graybat/communicationPolicy/zmq/Context.hpp" bodystart="117" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacegraybat_1_1communicationPolicy_1_1zmq_1ae76c7c3a6ecd15317ab8a3914f68e9bc" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool graybat::communicationPolicy::zmq::isValid</definition>
+        <argsstring></argsstring>
+        <name>isValid</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/zmq/Context.hpp" line="118" column="1" bodyfile="include/graybat/communicationPolicy/zmq/Context.hpp" bodystart="118" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacegraybat_1_1communicationPolicy_1_1zmq_1aa1aa632503ef1c822b0b76e7d132ce71" prot="public" static="no" mutable="no">
+        <type>class <ref refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event" kindref="compound">graybat::communicationPolicy::zmq::Event</ref></type>
+        <definition>class graybat::communicationPolicy::zmq::Event graybat::communicationPolicy::zmq::valid</definition>
+        <argsstring></argsstring>
+        <name>valid</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/zmq/Event.hpp" line="64" column="1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacegraybat_1_1communicationPolicy_1_1zmq_1a597c38da7383bbb284b5d7d0ffeb54f5" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_CP</type>
+          </param>
+        </templateparamlist>
+        <type>class <ref refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Context" kindref="compound">graybat::communicationPolicy::zmq::Context</ref></type>
+        <definition>class graybat::communicationPolicy::zmq::Context graybat::communicationPolicy::zmq::valid</definition>
+        <argsstring>() const </argsstring>
+        <name>valid</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/zmq/Context.hpp" line="12" column="1" bodyfile="include/graybat/communicationPolicy/zmq/Context.hpp" bodystart="110" bodyend="112"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/communicationPolicy/zmq/Config.hpp" line="7" column="1"/>
+  </compounddef>
+</doxygen>

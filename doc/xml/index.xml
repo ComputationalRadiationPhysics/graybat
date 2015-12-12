@@ -1,0 +1,780 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.8.10">
+  <compound refid="structgraybat_1_1communicationPolicy_1_1Base" kind="struct"><name>graybat::communicationPolicy::Base</name>
+    <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a7c7b3cd367ec07fa9d12ebbbb89dabb8" kind="function"><name>send</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a7dfe96d75727357e0bbac4f8dad93a55" kind="function"><name>asyncSend</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a1785dcc6035447fc3c2b1cd9fee9a4b5" kind="function"><name>recv</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a2c7e5b0d65bfa0fcfa3377598eb79882" kind="function"><name>recv</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1Base_1adee3935d47f527c2802d3b88b546b0a2" kind="function"><name>asyncRecv</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a3db000db20b6cb8fd6e63f3d53e82090" kind="function"><name>gather</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a1434994bead59ef38b6eff8346538f0b" kind="function"><name>gatherVar</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a1b409ea49d7aba2dee0c83e28dda1b65" kind="function"><name>allGather</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a1bad18907fcc45db9d4a119e726061a8" kind="function"><name>allGatherVar</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1Base_1af1ed07ce5f107f04926d7b7c39c9834e" kind="function"><name>scatter</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1Base_1ac4aa66d3ed33c810ae48ae762b432b14" kind="function"><name>allScatter</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1Base_1ad3bf74c91931b35b56fbb54ac535bc14" kind="function"><name>reduce</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1Base_1ac77038454619b683f006ba149aea2dcb" kind="function"><name>allReduce</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a431ed56b3d5ade805200b565ce98daa0" kind="function"><name>broadcast</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1Base_1abc4e72365c6ad134ba6e31abd8fa2163" kind="function"><name>synchronize</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a8809cc88306f4411eff43b185d4a12ba" kind="typedef"><name>CommunicationPolicy</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a61555bfaae515788f4832c0f78bc36f4" kind="typedef"><name>VAddr</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1Base_1aced4ab808a9c345a0e698d21736f3a2c" kind="typedef"><name>Tag</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a12a885bada327fddc91cfe4515af6471" kind="typedef"><name>Context</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a2fc51f670372dfb2d7f8474a5a0f5e89" kind="typedef"><name>Event</name></member>
+  </compound>
+  <compound refid="classgraybat_1_1graphPolicy_1_1BGL" kind="class"><name>graybat::graphPolicy::BGL</name>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ab6ae7144c11e2ff0d0aaaef9364a0a90" kind="typedef"><name>GraphType</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a970baa0488113d6a2684c63d33774887" kind="typedef"><name>BGLGraph</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a341705b87cbbadef1f10080f3c007d1d" kind="typedef"><name>BglVertexID</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1aa83e29dcafb70fca3e5a814bc4b053ab" kind="typedef"><name>BglEdgeID</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ab121e3cd89cda13bb16cdf0a37e20458" kind="typedef"><name>VertexID</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a3e75989926044746a74a8a128c7d34c7" kind="typedef"><name>EdgeID</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a94096c6f7ba2a6146c984f3dd6cb031e" kind="typedef"><name>GraphID</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a265ad5af8b806b224bb7279bda3193c7" kind="typedef"><name>VertexProperty</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ab914ee8a3223cc86c73af3046bf417cf" kind="typedef"><name>EdgeProperty</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ae9fc60048660948bfc2418ed74cd3882" kind="typedef"><name>VertexDescription</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a72d9bad73b4ba1021b384379638b8e1e" kind="typedef"><name>EdgeDescription</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ab58617e8a5ce35716fa72c6c8ecee583" kind="typedef"><name>GraphDescription</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a29fc9b001ea3fc7288b710296de29e1c" kind="typedef"><name>InEdgeIter</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a275a43ac191b7f9bf5015b29bea4840e" kind="typedef"><name>OutEdgeIter</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a43c38b9bb4eab53bd2912809ceec36ff" kind="typedef"><name>AdjacentVertexIter</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1acecbb87f46332b42010a20b89918223b" kind="typedef"><name>AllVertexIter</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ac91b5f185c1ddfe67151fbe151f8bc2a" kind="variable"><name>graph</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a2549a79fb5cb96124fb6de976d8c5d7a" kind="variable"><name>subGraphs</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ab5090efa37469274e04c0d09fb735147" kind="variable"><name>edgeIdBiMap</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1acdd10fa9cbff26e97387ad12d8fd8726" kind="variable"><name>id</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ae062d8b00efe814ec10ecb9caeea6d48" kind="function"><name>BGL</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ade448ae25290e434463d31a27c1387db" kind="function"><name>getVertices</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ad23dcf17164f42ec8fb9fe7a3de8c01e" kind="function"><name>getEdge</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a1f01ae55ce810b789df9f64806c94bec" kind="function"><name>getAdjacentVertices</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a57d05597e0b6ed9f92828809cb6740f5" kind="function"><name>getOutEdges</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1aed44e414d59e72afee296f92a78917ec" kind="function"><name>getInEdges</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a93884489eaf5a2b8367c1cf04c0a3434" kind="function"><name>getLocalID</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1aed8f8b55547a5a6c92d7f711a9a0fe83" kind="function"><name>setVertexProperty</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a4b6d62720736780aa068b624bdf29ab7" kind="function"><name>setVertexProperty</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a9c71ddaa997554f110b060218e956a8f" kind="function"><name>setEdgeProperty</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a1fb088ef6256a68b8999c7b4c04be17d" kind="function"><name>setEdgeProperty</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a73b7e073fda7a9e21c5f420e984ba618" kind="function"><name>getVertexProperty</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ad628ab3bb283a87337bb5d1da4e6c31b" kind="function"><name>getEdgeProperty</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ab50e44a641bb3e0e3d2f2778419e78c5" kind="function"><name>getEdgeProperty</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ac54da8279752a79998ae35fbf64c8338" kind="function"><name>getEdgeTarget</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a47913c1d620cfa54b3c8ca52331e8a1f" kind="function"><name>getEdgeTarget</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a2732a7037a0108afda5c7a5c1d51b9c3" kind="function"><name>getEdgeSource</name></member>
+    <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ac29f99d16c0fa59f248e8d060ab748e4" kind="function"><name>getEdgeSource</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1pattern_1_1BiStar" kind="struct"><name>graybat::pattern::BiStar</name>
+    <member refid="structgraybat_1_1pattern_1_1BiStar_1ac59d113028fb3b57cc8044585121f697" kind="typedef"><name>GraphPolicy</name></member>
+    <member refid="structgraybat_1_1pattern_1_1BiStar_1a2e042b47d1edb7501181a249a2ae2a0d" kind="typedef"><name>VertexDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1BiStar_1a1778f38420cdbc819c8c94be96629d09" kind="typedef"><name>EdgeDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1BiStar_1a909139cb3caa47a7fe369c839ed77ccb" kind="typedef"><name>GraphDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1BiStar_1ac448e89b5a2d1bcc23389a3cab55edbf" kind="typedef"><name>EdgeProperty</name></member>
+    <member refid="structgraybat_1_1pattern_1_1BiStar_1ae7c54edb7fb77ffcafb67f40724de7a4" kind="typedef"><name>VertexProperty</name></member>
+    <member refid="structgraybat_1_1pattern_1_1BiStar_1a92fe074a2b9adcb729435461fb979da2" kind="variable"><name>verticesCount</name></member>
+    <member refid="structgraybat_1_1pattern_1_1BiStar_1a1e0102965ea0ac229e95a2cd57db86d5" kind="function"><name>BiStar</name></member>
+    <member refid="structgraybat_1_1pattern_1_1BiStar_1a881de59bec1ca2640b4aef5eec2d08fe" kind="function"><name>operator()</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1communicationPolicy_1_1BMPI" kind="class"><name>graybat::communicationPolicy::BMPI</name>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1a798111a6407368dc1b33b9893d9d1330" kind="function"><name>send</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1a68444513404ebd1548f34cbf3a2c3cc2" kind="function"><name>asyncSend</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1a4201b53dcff9d3acef8724031d93a8fd" kind="function"><name>recv</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1a9b8346f1fab44e4160819a352f264884" kind="function"><name>recv</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1a092b709e200b44cacf32909e9dace56b" kind="function"><name>asyncRecv</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1a37fcb4dced08f33b4eee2adabf25fe0f" kind="function"><name>gather</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1a772c45a8a2ec8ae749fef75ca2439cee" kind="function"><name>gatherVar</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1abadfee42ac90516c1158292da79b0345" kind="function"><name>allGather</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1a0a365caf09acb118502623527c70668e" kind="function"><name>allGatherVar</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1ad1263d7d13beec1fe7267696c908d6eb" kind="function"><name>scatter</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1a1558d37c09b31ce63e7926f183515fa5" kind="function"><name>allToAll</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1abee4b7a6d3026127cac5b25aa7d860f6" kind="function"><name>reduce</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1aed0dd7f1c36157182cf0d0545879a6b8" kind="function"><name>allReduce</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1ad21dca81db3bd46870062ef978f00206" kind="function"><name>broadcast</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1aa99355d8aae18e14c59b82c4ab4e2c29" kind="function"><name>synchronize</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1ae2cb4b8fa14af3cd34fc4dd8c3af6baa" kind="function"><name>synchronize</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1a4c65002f731605e7e6d80acdc1d4c678" kind="function"><name>splitContext</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1aaaaaec7667d29a126cfc883cf552da31" kind="function"><name>getGlobalContext</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1a8d250a80c1b23afea7da0aad7f008d00" kind="typedef"><name>Tag</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1a330e0f2f8ec3428af2ea9dd2d5695175" kind="typedef"><name>ContextID</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1ac8cba626cca2151ace6a47bd0e51b64b" kind="typedef"><name>MsgType</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1ac214b2b6b3b852c387ebb3e3512555f2" kind="typedef"><name>VAddr</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1a571329de1fa15aa9e8fedcd9d70c6cb1" kind="typedef"><name>Context</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1afbdda3b27c1c7a556ea87368a0e02c3e" kind="typedef"><name>Event</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1a38d4867df284c0642aa17cdefc68c676" kind="typedef"><name>Config</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1a3dff8c14cca1780c399d51b7eb6df610" kind="typedef"><name>Uri</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1aa0fb08ef9aca2dc93a3d4062afcb022b" kind="variable"><name>contextCount</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1a5e39c19fcb3f51f3ac422c6a6d698719" kind="variable"><name>uriMap</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1abac93f859f54bd3c8ecf4b9d1e7da469" kind="variable"><name>initialContext</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1aac79a9292c8da78ee5cd83d7c4e687e3" kind="variable"><name>env</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1a7f47c4f3521415aca2f6f6321b8bb87a" kind="function"><name>BMPI</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1a099c7e3f0275d0588012239c27df6b8d" kind="function"><name>~BMPI</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1af9a3dbc19b2a26c0e6e482dc0e776864" kind="function"><name>error</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1BMPI_1a268cd022840b1de5b4d634c1698326a8" kind="function"><name>getVAddrUri</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1Cage" kind="class"><name>graybat::Cage</name>
+    <member refid="structgraybat_1_1Cage_1adeb898f46486654a94ee8198d31272fb" kind="function"><name>setGraph</name></member>
+    <member refid="structgraybat_1_1Cage_1a2e4558e1f636d7e6db3f0a1fce63a6fb" kind="function"><name>getVertices</name></member>
+    <member refid="structgraybat_1_1Cage_1a1e979baa57c86526fab054a731f59b32" kind="function"><name>getVertex</name></member>
+    <member refid="structgraybat_1_1Cage_1afe51aef46fbc4e1f2c3c62fcfee15126" kind="function"><name>getEdge</name></member>
+    <member refid="structgraybat_1_1Cage_1ad8bc02fb9875ce4a66e7cfb7d8cbbd99" kind="function"><name>getAdjacentVertices</name></member>
+    <member refid="structgraybat_1_1Cage_1a21621e29fa96e5334eca259f5ca09b9f" kind="function"><name>getOutEdges</name></member>
+    <member refid="structgraybat_1_1Cage_1a8d8873582c6499be4ae375f0d689c2be" kind="function"><name>getInEdges</name></member>
+    <member refid="structgraybat_1_1Cage_1afeddcc035e25382462c38c77b481304d" kind="function"><name>distribute</name></member>
+    <member refid="structgraybat_1_1Cage_1a8888227acfa41b0a9127a607ca16d32d" kind="function"><name>announce</name></member>
+    <member refid="structgraybat_1_1Cage_1aefc3bddf2aa1ebbc363a35a35be8fb38" kind="function"><name>locateVertex</name></member>
+    <member refid="structgraybat_1_1Cage_1ad135a7bfe6929c6dfb0a4ffde2373316" kind="function"><name>getHostedVertices</name></member>
+    <member refid="structgraybat_1_1Cage_1abf0aa8d61511ba1e2593fb45e694aa16" kind="function"><name>peerHostsVertex</name></member>
+    <member refid="structgraybat_1_1Cage_1a2eef0dae96d63420aaee9bdc95f7f977" kind="function"><name>getPeers</name></member>
+    <member refid="structgraybat_1_1Cage_1ab9a114ae8076ccbe9b233c68ff2d155b" kind="function"><name>send</name></member>
+    <member refid="structgraybat_1_1Cage_1abbd6352f368e4d3cafa3ba26f54c6e93" kind="function"><name>send</name></member>
+    <member refid="structgraybat_1_1Cage_1aa3085ae78588c6bc49aae16391abc52f" kind="function"><name>recv</name></member>
+    <member refid="structgraybat_1_1Cage_1a6714c94d1ae252456f7801e47cbee345" kind="function"><name>recv</name></member>
+    <member refid="structgraybat_1_1Cage_1a0c895e002001d07877f7dd311a3c279f" kind="function"><name>recv</name></member>
+    <member refid="structgraybat_1_1Cage_1a36fa784cb2d80c8f18005729d1035fee" kind="function"><name>reduce</name></member>
+    <member refid="structgraybat_1_1Cage_1aeaefc0dd7e23f1125dabcb9002ad45f2" kind="function"><name>allReduce</name></member>
+    <member refid="structgraybat_1_1Cage_1aa828d0331211a8388b21cee321d8edb9" kind="function"><name>gather</name></member>
+    <member refid="structgraybat_1_1Cage_1a57b8858bb4ae33204c049c50c1a27aca" kind="function"><name>allGather</name></member>
+    <member refid="structgraybat_1_1Cage_1ad7530589eef3e5d7dc1e70adb74c75f4" kind="function"><name>spread</name></member>
+    <member refid="structgraybat_1_1Cage_1aa387169a4a053f30479ff478aa8d5cf8" kind="function"><name>spread</name></member>
+    <member refid="structgraybat_1_1Cage_1a9b7eaa7c2302a32e5408bb92ae4b6f53" kind="function"><name>collect</name></member>
+    <member refid="structgraybat_1_1Cage_1a13a8d9fcfbb52bddb37c882d76e940f9" kind="function"><name>synchronize</name></member>
+    <member refid="structgraybat_1_1Cage_1a44f5edf7c4ff86661198e53ba20109e0" kind="function"><name>ContextID</name></member>
+    <member refid="structgraybat_1_1Cage_1a848caea3a16ff2390c8b0020cef298f2" kind="typedef"><name>CommunicationPolicy</name></member>
+    <member refid="structgraybat_1_1Cage_1afc98171db17598bd0030d90ff101e4c2" kind="typedef"><name>GraphPolicy</name></member>
+    <member refid="structgraybat_1_1Cage_1ac7de84bd47f0af51bf87051355424ce9" kind="typedef"><name>Cage_t</name></member>
+    <member refid="structgraybat_1_1Cage_1a5fcd15bbd715221a9d05f2fa5f2d14d5" kind="typedef"><name>VAddr</name></member>
+    <member refid="structgraybat_1_1Cage_1a716c512829be5cca5dcbf2a52754d10d" kind="typedef"><name>Context</name></member>
+    <member refid="structgraybat_1_1Cage_1af23858450f27e9dfde241521a13df525" kind="typedef"><name>Event</name></member>
+    <member refid="structgraybat_1_1Cage_1a425d340120d20ee287043cbaa3e66d27" kind="typedef"><name>CPConfig</name></member>
+    <member refid="structgraybat_1_1Cage_1a1c8a9c50bfa2ac05eb0e36acf2c4f791" kind="typedef"><name>Edge</name></member>
+    <member refid="structgraybat_1_1Cage_1acfd9a202873f8a3d1cc5680bc2ac9267" kind="typedef"><name>Vertex</name></member>
+    <member refid="structgraybat_1_1Cage_1ae6c3a8d91a9e19c48b760216646b07e3" kind="typedef"><name>EdgeDescription</name></member>
+    <member refid="structgraybat_1_1Cage_1a8dcd6874d2fbb5a2a731f197aedcb87f" kind="typedef"><name>GraphDescription</name></member>
+    <member refid="structgraybat_1_1Cage_1ad1ae456d67c2804c63a3d651096ec2c8" kind="typedef"><name>VertexID</name></member>
+    <member refid="structgraybat_1_1Cage_1af7f17dd2b92c84abe4b9d49b2ae6f475" kind="typedef"><name>EdgeID</name></member>
+    <member refid="structgraybat_1_1Cage_1af763549ebaa29f10a5c72246c81a8c5d" kind="typedef"><name>GraphID</name></member>
+    <member refid="structgraybat_1_1Cage_1abcd2ec48a85543b8521fd85ed7dd1927" kind="typedef"><name>Peer</name></member>
+    <member refid="structgraybat_1_1Cage_1a814df63d13307540a09a734365c6bc17" kind="variable"><name>comm</name></member>
+    <member refid="structgraybat_1_1Cage_1ac65609fabcd12ea956a50dfc9f7f8822" kind="variable"><name>graph</name></member>
+    <member refid="structgraybat_1_1Cage_1aaae110547d929e8f93c4d43b5c7f5012" kind="variable"><name>graphContext</name></member>
+    <member refid="structgraybat_1_1Cage_1acae38e3176ae872f115bc277ed896c99" kind="variable"><name>hostedVertices</name></member>
+    <member refid="structgraybat_1_1Cage_1a39ab4a85708473a09befb09b2d41d2e5" kind="variable"><name>vertexMap</name></member>
+    <member refid="structgraybat_1_1Cage_1aac8f8f77d9b63e53b855c306cb21bda6" kind="variable"><name>graphMap</name></member>
+    <member refid="structgraybat_1_1Cage_1af0cbddbcb1a81ac31b0c6307fd3df542" kind="variable"><name>peerMap</name></member>
+    <member refid="structgraybat_1_1Cage_1a4a5b4f29c8fef120674b95ac25f05518" kind="function"><name>Cage</name></member>
+    <member refid="structgraybat_1_1Cage_1a9e76d7d8a6dddbb5fbf6882506f80ab1" kind="function"><name>Cage</name></member>
+    <member refid="structgraybat_1_1Cage_1ad727c660b9eadecb8f6b6bd3ed623886" kind="function"><name>Cage</name></member>
+    <member refid="structgraybat_1_1Cage_1aeeb88c8299dd30728fadd409bc5a0fb5" kind="function"><name>~Cage</name></member>
+    <member refid="structgraybat_1_1Cage_1a225b564f83d92624f9303f71106900f3" kind="function"><name>reorder</name></member>
+  </compound>
+  <compound refid="structCell" kind="struct"><name>Cell</name>
+    <member refid="structCell_1a3461076cfcfad41ea5e5474236afbf3b" kind="variable"><name>isAlive</name></member>
+    <member refid="structCell_1af9f8af059f6a481813e429bc01515076" kind="variable"><name>aliveNeighbors</name></member>
+    <member refid="structCell_1a394510643e8664cf12b5efaf5cb99f71" kind="function"><name>Cell</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1pattern_1_1Chain" kind="struct"><name>graybat::pattern::Chain</name>
+    <member refid="structgraybat_1_1pattern_1_1Chain_1a9ca3386b63d3eb534a312967f2f17ae1" kind="typedef"><name>GraphPolicy</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Chain_1aea7eb3641cc1df611928bf23a30fcf68" kind="typedef"><name>VertexDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Chain_1a6f871353276d8a35ca3910595340c658" kind="typedef"><name>EdgeDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Chain_1a6becc624fc5d680ca82634d4823344a6" kind="typedef"><name>GraphDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Chain_1afa9983e560aca9dcc8f8e54ad6cd0ab4" kind="typedef"><name>EdgeProperty</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Chain_1a912816f3b3b7836d60d38c562c0d6401" kind="typedef"><name>VertexProperty</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Chain_1a982684cf94d21e18d707403acde3c9bf" kind="variable"><name>verticesCount</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Chain_1a402338c3085ed3c600e152fc9a103560" kind="function"><name>Chain</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Chain_1a6f2a11f24e1b975affe052abfebc1a2e" kind="function"><name>operator()</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1CommunicationEdge" kind="struct"><name>graybat::CommunicationEdge</name>
+    <member refid="structgraybat_1_1CommunicationEdge_1a013276d41805d452b7ec3f32c5d98863" kind="typedef"><name>Cage</name></member>
+    <member refid="structgraybat_1_1CommunicationEdge_1af7b14d3933ec26615c4e849f32d9cbc7" kind="typedef"><name>EdgeID</name></member>
+    <member refid="structgraybat_1_1CommunicationEdge_1a1fd741b205ef5042c9ce064419862ab8" kind="typedef"><name>GraphPolicy</name></member>
+    <member refid="structgraybat_1_1CommunicationEdge_1ad867b26007833b4de0d5b4b9ee5b7d57" kind="typedef"><name>Vertex</name></member>
+    <member refid="structgraybat_1_1CommunicationEdge_1a30c072501669f1f1709045822bab3383" kind="typedef"><name>Event</name></member>
+    <member refid="structgraybat_1_1CommunicationEdge_1a5fe445399b0bea6653fe27eb8d5617b6" kind="typedef"><name>EdgeProperty</name></member>
+    <member refid="structgraybat_1_1CommunicationEdge_1a1ffdda19998f083210324c321b4599dc" kind="typedef"><name>VertexProperty</name></member>
+    <member refid="structgraybat_1_1CommunicationEdge_1a468626e784f770368bc8335e78137b48" kind="variable"><name>id</name></member>
+    <member refid="structgraybat_1_1CommunicationEdge_1a6061ba74338b175e03ffdb97347c5e77" kind="variable"><name>target</name></member>
+    <member refid="structgraybat_1_1CommunicationEdge_1ac4fb6170c3d484c65363a197503e5bd7" kind="variable"><name>source</name></member>
+    <member refid="structgraybat_1_1CommunicationEdge_1a999ecb1277ae0d0c476aed644c71341e" kind="variable"><name>edgeProperty</name></member>
+    <member refid="structgraybat_1_1CommunicationEdge_1aa70fd4d28fea47444546f3891c0800ce" kind="variable"><name>cage</name></member>
+    <member refid="structgraybat_1_1CommunicationEdge_1a37414bfe7af9097e8ffff9da90fc4226" kind="function"><name>CommunicationEdge</name></member>
+    <member refid="structgraybat_1_1CommunicationEdge_1a3a35ef247309c903341a14d207c85f78" kind="function"><name>operator()</name></member>
+    <member refid="structgraybat_1_1CommunicationEdge_1a9fe34dbcec8a1588385c7591fa5ae042" kind="function"><name>inverse</name></member>
+    <member refid="structgraybat_1_1CommunicationEdge_1a6d3bbea5aede74ddb7b8082ed7055c2a" kind="function"><name>operator&lt;&lt;</name></member>
+    <member refid="structgraybat_1_1CommunicationEdge_1a595c4400fd5d837dab1bf8af4f172e5d" kind="function"><name>operator&gt;&gt;</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1CommunicationVertex" kind="struct"><name>graybat::CommunicationVertex</name>
+    <member refid="structgraybat_1_1CommunicationVertex_1aeee40c9512c61c846a05c2b73f55f2c9" kind="typedef"><name>VertexID</name></member>
+    <member refid="structgraybat_1_1CommunicationVertex_1a4120bf81952878038cfd69e92265267e" kind="typedef"><name>Cage</name></member>
+    <member refid="structgraybat_1_1CommunicationVertex_1a8c259ebf87eaefc4c9a18852d5382475" kind="typedef"><name>GraphPolicy</name></member>
+    <member refid="structgraybat_1_1CommunicationVertex_1abe1383c4d00cea45c02e871433e8612f" kind="typedef"><name>Edge</name></member>
+    <member refid="structgraybat_1_1CommunicationVertex_1ab1153fcb89c4d288da7e430baf587a52" kind="typedef"><name>Event</name></member>
+    <member refid="structgraybat_1_1CommunicationVertex_1abe4165d0c7c7f813a959f2009015d51c" kind="typedef"><name>VertexProperty</name></member>
+    <member refid="structgraybat_1_1CommunicationVertex_1a01b16ce123148e1f96ec8b55f7401c81" kind="variable"><name>id</name></member>
+    <member refid="structgraybat_1_1CommunicationVertex_1a98f6a9b2a8becc8a426b709b7585dd9b" kind="variable"><name>vertexProperty</name></member>
+    <member refid="structgraybat_1_1CommunicationVertex_1a9a1d9c75faadb5b9193aba6779e7acb1" kind="variable"><name>cage</name></member>
+    <member refid="structgraybat_1_1CommunicationVertex_1aed87c447f125df835e684bad263abbd5" kind="function"><name>CommunicationVertex</name></member>
+    <member refid="structgraybat_1_1CommunicationVertex_1ac105903261ca2312c6ca0d679f26aa44" kind="function"><name>operator()</name></member>
+    <member refid="structgraybat_1_1CommunicationVertex_1a058aac41c1bbdc59337af4e10ad9ac40" kind="function"><name>operator=</name></member>
+    <member refid="structgraybat_1_1CommunicationVertex_1a58ceec635b5b2924734110af83518feb" kind="function"><name>nInEdges</name></member>
+    <member refid="structgraybat_1_1CommunicationVertex_1a5705604ec15a24d75f37c7949f0884a9" kind="function"><name>nOutEdges</name></member>
+    <member refid="structgraybat_1_1CommunicationVertex_1ab50927eabcb8ac0d97bce641533990a8" kind="function"><name>operator==</name></member>
+    <member refid="structgraybat_1_1CommunicationVertex_1ad2924554fd4b661f19c1bb10b8519dd5" kind="function"><name>operator!=</name></member>
+    <member refid="structgraybat_1_1CommunicationVertex_1a8a64f187996fd556723997e5ff9dcca2" kind="function"><name>spread</name></member>
+    <member refid="structgraybat_1_1CommunicationVertex_1a3a0cbc8f98f2eeb60fbe20e437802878" kind="function"><name>spread</name></member>
+    <member refid="structgraybat_1_1CommunicationVertex_1a11ef52a5a8fef1098b60b35c8913da94" kind="function"><name>collect</name></member>
+    <member refid="structgraybat_1_1CommunicationVertex_1aa8c10d97bde2b66352ce88a5bf3bad12" kind="function"><name>forward</name></member>
+    <member refid="structgraybat_1_1CommunicationVertex_1af7139cd8308d3a43060c31a24a9bb6db" kind="function"><name>forward</name></member>
+    <member refid="structgraybat_1_1CommunicationVertex_1a8e222acd742cb03215c93220e19c24ed" kind="function"><name>accumulate</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1communicationPolicy_1_1zmq_1_1Config" kind="struct"><name>graybat::communicationPolicy::zmq::Config</name>
+    <member refid="structgraybat_1_1communicationPolicy_1_1zmq_1_1Config_1a19c7f3fa2f01d3868e84acfa8a0d1dfa" kind="variable"><name>masterUri</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1zmq_1_1Config_1a0bbee29d33bcc2a09f6fade448c38efb" kind="variable"><name>peerUri</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1zmq_1_1Config_1a36e9e40d7f01d9a8125effa0c98919fb" kind="variable"><name>contextSize</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1communicationPolicy_1_1bmpi_1_1Config" kind="struct"><name>graybat::communicationPolicy::bmpi::Config</name>
+  </compound>
+  <compound refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ConfigType" kind="struct"><name>graybat::communicationPolicy::traits::ConfigType</name>
+  </compound>
+  <compound refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ConfigType_3_01BMPI_01_4" kind="struct"><name>graybat::communicationPolicy::traits::ConfigType&lt; BMPI &gt;</name>
+    <member refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ConfigType_3_01BMPI_01_4_1ac664d107e4c9a02a792f210e04482160" kind="typedef"><name>type</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ConfigType_3_01ZMQ_01_4" kind="struct"><name>graybat::communicationPolicy::traits::ConfigType&lt; ZMQ &gt;</name>
+    <member refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ConfigType_3_01ZMQ_01_4_1a68493a1ed0540a9ee5fbd8d42a49a17b" kind="typedef"><name>type</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1mapping_1_1Consecutive" kind="struct"><name>graybat::mapping::Consecutive</name>
+    <member refid="structgraybat_1_1mapping_1_1Consecutive_1a723a783f1ab47359c81521183f97b302" kind="function"><name>operator()</name></member>
+  </compound>
+  <compound refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context" kind="class"><name>graybat::communicationPolicy::MinBMPI::Context</name>
+    <member refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context_1a75d75fa77e2d50b69809b501477df331" kind="typedef"><name>ContextID</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context_1ae8eabb5b7f0fd8727e89fd6cf5090df2" kind="typedef"><name>VAddr</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context_1afa06341f7a8701498284a3212165e146" kind="variable"><name>comm</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context_1a1ffac9948b11debcadb31ef7a7581794" kind="variable"><name>id</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context_1ab89be627bbc891275337a4c46165c785" kind="variable"><name>isValid</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context_1a21388373bcd8fe4233c2dde0b19eb6ff" kind="function"><name>Context</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context_1a19fe228dab188d8d8c9c048287bf7713" kind="function"><name>Context</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context_1a4fbe531b2b5153dcc73dae326af9dce8" kind="function"><name>operator=</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context_1a56395f3f839cddc70cb22162e82c721f" kind="function"><name>size</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context_1a31e4b99ea95a4c8029923eee8c84bc95" kind="function"><name>getVAddr</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context_1a38b3b6cce34df9eff2854504b1bf3da1" kind="function"><name>getID</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context_1a8d42c152df1f2d78f64f57ae9fbbadca" kind="function"><name>valid</name></member>
+  </compound>
+  <compound refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context" kind="class"><name>graybat::communicationPolicy::bmpi::Context</name>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a7afb7a06ab0037e7b7dad504a72a1a1e" kind="typedef"><name>ContextID</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a1074ce0b6e6a55b0c9416517bccb2e23" kind="typedef"><name>VAddr</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a99da94dddaf38f708f66b629b208af13" kind="variable"><name>comm</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a5f8c64346f6033fc17d15e9ea4e20347" kind="variable"><name>id</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1ac6fcf8232de9e46cdd076448ec859c7b" kind="variable"><name>isValid</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1aee05ca0b57a1a644f2c7bbe991fa4a10" kind="function"><name>Context</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a010e29a166e4ad76b9598bb7c4ffd5eb" kind="function"><name>Context</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a5a95513936214adcac91f656ada7eda1" kind="function"><name>operator=</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a7468f62fc2b8d95bbd002f4d2544b5bc" kind="function"><name>size</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a8d085626c0602b1183505792e65d98c2" kind="function"><name>getVAddr</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a1717bea0971b858604306ed73a8a2f7f" kind="function"><name>getID</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a98b3900695a9dbc6c56364009fe01d51" kind="function"><name>valid</name></member>
+  </compound>
+  <compound refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Context" kind="class"><name>graybat::communicationPolicy::zmq::Context</name>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Context_1a80490f078eeba0fc4bd3e210b878779d" kind="typedef"><name>ContextID</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Context_1a203b2015eea8718d8b4fa39d49d6ef29" kind="typedef"><name>VAddr</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Context_1acb52fc0771e62b3ecb831344389ceca8" kind="typedef"><name>Tag</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Context_1a97111d888b26cbb619091388e2758285" kind="typedef"><name>MsgType</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Context_1a7c50aaa2497d0fb6523f2bf45b0e6482" kind="typedef"><name>MsgID</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Context_1a3f21e549e87885a130dc20a9e07210c8" kind="function"><name>Context</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Context_1a81204113ab8bd99171f0786b93d4cbc5" kind="function"><name>Context</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Context_1a5ebe5ed8d230b734afd4c5d8eedf9812" kind="function"><name>size</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Context_1a7cce1629d57bd2289632050a5a8feaf1" kind="function"><name>getVAddr</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Context_1a39ddc0058ed3e625e9ceba55c91eac30" kind="function"><name>getID</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ContextType" kind="struct"><name>graybat::communicationPolicy::traits::ContextType</name>
+  </compound>
+  <compound refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ContextType_3_01BMPI_01_4" kind="struct"><name>graybat::communicationPolicy::traits::ContextType&lt; BMPI &gt;</name>
+    <member refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ContextType_3_01BMPI_01_4_1a9d6676a8883e22de5761676bb7b4c584" kind="typedef"><name>type</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ContextType_3_01ZMQ_01_4" kind="struct"><name>graybat::communicationPolicy::traits::ContextType&lt; ZMQ &gt;</name>
+    <member refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ContextType_3_01ZMQ_01_4_1a91a45492fd9cb43b37aa4b826ad74060" kind="typedef"><name>type</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1pattern_1_1EdgeLess" kind="struct"><name>graybat::pattern::EdgeLess</name>
+    <member refid="structgraybat_1_1pattern_1_1EdgeLess_1a7e530e2105a44c9c6b16bd6e76596baa" kind="typedef"><name>GraphPolicy</name></member>
+    <member refid="structgraybat_1_1pattern_1_1EdgeLess_1a0273ec409b141a15e0ac4f232d5a56ec" kind="typedef"><name>VertexDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1EdgeLess_1aad27f94e9e716ec9e9fedb300413c256" kind="typedef"><name>EdgeDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1EdgeLess_1aa9f05ce92d5e357e2a4a8d8b53a5b994" kind="typedef"><name>GraphDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1EdgeLess_1a26ac5069cfdaf54b2492fb5036e0f0f4" kind="variable"><name>verticesCount</name></member>
+    <member refid="structgraybat_1_1pattern_1_1EdgeLess_1a1a1e1d85989fba36558ffbd1a3bd3a2a" kind="function"><name>EdgeLess</name></member>
+    <member refid="structgraybat_1_1pattern_1_1EdgeLess_1a7ace3d1f6d82eaeea128256435e25b55" kind="function"><name>operator()</name></member>
+  </compound>
+  <compound refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Event" kind="class"><name>graybat::communicationPolicy::MinBMPI::Event</name>
+    <member refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Event_1a6e1d721a0052840dc60b2647cdf28628" kind="variable"><name>request</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Event_1aa8cd6ac49bcde90305e9e7733a20ddac" kind="function"><name>Event</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Event_1aba12d63df8f8e2057382d8bdef003885" kind="function"><name>~Event</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Event_1a920f03720f6ce9fba4c2e317f5d06ccf" kind="function"><name>wait</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Event_1a627a8aa3918cb9b985f8536302184d72" kind="function"><name>ready</name></member>
+  </compound>
+  <compound refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event" kind="class"><name>graybat::communicationPolicy::zmq::Event</name>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1abac7cfd781f899c18bed620ae2aabc0e" kind="typedef"><name>ContextID</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1afb7d4ce6764c022a84e3a22bd1d50f3f" kind="typedef"><name>VAddr</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a8cb4e8b979b2fe2fa412f517675f8890" kind="typedef"><name>Tag</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1ab7b22a4bd40908151efa65a1b6971ca3" kind="typedef"><name>MsgType</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a00cb2d84a07cc107f528387819c672d8" kind="typedef"><name>MsgID</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a0eec360c31102d48a4e966036d8dd83e" kind="typedef"><name>Context</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a130837551c5bc7dc99c5eb903af51800" kind="variable"><name>msgID</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1ac1b5b3731edc737a711ecd8a39e9dbdb" kind="variable"><name>context</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1afcec320309760aecc842a3aaec4788db" kind="variable"><name>vAddr</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a10cce3d646304e6d88c16b7bbb3335b2" kind="variable"><name>tag</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a8fa41e1ea108ad4cb994b0ca8681d4a8" kind="variable"><name>comm</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a68e55ef0b3ba442d201beb0eb5841f65" kind="function"><name>Event</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a083375e5e2dd4d6cd200b21e612feb9c" kind="function"><name>wait</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a7c0c7257ac081d5ca6573ca4000df052" kind="function"><name>ready</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1a557def3edeff3a7626903d843587ac38" kind="function"><name>source</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_1abd0aef53191c196467a01e388788cc49" kind="function"><name>getTag</name></member>
+  </compound>
+  <compound refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Event" kind="class"><name>graybat::communicationPolicy::bmpi::Event</name>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Event_1a9f71547aa9752e3f0c2ea254948a713c" kind="typedef"><name>Tag</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Event_1af09969417431d99dc6c883c600ed32c1" kind="typedef"><name>VAddr</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Event_1a8a1c58931c0bf1bb7db980b1b2ffc1b4" kind="variable"><name>request</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Event_1abcbfb236ebb3a4ed3de09ba50df1a4e9" kind="variable"><name>status</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Event_1aa44c687c366fe8865bfc0dd003628d30" kind="variable"><name>async</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Event_1a20cd519a889f6ce978315c07bd6ba46f" kind="function"><name>Event</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Event_1a371ec9f255077d627a4a0eee1cc94d63" kind="function"><name>Event</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Event_1aa09ab7c000129dbea607b3433ad29c22" kind="function"><name>~Event</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Event_1a5de95b71b347ff7dd3bf3b86d5528cd0" kind="function"><name>wait</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Event_1a6d161e5969b560aaaf4f1c62dd2afd2e" kind="function"><name>ready</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Event_1a517cad88bf98fb98c9845309a68d656c" kind="function"><name>source</name></member>
+    <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Event_1a77aba95207f3b9a5e755c4ea42e3589d" kind="function"><name>getTag</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1communicationPolicy_1_1traits_1_1EventType" kind="struct"><name>graybat::communicationPolicy::traits::EventType</name>
+  </compound>
+  <compound refid="structgraybat_1_1communicationPolicy_1_1traits_1_1EventType_3_01BMPI_01_4" kind="struct"><name>graybat::communicationPolicy::traits::EventType&lt; BMPI &gt;</name>
+    <member refid="structgraybat_1_1communicationPolicy_1_1traits_1_1EventType_3_01BMPI_01_4_1a5941c133a24f6eaa734f79cb8c580dbb" kind="typedef"><name>type</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1communicationPolicy_1_1traits_1_1EventType_3_01ZMQ_01_4" kind="struct"><name>graybat::communicationPolicy::traits::EventType&lt; ZMQ &gt;</name>
+    <member refid="structgraybat_1_1communicationPolicy_1_1traits_1_1EventType_3_01ZMQ_01_4_1ad1060314cd32bdea0775e45d19266976" kind="typedef"><name>type</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1mapping_1_1Filter" kind="struct"><name>graybat::mapping::Filter</name>
+    <member refid="structgraybat_1_1mapping_1_1Filter_1a6981ee32a445c93f6687bd940f5450fd" kind="variable"><name>vertexTag</name></member>
+    <member refid="structgraybat_1_1mapping_1_1Filter_1a0fead0a6f6f68659401d579e53bb8fe9" kind="function"><name>Filter</name></member>
+    <member refid="structgraybat_1_1mapping_1_1Filter_1a7734ba725c075e7a22ebc1937b85882a" kind="function"><name>operator()</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1pattern_1_1FullyConnected" kind="struct"><name>graybat::pattern::FullyConnected</name>
+    <member refid="structgraybat_1_1pattern_1_1FullyConnected_1a327ae23d2f3edf120a9c798f491baa0b" kind="typedef"><name>GraphPolicy</name></member>
+    <member refid="structgraybat_1_1pattern_1_1FullyConnected_1a6725ad52f252aaebb793908d72868076" kind="typedef"><name>VertexDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1FullyConnected_1ae0310e022530b83489a8f9ca7fc7478f" kind="typedef"><name>EdgeDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1FullyConnected_1ae729a9c819f7209416ff95b93ab3a8a3" kind="typedef"><name>GraphDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1FullyConnected_1ae068dc5e99ae629d1d5f14c2f7774631" kind="typedef"><name>EdgeProperty</name></member>
+    <member refid="structgraybat_1_1pattern_1_1FullyConnected_1a5e04b1b207ca8ff61a918dc30e4911dd" kind="typedef"><name>VertexProperty</name></member>
+    <member refid="structgraybat_1_1pattern_1_1FullyConnected_1affa342304fce94cff7b39870487ff985" kind="variable"><name>verticesCount</name></member>
+    <member refid="structgraybat_1_1pattern_1_1FullyConnected_1a26d7c666e0a985a78a599d29b6f6c0f7" kind="function"><name>FullyConnected</name></member>
+    <member refid="structgraybat_1_1pattern_1_1FullyConnected_1a399a1297451f74a42912d55d350351d3" kind="function"><name>operator()</name></member>
+  </compound>
+  <compound refid="structFunction" kind="struct"><name>Function</name>
+    <member refid="structFunction_1a330b0bdadf59d79668e29033680f5c92" kind="variable"><name>foo</name></member>
+    <member refid="structFunction_1a7e02d9958425563890a00afdb91f1cbe" kind="function"><name>process</name></member>
+    <member refid="structFunction_1a7e02d9958425563890a00afdb91f1cbe" kind="function"><name>process</name></member>
+    <member refid="structFunction_1a1f62c3fa804fcf66490355697c255472" kind="function"><name>process</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1mapping_1_1GraphPartition" kind="struct"><name>graybat::mapping::GraphPartition</name>
+    <member refid="structgraybat_1_1mapping_1_1GraphPartition_1ac3d1871a2c31dd53cc31790aaabf6532" kind="variable"><name>nParts</name></member>
+    <member refid="structgraybat_1_1mapping_1_1GraphPartition_1a5f97b54e8c827e9c29ae22747a753131" kind="function"><name>GraphPartition</name></member>
+    <member refid="structgraybat_1_1mapping_1_1GraphPartition_1afeeafb75cddcbb05ba2f6d3d3b662f49" kind="function"><name>GraphPartition</name></member>
+    <member refid="structgraybat_1_1mapping_1_1GraphPartition_1a917b54b6d70ef3890d1a756fdd97fa6a" kind="function"><name>toCompressedRowStorage</name></member>
+    <member refid="structgraybat_1_1mapping_1_1GraphPartition_1a952baf3f1cbcec52d3296d7acdb912ff" kind="function"><name>operator()</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1pattern_1_1Grid" kind="struct"><name>graybat::pattern::Grid</name>
+    <member refid="structgraybat_1_1pattern_1_1Grid_1aab349845fbbbc8faaec2fc21f9dab618" kind="typedef"><name>GraphPolicy</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Grid_1a676f95ffaf25de5c9a14775e12d80991" kind="typedef"><name>VertexDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Grid_1a8a6cbcea3f2e986387bd56b24c25969c" kind="typedef"><name>EdgeDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Grid_1a6ac54ff08812061adb655b098b78658d" kind="typedef"><name>GraphDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Grid_1ae3d9d041926f8480aad0df1023a977e2" kind="typedef"><name>EdgeProperty</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Grid_1a616b9ec5554ff55277d73e434f30c5ae" kind="typedef"><name>VertexProperty</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Grid_1a8bd01cf7fce1097e0642256f6f91f638" kind="variable"><name>height</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Grid_1afafecacabb066eb00358d981208fba97" kind="variable"><name>width</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Grid_1afc52ac7cfc0b6f742dec72d2b6f0f509" kind="function"><name>Grid</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Grid_1a59206aa8d8597b462a51672bd143a446" kind="function"><name>operator()</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1pattern_1_1GridDiagonal" kind="struct"><name>graybat::pattern::GridDiagonal</name>
+    <member refid="structgraybat_1_1pattern_1_1GridDiagonal_1a52fb9d0c427d98aade09744870b24db8" kind="typedef"><name>GraphPolicy</name></member>
+    <member refid="structgraybat_1_1pattern_1_1GridDiagonal_1af427c167b2ebddcc06e3aefa6bcf01dc" kind="typedef"><name>VertexDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1GridDiagonal_1a0a092e5c74f1372752d1524f57edcfec" kind="typedef"><name>EdgeDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1GridDiagonal_1a896592ae4baad1915afc5fe16afd5c72" kind="typedef"><name>GraphDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1GridDiagonal_1ab4dafe2fdc7d2527dc5734c9cffffeba" kind="typedef"><name>EdgeProperty</name></member>
+    <member refid="structgraybat_1_1pattern_1_1GridDiagonal_1a594493381f0cfee671269f7be3402879" kind="typedef"><name>VertexProperty</name></member>
+    <member refid="structgraybat_1_1pattern_1_1GridDiagonal_1a3c3d0f74f66d9c07dbc3ca7931df3536" kind="variable"><name>height</name></member>
+    <member refid="structgraybat_1_1pattern_1_1GridDiagonal_1a4bfb947ac19e5dda7b5769099efe9c69" kind="variable"><name>width</name></member>
+    <member refid="structgraybat_1_1pattern_1_1GridDiagonal_1af223de3b38edca5062c166d174e5241a" kind="function"><name>GridDiagonal</name></member>
+    <member refid="structgraybat_1_1pattern_1_1GridDiagonal_1ab54d1253194770dc534ba24dfb3e3028" kind="function"><name>operator()</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1pattern_1_1HyperCube" kind="struct"><name>graybat::pattern::HyperCube</name>
+    <member refid="structgraybat_1_1pattern_1_1HyperCube_1a67a6d03f13aa7a690ba00e7dbc51712c" kind="typedef"><name>GraphPolicy</name></member>
+    <member refid="structgraybat_1_1pattern_1_1HyperCube_1a0c88ca2cfe827c3debc91e8d021d44ca" kind="typedef"><name>VertexDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1HyperCube_1adf392d9969a0a73da4dc7f72010dacd7" kind="typedef"><name>EdgeDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1HyperCube_1a4c23d00b62f8d88be7278a1b8d4051c4" kind="typedef"><name>GraphDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1HyperCube_1a4e68fc6487ff5b3c32789914920b9314" kind="typedef"><name>EdgeProperty</name></member>
+    <member refid="structgraybat_1_1pattern_1_1HyperCube_1a1ac5d8bcd72ca589d1d6ee01aeddc836" kind="typedef"><name>VertexProperty</name></member>
+    <member refid="structgraybat_1_1pattern_1_1HyperCube_1a9d3b75c69fd39c9035251c7a1ddaeacb" kind="variable"><name>dimension</name></member>
+    <member refid="structgraybat_1_1pattern_1_1HyperCube_1aef4094e09277a7d45835ad74e19fecaa" kind="function"><name>HyperCube</name></member>
+    <member refid="structgraybat_1_1pattern_1_1HyperCube_1a03de3c97f0dc0b454e8be23f5678b3af" kind="function"><name>hammingDistance</name></member>
+    <member refid="structgraybat_1_1pattern_1_1HyperCube_1aa963c5a07bf028989c244bc861b32144" kind="function"><name>operator()</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1pattern_1_1InStar" kind="struct"><name>graybat::pattern::InStar</name>
+    <member refid="structgraybat_1_1pattern_1_1InStar_1ab93c343a8968f71e6502f30e22528ce9" kind="typedef"><name>GraphPolicy</name></member>
+    <member refid="structgraybat_1_1pattern_1_1InStar_1a14e587a9930f8907ae0c4a512b98c277" kind="typedef"><name>VertexDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1InStar_1a38d750a72045520f0ddf3eecb0809995" kind="typedef"><name>EdgeDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1InStar_1a084fbbda9f3c382c42855c67d0808b44" kind="typedef"><name>GraphDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1InStar_1aa4f512e54f052261b2146f0af14670b6" kind="typedef"><name>EdgeProperty</name></member>
+    <member refid="structgraybat_1_1pattern_1_1InStar_1a1cafeb7a0527ee503649ba674f774495" kind="typedef"><name>VertexProperty</name></member>
+    <member refid="structgraybat_1_1pattern_1_1InStar_1abf069998e8c76bfe5365f01c3f1e686b" kind="variable"><name>verticesCount</name></member>
+    <member refid="structgraybat_1_1pattern_1_1InStar_1afbaaffe9fe889764303590f251868e20" kind="function"><name>InStar</name></member>
+    <member refid="structgraybat_1_1pattern_1_1InStar_1a4e92cd567d269d9e1f2fab25e2a83258" kind="function"><name>operator()</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1Cage_1_1maximum" kind="struct"><name>graybat::Cage::maximum</name>
+    <member refid="structgraybat_1_1Cage_1_1maximum_1ad12352d7f5fe5828a9ac06926cbe683f" kind="function"><name>operator()</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1communicationPolicy_1_1MinBMPI" kind="class"><name>graybat::communicationPolicy::MinBMPI</name>
+    <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1aa2a60254d0fe94f2055fe45989164047" kind="function"><name>allGather</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1aa4b0146f7a8e688ebede83ee0dd8f3ef" kind="function"><name>allReduce</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1ad1861049c3aed2009703135e0286d297" kind="function"><name>createContext</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a66534cd2818fa9d547cb34c056ed025b" kind="function"><name>getGlobalContext</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1aed5178e73bef1d8db6b0f6b34b92ea0f" kind="typedef"><name>Tag</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a2e574cb9dc4c1b37c25377d7932673d2" kind="typedef"><name>ContextID</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a6bb19cab1cb37cf1bc3550c28b669bbe" kind="typedef"><name>VAddr</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a535c0a141d6e97429b7c7fd3ca26723d" kind="typedef"><name>MsgType</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a11917747e10d8d244d51753270ba3024" kind="typedef"><name>Uri</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1af64eee46bd208dd42eb04eea4a6b6543" kind="variable"><name>contextCount</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1afb1446ee9d174cefef7d9e99ec9701c8" kind="variable"><name>uriMap</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a89e93e4efc9dd4832c30405cb0afeba3" kind="variable"><name>initialContext</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a97fc2b5174eb92803a5ed9ad113a6351" kind="variable"><name>env</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a6b6fb9d1976c631f8756ac06d851e06b" kind="function"><name>MinBMPI</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1ac392fea4de3aedc3e3b944e9760777bc" kind="function"><name>~MinBMPI</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a392e2cc4c289633b8554fc60b2f96460" kind="function"><name>error</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a324b4f05432e7a5a1508aff0652ed332" kind="function"><name>getVAddrUri</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1pattern_1_1None" kind="struct"><name>graybat::pattern::None</name>
+    <member refid="structgraybat_1_1pattern_1_1None_1aa68777cb73830f14936a1dc8cca147a3" kind="typedef"><name>VertexDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1None_1a7d0b05e8b896bae79b391a9d5e26b808" kind="typedef"><name>EdgeDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1None_1afd2fe15579fadeb0a09f5055dc44d6eb" kind="typedef"><name>GraphDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1None_1ac5186ec6bd64f2cf33402af7b3adf96f" kind="function"><name>operator()</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1pattern_1_1OutStar" kind="struct"><name>graybat::pattern::OutStar</name>
+    <member refid="structgraybat_1_1pattern_1_1OutStar_1a80ba60b631ad3cd3708037cab7a11614" kind="typedef"><name>GraphPolicy</name></member>
+    <member refid="structgraybat_1_1pattern_1_1OutStar_1a69113e42104417cbe81906ee0d575796" kind="typedef"><name>VertexDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1OutStar_1a751930588a07e1e5a000601011dad5e7" kind="typedef"><name>EdgeDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1OutStar_1aa22b54720d47f626b00ea3e20711da7b" kind="typedef"><name>GraphDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1OutStar_1a529cb17a9c89354e71f18ec03e2c691f" kind="typedef"><name>EdgeProperty</name></member>
+    <member refid="structgraybat_1_1pattern_1_1OutStar_1a04d362d67a1249cf237b57ad78e66f71" kind="typedef"><name>VertexProperty</name></member>
+    <member refid="structgraybat_1_1pattern_1_1OutStar_1ab5bc037b1f31514b277adbf771191424" kind="variable"><name>verticesCount</name></member>
+    <member refid="structgraybat_1_1pattern_1_1OutStar_1a210b0709162c18720d2ad707d39c97af" kind="function"><name>OutStar</name></member>
+    <member refid="structgraybat_1_1pattern_1_1OutStar_1a4524b5ced8b3a42839b1d652eba27264" kind="function"><name>operator()</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1mapping_1_1Random" kind="struct"><name>graybat::mapping::Random</name>
+    <member refid="structgraybat_1_1mapping_1_1Random_1ad59fe88f2076e58cd00e350d6fcc3b94" kind="variable"><name>seed</name></member>
+    <member refid="structgraybat_1_1mapping_1_1Random_1aa312e299c06353a14462903718bbd4d2" kind="function"><name>Random</name></member>
+    <member refid="structgraybat_1_1mapping_1_1Random_1ac605dc1800492f611545fcc80a9767f5" kind="function"><name>operator()</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1pattern_1_1Ring" kind="struct"><name>graybat::pattern::Ring</name>
+    <member refid="structgraybat_1_1pattern_1_1Ring_1aebb4517df89c5e5fe6de9b970e0a2815" kind="typedef"><name>GraphPolicy</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Ring_1aca9cf36b522b5a565189cd7b30c5f594" kind="typedef"><name>VertexDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Ring_1a53594d4bfdfaf36aac2b77138f7d9b24" kind="typedef"><name>EdgeDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Ring_1a2267dd3093e5d89dc963dfc395771fd0" kind="typedef"><name>GraphDescription</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Ring_1a63d5e2d31d9c26b9516c0de8860eb460" kind="typedef"><name>EdgeProperty</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Ring_1a5091e1a87b0cfc92769718a09451839c" kind="typedef"><name>VertexProperty</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Ring_1ab602479b001f377bbb364afd6b9a1cf6" kind="variable"><name>verticesCount</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Ring_1a47c498d6957d3c1e777c18663462cccd" kind="function"><name>Ring</name></member>
+    <member refid="structgraybat_1_1pattern_1_1Ring_1ae74145d3758ee4ea91cbfc758b21836c" kind="function"><name>operator()</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1mapping_1_1Roundrobin" kind="struct"><name>graybat::mapping::Roundrobin</name>
+    <member refid="structgraybat_1_1mapping_1_1Roundrobin_1ab3d4c60dcd47a3827739cf824e3e0f6b" kind="function"><name>operator()</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1graphPolicy_1_1SimpleProperty" kind="struct"><name>graybat::graphPolicy::SimpleProperty</name>
+  </compound>
+  <compound refid="structTag" kind="struct"><name>Tag</name>
+    <member refid="structTag_1ad43e43b198c0b65606c1f37aab45070f" kind="variable"><name>tag</name></member>
+  </compound>
+  <compound refid="structgraybat_1_1communicationPolicy_1_1ZMQ" kind="class"><name>graybat::communicationPolicy::ZMQ</name>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1acabe8e002759a5893d7f2e935dae401e" kind="function"><name>getInitialContextID</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a40180b6802337e67d2b5e3b981caad38" kind="function"><name>getContextID</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a037bd2bd2fc50566f6f3934f620fd8f2" kind="function"><name>getVAddr</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a7c902560de928d4e60a7e750afe252b6" kind="function"><name>getUri</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1ac758b90217607dbd584f0fa8c275b5ab" kind="function"><name>getMsgID</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1ae2a07880da111ca0f60f4fd811b36a63" kind="function"><name>zmqMessageToData</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a4b944514212a53c7bd653370a5e5523a" kind="function"><name>bindToNextFreePort</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a252494da3e7481ba0858b8989ff3885b" kind="function"><name>handleRecv</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1ae539febea7852f497dc3e5b45210d8da" kind="function"><name>s_recv</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a61f299de4f180b2981ad1427f7a120fd" kind="function"><name>s_send</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a0b0b0a5a6f6b5c85a6c5b5b31fae6b1f" kind="function"><name>send</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a90e4cec7521e061aa682559d8bc72f1b" kind="function"><name>asyncSend</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1aba035ac9e25e20c89581c2e9ebdcf477" kind="function"><name>asyncSendImpl</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1aed8fd6ad0f54a44d576f71e812064b17" kind="function"><name>recv</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a90e24f2d8431d0289d2067ed6a02f64c" kind="function"><name>recv</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1aca65dd2ffd1049f72e194c13968b846c" kind="function"><name>recvImpl</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a0c112e35dba53faa1ee222dc722eb20e" kind="function"><name>recvImpl</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1aff4a73567456ebb5bf0a2a17bd8170fc" kind="function"><name>wait</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1acc3da7a5e16668628ae74161f6ab8e7b" kind="function"><name>ready</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a6760648ce6f21fefad245292c46565f4" kind="function"><name>splitContext</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a8146abbd757a057ad24a929667a01ee6" kind="function"><name>getGlobalContext</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a70c989500cb46ab5b71768fae699759f" kind="typedef"><name>Tag</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1af14a2e927b90f85e30e2eafe2fb86347" kind="typedef"><name>ContextID</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1ac227f7b180d8eaee5d493b09917e10e7" kind="typedef"><name>MsgType</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a073da259521988b9e3ecacfc8db18029" kind="typedef"><name>MsgID</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a6a60449eee02f72a8b6998dcd8eacb83" kind="typedef"><name>VAddr</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a1675812d40f395451e11cabfd5fb28e1" kind="typedef"><name>Context</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1aa07df86b7967eeb6e35181995da85b4e" kind="typedef"><name>Event</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a4b303911562bc088c3f85695a473e538" kind="typedef"><name>Config</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a1d25a8ae54bc4e64a65bff42470ca286" kind="typedef"><name>Uri</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a75693f5486b00722fde46828a370a3e1" kind="variable"><name>VADDR_REQUEST</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1ac9a6d846b671d488ccc2b48a213cb65c" kind="variable"><name>VADDR_LOOKUP</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1aa5fff922697df13ba51ab9c211125561" kind="variable"><name>DESTRUCT</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a3ebabd8f81881cd6ca82083da5912dc0" kind="variable"><name>RETRY</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1ae738003867ad7590787fbd72e470a0c7" kind="variable"><name>ACK</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a0fa73b38f80d3d2d2761b014ffd64410" kind="variable"><name>CONTEXT_INIT</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a36274d861cda1c40bf2cd384f359ac36" kind="variable"><name>CONTEXT_REQUEST</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a838f1280768e4b09b0f67cf202c4693f" kind="variable"><name>PEER</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a080083ad95e8edd5005dfa87dc247c9e" kind="variable"><name>CONFIRM</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a253f8c42a3b412656465686ac4302556" kind="variable"><name>SPLIT</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1ac28925f4c8d0617d97283c18ed164217" kind="variable"><name>zmqContext</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a7f9215005287fcb30fb21d21b10405fb" kind="variable"><name>zmqSignalingContext</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a55d3e9da96fd2deeada98ee678860cf9" kind="variable"><name>recvSocket</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1ad3d52816f168d192b556ac1dc3d1e885" kind="variable"><name>signalingSocket</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a9d39af0540599d02ca1fbe3c3a3c53c6" kind="variable"><name>zmqHwm</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1ac3194b52e98b31ada473e873f631b907" kind="variable"><name>initialContext</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1aaa8ad1285b17daba34d283a34349e3bc" kind="variable"><name>sendSocketMappings</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a6bd8f4319623f0a5ff4954fed2802009" kind="variable"><name>sendSockets</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1aacf828766b08157f9e13172949bc447b" kind="variable"><name>phoneBook</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a3c28dcbf8c7e5af3b282a3116130ade0" kind="variable"><name>inversePhoneBook</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1ab24f971152ddf296cf9e37a84f72ba43" kind="variable"><name>contexts</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a048cd99c3b30b8269695800aeec8b6b5" kind="variable"><name>inBox</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a5d8937267cb65df0d1954304eb60c060" kind="variable"><name>maxMsgID</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a0a46bd55b77c5d1638ee45779f591251" kind="variable"><name>recvHandler</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a6330356fc4e18a28f820ad0d1ffd9b6c" kind="variable"><name>sendMtx</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1ae962deaa23647ec055cdcb7ca91c5da6" kind="variable"><name>recvMtx</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1aeeeee6bb1e189218a66f53d442cc0726" kind="variable"><name>masterUri</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a0f4be8b5db76294a90adc532672f86a8" kind="variable"><name>peerUri</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a1a8194fd0d25a4bd68f6eb01580ecaf0" kind="function"><name>ZMQ</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a3e2677f395338d07c90b55afd66d9974" kind="function"><name>ZMQ</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a5efe1d58e60411ea1f311b1b4eb61593" kind="function"><name>ZMQ</name></member>
+    <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a98f820b76ab5349b08e342d680fd5d49" kind="function"><name>~ZMQ</name></member>
+  </compound>
+  <compound refid="namespacegraybat" kind="namespace"><name>graybat</name>
+  </compound>
+  <compound refid="namespacegraybat_1_1communicationPolicy" kind="namespace"><name>graybat::communicationPolicy</name>
+    <member refid="namespacegraybat_1_1communicationPolicy_1a022b602e6867f8188044b44ac453750b" kind="typedef"><name>VAddr</name></member>
+    <member refid="namespacegraybat_1_1communicationPolicy_1addb25527b5f6b94913cbbeb83b222cb3" kind="typedef"><name>Tag</name></member>
+    <member refid="namespacegraybat_1_1communicationPolicy_1a911eb446514a36ddd20f9b286ae08500" kind="typedef"><name>ContextID</name></member>
+    <member refid="namespacegraybat_1_1communicationPolicy_1accc8f7ffd83f0ae4bbb889cd26d06e3e" kind="typedef"><name>MsgType</name></member>
+    <member refid="namespacegraybat_1_1communicationPolicy_1a0123fd700b2c2e2dc3d76f2cbed6ca17" kind="typedef"><name>MsgID</name></member>
+    <member refid="namespacegraybat_1_1communicationPolicy_1a5f4cfd996516d47b12b75d9cfc37e51b" kind="typedef"><name>Context</name></member>
+    <member refid="namespacegraybat_1_1communicationPolicy_1a3dfe4f56618b6d9ea50a123fd9a45beb" kind="typedef"><name>Event</name></member>
+    <member refid="namespacegraybat_1_1communicationPolicy_1a025a1c1292812a5230d408a1a4df16cd" kind="typedef"><name>Config</name></member>
+  </compound>
+  <compound refid="namespacegraybat_1_1communicationPolicy_1_1bmpi" kind="namespace"><name>graybat::communicationPolicy::bmpi</name>
+  </compound>
+  <compound refid="namespacegraybat_1_1communicationPolicy_1_1traits" kind="namespace"><name>graybat::communicationPolicy::traits</name>
+  </compound>
+  <compound refid="namespacegraybat_1_1communicationPolicy_1_1zmq" kind="namespace"><name>graybat::communicationPolicy::zmq</name>
+    <member refid="namespacegraybat_1_1communicationPolicy_1_1zmq_1a56697ce90e0fcf0c70dddd54a53c87cb" kind="variable"><name>contextID</name></member>
+    <member refid="namespacegraybat_1_1communicationPolicy_1_1zmq_1a1d3b074ebe1e14b574dd0b408fc7c636" kind="variable"><name>vAddr</name></member>
+    <member refid="namespacegraybat_1_1communicationPolicy_1_1zmq_1a80214eae0c2f65a8eeb556be0ac0c5ea" kind="variable"><name>nPeers</name></member>
+    <member refid="namespacegraybat_1_1communicationPolicy_1_1zmq_1ae76c7c3a6ecd15317ab8a3914f68e9bc" kind="variable"><name>isValid</name></member>
+    <member refid="namespacegraybat_1_1communicationPolicy_1_1zmq_1aa1aa632503ef1c822b0b76e7d132ce71" kind="variable"><name>valid</name></member>
+    <member refid="namespacegraybat_1_1communicationPolicy_1_1zmq_1a597c38da7383bbb284b5d7d0ffeb54f5" kind="function"><name>valid</name></member>
+  </compound>
+  <compound refid="namespacegraybat_1_1graphPolicy" kind="namespace"><name>graybat::graphPolicy</name>
+    <member refid="namespacegraybat_1_1graphPolicy_1a9976e45fc381a3d2460ec7b399a95c43" kind="typedef"><name>InEdgeIter</name></member>
+    <member refid="namespacegraybat_1_1graphPolicy_1a7dded9332ba985f67f240ecf49f036fc" kind="typedef"><name>OutEdgeIter</name></member>
+    <member refid="namespacegraybat_1_1graphPolicy_1aa63824a3d870d071f7954d7f80a7c38b" kind="typedef"><name>AdjacentVertexIter</name></member>
+    <member refid="namespacegraybat_1_1graphPolicy_1a47ceca0842db77a855883e296e8aba6f" kind="typedef"><name>AllVertexIter</name></member>
+    <member refid="namespacegraybat_1_1graphPolicy_1a83b152e414b6159c203118064b58a9c1" kind="typedef"><name>VertexProperty</name></member>
+    <member refid="namespacegraybat_1_1graphPolicy_1ad993c10caf1ec7ee56cde279c496d042" kind="typedef"><name>EdgeProperty</name></member>
+    <member refid="namespacegraybat_1_1graphPolicy_1ad5655ad4dbcc48fd9596fdff3afc3cb1" kind="typedef"><name>VertexID</name></member>
+    <member refid="namespacegraybat_1_1graphPolicy_1acab536fd5fdf0ab1149ca3b1fd01470e" kind="typedef"><name>EdgeID</name></member>
+    <member refid="namespacegraybat_1_1graphPolicy_1a306caa7bf837e689c43e205af69f6553" kind="typedef"><name>GraphID</name></member>
+    <member refid="namespacegraybat_1_1graphPolicy_1a6cf868f0c794468409f997b450ca0c26" kind="typedef"><name>VertexDescription</name></member>
+    <member refid="namespacegraybat_1_1graphPolicy_1a157350613467526bb15d57ee39dbdee0" kind="typedef"><name>EdgeDescription</name></member>
+    <member refid="namespacegraybat_1_1graphPolicy_1a7ab95378286e3549b1e15e4f36a71ea8" kind="typedef"><name>GraphDescription</name></member>
+  </compound>
+  <compound refid="namespacegraybat_1_1graphPolicy_1_1traits" kind="namespace"><name>graybat::graphPolicy::traits</name>
+  </compound>
+  <compound refid="namespacegraybat_1_1mapping" kind="namespace"><name>graybat::mapping</name>
+  </compound>
+  <compound refid="namespacegraybat_1_1pattern" kind="namespace"><name>graybat::pattern</name>
+  </compound>
+  <compound refid="namespacestd" kind="namespace"><name>std</name>
+  </compound>
+  <compound refid="anyrecv_8cpp" kind="file"><name>anyrecv.cpp</name>
+    <member refid="anyrecv_8cpp_1a9b1d968e044d129ba577e91c3f2d862b" kind="function"><name>exp</name></member>
+    <member refid="anyrecv_8cpp_1ae66f6b31b5ad750f1fe042a706a4e3d4" kind="function"><name>main</name></member>
+  </compound>
+  <compound refid="chain_8cpp" kind="file"><name>chain.cpp</name>
+    <member refid="chain_8cpp_1a9b1d968e044d129ba577e91c3f2d862b" kind="function"><name>exp</name></member>
+    <member refid="chain_8cpp_1ae66f6b31b5ad750f1fe042a706a4e3d4" kind="function"><name>main</name></member>
+  </compound>
+  <compound refid="forward_8cpp" kind="file"><name>forward.cpp</name>
+    <member refid="forward_8cpp_1a9b1d968e044d129ba577e91c3f2d862b" kind="function"><name>exp</name></member>
+    <member refid="forward_8cpp_1ae66f6b31b5ad750f1fe042a706a4e3d4" kind="function"><name>main</name></member>
+  </compound>
+  <compound refid="gol_8cpp" kind="file"><name>gol.cpp</name>
+    <member refid="gol_8cpp_1a83e11cf1466d622eafd1d3656b36032d" kind="variable"><name>one</name></member>
+    <member refid="gol_8cpp_1ab0db93d20b6537e77ab453489a886e4e" kind="function"><name>printGolDomain</name></member>
+    <member refid="gol_8cpp_1a290890e36f0a3a5949abb52e23fdbaa6" kind="function"><name>updateState</name></member>
+    <member refid="gol_8cpp_1adfea5ec502160c40f660d29abf8ae65d" kind="function"><name>gol</name></member>
+    <member refid="gol_8cpp_1a3c04138a5bfe5d72780bb7e82a18e627" kind="function"><name>main</name></member>
+  </compound>
+  <compound refid="ring_8cpp" kind="file"><name>ring.cpp</name>
+    <member refid="ring_8cpp_1a9b1d968e044d129ba577e91c3f2d862b" kind="function"><name>exp</name></member>
+    <member refid="ring_8cpp_1ae66f6b31b5ad750f1fe042a706a4e3d4" kind="function"><name>main</name></member>
+  </compound>
+  <compound refid="Cage_8hpp" kind="file"><name>Cage.hpp</name>
+  </compound>
+  <compound refid="Base_8hpp" kind="file"><name>Base.hpp</name>
+  </compound>
+  <compound refid="BMPI_8hpp" kind="file"><name>BMPI.hpp</name>
+  </compound>
+  <compound refid="MinBMPI_8hpp" kind="file"><name>MinBMPI.hpp</name>
+  </compound>
+  <compound refid="ZMQ_8hpp" kind="file"><name>ZMQ.hpp</name>
+  </compound>
+  <compound refid="zmq_2Config_8hpp" kind="file"><name>Config.hpp</name>
+  </compound>
+  <compound refid="bmpi_2Config_8hpp" kind="file"><name>Config.hpp</name>
+  </compound>
+  <compound refid="zmq_2Context_8hpp" kind="file"><name>Context.hpp</name>
+    <member refid="zmq_2Context_8hpp_1a88714986ebc1a7774ea245bdbbbc0e84" kind="typedef"><name>ContextID</name></member>
+    <member refid="zmq_2Context_8hpp_1a7e0f8e1e6c392498a06571a6ad1fc4f7" kind="typedef"><name>VAddr</name></member>
+    <member refid="zmq_2Context_8hpp_1a2dac3ccad92bb6e2f7b277a0798a3f59" kind="typedef"><name>Tag</name></member>
+    <member refid="zmq_2Context_8hpp_1a8854de7491612f3044a98855f0dd7a65" kind="typedef"><name>MsgType</name></member>
+    <member refid="zmq_2Context_8hpp_1a455c614fcbb589b7a09dd37ed91d5c13" kind="typedef"><name>MsgID</name></member>
+    <member refid="zmq_2Context_8hpp_1a8c6b956baa4e706072d287f80ea00365" kind="function"><name>Context</name></member>
+    <member refid="zmq_2Context_8hpp_1aae774a079445ac28ae4a18f71a5fd497" kind="function"><name>Context</name></member>
+    <member refid="zmq_2Context_8hpp_1a5c5f4fb7b3709d03af12ee072866018e" kind="function"><name>size</name></member>
+    <member refid="zmq_2Context_8hpp_1abe21c7a7ce2ef67fdde9f64fbb58edcc" kind="function"><name>getVAddr</name></member>
+    <member refid="zmq_2Context_8hpp_1a3ce96934b546d6c2d3e5a3505c5f1031" kind="function"><name>getID</name></member>
+  </compound>
+  <compound refid="bmpi_2Context_8hpp" kind="file"><name>Context.hpp</name>
+  </compound>
+  <compound refid="zmq_2Event_8hpp" kind="file"><name>Event.hpp</name>
+  </compound>
+  <compound refid="bmpi_2Event_8hpp" kind="file"><name>Event.hpp</name>
+  </compound>
+  <compound refid="Edge_8hpp" kind="file"><name>Edge.hpp</name>
+  </compound>
+  <compound refid="BGL_8hpp" kind="file"><name>BGL.hpp</name>
+  </compound>
+  <compound refid="graphPolicy_2Traits_8hpp" kind="file"><name>Traits.hpp</name>
+  </compound>
+  <compound refid="communicationPolicy_2Traits_8hpp" kind="file"><name>Traits.hpp</name>
+  </compound>
+  <compound refid="Consecutive_8hpp" kind="file"><name>Consecutive.hpp</name>
+  </compound>
+  <compound refid="Filter_8hpp" kind="file"><name>Filter.hpp</name>
+  </compound>
+  <compound refid="GraphPartition_8hpp" kind="file"><name>GraphPartition.hpp</name>
+  </compound>
+  <compound refid="Random_8hpp" kind="file"><name>Random.hpp</name>
+  </compound>
+  <compound refid="Roundrobin_8hpp" kind="file"><name>Roundrobin.hpp</name>
+  </compound>
+  <compound refid="BiStar_8hpp" kind="file"><name>BiStar.hpp</name>
+  </compound>
+  <compound refid="Chain_8hpp" kind="file"><name>Chain.hpp</name>
+  </compound>
+  <compound refid="EdgeLess_8hpp" kind="file"><name>EdgeLess.hpp</name>
+  </compound>
+  <compound refid="FullyConnected_8hpp" kind="file"><name>FullyConnected.hpp</name>
+  </compound>
+  <compound refid="Grid_8hpp" kind="file"><name>Grid.hpp</name>
+  </compound>
+  <compound refid="GridDiagonal_8hpp" kind="file"><name>GridDiagonal.hpp</name>
+  </compound>
+  <compound refid="HyperCube_8hpp" kind="file"><name>HyperCube.hpp</name>
+  </compound>
+  <compound refid="InStar_8hpp" kind="file"><name>InStar.hpp</name>
+  </compound>
+  <compound refid="None_8hpp" kind="file"><name>None.hpp</name>
+  </compound>
+  <compound refid="OutStar_8hpp" kind="file"><name>OutStar.hpp</name>
+  </compound>
+  <compound refid="Ring_8hpp" kind="file"><name>Ring.hpp</name>
+  </compound>
+  <compound refid="version_8hpp" kind="file"><name>version.hpp</name>
+    <member refid="version_8hpp_1a947cdb99aae66953e0d1d434920281e4" kind="define"><name>graybat_VERSION_MAJOR</name></member>
+    <member refid="version_8hpp_1a736f84f34675101a14b6b573864c087a" kind="define"><name>graybat_VERSION_MINOR</name></member>
+    <member refid="version_8hpp_1ad351563e8ccc02f99e0dc6a7cd21996b" kind="define"><name>graybat_VERSION_PATCH</name></member>
+  </compound>
+  <compound refid="Vertex_8hpp" kind="file"><name>Vertex.hpp</name>
+  </compound>
+  <compound refid="cage_8dox" kind="file"><name>cage.dox</name>
+  </compound>
+  <compound refid="communicationPattern_8dox" kind="file"><name>communicationPattern.dox</name>
+  </compound>
+  <compound refid="communicationPolicy_8dox" kind="file"><name>communicationPolicy.dox</name>
+  </compound>
+  <compound refid="context_8dox" kind="file"><name>context.dox</name>
+  </compound>
+  <compound refid="edge_8dox" kind="file"><name>edge.dox</name>
+  </compound>
+  <compound refid="event_8dox" kind="file"><name>event.dox</name>
+  </compound>
+  <compound refid="gol_8dox" kind="file"><name>gol.dox</name>
+  </compound>
+  <compound refid="graphPolicy_8dox" kind="file"><name>graphPolicy.dox</name>
+  </compound>
+  <compound refid="mainpage_8dox" kind="file"><name>mainpage.dox</name>
+  </compound>
+  <compound refid="mapping_8dox" kind="file"><name>mapping.dox</name>
+  </compound>
+  <compound refid="tutorial_8dox" kind="file"><name>tutorial.dox</name>
+  </compound>
+  <compound refid="vertex_8dox" kind="file"><name>vertex.dox</name>
+  </compound>
+  <compound refid="zmq_8dox" kind="file"><name>zmq.dox</name>
+  </compound>
+  <compound refid="cage" kind="page"><name>cage</name>
+  </compound>
+  <compound refid="communicationPattern" kind="page"><name>communicationPattern</name>
+  </compound>
+  <compound refid="communicationPolicy" kind="page"><name>communicationPolicy</name>
+  </compound>
+  <compound refid="context" kind="page"><name>context</name>
+  </compound>
+  <compound refid="edge" kind="page"><name>edge</name>
+  </compound>
+  <compound refid="event" kind="page"><name>event</name>
+  </compound>
+  <compound refid="gol" kind="page"><name>gol</name>
+  </compound>
+  <compound refid="graphPolicy" kind="page"><name>graphPolicy</name>
+  </compound>
+  <compound refid="mapping" kind="page"><name>mapping</name>
+  </compound>
+  <compound refid="tutorial" kind="page"><name>tutorial</name>
+  </compound>
+  <compound refid="vertex" kind="page"><name>vertex</name>
+  </compound>
+  <compound refid="zmq" kind="page"><name>zmq</name>
+  </compound>
+  <compound refid="dir_ed3f8fa99ada5bb15f5f9ba5185b02d2" kind="dir"><name>include/graybat/communicationPolicy/bmpi</name>
+  </compound>
+  <compound refid="dir_be40069b644e226b608cae9443c08911" kind="dir"><name>include/graybat/communicationPolicy</name>
+  </compound>
+  <compound refid="dir_668de457229c1ed08f9a301fd9d56177" kind="dir"><name>example</name>
+  </compound>
+  <compound refid="dir_50bda8fbc99656cb80fe7f4efb1e17a5" kind="dir"><name>include/graybat/graphPolicy</name>
+  </compound>
+  <compound refid="dir_8405dc8257f0a702718bd2e49a4fcd1b" kind="dir"><name>include/graybat</name>
+  </compound>
+  <compound refid="dir_69a4a27beaff8a54b4bbd2d98c1bc00c" kind="dir"><name>include</name>
+  </compound>
+  <compound refid="dir_a58e0f5d77f72a68120279d1005dc917" kind="dir"><name>include/graybat/mapping</name>
+  </compound>
+  <compound refid="dir_73d31a21f323f2b650efdf02d419d863" kind="dir"><name>include/graybat/pattern</name>
+  </compound>
+  <compound refid="dir_99784da671f59b1c48e684edcf9e78fc" kind="dir"><name>include/graybat/communicationPolicy/zmq</name>
+  </compound>
+  <compound refid="anyrecv_8cpp-example" kind="example"><name>anyrecv.cpp</name>
+  </compound>
+  <compound refid="chain_8cpp-example" kind="example"><name>chain.cpp</name>
+  </compound>
+  <compound refid="forward_8cpp-example" kind="example"><name>forward.cpp</name>
+  </compound>
+  <compound refid="gol_8cpp-example" kind="example"><name>gol.cpp</name>
+  </compound>
+  <compound refid="ring_8cpp-example" kind="example"><name>ring.cpp</name>
+  </compound>
+  <compound refid="indexpage" kind="page"><name>index</name>
+  </compound>
+</doxygenindex>

@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="structCell" kind="struct" language="C++" prot="public">
+    <compoundname>Cell</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structCell_1a3461076cfcfad41ea5e5474236afbf3b" prot="public" static="no" mutable="no">
+        <type>std::array&lt; unsigned, 1 &gt;</type>
+        <definition>std::array&lt;unsigned, 1&gt; Cell::isAlive</definition>
+        <argsstring></argsstring>
+        <name>isAlive</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="example/gol.cpp" line="37" column="1" bodyfile="example/gol.cpp" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structCell_1af9f8af059f6a481813e429bc01515076" prot="public" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned Cell::aliveNeighbors</definition>
+        <argsstring></argsstring>
+        <name>aliveNeighbors</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="example/gol.cpp" line="38" column="1" bodyfile="example/gol.cpp" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structCell_1a394510643e8664cf12b5efaf5cb99f71" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Cell::Cell</definition>
+        <argsstring>()</argsstring>
+        <name>Cell</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="example/gol.cpp" line="29" column="1" bodyfile="example/gol.cpp" bodystart="29" bodyend="35"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="18">
+        <label>Cell</label>
+        <link refid="structCell"/>
+        <childnode refid="19" relation="usage">
+          <edgelabel>isAlive</edgelabel>
+        </childnode>
+      </node>
+      <node id="19">
+        <label>std::array&lt; unsigned, 1 &gt;</label>
+      </node>
+    </collaborationgraph>
+    <location file="example/gol.cpp" line="28" column="1" bodyfile="example/gol.cpp" bodystart="28" bodyend="40"/>
+    <listofallmembers>
+      <member refid="structCell_1af9f8af059f6a481813e429bc01515076" prot="public" virt="non-virtual"><scope>Cell</scope><name>aliveNeighbors</name></member>
+      <member refid="structCell_1a394510643e8664cf12b5efaf5cb99f71" prot="public" virt="non-virtual"><scope>Cell</scope><name>Cell</name></member>
+      <member refid="structCell_1a3461076cfcfad41ea5e5474236afbf3b" prot="public" virt="non-virtual"><scope>Cell</scope><name>isAlive</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

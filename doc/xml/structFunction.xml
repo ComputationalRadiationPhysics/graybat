@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="structFunction" kind="struct" language="C++" prot="public">
+    <compoundname>Function</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structFunction_1a330b0bdadf59d79668e29033680f5c92" prot="public" static="no" mutable="no">
+        <type>std::function&lt; void(unsigned &amp;)&gt;</type>
+        <definition>std::function&lt; void(unsigned &amp;)&gt; Function::foo</definition>
+        <argsstring></argsstring>
+        <name>foo</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="example/anyrecv.cpp" line="34" column="1" bodyfile="example/anyrecv.cpp" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structFunction_1a7e02d9958425563890a00afdb91f1cbe" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void Function::process</definition>
+        <argsstring>(std::array&lt; unsigned, 1 &gt; &amp;data)</argsstring>
+        <name>process</name>
+        <param>
+          <type>std::array&lt; unsigned, 1 &gt; &amp;</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="example/anyrecv.cpp" line="29" column="1" bodyfile="example/anyrecv.cpp" bodystart="29" bodyend="32"/>
+      </memberdef>
+      <memberdef kind="function" id="structFunction_1a7e02d9958425563890a00afdb91f1cbe" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void Function::process</definition>
+        <argsstring>(std::array&lt; unsigned, 1 &gt; &amp;data)</argsstring>
+        <name>process</name>
+        <param>
+          <type>std::array&lt; unsigned, 1 &gt; &amp;</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="example/forward.cpp" line="29" column="1" bodyfile="example/forward.cpp" bodystart="29" bodyend="32"/>
+      </memberdef>
+      <memberdef kind="function" id="structFunction_1a1f62c3fa804fcf66490355697c255472" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void Function::process</definition>
+        <argsstring>(std::tuple&lt; unsigned, std::string &gt; &amp;a)</argsstring>
+        <name>process</name>
+        <param>
+          <type>std::tuple&lt; unsigned, std::string &gt; &amp;</type>
+          <declname>a</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="example/ring.cpp" line="27" column="1" bodyfile="example/ring.cpp" bodystart="27" bodyend="31"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="example/anyrecv.cpp" line="27" column="1" bodyfile="example/anyrecv.cpp" bodystart="27" bodyend="35"/>
+    <listofallmembers>
+      <member refid="structFunction_1a330b0bdadf59d79668e29033680f5c92" prot="public" virt="non-virtual"><scope>Function</scope><name>foo</name></member>
+      <member refid="structFunction_1a7e02d9958425563890a00afdb91f1cbe" prot="public" virt="non-virtual"><scope>Function</scope><name>process</name></member>
+      <member refid="structFunction_1a7e02d9958425563890a00afdb91f1cbe" prot="public" virt="non-virtual"><scope>Function</scope><name>process</name></member>
+      <member refid="structFunction_1a1f62c3fa804fcf66490355697c255472" prot="public" virt="non-virtual"><scope>Function</scope><name>process</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

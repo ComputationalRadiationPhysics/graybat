@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="dir_73d31a21f323f2b650efdf02d419d863" kind="dir">
+    <compoundname>include/graybat/pattern</compoundname>
+    <innerfile refid="BiStar_8hpp">BiStar.hpp</innerfile>
+    <innerfile refid="Chain_8hpp">Chain.hpp</innerfile>
+    <innerfile refid="EdgeLess_8hpp">EdgeLess.hpp</innerfile>
+    <innerfile refid="FullyConnected_8hpp">FullyConnected.hpp</innerfile>
+    <innerfile refid="Grid_8hpp">Grid.hpp</innerfile>
+    <innerfile refid="GridDiagonal_8hpp">GridDiagonal.hpp</innerfile>
+    <innerfile refid="HyperCube_8hpp">HyperCube.hpp</innerfile>
+    <innerfile refid="InStar_8hpp">InStar.hpp</innerfile>
+    <innerfile refid="None_8hpp">None.hpp</innerfile>
+    <innerfile refid="OutStar_8hpp">OutStar.hpp</innerfile>
+    <innerfile refid="Ring_8hpp">Ring.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/pattern/"/>
+  </compounddef>
+</doxygen>

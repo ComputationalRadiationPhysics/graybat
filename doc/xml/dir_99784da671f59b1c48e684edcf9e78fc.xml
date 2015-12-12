@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="dir_99784da671f59b1c48e684edcf9e78fc" kind="dir">
+    <compoundname>include/graybat/communicationPolicy/zmq</compoundname>
+    <innerfile refid="zmq_2Config_8hpp">Config.hpp</innerfile>
+    <innerfile refid="zmq_2Context_8hpp">Context.hpp</innerfile>
+    <innerfile refid="zmq_2Event_8hpp">Event.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/communicationPolicy/zmq/"/>
+  </compounddef>
+</doxygen>

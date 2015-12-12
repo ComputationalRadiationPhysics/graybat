@@ -1,0 +1,887 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="structgraybat_1_1communicationPolicy_1_1Base" kind="struct" language="C++" prot="public">
+    <compoundname>graybat::communicationPolicy::Base</compoundname>
+    <templateparamlist>
+      <param>
+        <type>typename</type>
+        <declname>T_CommunicationPolicy</declname>
+        <defname>T_CommunicationPolicy</defname>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="user-defined">
+      <header>Point to Point Communication Interface</header>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1Base_1a7c7b3cd367ec07fa9d12ebbbb89dabb8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Send</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::Base&lt; T_CommunicationPolicy &gt;::send</definition>
+        <argsstring>(const VAddr destVAddr, const Tag tag, const Context context, const T_Send &amp;sendData)=delete</argsstring>
+        <name>send</name>
+        <param>
+          <type>const VAddr</type>
+          <declname>destVAddr</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structTag" kindref="compound">Tag</ref></type>
+          <declname>tag</declname>
+        </param>
+        <param>
+          <type>const Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>const T_Send &amp;</type>
+          <declname>sendData</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Base.hpp" line="52" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1Base_1a7dfe96d75727357e0bbac4f8dad93a55" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Send</type>
+          </param>
+        </templateparamlist>
+        <type>Event</type>
+        <definition>Event graybat::communicationPolicy::Base&lt; T_CommunicationPolicy &gt;::asyncSend</definition>
+        <argsstring>(const VAddr destVAddr, const Tag tag, const Context context, const T_Send &amp;sendData)=delete</argsstring>
+        <name>asyncSend</name>
+        <param>
+          <type>const VAddr</type>
+          <declname>destVAddr</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structTag" kindref="compound">Tag</ref></type>
+          <declname>tag</declname>
+        </param>
+        <param>
+          <type>const Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>const T_Send &amp;</type>
+          <declname>sendData</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Base.hpp" line="55" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1Base_1a1785dcc6035447fc3c2b1cd9fee9a4b5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Recv</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::Base&lt; T_CommunicationPolicy &gt;::recv</definition>
+        <argsstring>(const VAddr srcVAddr, const Tag tag, const Context context, T_Recv &amp;recvData)=delete</argsstring>
+        <name>recv</name>
+        <param>
+          <type>const VAddr</type>
+          <declname>srcVAddr</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structTag" kindref="compound">Tag</ref></type>
+          <declname>tag</declname>
+        </param>
+        <param>
+          <type>const Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>T_Recv &amp;</type>
+          <declname>recvData</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Base.hpp" line="58" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1Base_1a2c7e5b0d65bfa0fcfa3377598eb79882" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Recv</type>
+          </param>
+        </templateparamlist>
+        <type>Event</type>
+        <definition>Event graybat::communicationPolicy::Base&lt; T_CommunicationPolicy &gt;::recv</definition>
+        <argsstring>(const Context context, T_Recv &amp;recvData)=delete</argsstring>
+        <name>recv</name>
+        <param>
+          <type>const Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>T_Recv &amp;</type>
+          <declname>recvData</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Base.hpp" line="61" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1Base_1adee3935d47f527c2802d3b88b546b0a2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Recv</type>
+          </param>
+        </templateparamlist>
+        <type>Event</type>
+        <definition>Event graybat::communicationPolicy::Base&lt; T_CommunicationPolicy &gt;::asyncRecv</definition>
+        <argsstring>(const VAddr srcVAddr, const Tag tag, const Context context, T_Recv &amp;recvData)=delete</argsstring>
+        <name>asyncRecv</name>
+        <param>
+          <type>const VAddr</type>
+          <declname>srcVAddr</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structTag" kindref="compound">Tag</ref></type>
+          <declname>tag</declname>
+        </param>
+        <param>
+          <type>const Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>T_Recv &amp;</type>
+          <declname>recvData</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Base.hpp" line="64" column="1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="user-defined">
+      <header>Collective Communication Interface</header>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1Base_1a3db000db20b6cb8fd6e63f3d53e82090" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Send</type>
+          </param>
+          <param>
+            <type>typename T_Recv</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::Base&lt; T_CommunicationPolicy &gt;::gather</definition>
+        <argsstring>(const VAddr rootVAddr, const Context context, const T_Send &amp;sendData, T_Recv &amp;recvData)</argsstring>
+        <name>gather</name>
+        <param>
+          <type>const VAddr</type>
+          <declname>rootVAddr</declname>
+        </param>
+        <param>
+          <type>const Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>const T_Send &amp;</type>
+          <declname>sendData</declname>
+        </param>
+        <param>
+          <type>T_Recv &amp;</type>
+          <declname>recvData</declname>
+        </param>
+        <briefdescription>
+<para>Collects <emphasis>sendData</emphasis> from all peers of the <emphasis>context</emphasis> and transmits it as a list to the peer with <emphasis>rootVAddr</emphasis>. Data of all peers has to be from the <bold>same</bold> size. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">rootVAddr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Peer that will receive collcted data from <emphasis>context</emphasis> members </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set of peers that want to send Data </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">sendData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data that every peer in the <emphasis>context</emphasis> sends. Data of all peers in the <emphasis>context</emphasis> need to have <bold>same</bold> size(). </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data from all <emphasis>context</emphasis> members, that peer with virtual address <emphasis>rootVAddr</emphasis> will receive. <emphasis>recvData</emphasis> of all other members of the <emphasis>context</emphasis> will be empty. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Base.hpp" line="89" column="1" bodyfile="include/graybat/communicationPolicy/Base.hpp" bodystart="226" bodyend="244"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1Base_1a1434994bead59ef38b6eff8346538f0b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Send</type>
+          </param>
+          <param>
+            <type>typename T_Recv</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::Base&lt; T_CommunicationPolicy &gt;::gatherVar</definition>
+        <argsstring>(const VAddr rootVAddr, const Context context, const T_Send &amp;sendData, T_Recv &amp;recvData, std::vector&lt; unsigned &gt; &amp;recvCount)</argsstring>
+        <name>gatherVar</name>
+        <param>
+          <type>const VAddr</type>
+          <declname>rootVAddr</declname>
+        </param>
+        <param>
+          <type>const Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>const T_Send &amp;</type>
+          <declname>sendData</declname>
+        </param>
+        <param>
+          <type>T_Recv &amp;</type>
+          <declname>recvData</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; unsigned &gt; &amp;</type>
+          <declname>recvCount</declname>
+        </param>
+        <briefdescription>
+<para>Collects <emphasis>sendData</emphasis> from all members of the <emphasis>context</emphasis> with <bold>varying</bold> size and transmits it as a list to peer with <emphasis>rootVAddr</emphasis>. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">rootVAddr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Peer that will receive collcted data from <emphasis>context</emphasis> members </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set of peers that want to send Data </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">sendData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data that every peer in the <emphasis>context</emphasis> sends. The Data can have <bold>varying</bold> size </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data from all <emphasis>context</emphasis> peers, that peer with <emphasis>rootVAddr</emphasis> will receive. <emphasis>recvData</emphasis> of all other peers of the <emphasis>context</emphasis> will be empty. The received data is ordered by the VAddr of the peers. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvCount</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of elements each peer sends (can by varying). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Base.hpp" line="106" column="1" bodyfile="include/graybat/communicationPolicy/Base.hpp" bodystart="248" bodyend="272"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1Base_1a1b409ea49d7aba2dee0c83e28dda1b65" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Send</type>
+          </param>
+          <param>
+            <type>typename T_Recv</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::Base&lt; T_CommunicationPolicy &gt;::allGather</definition>
+        <argsstring>(Context context, const T_Send &amp;sendData, T_Recv &amp;recvData)</argsstring>
+        <name>allGather</name>
+        <param>
+          <type>Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>const T_Send &amp;</type>
+          <declname>sendData</declname>
+        </param>
+        <param>
+          <type>T_Recv &amp;</type>
+          <declname>recvData</declname>
+        </param>
+        <briefdescription>
+<para>Collects <emphasis>sendData</emphasis> from all members of the <emphasis>context</emphasis> and transmits it as a list to every peer in the <emphasis>context</emphasis> </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set of peers that want to send Data </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">sendData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data that every peer in the <emphasis>context</emphasis> sends with <bold>same</bold> size </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data from all <emphasis>context</emphasis> members, that all peers* will receive. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Base.hpp" line="118" column="1" bodyfile="include/graybat/communicationPolicy/Base.hpp" bodystart="278" bodyend="296"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1Base_1a1bad18907fcc45db9d4a119e726061a8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Send</type>
+          </param>
+          <param>
+            <type>typename T_Recv</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::Base&lt; T_CommunicationPolicy &gt;::allGatherVar</definition>
+        <argsstring>(const Context context, const T_Send &amp;sendData, T_Recv &amp;recvData, std::vector&lt; unsigned &gt; &amp;recvCount)</argsstring>
+        <name>allGatherVar</name>
+        <param>
+          <type>const Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>const T_Send &amp;</type>
+          <declname>sendData</declname>
+        </param>
+        <param>
+          <type>T_Recv &amp;</type>
+          <declname>recvData</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; unsigned &gt; &amp;</type>
+          <declname>recvCount</declname>
+        </param>
+        <briefdescription>
+<para>Collects <emphasis>sendData</emphasis> from all peers of the <emphasis>context</emphasis>. Size of <emphasis>sendData</emphasis> can vary in size. The data is received by every peer in the <emphasis>context</emphasis>. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set of peers that want to send Data </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">sendData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data that every peer in the <emphasis>context</emphasis> sends with <bold>varying</bold> size </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data from all <emphasis>context</emphasis> members, that all peers* will receive. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvCount</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of elements each peer sends (can by varying). </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Base.hpp" line="131" column="1" bodyfile="include/graybat/communicationPolicy/Base.hpp" bodystart="300" bodyend="324"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1Base_1af1ed07ce5f107f04926d7b7c39c9834e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Send</type>
+          </param>
+          <param>
+            <type>typename T_Recv</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::Base&lt; T_CommunicationPolicy &gt;::scatter</definition>
+        <argsstring>(const VAddr rootVAddr, const Context context, const T_Send &amp;sendData, T_Recv &amp;recvData)</argsstring>
+        <name>scatter</name>
+        <param>
+          <type>const VAddr</type>
+          <declname>rootVAddr</declname>
+        </param>
+        <param>
+          <type>const Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>const T_Send &amp;</type>
+          <declname>sendData</declname>
+        </param>
+        <param>
+          <type>T_Recv &amp;</type>
+          <declname>recvData</declname>
+        </param>
+        <briefdescription>
+<para>Distributes <emphasis>sendData</emphasis> from peer <emphasis>rootVAddr</emphasis> to all peers in <emphasis>context</emphasis>. Every peer will receive different data. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="remark"><para>In Contrast to broadcast where every peer receives the same data</para></simplesect>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">rootVAddr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>peer that want to distribute its data </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set of peers that want to receive Data </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">sendData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data that peer with <emphasis>rootVAddr</emphasis> will distribute over the peers of the <emphasis>context</emphasis> </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data from peer with <emphasis>rootVAddr</emphasis>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Base.hpp" line="146" column="1" bodyfile="include/graybat/communicationPolicy/Base.hpp" bodystart="328" bodyend="346"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1Base_1ac4aa66d3ed33c810ae48ae762b432b14" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Send</type>
+          </param>
+          <param>
+            <type>typename T_Recv</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::Base&lt; T_CommunicationPolicy &gt;::allScatter</definition>
+        <argsstring>(const Context context, const T_Send &amp;sendData, T_Recv &amp;recvData)</argsstring>
+        <name>allScatter</name>
+        <param>
+          <type>const Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>const T_Send &amp;</type>
+          <declname>sendData</declname>
+        </param>
+        <param>
+          <type>T_Recv &amp;</type>
+          <declname>recvData</declname>
+        </param>
+        <briefdescription>
+<para>Distributes <emphasis>sendData</emphasis> of all peer in the <emphasis>context</emphasis> to all peers in the <emphasis>context</emphasis>. Every peer will receive data from every other peer (also the own data) </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set of peers that want to receive Data </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">sendData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data that each peer wants to send. Each peer will receive same number of data elements, but not the same data elements. sendData will be divided in equal chunks of data and is then distributed.</para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data from all peer. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Base.hpp" line="161" column="1" bodyfile="include/graybat/communicationPolicy/Base.hpp" bodystart="350" bodyend="373"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1Base_1ad3bf74c91931b35b56fbb54ac535bc14" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Send</type>
+          </param>
+          <param>
+            <type>typename T_Recv</type>
+          </param>
+          <param>
+            <type>typename T_Op</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::Base&lt; T_CommunicationPolicy &gt;::reduce</definition>
+        <argsstring>(const VAddr rootVAddr, const Context context, const T_Op op, const T_Send &amp;sendData, T_Recv &amp;recvData)</argsstring>
+        <name>reduce</name>
+        <param>
+          <type>const VAddr</type>
+          <declname>rootVAddr</declname>
+        </param>
+        <param>
+          <type>const Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>const T_Op</type>
+          <declname>op</declname>
+        </param>
+        <param>
+          <type>const T_Send &amp;</type>
+          <declname>sendData</declname>
+        </param>
+        <param>
+          <type>T_Recv &amp;</type>
+          <declname>recvData</declname>
+        </param>
+        <briefdescription>
+<para>Performs a reduction with a binary operator <emphasis>op</emphasis> on all <emphasis>sendData</emphasis> elements from all peers whithin the <emphasis>context</emphasis>. The result will be received by the peer with <emphasis>rootVAddr</emphasis>. Binary operations like std::plus, std::minus can be used. But, they can also be defined as binary operator simular to std::plus etc. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">rootVAddr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>peer that will receive the result of reduction </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set of peers that </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">op</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Binary operator that should be used for reduction </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">sendData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data that every peer contributes to the reduction </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Reduced sendData that will be received by peer with <emphasis>rootVAddr</emphasis>. It will have same size of sendData and contains the ith reduced sendData values. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Base.hpp" line="180" column="1" bodyfile="include/graybat/communicationPolicy/Base.hpp" bodystart="378" bodyend="400"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1Base_1ac77038454619b683f006ba149aea2dcb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Send</type>
+          </param>
+          <param>
+            <type>typename T_Recv</type>
+          </param>
+          <param>
+            <type>typename T_Op</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::Base&lt; T_CommunicationPolicy &gt;::allReduce</definition>
+        <argsstring>(const Context context, T_Op op, const T_Send &amp;sendData, T_Recv &amp;recvData)</argsstring>
+        <name>allReduce</name>
+        <param>
+          <type>const Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>T_Op</type>
+          <declname>op</declname>
+        </param>
+        <param>
+          <type>const T_Send &amp;</type>
+          <declname>sendData</declname>
+        </param>
+        <param>
+          <type>T_Recv &amp;</type>
+          <declname>recvData</declname>
+        </param>
+        <briefdescription>
+<para>Performs a reduction with a binary operator <emphasis>op</emphasis> on all <emphasis>sendData</emphasis> elements from all peers whithin the <emphasis>context</emphasis>. The result will be received by all peers. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set of peers that </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">op</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Binary operator that should be used for reduction </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">sendData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data that every peer contributes to the reduction </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Reduced sendData that will be received by all peers. It will have same size of sendData and contains the ith reduced sendData values. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Base.hpp" line="195" column="1" bodyfile="include/graybat/communicationPolicy/Base.hpp" bodystart="405" bodyend="426"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1Base_1a431ed56b3d5ade805200b565ce98daa0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_SendRecv</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::Base&lt; T_CommunicationPolicy &gt;::broadcast</definition>
+        <argsstring>(const VAddr rootVAddr, const Context context, T_SendRecv &amp;data)</argsstring>
+        <name>broadcast</name>
+        <param>
+          <type>const VAddr</type>
+          <declname>rootVAddr</declname>
+        </param>
+        <param>
+          <type>const Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>T_SendRecv &amp;</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+<para>Send <emphasis>sendData</emphasis> from peer <emphasis>rootVAddr</emphasis> to all peers in <emphasis>context</emphasis>. Every peer will receive the same data. </para>        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="remark"><para>In Contrast to scatter where every peer receives different data</para></simplesect>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">rootVAddr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Source peer </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set of peers that want to receive Data </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">sendData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data that peer with <emphasis>rootVAddr</emphasis> will send to the peers of the <emphasis>context</emphasis> </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data from peer with <emphasis>rootVAddr</emphasis>. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Base.hpp" line="209" column="1" bodyfile="include/graybat/communicationPolicy/Base.hpp" bodystart="431" bodyend="444"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1Base_1abc4e72365c6ad134ba6e31abd8fa2163" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::Base&lt; T_CommunicationPolicy &gt;::synchronize</definition>
+        <argsstring>(const Context context)</argsstring>
+        <name>synchronize</name>
+        <param>
+          <type>const Context</type>
+          <declname>context</declname>
+        </param>
+        <briefdescription>
+<para>Synchronizes all peers within <emphasis>context</emphasis> to the same point in the programm execution (barrier). </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Base.hpp" line="216" column="1" bodyfile="include/graybat/communicationPolicy/Base.hpp" bodystart="448" bodyend="465"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structgraybat_1_1communicationPolicy_1_1Base_1a8809cc88306f4411eff43b185d4a12ba" prot="public" static="no">
+        <type>T_CommunicationPolicy</type>
+        <definition>using graybat::communicationPolicy::Base&lt; T_CommunicationPolicy &gt;::CommunicationPolicy =  T_CommunicationPolicy</definition>
+        <argsstring></argsstring>
+        <name>CommunicationPolicy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Base.hpp" line="22" column="1" bodyfile="include/graybat/communicationPolicy/Base.hpp" bodystart="22" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1communicationPolicy_1_1Base_1a61555bfaae515788f4832c0f78bc36f4" prot="public" static="no">
+        <type>typename graybat::communicationPolicy::VAddr&lt; CommunicationPolicy &gt;</type>
+        <definition>using graybat::communicationPolicy::Base&lt; T_CommunicationPolicy &gt;::VAddr =  typename graybat::communicationPolicy::VAddr&lt;CommunicationPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>VAddr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Base.hpp" line="23" column="1" bodyfile="include/graybat/communicationPolicy/Base.hpp" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1communicationPolicy_1_1Base_1aced4ab808a9c345a0e698d21736f3a2c" prot="public" static="no">
+        <type>typename graybat::communicationPolicy::Tag&lt; CommunicationPolicy &gt;</type>
+        <definition>using graybat::communicationPolicy::Base&lt; T_CommunicationPolicy &gt;::Tag =  typename graybat::communicationPolicy::Tag&lt;CommunicationPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>Tag</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Base.hpp" line="24" column="1" bodyfile="include/graybat/communicationPolicy/Base.hpp" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1communicationPolicy_1_1Base_1a12a885bada327fddc91cfe4515af6471" prot="public" static="no">
+        <type>typename graybat::communicationPolicy::Context&lt; CommunicationPolicy &gt;</type>
+        <definition>using graybat::communicationPolicy::Base&lt; T_CommunicationPolicy &gt;::Context =  typename graybat::communicationPolicy::Context&lt;CommunicationPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>Context</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Base.hpp" line="25" column="1" bodyfile="include/graybat/communicationPolicy/Base.hpp" bodystart="25" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1communicationPolicy_1_1Base_1a2fc51f670372dfb2d7f8474a5a0f5e89" prot="public" static="no">
+        <type>typename graybat::communicationPolicy::Event&lt; CommunicationPolicy &gt;</type>
+        <definition>using graybat::communicationPolicy::Base&lt; T_CommunicationPolicy &gt;::Event =  typename graybat::communicationPolicy::Event&lt;CommunicationPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>Event</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Base.hpp" line="26" column="1" bodyfile="include/graybat/communicationPolicy/Base.hpp" bodystart="26" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/communicationPolicy/Base.hpp" line="20" column="1" bodyfile="include/graybat/communicationPolicy/Base.hpp" bodystart="20" bodyend="219"/>
+    <listofallmembers>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a1b409ea49d7aba2dee0c83e28dda1b65" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::Base</scope><name>allGather</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a1bad18907fcc45db9d4a119e726061a8" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::Base</scope><name>allGatherVar</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1ac77038454619b683f006ba149aea2dcb" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::Base</scope><name>allReduce</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1ac4aa66d3ed33c810ae48ae762b432b14" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::Base</scope><name>allScatter</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1adee3935d47f527c2802d3b88b546b0a2" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::Base</scope><name>asyncRecv</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a7dfe96d75727357e0bbac4f8dad93a55" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::Base</scope><name>asyncSend</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a431ed56b3d5ade805200b565ce98daa0" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::Base</scope><name>broadcast</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a8809cc88306f4411eff43b185d4a12ba" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::Base</scope><name>CommunicationPolicy</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a12a885bada327fddc91cfe4515af6471" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::Base</scope><name>Context</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a2fc51f670372dfb2d7f8474a5a0f5e89" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::Base</scope><name>Event</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a3db000db20b6cb8fd6e63f3d53e82090" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::Base</scope><name>gather</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a1434994bead59ef38b6eff8346538f0b" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::Base</scope><name>gatherVar</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a1785dcc6035447fc3c2b1cd9fee9a4b5" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::Base</scope><name>recv</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a2c7e5b0d65bfa0fcfa3377598eb79882" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::Base</scope><name>recv</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1ad3bf74c91931b35b56fbb54ac535bc14" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::Base</scope><name>reduce</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1af1ed07ce5f107f04926d7b7c39c9834e" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::Base</scope><name>scatter</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a7c7b3cd367ec07fa9d12ebbbb89dabb8" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::Base</scope><name>send</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1abc4e72365c6ad134ba6e31abd8fa2163" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::Base</scope><name>synchronize</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1aced4ab808a9c345a0e698d21736f3a2c" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::Base</scope><name>Tag</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a61555bfaae515788f4832c0f78bc36f4" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::Base</scope><name>VAddr</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

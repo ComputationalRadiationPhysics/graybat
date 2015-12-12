@@ -1,0 +1,184 @@
+\hypertarget{gol_8cpp-example}{}\section{gol.\+cpp}
+Simple example that shows how to instantiate and use the Cage within a game of life.
+
+
+\begin{DoxyCodeInclude}
+
+\textcolor{comment}{// STL}
+\textcolor{preprocessor}{#include <iostream>}   \textcolor{comment}{/* std::cout */}
+\textcolor{preprocessor}{#include <vector>}     \textcolor{comment}{/* std::vector */}
+\textcolor{preprocessor}{#include <array>}      \textcolor{comment}{/* std::array */}
+\textcolor{preprocessor}{#include <cmath>}      \textcolor{comment}{/* sqrt */}
+\textcolor{preprocessor}{#include <cstdlib>}    \textcolor{comment}{/* atoi */}
+\textcolor{preprocessor}{#include <numeric>}    \textcolor{comment}{/* std::accumulate */}
+
+\textcolor{comment}{// GRAYBAT}
+\textcolor{preprocessor}{#include <graybat/Cage.hpp>}
+\textcolor{preprocessor}{#include <graybat/communicationPolicy/BMPI.hpp>}
+\textcolor{preprocessor}{#include <graybat/graphPolicy/BGL.hpp>}
+\textcolor{comment}{// GRAYBAT mappings}
+\textcolor{preprocessor}{#include <graybat/mapping/Consecutive.hpp>}
+\textcolor{preprocessor}{#include <graybat/mapping/Random.hpp>}
+\textcolor{preprocessor}{#include <graybat/mapping/Roundrobin.hpp>}
+\textcolor{comment}{// GRAYBAT patterns}
+\textcolor{preprocessor}{#include <graybat/pattern/GridDiagonal.hpp>}
+
+\textcolor{keyword}{struct }\hyperlink{structCell}{Cell} \{
+    \hyperlink{structCell}{Cell}() : isAlive\{\{0\}\}, aliveNeighbors(0)\{
+    \textcolor{keywordtype}{unsigned} random = rand() % 10000;
+    \textcolor{keywordflow}{if}(random < 3125)\{
+        isAlive[0] = 1;
+    \}
+
+    \}
+    
+    std::array<unsigned, 1> isAlive;
+    \textcolor{keywordtype}{unsigned} aliveNeighbors;
+
+\};
+
+
+\textcolor{keywordtype}{void} printGolDomain(\textcolor{keyword}{const} std::vector<unsigned> domain, \textcolor{keyword}{const} \textcolor{keywordtype}{unsigned} width, \textcolor{keyword}{const} \textcolor{keywordtype}{unsigned} height, \textcolor{keyword}{const} \textcolor{keywordtype}{
+      unsigned} generation)\{
+    \textcolor{keywordflow}{for}(\textcolor{keywordtype}{unsigned} i = 0; i < domain.size(); ++i)\{
+    \textcolor{keywordflow}{if}((i % (width)) == 0)\{
+        std::cerr << std::endl;
+    \}
+
+    \textcolor{keywordflow}{if}(domain.at(i))\{
+        std::cerr << \textcolor{stringliteral}{"#"};
+    \}
+    \textcolor{keywordflow}{else} \{
+        std::cerr << \textcolor{stringliteral}{" "};
+    \}
+
+
+    \}
+    std::cerr << \textcolor{stringliteral}{"Generation: "} << generation << std::endl;
+    \textcolor{keywordflow}{for}(\textcolor{keywordtype}{unsigned} i = 0; i < height+1; ++i)\{
+    std::cerr << \textcolor{stringliteral}{"\(\backslash\)033[F"};
+    \}
+
+\}
+
+\textcolor{keyword}{template} <\textcolor{keyword}{class} T\_Cell>
+\textcolor{keywordtype}{void} updateState(T\_Cell &cell)\{
+
+    \textcolor{keywordflow}{switch}(cell().aliveNeighbors)\{
+
+    \textcolor{keywordflow}{case} 0:
+    \textcolor{keywordflow}{case} 1:
+    cell().isAlive[0] = 0;
+    \textcolor{keywordflow}{break};
+
+    \textcolor{keywordflow}{case} 2:
+    cell().isAlive[0] = cell().isAlive[0];
+    \textcolor{keywordflow}{break};
+        
+    \textcolor{keywordflow}{case} 3: 
+    cell().isAlive[0] = 1;
+    \textcolor{keywordflow}{break}; 
+
+    \textcolor{keywordflow}{default}: 
+    cell().isAlive[0] = 0;
+    \textcolor{keywordflow}{break};
+
+    \};
+
+\}
+
+std::array<unsigned,1> one\{\{1\}\};
+
+\textcolor{keywordtype}{int} gol(\textcolor{keyword}{const} \textcolor{keywordtype}{unsigned} nCells, \textcolor{keyword}{const} \textcolor{keywordtype}{unsigned} nTimeSteps ) \{
+    \textcolor{comment}{/***************************************************************************}
+\textcolor{comment}{     * Configuration}
+\textcolor{comment}{     ****************************************************************************/}
+
+    \textcolor{comment}{// CommunicationPolicy}
+    \textcolor{keyword}{typedef} \hyperlink{structgraybat_1_1communicationPolicy_1_1BMPI}{graybat::communicationPolicy::BMPI} CP;
+    
+    \textcolor{comment}{// GraphPolicy}
+    \textcolor{keyword}{typedef} \hyperlink{classgraybat_1_1graphPolicy_1_1BGL}{graybat::graphPolicy::BGL<Cell>}    GP;
+    
+    \textcolor{comment}{// Cage}
+    \textcolor{keyword}{typedef} \hyperlink{structgraybat_1_1Cage}{graybat::Cage<CP, GP>} Cage;
+    \textcolor{keyword}{typedef} \textcolor{keyword}{typename} Cage::Event  Event;
+    \textcolor{keyword}{typedef} \textcolor{keyword}{typename} Cage::Vertex Vertex;
+
+    \textcolor{comment}{/***************************************************************************}
+\textcolor{comment}{     * Initialize Communication}
+\textcolor{comment}{     ****************************************************************************/}
+    \textcolor{comment}{// Set Graph properties}
+    \textcolor{keyword}{const} \textcolor{keywordtype}{unsigned} height = sqrt(nCells);
+    \textcolor{keyword}{const} \textcolor{keywordtype}{unsigned} width  = height;
+
+    \textcolor{comment}{// Create GoL Graph}
+    Cage grid;    
+    grid.setGraph(\hyperlink{structgraybat_1_1pattern_1_1GridDiagonal}{graybat::pattern::GridDiagonal<GP>}(height, width));
+
+    
+    \textcolor{comment}{// Distribute vertices}
+    grid.distribute(\hyperlink{structgraybat_1_1mapping_1_1Consecutive}{graybat::mapping::Consecutive}());
+
+    \textcolor{comment}{/***************************************************************************}
+\textcolor{comment}{     * Run Simulation}
+\textcolor{comment}{     ****************************************************************************/}
+    std::vector<Event> events;   
+    std::vector<unsigned> golDomain(grid.getVertices().size(), 0); 
+    Vertex root = grid.getVertex(0);
+
+    \textcolor{comment}{// Simulate life}
+    \textcolor{keywordflow}{for}(\textcolor{keywordtype}{unsigned} timestep = 0; timestep < nTimeSteps; ++timestep)\{
+
+    \textcolor{comment}{// Print life field by owner of vertex 0}
+    \textcolor{keywordflow}{if}(grid.peerHostsVertex(root))\{
+        printGolDomain(golDomain, width, height, timestep);
+    \}
+    
+    \textcolor{comment}{// Send cell state to neighbor cells}
+    std::vector<Event> es;   
+    \textcolor{keywordflow}{for}(Vertex &cell : grid.hostedVertices)\{
+        cell.spread(cell().isAlive, events);
+    \}
+
+    \textcolor{comment}{// Recv cell state from neighbor cells and update own cell states}
+    \textcolor{keywordflow}{for}(Vertex &cell : grid.hostedVertices)\{
+        cell().aliveNeighbors = cell.accumulate(std::plus<unsigned>(), 0);
+        updateState(cell);
+    \}
+
+    \textcolor{comment}{// Wait to finish events}
+    \textcolor{keywordflow}{for}(\textcolor{keywordtype}{unsigned} i = 0; i < events.size(); ++i)\{
+        events.back().wait();
+        events.pop\_back();
+    \}
+
+    \textcolor{comment}{// Gather state by vertex with id = 0}
+    \textcolor{keywordflow}{for}(Vertex &cell: grid.hostedVertices)\{
+        grid.gather(root, cell, cell().isAlive, golDomain, \textcolor{keyword}{true});
+    \}
+    
+    \}
+    
+    \textcolor{keywordflow}{return} 0;
+
+\}
+
+\textcolor{keywordtype}{int} main(\textcolor{keywordtype}{int} argc, \textcolor{keywordtype}{char}** argv)\{
+
+    \textcolor{keywordflow}{if}(argc < 3)\{
+    std::cout << \textcolor{stringliteral}{"Usage ./GoL [nCells] [nTimeteps]"} << std::endl;
+    \textcolor{keywordflow}{return} 0;
+    \}
+
+    \textcolor{keyword}{const} \textcolor{keywordtype}{unsigned} nCells    = atoi(argv[1]);
+    \textcolor{keyword}{const} \textcolor{keywordtype}{unsigned} nTimeSteps = atoi(argv[2]);
+
+
+    gol(nCells, nTimeSteps);
+
+
+    \textcolor{keywordflow}{return} 0;
+\}
+\end{DoxyCodeInclude}
+ 

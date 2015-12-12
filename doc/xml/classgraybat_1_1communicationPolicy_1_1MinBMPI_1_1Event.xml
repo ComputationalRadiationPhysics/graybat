@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Event" kind="class" language="C++" prot="public">
+    <compoundname>graybat::communicationPolicy::MinBMPI::Event</compoundname>
+    <includes refid="MinBMPI_8hpp" local="no">MinBMPI.hpp</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Event_1a6e1d721a0052840dc60b2647cdf28628" prot="private" static="no" mutable="no">
+        <type>mpi::request</type>
+        <definition>mpi::request graybat::communicationPolicy::MinBMPI::Event::request</definition>
+        <argsstring></argsstring>
+        <name>request</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="126" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="126" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Event_1aa8cd6ac49bcde90305e9e7733a20ddac" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::communicationPolicy::MinBMPI::Event::Event</definition>
+        <argsstring>(mpi::request request)</argsstring>
+        <name>Event</name>
+        <param>
+          <type>mpi::request</type>
+          <declname>request</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="100" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="100" bodyend="102"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Event_1aba12d63df8f8e2057382d8bdef003885" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::communicationPolicy::MinBMPI::Event::~Event</definition>
+        <argsstring>()</argsstring>
+        <name>~Event</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="104" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="104" bodyend="106"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Event_1a920f03720f6ce9fba4c2e317f5d06ccf" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::MinBMPI::Event::wait</definition>
+        <argsstring>()</argsstring>
+        <name>wait</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="108" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="108" bodyend="111"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Event_1a627a8aa3918cb9b985f8536302184d72" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool graybat::communicationPolicy::MinBMPI::Event::ready</definition>
+        <argsstring>()</argsstring>
+        <name>ready</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="113" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="113" bodyend="123"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>An event is returned by non-blocking communication operations and can be asked whether an operation has finished or it can be waited for this operation to be finished. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="98" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="98" bodyend="127"/>
+    <listofallmembers>
+      <member refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Event_1aa8cd6ac49bcde90305e9e7733a20ddac" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::MinBMPI::Event</scope><name>Event</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Event_1a627a8aa3918cb9b985f8536302184d72" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::MinBMPI::Event</scope><name>ready</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Event_1a6e1d721a0052840dc60b2647cdf28628" prot="private" virt="non-virtual"><scope>graybat::communicationPolicy::MinBMPI::Event</scope><name>request</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Event_1a920f03720f6ce9fba4c2e317f5d06ccf" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::MinBMPI::Event</scope><name>wait</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Event_1aba12d63df8f8e2057382d8bdef003885" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::MinBMPI::Event</scope><name>~Event</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

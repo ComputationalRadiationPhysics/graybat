@@ -1,11 +1,12 @@
 var NAVTREE =
 [
-  [ "GrayBat", "index.html", [
+  [ "Graybat", "index.html", [
     [ "Communication and Graph Environment", "cage.html", "cage" ],
-    [ "The Game of Life Example", "gol.html", null ],
-    [ "Classes", null, [
-      [ "Class List", "annotated.html", "annotated" ],
+    [ "Graybat Tutorials", "tutorial.html", "tutorial" ],
+    [ "Classes", "annotated.html", [
+      [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
+      [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", null ],
         [ "Functions", "functions_func.html", null ]
@@ -20,7 +21,9 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-".html"
+".html",
+"structgraybat_1_1CommunicationVertex.html#aa8c10d97bde2b66352ce88a5bf3bad12",
+"structgraybat_1_1pattern_1_1OutStar.html#a529cb17a9c89354e71f18ec03e2c691f"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -1,0 +1,121 @@
+\hypertarget{forward_8cpp-example}{}\section{forward.\+cpp}
+Data is forwarded through a chain of compute nodes.
+
+
+\begin{DoxyCodeInclude}
+
+\textcolor{comment}{// STL}
+\textcolor{preprocessor}{#include <iostream>}   \textcolor{comment}{/* std::cout */}
+\textcolor{preprocessor}{#include <vector>}     \textcolor{comment}{/* std::vector */}
+\textcolor{preprocessor}{#include <array>}      \textcolor{comment}{/* std::array */}
+\textcolor{preprocessor}{#include <functional>} \textcolor{comment}{/* std::bind */}
+
+\textcolor{comment}{// GRAYBAT}
+\textcolor{preprocessor}{#include <graybat/Cage.hpp>}
+\textcolor{preprocessor}{#include <graybat/communicationPolicy/BMPI.hpp>}
+\textcolor{preprocessor}{#include <graybat/graphPolicy/BGL.hpp>}
+\textcolor{comment}{// GRAYBAT mappings}
+\textcolor{preprocessor}{#include <graybat/mapping/Consecutive.hpp>}
+\textcolor{preprocessor}{#include <graybat/mapping/Random.hpp>}
+\textcolor{preprocessor}{#include <graybat/mapping/Roundrobin.hpp>}
+\textcolor{comment}{// GRAYBAT pattern}
+\textcolor{preprocessor}{#include <graybat/pattern/GridDiagonal.hpp>}
+\textcolor{preprocessor}{#include <graybat/pattern/Chain.hpp>}
+
+\textcolor{keyword}{struct }\hyperlink{structFunction}{Function} \{
+    
+    \textcolor{keywordtype}{void} process(std::array<unsigned, 1> &data)\{
+    foo(std::get<0>(data));
+    
+    \}
+
+    std::function<void (unsigned&)> foo;
+\};
+
+
+\textcolor{keywordtype}{int} exp() \{
+    \textcolor{comment}{/***************************************************************************}
+\textcolor{comment}{     * Configuration}
+\textcolor{comment}{     ****************************************************************************/}
+
+    \textcolor{comment}{// CommunicationPolicy}
+    \textcolor{keyword}{typedef} \hyperlink{structgraybat_1_1communicationPolicy_1_1BMPI}{graybat::communicationPolicy::BMPI} CP;
+    \textcolor{keyword}{typedef} CP::Config                         Config;
+    
+    \textcolor{comment}{// GraphPolicy}
+    \textcolor{keyword}{typedef} \hyperlink{classgraybat_1_1graphPolicy_1_1BGL}{graybat::graphPolicy::BGL<Function>}    GP;
+    
+    \textcolor{comment}{// Cage}
+    \textcolor{keyword}{typedef} \hyperlink{structgraybat_1_1Cage}{graybat::Cage<CP, GP>} Cage;
+    \textcolor{keyword}{typedef} \textcolor{keyword}{typename} Cage::Event  Event;
+    \textcolor{keyword}{typedef} \textcolor{keyword}{typename} Cage::Vertex Vertex;
+    \textcolor{keyword}{typedef} \textcolor{keyword}{typename} Vertex::VertexProperty VertexProperty;
+
+    \textcolor{comment}{/***************************************************************************}
+\textcolor{comment}{     * Initialize Communication}
+\textcolor{comment}{nn     ****************************************************************************/}
+    \textcolor{keyword}{const} \textcolor{keywordtype}{unsigned} nChainLinks = 1000;
+    
+    \textcolor{comment}{// Create GoL Graph}
+    Config config;
+    Cage cage(config);
+
+    \textcolor{comment}{// Set communication pattern}
+    cage.setGraph(\hyperlink{structgraybat_1_1pattern_1_1Chain}{graybat::pattern::Chain<GP>}(nChainLinks));
+
+    \textcolor{comment}{// Distribute vertices}
+    cage.distribute(\hyperlink{structgraybat_1_1mapping_1_1Consecutive}{graybat::mapping::Consecutive}());
+
+    \textcolor{comment}{// Set functions of vertices}
+    \textcolor{keywordflow}{for}(Vertex &v : cage.getVertices())\{
+    v().foo = [v](\textcolor{keywordtype}{unsigned} &a)->\textcolor{keywordtype}{void} \{a += v.id;\};
+    \}
+        
+
+    \textcolor{comment}{/***************************************************************************}
+\textcolor{comment}{     * Run Simulation}
+\textcolor{comment}{     ****************************************************************************/}
+    std::vector<Event> events;
+
+    std::array<unsigned, 1> input \{\{0\}\};
+    std::array<unsigned, 1> output \{\{0\}\};
+    std::array<unsigned, 1> intermediate \{\{0\}\};
+
+    \textcolor{keyword}{const} Vertex entry = cage.getVertex(0);
+    \textcolor{keyword}{const} Vertex exit  = cage.getVertex(nChainLinks-1);
+    
+    \textcolor{keyword}{using namespace }std::placeholders;
+    
+    \textcolor{keywordflow}{for}(Vertex v : cage.hostedVertices)\{
+    \textcolor{keywordflow}{if}(v == entry)\{
+        v.spread(input, events);
+        std::cout << \textcolor{stringliteral}{"Input: "} << input[0] << std::endl;                
+    \}
+
+    \textcolor{keywordflow}{if}(v == exit)\{
+        v.collect(output);
+        std::cout << \textcolor{stringliteral}{"Output: "} << output[0] << std::endl;
+    \}
+
+    \textcolor{keywordflow}{if}(v != entry and v != exit)\{
+        v.forward(intermediate, std::bind(&VertexProperty::process, v(), std::placeholders::\_1));
+        std::cout << \textcolor{stringliteral}{"Intermediate: "} << intermediate[0] << std::endl;
+    \}
+    
+    \}
+
+    \textcolor{keywordflow}{for}(\textcolor{keywordtype}{unsigned} i = 0; i < events.size(); ++i)\{
+    events.back().wait();
+    events.pop\_back();
+    \}
+    
+    \textcolor{keywordflow}{return} 0;
+
+\}
+
+\textcolor{keywordtype}{int} main()\{
+    exp();
+    \textcolor{keywordflow}{return} 0;
+\}
+\end{DoxyCodeInclude}
+ 

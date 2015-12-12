@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="gol" kind="page">
+    <compoundname>gol</compoundname>
+    <title>The Game of Life Example</title>
+    <detaileddescription>
+<para>The following figure shows a sketch of the game of life simulation implemented with GrayBat support. The Game of Life domain (20 x 20 cells) is decomposed very fine grain, such that, every cell is represented by a vertex in a two-dimensional grid and neighboring vertices are connected by edges (<ref refid="structgraybat_1_1pattern_1_1GridDiagonal" kindref="compound">graybat::pattern::GridDiagonal</ref>). The graph is partioned into four partitions and mapped to four peers (graybat::pattern::GraphPartition). Therefore, each peer is responsible for the communication of 100 vertices with its neighbors. Finally, each two peers are mapped to a quad core processor on a dual socket system (<ref refid="structgraybat_1_1communicationPolicy_1_1BMPI" kindref="compound">graybat::communicationPolicy::BMPI</ref>). This is one possible sequence of mappings for a Game of Life simulation within the GrayBat framework. On each step changes are possible to adapt the simulation to other architectures, networks or algorithms.</para><para><image type="html" name="gol.svg"></image>
+</para><para><heading level="2">See Also</heading>
+</para><para><itemizedlist>
+<listitem><para><ref refid="gol_8cpp-example" kindref="compound">GoL Sources</ref></para></listitem><listitem><para><ref refid="cage" kindref="compound">Communication and Graph Environment</ref></para></listitem><listitem><para><ref refid="communicationPolicy" kindref="compound">Communication Policy</ref></para></listitem><listitem><para><ref refid="graphPolicy" kindref="compound">Graph Policy</ref></para></listitem><listitem><para><ref refid="communicationPattern" kindref="compound">Communication Pattern</ref></para></listitem><listitem><para><ref refid="mapping" kindref="compound">Vertex Mapping</ref> </para></listitem></itemizedlist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

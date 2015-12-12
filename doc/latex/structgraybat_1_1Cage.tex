@@ -1,0 +1,433 @@
+\hypertarget{structgraybat_1_1Cage}{}\section{graybat\+:\+:Cage$<$ T\+\_\+\+Communication\+Policy, T\+\_\+\+Graph\+Policy $>$ Class Template Reference}
+\label{structgraybat_1_1Cage}\index{graybat\+::\+Cage$<$ T\+\_\+\+Communication\+Policy, T\+\_\+\+Graph\+Policy $>$@{graybat\+::\+Cage$<$ T\+\_\+\+Communication\+Policy, T\+\_\+\+Graph\+Policy $>$}}
+
+
+The Communication And Graph Environment enables to communicate on basis of a graph with methods of a user defined communication library.  
+
+
+
+
+{\ttfamily \#include $<$Cage.\+hpp$>$}
+
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structgraybat_1_1Cage_1_1maximum}{maximum}
+\end{DoxyCompactItemize}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structgraybat_1_1Cage_a848caea3a16ff2390c8b0020cef298f2}{}using {\bfseries Communication\+Policy} = T\+\_\+\+Communication\+Policy\label{structgraybat_1_1Cage_a848caea3a16ff2390c8b0020cef298f2}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_afc98171db17598bd0030d90ff101e4c2}{}using {\bfseries Graph\+Policy} = T\+\_\+\+Graph\+Policy\label{structgraybat_1_1Cage_afc98171db17598bd0030d90ff101e4c2}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_ac7de84bd47f0af51bf87051355424ce9}{}using {\bfseries Cage\+\_\+t} = \hyperlink{structgraybat_1_1Cage}{Cage}$<$ Communication\+Policy, Graph\+Policy $>$\label{structgraybat_1_1Cage_ac7de84bd47f0af51bf87051355424ce9}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_a5fcd15bbd715221a9d05f2fa5f2d14d5}{}using {\bfseries V\+Addr} = graybat\+::communication\+Policy\+::\+V\+Addr$<$ Communication\+Policy $>$\label{structgraybat_1_1Cage_a5fcd15bbd715221a9d05f2fa5f2d14d5}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_a716c512829be5cca5dcbf2a52754d10d}{}using {\bfseries Context} = graybat\+::communication\+Policy\+::\+Context$<$ Communication\+Policy $>$\label{structgraybat_1_1Cage_a716c512829be5cca5dcbf2a52754d10d}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_af23858450f27e9dfde241521a13df525}{}using {\bfseries Event} = graybat\+::communication\+Policy\+::\+Event$<$ Communication\+Policy $>$\label{structgraybat_1_1Cage_af23858450f27e9dfde241521a13df525}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_a425d340120d20ee287043cbaa3e66d27}{}using {\bfseries C\+P\+Config} = graybat\+::communication\+Policy\+::\+Config$<$ Communication\+Policy $>$\label{structgraybat_1_1Cage_a425d340120d20ee287043cbaa3e66d27}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_a1c8a9c50bfa2ac05eb0e36acf2c4f791}{}using {\bfseries Edge} = \hyperlink{structgraybat_1_1CommunicationEdge}{graybat\+::\+Communication\+Edge}$<$ \hyperlink{structgraybat_1_1Cage}{Cage\+\_\+t} $>$\label{structgraybat_1_1Cage_a1c8a9c50bfa2ac05eb0e36acf2c4f791}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_acfd9a202873f8a3d1cc5680bc2ac9267}{}using {\bfseries Vertex} = \hyperlink{structgraybat_1_1CommunicationVertex}{graybat\+::\+Communication\+Vertex}$<$ \hyperlink{structgraybat_1_1Cage}{Cage\+\_\+t} $>$\label{structgraybat_1_1Cage_acfd9a202873f8a3d1cc5680bc2ac9267}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_ae6c3a8d91a9e19c48b760216646b07e3}{}using {\bfseries Edge\+Description} = graybat\+::graph\+Policy\+::\+Edge\+Description$<$ Graph\+Policy $>$\label{structgraybat_1_1Cage_ae6c3a8d91a9e19c48b760216646b07e3}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_a8dcd6874d2fbb5a2a731f197aedcb87f}{}using {\bfseries Graph\+Description} = graybat\+::graph\+Policy\+::\+Graph\+Description$<$ Graph\+Policy $>$\label{structgraybat_1_1Cage_a8dcd6874d2fbb5a2a731f197aedcb87f}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_ad1ae456d67c2804c63a3d651096ec2c8}{}using {\bfseries Vertex\+I\+D} = graybat\+::graph\+Policy\+::\+Vertex\+I\+D\label{structgraybat_1_1Cage_ad1ae456d67c2804c63a3d651096ec2c8}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_af7f17dd2b92c84abe4b9d49b2ae6f475}{}using {\bfseries Edge\+I\+D} = graybat\+::graph\+Policy\+::\+Edge\+I\+D\label{structgraybat_1_1Cage_af7f17dd2b92c84abe4b9d49b2ae6f475}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_af763549ebaa29f10a5c72246c81a8c5d}{}using {\bfseries Graph\+I\+D} = graybat\+::graph\+Policy\+::\+Graph\+I\+D\label{structgraybat_1_1Cage_af763549ebaa29f10a5c72246c81a8c5d}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_abcd2ec48a85543b8521fd85ed7dd1927}{}using {\bfseries Peer} = size\+\_\+t\label{structgraybat_1_1Cage_abcd2ec48a85543b8521fd85ed7dd1927}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structgraybat_1_1Cage_a4a5b4f29c8fef120674b95ac25f05518}{}{\footnotesize template$<$class T\+\_\+\+Functor $>$ }\\{\bfseries Cage} (C\+P\+Config const cp\+Config, T\+\_\+\+Functor graph\+Functor)\label{structgraybat_1_1Cage_a4a5b4f29c8fef120674b95ac25f05518}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_a9e76d7d8a6dddbb5fbf6882506f80ab1}{}{\bfseries Cage} (C\+P\+Config const cp\+Config)\label{structgraybat_1_1Cage_a9e76d7d8a6dddbb5fbf6882506f80ab1}
+
+\end{DoxyCompactItemize}
+\begin{Indent}{\bf Graph Operations}\par
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structgraybat_1_1Cage_adeb898f46486654a94ee8198d31272fb}{}{\footnotesize template$<$class T\+\_\+\+Functor $>$ }\\void {\bfseries set\+Graph} (T\+\_\+\+Functor graph\+Functor)\label{structgraybat_1_1Cage_adeb898f46486654a94ee8198d31272fb}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_a2e4558e1f636d7e6db3f0a1fce63a6fb}{}std\+::vector$<$ \hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} $>$ {\bfseries get\+Vertices} ()\label{structgraybat_1_1Cage_a2e4558e1f636d7e6db3f0a1fce63a6fb}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_a1e979baa57c86526fab054a731f59b32}{}\hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} {\bfseries get\+Vertex} (const Vertex\+I\+D vertex\+I\+D)\label{structgraybat_1_1Cage_a1e979baa57c86526fab054a731f59b32}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_afe51aef46fbc4e1f2c3c62fcfee15126}{}\hyperlink{structgraybat_1_1CommunicationEdge}{Edge} {\bfseries get\+Edge} (const \hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} source, const \hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} target)\label{structgraybat_1_1Cage_afe51aef46fbc4e1f2c3c62fcfee15126}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_ad8bc02fb9875ce4a66e7cfb7d8cbbd99}{}std\+::vector$<$ \hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} $>$ {\bfseries get\+Adjacent\+Vertices} (const \hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} \&v)\label{structgraybat_1_1Cage_ad8bc02fb9875ce4a66e7cfb7d8cbbd99}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_a21621e29fa96e5334eca259f5ca09b9f}{}std\+::vector$<$ \hyperlink{structgraybat_1_1CommunicationEdge}{Edge} $>$ {\bfseries get\+Out\+Edges} (const \hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} \&v)\label{structgraybat_1_1Cage_a21621e29fa96e5334eca259f5ca09b9f}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_a8d8873582c6499be4ae375f0d689c2be}{}std\+::vector$<$ \hyperlink{structgraybat_1_1CommunicationEdge}{Edge} $>$ {\bfseries get\+In\+Edges} (const \hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} v)\label{structgraybat_1_1Cage_a8d8873582c6499be4ae375f0d689c2be}
+
+\end{DoxyCompactItemize}
+\end{Indent}
+\begin{Indent}{\bf Mapping Operations}\par
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$class T\+\_\+\+Functor $>$ }\\void \hyperlink{structgraybat_1_1Cage_afeddcc035e25382462c38c77b481304d}{distribute} (T\+\_\+\+Functor dist\+Functor)
+\begin{DoxyCompactList}\small\item\em Distribution of the graph vertices to the peers of the global context. The dist\+Functor it the function responsible for this distribution. \end{DoxyCompactList}\item 
+void \hyperlink{structgraybat_1_1Cage_a8888227acfa41b0a9127a607ca16d32d}{announce} (const std\+::vector$<$ \hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} $>$ vertices, const bool global=true)
+\begin{DoxyCompactList}\small\item\em Announces {\itshape vertices} of a {\itshape graph} to the network, so that other peers know that these {\itshape vertices} are hosted by this peer. \end{DoxyCompactList}\item 
+V\+Addr \hyperlink{structgraybat_1_1Cage_aefc3bddf2aa1ebbc363a35a35be8fb38}{locate\+Vertex} (\hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} vertex)
+\begin{DoxyCompactList}\small\item\em Returns the V\+Addr of the host of {\itshape vertex} in the graph. \end{DoxyCompactList}\item 
+\hypertarget{structgraybat_1_1Cage_ad135a7bfe6929c6dfb0a4ffde2373316}{}std\+::vector$<$ \hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} $>$ \hyperlink{structgraybat_1_1Cage_ad135a7bfe6929c6dfb0a4ffde2373316}{get\+Hosted\+Vertices} (const V\+Addr v\+Addr)\label{structgraybat_1_1Cage_ad135a7bfe6929c6dfb0a4ffde2373316}
+
+\begin{DoxyCompactList}\small\item\em Opposite operation of \hyperlink{structgraybat_1_1Cage_aefc3bddf2aa1ebbc363a35a35be8fb38}{locate\+Vertex()}. It returns the vertices that are hosted by the peer with {\itshape v\+Addr} \end{DoxyCompactList}\item 
+\hypertarget{structgraybat_1_1Cage_abf0aa8d61511ba1e2593fb45e694aa16}{}bool \hyperlink{structgraybat_1_1Cage_abf0aa8d61511ba1e2593fb45e694aa16}{peer\+Hosts\+Vertex} (\hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} vertex)\label{structgraybat_1_1Cage_abf0aa8d61511ba1e2593fb45e694aa16}
+
+\begin{DoxyCompactList}\small\item\em Returns true if the {\itshape vertex} is hosted by the calling peer otherwise false. \end{DoxyCompactList}\item 
+\hypertarget{structgraybat_1_1Cage_a2eef0dae96d63420aaee9bdc95f7f977}{}std\+::vector$<$ Peer $>$ {\bfseries get\+Peers} ()\label{structgraybat_1_1Cage_a2eef0dae96d63420aaee9bdc95f7f977}
+
+\end{DoxyCompactItemize}
+\end{Indent}
+\begin{Indent}{\bf Point to Point Communication Operations}\par
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\void \hyperlink{structgraybat_1_1Cage_ab9a114ae8076ccbe9b233c68ff2d155b}{send} (const \hyperlink{structgraybat_1_1CommunicationEdge}{Edge} edge, const T \&data)
+\begin{DoxyCompactList}\small\item\em Synchron transmission of {\itshape data} to the {\itshape dest\+Vertex} on {\itshape edge}. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\void \hyperlink{structgraybat_1_1Cage_abbd6352f368e4d3cafa3ba26f54c6e93}{send} (const \hyperlink{structgraybat_1_1CommunicationEdge}{Edge} edge, const T \&data, std\+::vector$<$ Event $>$ \&events)
+\begin{DoxyCompactList}\small\item\em Asynchron transmission of {\itshape data} to the {\itshape dest\+Vertex} on {\itshape edge}. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\void \hyperlink{structgraybat_1_1Cage_aa3085ae78588c6bc49aae16391abc52f}{recv} (const \hyperlink{structgraybat_1_1CommunicationEdge}{Edge} edge, T \&data)
+\begin{DoxyCompactList}\small\item\em Synchron receive of {\itshape data} from the {\itshape src\+Vertex} on {\itshape edge}. \end{DoxyCompactList}\item 
+\hypertarget{structgraybat_1_1Cage_a6714c94d1ae252456f7801e47cbee345}{}{\footnotesize template$<$typename T $>$ }\\\hyperlink{structgraybat_1_1CommunicationEdge}{Edge} {\bfseries recv} (T \&data)\label{structgraybat_1_1Cage_a6714c94d1ae252456f7801e47cbee345}
+
+\item 
+{\footnotesize template$<$typename T $>$ }\\void \hyperlink{structgraybat_1_1Cage_a0c895e002001d07877f7dd311a3c279f}{recv} (const \hyperlink{structgraybat_1_1CommunicationEdge}{Edge} edge, T \&data, std\+::vector$<$ Event $>$ \&events)
+\begin{DoxyCompactList}\small\item\em Asynchron receive of {\itshape data} from the {\itshape src\+Vertex} on {\itshape edge}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\end{Indent}
+\begin{Indent}{\bf Collective Communication Operations}\par
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structgraybat_1_1Cage_a36fa784cb2d80c8f18005729d1035fee}{}{\footnotesize template$<$typename T\+\_\+\+Data , typename Op $>$ }\\void {\bfseries reduce} (const \hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} root\+Vertex, const \hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} src\+Vertex, Op op, const std\+::vector$<$ T\+\_\+\+Data $>$ send\+Data, std\+::vector$<$ T\+\_\+\+Data $>$ \&recv\+Data)\label{structgraybat_1_1Cage_a36fa784cb2d80c8f18005729d1035fee}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_aeaefc0dd7e23f1125dabcb9002ad45f2}{}{\footnotesize template$<$typename T\+\_\+\+Data , typename T\+\_\+\+Recv , typename Op $>$ }\\void {\bfseries all\+Reduce} (const \hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} src\+Vertex, Op op, const std\+::vector$<$ T\+\_\+\+Data $>$ send\+Data, T\+\_\+\+Recv \&recv\+Data)\label{structgraybat_1_1Cage_aeaefc0dd7e23f1125dabcb9002ad45f2}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_aa828d0331211a8388b21cee321d8edb9}{}{\footnotesize template$<$typename T\+\_\+\+Send , typename T\+\_\+\+Recv $>$ }\\void {\bfseries gather} (const \hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} root\+Vertex, const \hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} src\+Vertex, const T\+\_\+\+Send send\+Data, T\+\_\+\+Recv \&recv\+Data, const bool reorder)\label{structgraybat_1_1Cage_aa828d0331211a8388b21cee321d8edb9}
+
+\item 
+{\footnotesize template$<$typename T\+\_\+\+Send , typename T\+\_\+\+Recv $>$ }\\void \hyperlink{structgraybat_1_1Cage_a57b8858bb4ae33204c049c50c1a27aca}{all\+Gather} (const \hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} src\+Vertex, T\+\_\+\+Send send\+Data, T\+\_\+\+Recv \&recv\+Data, const bool reorder)
+\item 
+{\footnotesize template$<$typename T $>$ }\\void \hyperlink{structgraybat_1_1Cage_ad7530589eef3e5d7dc1e70adb74c75f4}{spread} (const \hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} vertex, const T \&data, std\+::vector$<$ Event $>$ \&events)
+\begin{DoxyCompactList}\small\item\em Spread data from a vertex to all adjacent vertices connected by an outgoing edge (async). \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\void \hyperlink{structgraybat_1_1Cage_aa387169a4a053f30479ff478aa8d5cf8}{spread} (const \hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} vertex, const T \&data)
+\begin{DoxyCompactList}\small\item\em Spread data from a vertex to all adjacent vertices connected by an outgoing edge (sync). \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T $>$ }\\void \hyperlink{structgraybat_1_1Cage_a9b7eaa7c2302a32e5408bb92ae4b6f53}{collect} (const \hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} vertex, T \&data)
+\begin{DoxyCompactList}\small\item\em Collects data from all incoming edges under the assumption that all vertices send the same number of data. \end{DoxyCompactList}\item 
+\hypertarget{structgraybat_1_1Cage_a13a8d9fcfbb52bddb37c882d76e940f9}{}void {\bfseries synchronize} ()\label{structgraybat_1_1Cage_a13a8d9fcfbb52bddb37c882d76e940f9}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_a44f5edf7c4ff86661198e53ba20109e0}{}int {\bfseries Context\+I\+D} ()\label{structgraybat_1_1Cage_a44f5edf7c4ff86661198e53ba20109e0}
+
+\end{DoxyCompactItemize}
+\end{Indent}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structgraybat_1_1Cage_a814df63d13307540a09a734365c6bc17}{}Communication\+Policy {\bfseries comm}\label{structgraybat_1_1Cage_a814df63d13307540a09a734365c6bc17}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_ac65609fabcd12ea956a50dfc9f7f8822}{}Graph\+Policy {\bfseries graph}\label{structgraybat_1_1Cage_ac65609fabcd12ea956a50dfc9f7f8822}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_aaae110547d929e8f93c4d43b5c7f5012}{}Context {\bfseries graph\+Context}\label{structgraybat_1_1Cage_aaae110547d929e8f93c4d43b5c7f5012}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_acae38e3176ae872f115bc277ed896c99}{}std\+::vector$<$ \hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} $>$ {\bfseries hosted\+Vertices}\label{structgraybat_1_1Cage_acae38e3176ae872f115bc277ed896c99}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_a39ab4a85708473a09befb09b2d41d2e5}{}std\+::map$<$ Vertex\+I\+D, V\+Addr $>$ {\bfseries vertex\+Map}\label{structgraybat_1_1Cage_a39ab4a85708473a09befb09b2d41d2e5}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_aac8f8f77d9b63e53b855c306cb21bda6}{}std\+::map$<$ Graph\+I\+D, Context $>$ {\bfseries graph\+Map}\label{structgraybat_1_1Cage_aac8f8f77d9b63e53b855c306cb21bda6}
+
+\item 
+\hypertarget{structgraybat_1_1Cage_af0cbddbcb1a81ac31b0c6307fd3df542}{}std\+::map$<$ V\+Addr, std\+::vector$<$ \hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} $>$ $>$ {\bfseries peer\+Map}\label{structgraybat_1_1Cage_af0cbddbcb1a81ac31b0c6307fd3df542}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T\+\_\+\+Communication\+Policy, typename T\+\_\+\+Graph\+Policy$>$class graybat\+::\+Cage$<$ T\+\_\+\+Communication\+Policy, T\+\_\+\+Graph\+Policy $>$}
+
+The Communication And Graph Environment enables to communicate on basis of a graph with methods of a user defined communication library. 
+
+A cage is defined by its Communication and Graph policy. The communication policy provides methods for point to point and collective operations. The graph policy provides methods to query graph imformation of the cage graph.
+
+\begin{DoxyRemark}{Remarks}
+A peer can host several vertices. 
+\end{DoxyRemark}
+\begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{anyrecv_8cpp-example}{anyrecv.\+cpp}, \hyperlink{chain_8cpp-example}{chain.\+cpp}, \hyperlink{forward_8cpp-example}{forward.\+cpp}, \hyperlink{gol_8cpp-example}{gol.\+cpp}, and \hyperlink{ring_8cpp-example}{ring.\+cpp}.\end{Desc}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{structgraybat_1_1Cage_a57b8858bb4ae33204c049c50c1a27aca}{}\index{graybat\+::\+Cage@{graybat\+::\+Cage}!all\+Gather@{all\+Gather}}
+\index{all\+Gather@{all\+Gather}!graybat\+::\+Cage@{graybat\+::\+Cage}}
+\subsubsection[{all\+Gather(const Vertex src\+Vertex, T\+\_\+\+Send send\+Data, T\+\_\+\+Recv \&recv\+Data, const bool reorder)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Communication\+Policy , typename T\+\_\+\+Graph\+Policy $>$ template$<$typename T\+\_\+\+Send , typename T\+\_\+\+Recv $>$ void {\bf graybat\+::\+Cage}$<$ T\+\_\+\+Communication\+Policy, T\+\_\+\+Graph\+Policy $>$\+::all\+Gather (
+\begin{DoxyParamCaption}
+\item[{const {\bf Vertex}}]{src\+Vertex, }
+\item[{T\+\_\+\+Send}]{send\+Data, }
+\item[{T\+\_\+\+Recv \&}]{recv\+Data, }
+\item[{const bool}]{reorder}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{structgraybat_1_1Cage_a57b8858bb4ae33204c049c50c1a27aca}
+\hypertarget{structgraybat_1_1Cage_a8888227acfa41b0a9127a607ca16d32d}{}\index{graybat\+::\+Cage@{graybat\+::\+Cage}!announce@{announce}}
+\index{announce@{announce}!graybat\+::\+Cage@{graybat\+::\+Cage}}
+\subsubsection[{announce(const std\+::vector$<$ Vertex $>$ vertices, const bool global=true)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Communication\+Policy , typename T\+\_\+\+Graph\+Policy $>$ void {\bf graybat\+::\+Cage}$<$ T\+\_\+\+Communication\+Policy, T\+\_\+\+Graph\+Policy $>$\+::announce (
+\begin{DoxyParamCaption}
+\item[{const std\+::vector$<$ {\bf Vertex} $>$}]{vertices, }
+\item[{const bool}]{global = {\ttfamily true}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{structgraybat_1_1Cage_a8888227acfa41b0a9127a607ca16d32d}
+
+
+Announces {\itshape vertices} of a {\itshape graph} to the network, so that other peers know that these {\itshape vertices} are hosted by this peer. 
+
+The general workflow includes two steps\+:
+\begin{DoxyEnumerate}
+\item Each peer, that hosts vertices of the {\itshape graph} announces its {\itshape vertices}
+\begin{DoxyItemize}
+\item Each peer will send its hosted vertices and update its vertices location
+\item The host peers will create a new context for {\itshape graph}
+\end{DoxyItemize}
+\item Vertices can now be located by \hyperlink{structgraybat_1_1Cage_aefc3bddf2aa1ebbc363a35a35be8fb38}{locate\+Vertex()}
+\item use Graphpeer to communicate between vertices
+\end{DoxyEnumerate}
+
+\begin{DoxyRemark}{Remarks}
+This is a collective Operation on which either all host peers of the supergraph of {\itshape graph} have to take part or when {\itshape graph} has no supergraph then all Communicatos from the global\+Context (which should be all peers in the network).
+\end{DoxyRemark}
+
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em graph} & Its vertices will be announced \\
+\hline
+\mbox{\tt in}  & {\em vertices} & A set of vertices, that will be hosted by this peer \\
+\hline
+\end{DoxyParams}
+\hypertarget{structgraybat_1_1Cage_a9b7eaa7c2302a32e5408bb92ae4b6f53}{}\index{graybat\+::\+Cage@{graybat\+::\+Cage}!collect@{collect}}
+\index{collect@{collect}!graybat\+::\+Cage@{graybat\+::\+Cage}}
+\subsubsection[{collect(const Vertex vertex, T \&data)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Communication\+Policy , typename T\+\_\+\+Graph\+Policy $>$ template$<$typename T $>$ void {\bf graybat\+::\+Cage}$<$ T\+\_\+\+Communication\+Policy, T\+\_\+\+Graph\+Policy $>$\+::collect (
+\begin{DoxyParamCaption}
+\item[{const {\bf Vertex}}]{vertex, }
+\item[{T \&}]{data}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{structgraybat_1_1Cage_a9b7eaa7c2302a32e5408bb92ae4b6f53}
+
+
+Collects data from all incoming edges under the assumption that all vertices send the same number of data. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em vertex} & that collects data \\
+\hline
+\mbox{\tt in}  & {\em data} & were collected data will be stored \\
+\hline
+\end{DoxyParams}
+\hypertarget{structgraybat_1_1Cage_afeddcc035e25382462c38c77b481304d}{}\index{graybat\+::\+Cage@{graybat\+::\+Cage}!distribute@{distribute}}
+\index{distribute@{distribute}!graybat\+::\+Cage@{graybat\+::\+Cage}}
+\subsubsection[{distribute(\+T\+\_\+\+Functor dist\+Functor)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Communication\+Policy , typename T\+\_\+\+Graph\+Policy $>$ template$<$class T\+\_\+\+Functor $>$ void {\bf graybat\+::\+Cage}$<$ T\+\_\+\+Communication\+Policy, T\+\_\+\+Graph\+Policy $>$\+::distribute (
+\begin{DoxyParamCaption}
+\item[{T\+\_\+\+Functor}]{dist\+Functor}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{structgraybat_1_1Cage_afeddcc035e25382462c38c77b481304d}
+
+
+Distribution of the graph vertices to the peers of the global context. The dist\+Functor it the function responsible for this distribution. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dist\+Functor} & \hyperlink{structFunction}{Function} for vertex distribution with the following interface\+: dist\+Functor(\+Own\+V\+Addr, Context\+Size, Graph) \\
+\hline
+\end{DoxyParams}
+\hypertarget{structgraybat_1_1Cage_aefc3bddf2aa1ebbc363a35a35be8fb38}{}\index{graybat\+::\+Cage@{graybat\+::\+Cage}!locate\+Vertex@{locate\+Vertex}}
+\index{locate\+Vertex@{locate\+Vertex}!graybat\+::\+Cage@{graybat\+::\+Cage}}
+\subsubsection[{locate\+Vertex(\+Vertex vertex)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Communication\+Policy , typename T\+\_\+\+Graph\+Policy $>$ V\+Addr {\bf graybat\+::\+Cage}$<$ T\+\_\+\+Communication\+Policy, T\+\_\+\+Graph\+Policy $>$\+::locate\+Vertex (
+\begin{DoxyParamCaption}
+\item[{{\bf Vertex}}]{vertex}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{structgraybat_1_1Cage_aefc3bddf2aa1ebbc363a35a35be8fb38}
+
+
+Returns the V\+Addr of the host of {\itshape vertex} in the graph. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em vertex} & Will be located. \\
+\hline
+\end{DoxyParams}
+\hypertarget{structgraybat_1_1Cage_aa3085ae78588c6bc49aae16391abc52f}{}\index{graybat\+::\+Cage@{graybat\+::\+Cage}!recv@{recv}}
+\index{recv@{recv}!graybat\+::\+Cage@{graybat\+::\+Cage}}
+\subsubsection[{recv(const Edge edge, T \&data)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Communication\+Policy , typename T\+\_\+\+Graph\+Policy $>$ template$<$typename T $>$ void {\bf graybat\+::\+Cage}$<$ T\+\_\+\+Communication\+Policy, T\+\_\+\+Graph\+Policy $>$\+::recv (
+\begin{DoxyParamCaption}
+\item[{const {\bf Edge}}]{edge, }
+\item[{T \&}]{data}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{structgraybat_1_1Cage_aa3085ae78588c6bc49aae16391abc52f}
+
+
+Synchron receive of {\itshape data} from the {\itshape src\+Vertex} on {\itshape edge}. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em graph} & The graph in which the communication takes place. \\
+\hline
+\mbox{\tt in}  & {\em edge} & Edge over which the {\itshape data} will be transmitted. \\
+\hline
+\mbox{\tt out}  & {\em data} & Data that will be received \\
+\hline
+\end{DoxyParams}
+\hypertarget{structgraybat_1_1Cage_a0c895e002001d07877f7dd311a3c279f}{}\index{graybat\+::\+Cage@{graybat\+::\+Cage}!recv@{recv}}
+\index{recv@{recv}!graybat\+::\+Cage@{graybat\+::\+Cage}}
+\subsubsection[{recv(const Edge edge, T \&data, std\+::vector$<$ Event $>$ \&events)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Communication\+Policy , typename T\+\_\+\+Graph\+Policy $>$ template$<$typename T $>$ void {\bf graybat\+::\+Cage}$<$ T\+\_\+\+Communication\+Policy, T\+\_\+\+Graph\+Policy $>$\+::recv (
+\begin{DoxyParamCaption}
+\item[{const {\bf Edge}}]{edge, }
+\item[{T \&}]{data, }
+\item[{std\+::vector$<$ Event $>$ \&}]{events}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{structgraybat_1_1Cage_a0c895e002001d07877f7dd311a3c279f}
+
+
+Asynchron receive of {\itshape data} from the {\itshape src\+Vertex} on {\itshape edge}. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em graph} & The graph in which the communication takes place. \\
+\hline
+\mbox{\tt in}  & {\em edge} & Edge over which the {\itshape data} will be transmitted. \\
+\hline
+\mbox{\tt out}  & {\em data} & Data that will be received \\
+\hline
+\mbox{\tt out}  & {\em List} & of events the send event will be added to. \\
+\hline
+\end{DoxyParams}
+\hypertarget{structgraybat_1_1Cage_ab9a114ae8076ccbe9b233c68ff2d155b}{}\index{graybat\+::\+Cage@{graybat\+::\+Cage}!send@{send}}
+\index{send@{send}!graybat\+::\+Cage@{graybat\+::\+Cage}}
+\subsubsection[{send(const Edge edge, const T \&data)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Communication\+Policy , typename T\+\_\+\+Graph\+Policy $>$ template$<$typename T $>$ void {\bf graybat\+::\+Cage}$<$ T\+\_\+\+Communication\+Policy, T\+\_\+\+Graph\+Policy $>$\+::send (
+\begin{DoxyParamCaption}
+\item[{const {\bf Edge}}]{edge, }
+\item[{const T \&}]{data}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{structgraybat_1_1Cage_ab9a114ae8076ccbe9b233c68ff2d155b}
+
+
+Synchron transmission of {\itshape data} to the {\itshape dest\+Vertex} on {\itshape edge}. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em graph} & The graph in which the communication takes place. \\
+\hline
+\mbox{\tt in}  & {\em edge} & Edge over which the {\itshape data} will be transmitted. \\
+\hline
+\mbox{\tt in}  & {\em data} & Data that will be send. \\
+\hline
+\end{DoxyParams}
+\hypertarget{structgraybat_1_1Cage_abbd6352f368e4d3cafa3ba26f54c6e93}{}\index{graybat\+::\+Cage@{graybat\+::\+Cage}!send@{send}}
+\index{send@{send}!graybat\+::\+Cage@{graybat\+::\+Cage}}
+\subsubsection[{send(const Edge edge, const T \&data, std\+::vector$<$ Event $>$ \&events)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Communication\+Policy , typename T\+\_\+\+Graph\+Policy $>$ template$<$typename T $>$ void {\bf graybat\+::\+Cage}$<$ T\+\_\+\+Communication\+Policy, T\+\_\+\+Graph\+Policy $>$\+::send (
+\begin{DoxyParamCaption}
+\item[{const {\bf Edge}}]{edge, }
+\item[{const T \&}]{data, }
+\item[{std\+::vector$<$ Event $>$ \&}]{events}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{structgraybat_1_1Cage_abbd6352f368e4d3cafa3ba26f54c6e93}
+
+
+Asynchron transmission of {\itshape data} to the {\itshape dest\+Vertex} on {\itshape edge}. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em graph} & The graph in which the communication takes place. \\
+\hline
+\mbox{\tt in}  & {\em edge} & Edge over which the {\itshape data} will be transmitted. \\
+\hline
+\mbox{\tt in}  & {\em data} & Data that will be send. \\
+\hline
+\mbox{\tt out}  & {\em List} & of events the send event will be added to. \\
+\hline
+\end{DoxyParams}
+\hypertarget{structgraybat_1_1Cage_ad7530589eef3e5d7dc1e70adb74c75f4}{}\index{graybat\+::\+Cage@{graybat\+::\+Cage}!spread@{spread}}
+\index{spread@{spread}!graybat\+::\+Cage@{graybat\+::\+Cage}}
+\subsubsection[{spread(const Vertex vertex, const T \&data, std\+::vector$<$ Event $>$ \&events)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Communication\+Policy , typename T\+\_\+\+Graph\+Policy $>$ template$<$typename T $>$ void {\bf graybat\+::\+Cage}$<$ T\+\_\+\+Communication\+Policy, T\+\_\+\+Graph\+Policy $>$\+::spread (
+\begin{DoxyParamCaption}
+\item[{const {\bf Vertex}}]{vertex, }
+\item[{const T \&}]{data, }
+\item[{std\+::vector$<$ Event $>$ \&}]{events}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{structgraybat_1_1Cage_ad7530589eef3e5d7dc1e70adb74c75f4}
+
+
+Spread data from a vertex to all adjacent vertices connected by an outgoing edge (async). 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em vertex} & to spread data from \\
+\hline
+\mbox{\tt in}  & {\em data} & that will be spreaded \\
+\hline
+\mbox{\tt out}  & {\em events} & where the events for this async operations will be inserted. \\
+\hline
+\end{DoxyParams}
+\hypertarget{structgraybat_1_1Cage_aa387169a4a053f30479ff478aa8d5cf8}{}\index{graybat\+::\+Cage@{graybat\+::\+Cage}!spread@{spread}}
+\index{spread@{spread}!graybat\+::\+Cage@{graybat\+::\+Cage}}
+\subsubsection[{spread(const Vertex vertex, const T \&data)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Communication\+Policy , typename T\+\_\+\+Graph\+Policy $>$ template$<$typename T $>$ void {\bf graybat\+::\+Cage}$<$ T\+\_\+\+Communication\+Policy, T\+\_\+\+Graph\+Policy $>$\+::spread (
+\begin{DoxyParamCaption}
+\item[{const {\bf Vertex}}]{vertex, }
+\item[{const T \&}]{data}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{structgraybat_1_1Cage_aa387169a4a053f30479ff478aa8d5cf8}
+
+
+Spread data from a vertex to all adjacent vertices connected by an outgoing edge (sync). 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em vertex} & to spread data from \\
+\hline
+\mbox{\tt in}  & {\em data} & that will be spreaded \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/graybat/Cage.\+hpp\end{DoxyCompactItemize}

@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="context" kind="page">
+    <compoundname>context</compoundname>
+    <title>Context</title>
+    <detaileddescription>
+<para>A context is a set of peers which are able to communicate with each other. A context need to be defined by a <ref refid="communicationPolicy" kindref="compound">communication policy</ref>, since every communication library defines a set of peers differently. The <ref refid="cage" kindref="compound">cage</ref> defines a strict interface of a context, but the implementation is left open to the <ref refid="communicationPolicy" kindref="compound">communication policy</ref>.</para><para>The following listing provides a skeleton for a context class with all necessary methods:</para><para><programlisting><codeline><highlight class="normal">struc<sp/>ContextSkeleton<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Returns<sp/>the<sp/>number<sp/>of<sp/>peers<sp/>in<sp/>this<sp/>context</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>size()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{...}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Returns<sp/>the<sp/>virtual<sp/>address<sp/>of<sp/>the<sp/>peer<sp/>in<sp/>this<sp/>context</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>VAddr<sp/>getVAddr()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{...}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Returns<sp/>the<sp/>id<sp/>of<sp/>this<sp/>context</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>ContextID<sp/>getID()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{...}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Returns<sp/>whether<sp/>the<sp/>peer<sp/>is<sp/>member<sp/>of<sp/>the<sp/>context</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>valid()</highlight><highlight class="keyword"><sp/>const<sp/></highlight><highlight class="normal">{...}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

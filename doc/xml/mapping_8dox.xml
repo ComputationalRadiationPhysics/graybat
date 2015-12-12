@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="mapping_8dox" kind="file" language="C++">
+    <compoundname>mapping.dox</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"></codeline>
+<codeline lineno="35"><highlight class="normal">}<sp/></highlight><highlight class="comment">/*<sp/>graybat<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight><highlight class="preprocessor">##<sp/>Further<sp/>Links<sp/>##</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal">-<sp/><ref refid="structgraybat_1_1mapping_1_1Consecutive" kindref="compound">graybat::mapping::Consecutive</ref></highlight></codeline>
+<codeline lineno="42"><highlight class="normal">-<sp/><ref refid="structgraybat_1_1mapping_1_1Filter" kindref="compound">graybat::mapping::Filter</ref></highlight></codeline>
+<codeline lineno="43"><highlight class="normal">-<sp/><ref refid="structgraybat_1_1mapping_1_1GraphPartition" kindref="compound">graybat::mapping::GraphPartition</ref></highlight></codeline>
+<codeline lineno="44"><highlight class="normal">-<sp/><ref refid="structgraybat_1_1mapping_1_1Random" kindref="compound">graybat::mapping::Random</ref></highlight></codeline>
+<codeline lineno="45"><highlight class="normal">-<sp/><ref refid="structgraybat_1_1mapping_1_1Roundrobin" kindref="compound">graybat::mapping::Roundrobin</ref></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal">*/</highlight></codeline>
+    </programlisting>
+    <location file="utils/doxygen/mapping.dox"/>
+  </compounddef>
+</doxygen>

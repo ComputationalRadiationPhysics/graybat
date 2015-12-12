@@ -1,0 +1,9 @@
+/home/erik/projects/graybat/build/CMakeFiles/doc.dir
+/home/erik/projects/graybat/build/CMakeFiles/gol.dir
+/home/erik/projects/graybat/build/CMakeFiles/forward.dir
+/home/erik/projects/graybat/build/CMakeFiles/example.dir
+/home/erik/projects/graybat/build/CMakeFiles/zmq_signaling.dir
+/home/erik/projects/graybat/build/CMakeFiles/ring.dir
+/home/erik/projects/graybat/build/CMakeFiles/anyrecv.dir
+/home/erik/projects/graybat/build/CMakeFiles/check.dir
+/home/erik/projects/graybat/build/CMakeFiles/chain.dir

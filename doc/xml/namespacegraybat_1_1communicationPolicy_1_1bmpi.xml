@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="namespacegraybat_1_1communicationPolicy_1_1bmpi" kind="namespace" language="C++">
+    <compoundname>graybat::communicationPolicy::bmpi</compoundname>
+    <innerclass refid="structgraybat_1_1communicationPolicy_1_1bmpi_1_1Config" prot="public">graybat::communicationPolicy::bmpi::Config</innerclass>
+    <innerclass refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context" prot="public">graybat::communicationPolicy::bmpi::Context</innerclass>
+    <innerclass refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Event" prot="public">graybat::communicationPolicy::bmpi::Event</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/communicationPolicy/bmpi/Config.hpp" line="7" column="1"/>
+  </compounddef>
+</doxygen>

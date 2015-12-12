@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="structgraybat_1_1communicationPolicy_1_1Header" kind="struct" language="C++" prot="public">
+    <compoundname>graybat::communicationPolicy::Header</compoundname>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1Header_1a397d84d0b4e5c698d34acc817f27abab" prot="public" static="no" mutable="no">
+        <type>const MsgType</type>
+        <definition>const MsgType graybat::communicationPolicy::Header::msgType</definition>
+        <argsstring></argsstring>
+        <name>msgType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="40" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1Header_1a4f995cab4e59e5c161aab9d3247007c5" prot="public" static="no" mutable="no">
+        <type>const size_t</type>
+        <definition>const size_t graybat::communicationPolicy::Header::msgSize</definition>
+        <argsstring></argsstring>
+        <name>msgSize</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="41" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="39" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="39" bodyend="42"/>
+    <listofallmembers>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Header_1a4f995cab4e59e5c161aab9d3247007c5" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::Header</scope><name>msgSize</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Header_1a397d84d0b4e5c698d34acc817f27abab" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::Header</scope><name>msgType</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

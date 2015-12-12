@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/erik/projects/graybat/utils/zmq_signaling_server.cpp
+string.h
+-
+iostream
+-
+map
+-
+string
+-
+sstream
+-
+boost/program_options.hpp
+-
+zmq.hpp
+-
+

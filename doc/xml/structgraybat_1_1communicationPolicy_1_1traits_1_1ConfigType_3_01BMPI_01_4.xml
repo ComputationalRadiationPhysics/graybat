@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="structgraybat_1_1communicationPolicy_1_1traits_1_1ConfigType_3_01BMPI_01_4" kind="struct" language="C++" prot="public">
+    <compoundname>graybat::communicationPolicy::traits::ConfigType&lt; BMPI &gt;</compoundname>
+    <templateparamlist>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structgraybat_1_1communicationPolicy_1_1traits_1_1ConfigType_3_01BMPI_01_4_1ac664d107e4c9a02a792f210e04482160" prot="public" static="no">
+        <type><ref refid="structgraybat_1_1communicationPolicy_1_1bmpi_1_1Config" kindref="compound">graybat::communicationPolicy::bmpi::Config</ref></type>
+        <definition>using graybat::communicationPolicy::traits::ConfigType&lt; BMPI &gt;::type =  graybat::communicationPolicy::bmpi::Config</definition>
+        <argsstring></argsstring>
+        <name>type</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/BMPI.hpp" line="63" column="1" bodyfile="include/graybat/communicationPolicy/BMPI.hpp" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/communicationPolicy/BMPI.hpp" line="62" column="1" bodyfile="include/graybat/communicationPolicy/BMPI.hpp" bodystart="62" bodyend="64"/>
+    <listofallmembers>
+      <member refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ConfigType_3_01BMPI_01_4_1ac664d107e4c9a02a792f210e04482160" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::traits::ConfigType&lt; BMPI &gt;</scope><name>type</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

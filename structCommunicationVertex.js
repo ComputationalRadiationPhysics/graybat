@@ -1,0 +1,25 @@
+var structCommunicationVertex =
+[
+    [ "Cage", "structCommunicationVertex.html#abe667b52bf7dbf37b5d9dad568274ec8", null ],
+    [ "Edge", "structCommunicationVertex.html#a84e0fffdb071f9734f3af84cc3069629", null ],
+    [ "Event", "structCommunicationVertex.html#ae895383be74775cad052c1a0bb70c772", null ],
+    [ "GraphPolicy", "structCommunicationVertex.html#ab287653758a0732b6864146c393aeefd", null ],
+    [ "VertexID", "structCommunicationVertex.html#aa8e4d0fd17c1947dd3a631ee6fa4f3cd", null ],
+    [ "VertexProperty", "structCommunicationVertex.html#a5d8ffebe6eebc88c248eb0c6964f1c37", null ],
+    [ "CommunicationVertex", "structCommunicationVertex.html#a602ec19bb4de0a4c371f1b6b5cb2509c", null ],
+    [ "accumulate", "structCommunicationVertex.html#aa3b0c6f5b4cc0a284e74fb8c10da43ae", null ],
+    [ "collect", "structCommunicationVertex.html#aff540a3fd0c2ec72cf95cde4ade98804", null ],
+    [ "forward", "structCommunicationVertex.html#a4147baf269f625a9437eb09efb419cee", null ],
+    [ "forward", "structCommunicationVertex.html#a4899685bdf33f8d7e752100deda85a51", null ],
+    [ "nInEdges", "structCommunicationVertex.html#aa50dd2eb08041e5f374742acf499af57", null ],
+    [ "nOutEdges", "structCommunicationVertex.html#a65e3d6a8799c094eabd3617d49556b67", null ],
+    [ "operator!=", "structCommunicationVertex.html#a689c94044589d9c2574ebcbd3d5e615f", null ],
+    [ "operator()", "structCommunicationVertex.html#a3b5269b4cb72e697e40f0cbf69376f44", null ],
+    [ "operator=", "structCommunicationVertex.html#a9e9331af039f9a5c0ecfb80b3f1c2c8c", null ],
+    [ "operator==", "structCommunicationVertex.html#aa21714107ee07da908341597bde26ac1", null ],
+    [ "spread", "structCommunicationVertex.html#a9e7e8ac4d56e06d84e527672c964111a", null ],
+    [ "spread", "structCommunicationVertex.html#ac9944c24156cd67c4757795e9dfcf78a", null ],
+    [ "cage", "structCommunicationVertex.html#a5dfc0cecf345aa1cf5e25b33a708a572", null ],
+    [ "id", "structCommunicationVertex.html#a468b0059b1c20ea2da85baf06ba09637", null ],
+    [ "vertexProperty", "structCommunicationVertex.html#a8669eae91885d6e15f75a21833e296c6", null ]
+];

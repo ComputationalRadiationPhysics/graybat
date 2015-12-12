@@ -1,0 +1,175 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="cage" kind="page">
+    <compoundname>cage</compoundname>
+    <title>Communication and Graph Environment</title>
+    <innerpage refid="communicationPolicy">Communication Policy</innerpage>
+    <innerpage refid="graphPolicy">Graph Policy</innerpage>
+    <innerpage refid="communicationPattern">Communication Pattern</innerpage>
+    <innerpage refid="mapping">Vertex Mapping</innerpage>
+    <innerpage refid="vertex">Vertex Communication Interface</innerpage>
+    <innerpage refid="edge">Edge Communication Interface</innerpage>
+    <detaileddescription>
+<para>The communication and graph environment (<ref refid="structgraybat_1_1Cage" kindref="compound">cage</ref>) provides a graph-based virtual overlay network which is implemented by the policy based design. Taking this term to pieces, the <ref refid="structgraybat_1_1Cage" kindref="compound">cage</ref> is an interface which provides communication methods on basis of an existing communication library, where the possible paths of communication are described by a graph.</para><para>The behavior of the <ref refid="structgraybat_1_1Cage" kindref="compound">cage</ref> need to be defined by a <ref refid="communicationPolicy" kindref="compound">communication policy</ref> and a <ref refid="graphPolicy" kindref="compound">graph policy</ref>. These policies need to be provided as template arguments to the <ref refid="structgraybat_1_1Cage" kindref="compound">cage</ref> class. The following listings show examples on how to use and how to configure the <ref refid="structgraybat_1_1Cage" kindref="compound">cage</ref> with predefined <ref refid="communicationPolicy" kindref="compound">communication policy</ref> and <ref refid="graphPolicy" kindref="compound">graph policy</ref>.</para><para><heading level="2">Configure the graybat cage</heading>
+</para><para><orderedlist>
+<listitem><para>Include graybat cage, communication policy, graph policy and predefined functors for communication patterns and mappings. <programlisting><codeline><highlight class="preprocessor">#include<sp/>&lt;graybat/Cage.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;graybat/communicationPolicy/BMPI.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;graybat/graphPolicy/BGL.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;graybat/pattern/GridDiagonal.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;graybat/mapping/Consecutive.hpp&gt;</highlight></codeline>
+</programlisting></para></listitem><listitem><para>Define communication policy to use (boost.MPI). <programlisting><codeline><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="structgraybat_1_1communicationPolicy_1_1BMPI" kindref="compound">graybat::communicationPolicy::BMPI</ref><sp/><sp/><sp/>CommunicationPolicy;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>CommunicationPolicy::Config<sp/>Config;</highlight></codeline>
+</programlisting></para></listitem><listitem><para>Define graph policy to use (boost graph library). <programlisting><codeline><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="classgraybat_1_1graphPolicy_1_1BGL" kindref="compound">graybat::graphPolicy::BGL&lt;&gt;</ref><sp/>GraphPolicy;</highlight></codeline>
+</programlisting></para></listitem><listitem><para>Define cage through policies. <programlisting><codeline><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/><ref refid="structgraybat_1_1Cage" kindref="compound">graybat::Cage&lt;CommunicatonPolicy, GraphPolicy&gt;</ref><sp/>Cage;</highlight></codeline>
+</programlisting></para></listitem><listitem><para>Create Cage instance and set graph creation functor that describes the communication <ref refid="communicationPattern" kindref="compound">pattern</ref>. <programlisting><codeline><highlight class="normal">Cage<sp/>cage;</highlight></codeline>
+<codeline><highlight class="normal">cage.setGraph(<ref refid="structgraybat_1_1pattern_1_1GridDiagonal" kindref="compound">graybat::pattern::GridDiagonal</ref>(100,100))</highlight></codeline>
+</programlisting></para></listitem></orderedlist>
+</para><para><heading level="2">Mapping Operations</heading>
+</para><para><orderedlist>
+<listitem><para><bold>distribute</bold>: Distributes vertices of the graph to peer(s) based on a <ref refid="mapping" kindref="compound">mapping</ref>. <programlisting><codeline><highlight class="normal">cage.distribute(<ref refid="structgraybat_1_1mapping_1_1Consecutive" kindref="compound">graybat::mapping::Consecutive</ref>());</highlight></codeline>
+</programlisting></para></listitem><listitem><para><bold>hostedVertices</bold>: The vertices mapped to the peer itself are called hosted vertices. <programlisting><codeline><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>Cage::Vertex<sp/>Vertex;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Iterate<sp/>over<sp/>all<sp/>vertices<sp/>that<sp/>I<sp/>host</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(Vertex<sp/>vertex:<sp/>cage.hostedVertices){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/>vertex.id<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para></listitem></orderedlist>
+</para><para><heading level="2">Graph Operations</heading>
+</para><para>A peer is responsible for the communication of all its hosted vertices. Therefore, the common approach for communication in graybat is to iterate over the set of hosted vertices and send data to adjacent vertices which are connected with an outgoing edge and receive data from adjacent vertices which are connected with an incoming edge.</para><para><orderedlist>
+<listitem><para><bold>getOutEdges</bold>: Retrieve outgoing edges of hosted vertices. This information can be used to send data to adjacent vertices. <programlisting><codeline><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>Cage::Edge<sp/>Edge;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(Vertex<sp/>vertex:<sp/>cage.hostedVertices){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(Edge<sp/>outEdge<sp/>:<sp/>cage.getOutEdges(vertex)){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Vertex<sp/>sourceVertex<sp/>=<sp/>outEdge.source;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Vertex<sp/>targetVertex<sp/>=<sp/>outEdge.target;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;From<sp/>vertex<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>sourceVertex.id</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;over<sp/>edge<sp/>&quot;</highlight><highlight class="normal"><sp/><sp/><sp/>&lt;&lt;<sp/>outEdge.id</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;to<sp/>vertex<sp/>&quot;</highlight><highlight class="normal"><sp/><sp/><sp/>&lt;&lt;<sp/>targetVertex.id<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para></listitem><listitem><para><bold>getInEdges</bold>: Retrieve incoming edges of hosted vertices. This information can be used to receive data from adjacent vertices. <programlisting><codeline><highlight class="keywordflow">for</highlight><highlight class="normal">(Vertex<sp/>vertex:<sp/>cage.hostedVertices){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(Edge<sp/>inEdge<sp/>:<sp/>cage.getInEdges(vertex)){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Vertex<sp/>sourceVertex<sp/>=<sp/>inEdge.source;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Vertex<sp/>targetVertex<sp/>=<sp/>inEdge.target;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::cout<sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;From<sp/>vertex<sp/>&quot;</highlight><highlight class="normal"><sp/>&lt;&lt;<sp/>sourceVertex.id</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;over<sp/>edge<sp/>&quot;</highlight><highlight class="normal"><sp/><sp/><sp/>&lt;&lt;<sp/>inEdge.id</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>&lt;&lt;<sp/></highlight><highlight class="stringliteral">&quot;to<sp/>vertex<sp/>&quot;</highlight><highlight class="normal"><sp/><sp/><sp/>&lt;&lt;<sp/>targetVertex.id<sp/>&lt;&lt;<sp/>std::endl;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para></listitem></orderedlist>
+</para><para><heading level="2">Point to Point Communication Operations</heading>
+</para><para><itemizedlist>
+<listitem><para><bold>send/asyncSend</bold>: Send synchronous and asynchronous data. The asynchronous version of send returns an event, which can be waited for or tested for its state. <programlisting><codeline><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>Cage::Edge<sp/><sp/>Edge;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>Cage::Event<sp/>Event;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Events<sp/>that<sp/>will<sp/>occur</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;Event&gt;<sp/>events;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Some<sp/>data<sp/>that<sp/>should<sp/>be<sp/>send</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;int&gt;<sp/>data(100,1);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(Vertex<sp/>vertex:<sp/>cage.hostedVertices){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(Edge<sp/>outEdge<sp/>:<sp/>cage.getOutEdges(vertex)){</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Synchronous</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>cage.send(outEdge,<sp/>data);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Asynchronous</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>cage.send(outEdge,<sp/>data,<sp/>events);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Wait<sp/>for<sp/>and<sp/>test<sp/>event</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>events.back().wait();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>eventState<sp/>=<sp/>events.back().ready();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para></listitem><listitem><para><bold>recv/asyncRecv</bold>: Receive synchronous and asynchronous data. The asynchronous version of recv returns an event, which can be waited for or tested for its state. <programlisting><codeline><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>Cage::Edge<sp/><sp/>Edge;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>Cage::Event<sp/>Event;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Events<sp/>that<sp/>will<sp/>occur</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;Event&gt;<sp/>events;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Some<sp/>data<sp/>that<sp/>should<sp/>be<sp/>send</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;int&gt;<sp/>data(100,1);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(Vertex<sp/>vertex:<sp/>cage.hostedVertices){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(Edge<sp/>inEdge<sp/>:<sp/>cage.getInEdges(vertex)){</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Synchronous<sp/>receive</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>cage.recv(inEdge,<sp/>data);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Asynchronous<sp/>receive</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>cage.recv(inEdge,<sp/>data,<sp/>events);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Wait<sp/>for<sp/>and<sp/>test<sp/>event</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>events.back().wait();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>eventState<sp/>=<sp/>events.back().ready();</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para></listitem></itemizedlist>
+</para><para><heading level="2">Collective Communication Operations</heading>
+</para><para><itemizedlist>
+<listitem><para><bold>spread</bold>: Spread data to all adjacent vertices of a vertex that are connected by an outgoing edge. <programlisting><codeline><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>Cage::Edge<sp/><sp/>Edge;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>Cage::Event<sp/>Event;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Events<sp/>that<sp/>will<sp/>occur</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;Event&gt;<sp/>events;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Some<sp/>data<sp/>that<sp/>should<sp/>be<sp/>send</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;int&gt;<sp/>data(100,1);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(Vertex<sp/>vertex:<sp/>cage.hostedVertices){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cage.spread(vertex,<sp/>data,<sp/>events);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para></listitem><listitem><para><bold>collect</bold>: Collect data from all adjacent vertices of a vertex that are connected by an incoming edge. <programlisting><codeline><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>Cage::Edge<sp/><sp/>Edge;</highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>Cage::Event<sp/>Event;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Events<sp/>that<sp/>will<sp/>occur</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;Event&gt;<sp/>events;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(Vertex<sp/>vertex:<sp/>cage.hostedVertices){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Some<sp/>data<sp/>that<sp/>should<sp/>be<sp/>collected</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>std::vector&lt;int&gt;<sp/>data(vertex.nInEdges<sp/>*<sp/>100,<sp/>1);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cage.collect(vertex,<sp/>data);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para></listitem><listitem><para><bold>reduce</bold>: Reduce vector of data with binary operator and receive by some root vertex. <programlisting><codeline><highlight class="normal">Vertex<sp/>rootVertex<sp/>=<sp/>cage.getVertex(0);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;int&gt;<sp/>send(100);</highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;int&gt;<sp/>recv(100);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Each<sp/>vertex<sp/>need<sp/>to<sp/>reduce<sp/>its<sp/>data,<sp/>the<sp/>root<sp/>receives<sp/>reduction.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(Vertex<sp/>vertex:<sp/>cage.hostedVertices){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cage.reduce(rootVertex,<sp/>vertex,<sp/>std::plus&lt;int&gt;,<sp/>send,<sp/>recv);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para></listitem><listitem><para><bold>allReduce</bold>: Reduce vector of data and receive them by every vertex. <programlisting><codeline><highlight class="normal">std::vector&lt;int&gt;<sp/>send(100);</highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;int&gt;<sp/>recv(100);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Each<sp/>vertex<sp/>need<sp/>to<sp/>reduce<sp/>its<sp/>data,<sp/>all<sp/>receive<sp/>reduction.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(Vertex<sp/>vertex:<sp/>cage.hostedVertices){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cage.allReduce(rootVertex,<sp/>vertex,<sp/>std::plus&lt;int&gt;,<sp/>send,<sp/>recv);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para></listitem><listitem><para><bold>gather</bold>: Root vertex collects data from each vertex. <programlisting><codeline><highlight class="normal">Vertex<sp/>rootVertex<sp/>=<sp/>cage.getVertex(0);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;int&gt;<sp/>send(10);</highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;int&gt;<sp/>recv(10<sp/>*<sp/>cage.getVertices().size());</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Each<sp/>vertex<sp/>need<sp/>to<sp/>send<sp/>its<sp/>data,<sp/>the<sp/>root<sp/>receives</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(Vertex<sp/>vertex:<sp/>cage.hostedVertices){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cage.gather(rootVertex,<sp/>vertex,<sp/>send,<sp/>recv);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para></listitem><listitem><para><bold>allGather</bold>: Data is send to all vertices. <programlisting><codeline><highlight class="normal">std::vector&lt;int&gt;<sp/>send(10);</highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;int&gt;<sp/>recv(10<sp/>*<sp/>cage.getVertices().size());</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Each<sp/>vertex<sp/>need<sp/>to<sp/>send<sp/>its<sp/>data,<sp/>all<sp/>receive.</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="keywordflow">for</highlight><highlight class="normal">(Vertex<sp/>vertex:<sp/>cage.hostedVertices){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>cage.allGather(vertex,<sp/>send,<sp/>recv);</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para></listitem><listitem><para><bold>synchronize</bold>: Synchronize all peers (including their hosted vertices). <programlisting><codeline><highlight class="normal">cage.synchronize();</highlight></codeline>
+</programlisting></para></listitem></itemizedlist>
+</para><para><heading level="2">Further Links</heading>
+</para><para><itemizedlist>
+<listitem><para><ref refid="communicationPolicy" kindref="compound">Communication Policy</ref></para></listitem><listitem><para><ref refid="graphPolicy" kindref="compound">Graph Policy</ref></para></listitem><listitem><para><ref refid="communicationPattern" kindref="compound">Communication Pattern</ref></para></listitem><listitem><para><ref refid="mapping" kindref="compound">Vertex Mapping</ref></para></listitem><listitem><para><ref refid="vertex" kindref="compound">Vertex Communication Interface</ref></para></listitem><listitem><para><ref refid="edge" kindref="compound">Edge Communication Interface</ref> </para></listitem></itemizedlist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,78 @@
+\hypertarget{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event}{}\section{graybat\+:\+:communication\+Policy\+:\+:zmq\+:\+:Event$<$ T\+\_\+\+C\+P $>$ Class Template Reference}
+\label{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event}\index{graybat\+::communication\+Policy\+::zmq\+::\+Event$<$ T\+\_\+\+C\+P $>$@{graybat\+::communication\+Policy\+::zmq\+::\+Event$<$ T\+\_\+\+C\+P $>$}}
+
+
+An event is returned by non-\/blocking communication operations and can be asked whether an operation has finished or it can be waited for this operation to be finished.  
+
+
+
+
+{\ttfamily \#include $<$Event.\+hpp$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_abac7cfd781f899c18bed620ae2aabc0e}{}using {\bfseries Context\+I\+D} = typename graybat\+::communication\+Policy\+::\+Context\+I\+D$<$ T\+\_\+\+C\+P $>$\label{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_abac7cfd781f899c18bed620ae2aabc0e}
+
+\item 
+\hypertarget{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_afb7d4ce6764c022a84e3a22bd1d50f3f}{}using {\bfseries V\+Addr} = typename graybat\+::communication\+Policy\+::\+V\+Addr$<$ T\+\_\+\+C\+P $>$\label{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_afb7d4ce6764c022a84e3a22bd1d50f3f}
+
+\item 
+\hypertarget{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_a8cb4e8b979b2fe2fa412f517675f8890}{}using {\bfseries Tag} = typename graybat\+::communication\+Policy\+::\+Tag$<$ T\+\_\+\+C\+P $>$\label{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_a8cb4e8b979b2fe2fa412f517675f8890}
+
+\item 
+\hypertarget{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_ab7b22a4bd40908151efa65a1b6971ca3}{}using {\bfseries Msg\+Type} = typename graybat\+::communication\+Policy\+::\+Msg\+Type$<$ T\+\_\+\+C\+P $>$\label{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_ab7b22a4bd40908151efa65a1b6971ca3}
+
+\item 
+\hypertarget{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_a00cb2d84a07cc107f528387819c672d8}{}using {\bfseries Msg\+I\+D} = typename graybat\+::communication\+Policy\+::\+Msg\+I\+D$<$ T\+\_\+\+C\+P $>$\label{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_a00cb2d84a07cc107f528387819c672d8}
+
+\item 
+\hypertarget{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_a0eec360c31102d48a4e966036d8dd83e}{}using {\bfseries Context} = typename graybat\+::communication\+Policy\+::\+Context$<$ T\+\_\+\+C\+P $>$\label{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_a0eec360c31102d48a4e966036d8dd83e}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_a68e55ef0b3ba442d201beb0eb5841f65}{}{\bfseries Event} (Msg\+I\+D msg\+I\+D, Context context, V\+Addr v\+Addr, \hyperlink{structTag}{Tag} tag, T\+\_\+\+C\+P \&comm)\label{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_a68e55ef0b3ba442d201beb0eb5841f65}
+
+\item 
+\hypertarget{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_a083375e5e2dd4d6cd200b21e612feb9c}{}void {\bfseries wait} ()\label{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_a083375e5e2dd4d6cd200b21e612feb9c}
+
+\item 
+\hypertarget{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_a7c0c7257ac081d5ca6573ca4000df052}{}bool {\bfseries ready} ()\label{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_a7c0c7257ac081d5ca6573ca4000df052}
+
+\item 
+\hypertarget{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_a557def3edeff3a7626903d843587ac38}{}V\+Addr {\bfseries source} ()\label{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_a557def3edeff3a7626903d843587ac38}
+
+\item 
+\hypertarget{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_abd0aef53191c196467a01e388788cc49}{}\hyperlink{structTag}{Tag} {\bfseries get\+Tag} ()\label{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_abd0aef53191c196467a01e388788cc49}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_a130837551c5bc7dc99c5eb903af51800}{}Msg\+I\+D {\bfseries msg\+I\+D}\label{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_a130837551c5bc7dc99c5eb903af51800}
+
+\item 
+\hypertarget{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_ac1b5b3731edc737a711ecd8a39e9dbdb}{}Context {\bfseries context}\label{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_ac1b5b3731edc737a711ecd8a39e9dbdb}
+
+\item 
+\hypertarget{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_afcec320309760aecc842a3aaec4788db}{}V\+Addr {\bfseries v\+Addr}\label{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_afcec320309760aecc842a3aaec4788db}
+
+\item 
+\hypertarget{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_a10cce3d646304e6d88c16b7bbb3335b2}{}\hyperlink{structTag}{Tag} {\bfseries tag}\label{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_a10cce3d646304e6d88c16b7bbb3335b2}
+
+\item 
+\hypertarget{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_a8fa41e1ea108ad4cb994b0ca8681d4a8}{}T\+\_\+\+C\+P \& {\bfseries comm}\label{classgraybat_1_1communicationPolicy_1_1zmq_1_1Event_a8fa41e1ea108ad4cb994b0ca8681d4a8}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T\+\_\+\+C\+P$>$class graybat\+::communication\+Policy\+::zmq\+::\+Event$<$ T\+\_\+\+C\+P $>$}
+
+An event is returned by non-\/blocking communication operations and can be asked whether an operation has finished or it can be waited for this operation to be finished. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/graybat/communication\+Policy/zmq/Event.\+hpp\end{DoxyCompactItemize}

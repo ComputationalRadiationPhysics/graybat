@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="structgraybat_1_1pattern_1_1Grid" kind="struct" language="C++" prot="public">
+    <compoundname>graybat::pattern::Grid</compoundname>
+    <templateparamlist>
+      <param>
+        <type>typename T_GraphPolicy</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1Grid_1aab349845fbbbc8faaec2fc21f9dab618" prot="public" static="no">
+        <type>T_GraphPolicy</type>
+        <definition>using graybat::pattern::Grid&lt; T_GraphPolicy &gt;::GraphPolicy =  T_GraphPolicy</definition>
+        <argsstring></argsstring>
+        <name>GraphPolicy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/Grid.hpp" line="16" column="1" bodyfile="include/graybat/pattern/Grid.hpp" bodystart="16" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1Grid_1a676f95ffaf25de5c9a14775e12d80991" prot="public" static="no">
+        <type>graybat::graphPolicy::VertexDescription&lt; GraphPolicy &gt;</type>
+        <definition>using graybat::pattern::Grid&lt; T_GraphPolicy &gt;::VertexDescription =  graybat::graphPolicy::VertexDescription&lt;GraphPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>VertexDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/Grid.hpp" line="17" column="1" bodyfile="include/graybat/pattern/Grid.hpp" bodystart="17" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1Grid_1a8a6cbcea3f2e986387bd56b24c25969c" prot="public" static="no">
+        <type>graybat::graphPolicy::EdgeDescription&lt; GraphPolicy &gt;</type>
+        <definition>using graybat::pattern::Grid&lt; T_GraphPolicy &gt;::EdgeDescription =  graybat::graphPolicy::EdgeDescription&lt;GraphPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>EdgeDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/Grid.hpp" line="18" column="1" bodyfile="include/graybat/pattern/Grid.hpp" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1Grid_1a6ac54ff08812061adb655b098b78658d" prot="public" static="no">
+        <type>graybat::graphPolicy::GraphDescription&lt; GraphPolicy &gt;</type>
+        <definition>using graybat::pattern::Grid&lt; T_GraphPolicy &gt;::GraphDescription =  graybat::graphPolicy::GraphDescription&lt;GraphPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>GraphDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/Grid.hpp" line="19" column="1" bodyfile="include/graybat/pattern/Grid.hpp" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1Grid_1ae3d9d041926f8480aad0df1023a977e2" prot="public" static="no">
+        <type>graybat::graphPolicy::EdgeProperty&lt; GraphPolicy &gt;</type>
+        <definition>using graybat::pattern::Grid&lt; T_GraphPolicy &gt;::EdgeProperty =  graybat::graphPolicy::EdgeProperty&lt;GraphPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>EdgeProperty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/Grid.hpp" line="20" column="1" bodyfile="include/graybat/pattern/Grid.hpp" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1Grid_1a616b9ec5554ff55277d73e434f30c5ae" prot="public" static="no">
+        <type>graybat::graphPolicy::VertexProperty&lt; GraphPolicy &gt;</type>
+        <definition>using graybat::pattern::Grid&lt; T_GraphPolicy &gt;::VertexProperty =  graybat::graphPolicy::VertexProperty&lt;GraphPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>VertexProperty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/Grid.hpp" line="21" column="1" bodyfile="include/graybat/pattern/Grid.hpp" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structgraybat_1_1pattern_1_1Grid_1a8bd01cf7fce1097e0642256f6f91f638" prot="public" static="no" mutable="no">
+        <type>const unsigned</type>
+        <definition>const unsigned graybat::pattern::Grid&lt; T_GraphPolicy &gt;::height</definition>
+        <argsstring></argsstring>
+        <name>height</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/Grid.hpp" line="23" column="1" bodyfile="include/graybat/pattern/Grid.hpp" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1pattern_1_1Grid_1afafecacabb066eb00358d981208fba97" prot="public" static="no" mutable="no">
+        <type>const unsigned</type>
+        <definition>const unsigned graybat::pattern::Grid&lt; T_GraphPolicy &gt;::width</definition>
+        <argsstring></argsstring>
+        <name>width</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/Grid.hpp" line="24" column="1" bodyfile="include/graybat/pattern/Grid.hpp" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structgraybat_1_1pattern_1_1Grid_1afc52ac7cfc0b6f742dec72d2b6f0f509" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::pattern::Grid&lt; T_GraphPolicy &gt;::Grid</definition>
+        <argsstring>(const unsigned height, const unsigned width)</argsstring>
+        <name>Grid</name>
+        <param>
+          <type>const unsigned</type>
+          <declname>height</declname>
+        </param>
+        <param>
+          <type>const unsigned</type>
+          <declname>width</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/Grid.hpp" line="26" column="1" bodyfile="include/graybat/pattern/Grid.hpp" bodystart="26" bodyend="30"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1pattern_1_1Grid_1a59206aa8d8597b462a51672bd143a446" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>GraphDescription</type>
+        <definition>GraphDescription graybat::pattern::Grid&lt; T_GraphPolicy &gt;::operator()</definition>
+        <argsstring>()</argsstring>
+        <name>operator()</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/Grid.hpp" line="32" column="1" bodyfile="include/graybat/pattern/Grid.hpp" bodystart="32" bodyend="68"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/pattern/Grid.hpp" line="14" column="1" bodyfile="include/graybat/pattern/Grid.hpp" bodystart="14" bodyend="70"/>
+    <listofallmembers>
+      <member refid="structgraybat_1_1pattern_1_1Grid_1a8a6cbcea3f2e986387bd56b24c25969c" prot="public" virt="non-virtual"><scope>graybat::pattern::Grid</scope><name>EdgeDescription</name></member>
+      <member refid="structgraybat_1_1pattern_1_1Grid_1ae3d9d041926f8480aad0df1023a977e2" prot="public" virt="non-virtual"><scope>graybat::pattern::Grid</scope><name>EdgeProperty</name></member>
+      <member refid="structgraybat_1_1pattern_1_1Grid_1a6ac54ff08812061adb655b098b78658d" prot="public" virt="non-virtual"><scope>graybat::pattern::Grid</scope><name>GraphDescription</name></member>
+      <member refid="structgraybat_1_1pattern_1_1Grid_1aab349845fbbbc8faaec2fc21f9dab618" prot="public" virt="non-virtual"><scope>graybat::pattern::Grid</scope><name>GraphPolicy</name></member>
+      <member refid="structgraybat_1_1pattern_1_1Grid_1afc52ac7cfc0b6f742dec72d2b6f0f509" prot="public" virt="non-virtual"><scope>graybat::pattern::Grid</scope><name>Grid</name></member>
+      <member refid="structgraybat_1_1pattern_1_1Grid_1a8bd01cf7fce1097e0642256f6f91f638" prot="public" virt="non-virtual"><scope>graybat::pattern::Grid</scope><name>height</name></member>
+      <member refid="structgraybat_1_1pattern_1_1Grid_1a59206aa8d8597b462a51672bd143a446" prot="public" virt="non-virtual"><scope>graybat::pattern::Grid</scope><name>operator()</name></member>
+      <member refid="structgraybat_1_1pattern_1_1Grid_1a676f95ffaf25de5c9a14775e12d80991" prot="public" virt="non-virtual"><scope>graybat::pattern::Grid</scope><name>VertexDescription</name></member>
+      <member refid="structgraybat_1_1pattern_1_1Grid_1a616b9ec5554ff55277d73e434f30c5ae" prot="public" virt="non-virtual"><scope>graybat::pattern::Grid</scope><name>VertexProperty</name></member>
+      <member refid="structgraybat_1_1pattern_1_1Grid_1afafecacabb066eb00358d981208fba97" prot="public" virt="non-virtual"><scope>graybat::pattern::Grid</scope><name>width</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

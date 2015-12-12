@@ -1,0 +1,107 @@
+\hypertarget{ring_8cpp-example}{}\section{ring.\+cpp}
+Data is send through a ring of nodes and every node transforms data with own function.
+
+
+\begin{DoxyCodeInclude}
+
+\textcolor{comment}{// STL}
+\textcolor{preprocessor}{#include <iostream>}   \textcolor{comment}{/* std::cout */}
+\textcolor{preprocessor}{#include <vector>}     \textcolor{comment}{/* std::vector */}
+\textcolor{preprocessor}{#include <array>}      \textcolor{comment}{/* std::array */}
+
+\textcolor{comment}{// GRAYBAT}
+\textcolor{preprocessor}{#include <graybat/Cage.hpp>}
+\textcolor{preprocessor}{#include <graybat/communicationPolicy/BMPI.hpp>}
+\textcolor{preprocessor}{#include <graybat/graphPolicy/BGL.hpp>}
+\textcolor{comment}{// GRAYBAT mappings}
+\textcolor{preprocessor}{#include <graybat/mapping/Consecutive.hpp>}
+\textcolor{preprocessor}{#include <graybat/mapping/Random.hpp>}
+\textcolor{preprocessor}{#include <graybat/mapping/Roundrobin.hpp>}
+\textcolor{comment}{// GRAYBAT patterns}
+\textcolor{preprocessor}{#include <graybat/pattern/Ring.hpp>}
+
+\textcolor{keyword}{struct }\hyperlink{structFunction}{Function} \{
+
+    \textcolor{keywordtype}{void} process(std::tuple<unsigned, std::string> &a)\{
+    std::get<0>(a)++;
+    std::get<1>(a) += \textcolor{stringliteral}{" world"};
+    
+    \}
+    
+\};
+
+
+\textcolor{keywordtype}{int} exp() \{
+    \textcolor{comment}{/***************************************************************************}
+\textcolor{comment}{     * Configuration}
+\textcolor{comment}{     ****************************************************************************/}
+
+    \textcolor{comment}{// CommunicationPolicy}
+    \textcolor{keyword}{typedef} \hyperlink{structgraybat_1_1communicationPolicy_1_1BMPI}{graybat::communicationPolicy::BMPI} CP;
+    \textcolor{keyword}{typedef} CP::Config                         Config;
+    
+    \textcolor{comment}{// GraphPolicy}
+    \textcolor{keyword}{typedef} \hyperlink{classgraybat_1_1graphPolicy_1_1BGL}{graybat::graphPolicy::BGL<Function>}    GP;
+    
+    \textcolor{comment}{// Cage}
+    \textcolor{keyword}{typedef} \hyperlink{structgraybat_1_1Cage}{graybat::Cage<CP, GP>} Cage;
+    \textcolor{keyword}{typedef} \textcolor{keyword}{typename} Cage::Event  Event;
+    \textcolor{keyword}{typedef} \textcolor{keyword}{typename} Cage::Vertex Vertex;
+
+    \textcolor{comment}{/***************************************************************************}
+\textcolor{comment}{     * Initialize Communication}
+\textcolor{comment}{     ****************************************************************************/}
+    \textcolor{keyword}{const} \textcolor{keywordtype}{unsigned} nRingLinks = 50;
+
+    \textcolor{comment}{// Create GoL Graph}
+    Config config;
+    Cage cage(config);
+    assert(cage.getPeers().size() >= nRingLinks);
+
+    \textcolor{comment}{// Create ring communication pattern}
+    cage.setGraph(\hyperlink{structgraybat_1_1pattern_1_1Ring}{graybat::pattern::Ring<GP>}(nRingLinks));
+
+    
+    \textcolor{comment}{// Distribute vertices}
+    cage.distribute(\hyperlink{structgraybat_1_1mapping_1_1Roundrobin}{graybat::mapping::Roundrobin}());
+
+    
+    \textcolor{comment}{/***************************************************************************}
+\textcolor{comment}{     * Run Simulation}
+\textcolor{comment}{     ****************************************************************************/}
+    std::vector<Event> events;
+
+    std::array<std::tuple<unsigned, std::string>, 1> input\{\{std::make\_tuple(0, \textcolor{stringliteral}{"hello"})\}\};
+    std::array<std::tuple<unsigned, std::string>, 1> output;
+    std::array<std::tuple<unsigned, std::string>, 1> intermediate;
+
+    \textcolor{keyword}{const} Vertex stimula = cage.getVertex(0);
+
+    \textcolor{keywordflow}{for}(Vertex v : cage.hostedVertices)\{
+
+        \textcolor{comment}{// Entry Vertex}
+        \textcolor{keywordflow}{if}(v == stimula)\{
+            v.spread(input, events);
+            std::cout << \textcolor{stringliteral}{"Input: "} << std::get<0>(input[0]) << std::endl;               
+        \}
+
+    \textcolor{keywordflow}{while}(\textcolor{keyword}{true})\{
+        v.collect(intermediate);
+        v().process(intermediate[0]);
+        std::cout << \textcolor{stringliteral}{"Increment: "} << std::get<0>(intermediate[0]) << std::endl;
+        v.spread(intermediate);
+        
+    \}
+        
+    \}
+    
+    \textcolor{keywordflow}{return} 0;
+
+\}
+
+\textcolor{keywordtype}{int} main()\{
+    exp();
+    \textcolor{keywordflow}{return} 0;
+\}
+\end{DoxyCodeInclude}
+ 

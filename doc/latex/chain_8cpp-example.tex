@@ -1,0 +1,119 @@
+\hypertarget{chain_8cpp-example}{}\section{chain.\+cpp}
+Data is send through a chain of compute nodes and every node increments the value.
+
+
+\begin{DoxyCodeInclude}
+
+\textcolor{comment}{// STL}
+\textcolor{preprocessor}{#include <iostream>}   \textcolor{comment}{/* std::cout */}
+\textcolor{preprocessor}{#include <vector>}     \textcolor{comment}{/* std::vector */}
+\textcolor{preprocessor}{#include <array>}      \textcolor{comment}{/* std::array */}
+\textcolor{preprocessor}{#include <functional>} \textcolor{comment}{/* std::bind */}
+\textcolor{preprocessor}{#include <cmath>}      \textcolor{comment}{/* sqrt */}
+\textcolor{preprocessor}{#include <cstdlib>}    \textcolor{comment}{/* atoi */}
+\textcolor{preprocessor}{#include <numeric>}    \textcolor{comment}{/* std::accumulate */}
+
+\textcolor{comment}{// GRAYBAT}
+\textcolor{preprocessor}{#include <graybat/Cage.hpp>}
+\textcolor{preprocessor}{#include <graybat/communicationPolicy/BMPI.hpp>}
+\textcolor{preprocessor}{#include <graybat/graphPolicy/BGL.hpp>}
+\textcolor{comment}{// GRAYBAT mappings}
+\textcolor{preprocessor}{#include <graybat/mapping/Consecutive.hpp>}
+\textcolor{preprocessor}{#include <graybat/mapping/Random.hpp>}
+\textcolor{preprocessor}{#include <graybat/mapping/Roundrobin.hpp>}
+\textcolor{preprocessor}{#include <graybat/mapping/Filter.hpp>}
+\textcolor{comment}{// GRAYBAT pattern}
+\textcolor{preprocessor}{#include <graybat/pattern/Chain.hpp>}
+
+
+\textcolor{keyword}{struct }\hyperlink{structTag}{Tag} \{
+    \textcolor{keywordtype}{int} tag;
+    
+\};
+
+\textcolor{keywordtype}{int} exp() \{
+    \textcolor{comment}{/***************************************************************************}
+\textcolor{comment}{     * Configuration}
+\textcolor{comment}{     ****************************************************************************/}
+
+    \textcolor{comment}{// CommunicationPolicy}
+    \textcolor{keyword}{typedef} \hyperlink{structgraybat_1_1communicationPolicy_1_1BMPI}{graybat::communicationPolicy::BMPI} CP;
+    \textcolor{keyword}{typedef} CP::Config                         Config;    
+    
+    \textcolor{comment}{// GraphPolicy}
+    \textcolor{keyword}{typedef} \hyperlink{classgraybat_1_1graphPolicy_1_1BGL}{graybat::graphPolicy::BGL<Tag, Tag>}    GP;
+    
+    \textcolor{comment}{// Cage}
+    \textcolor{keyword}{typedef} \hyperlink{structgraybat_1_1Cage}{graybat::Cage<CP, GP>} Cage;
+    \textcolor{keyword}{typedef} \textcolor{keyword}{typename} Cage::Event  Event;
+    \textcolor{keyword}{typedef} \textcolor{keyword}{typename} Cage::Vertex Vertex;
+
+    \textcolor{comment}{/***************************************************************************}
+\textcolor{comment}{     * Initialize Communication}
+\textcolor{comment}{     ****************************************************************************/}
+    \textcolor{keyword}{const} \textcolor{keywordtype}{unsigned} nChainLinks = 6;
+    \textcolor{keyword}{auto} inc = [](\textcolor{keywordtype}{unsigned} &a)\{a++;\};
+
+    \textcolor{comment}{// Create GoL Graph}
+    Config config;
+    Cage cage(config);
+
+    cage.setGraph(\hyperlink{structgraybat_1_1pattern_1_1Chain}{graybat::pattern::Chain<GP>}(nChainLinks));
+    
+    \textcolor{comment}{// Distribute vertices}
+    cage.distribute(\hyperlink{structgraybat_1_1mapping_1_1Filter}{graybat::mapping::Filter}(cage.comm.getGlobalContext().getVAddr(
+      ) % 3));
+
+    \textcolor{comment}{/***************************************************************************}
+\textcolor{comment}{     * Run Simulation}
+\textcolor{comment}{     ****************************************************************************/}
+    std::vector<Event> events;
+
+    std::array<unsigned, 1> input \{\{0\}\};
+    std::array<unsigned, 1> output \{\{0\}\};
+    std::array<unsigned, 1> intermediate \{\{0\}\};
+
+    \textcolor{keyword}{const} Vertex entry = cage.getVertex(0);
+    \textcolor{keyword}{const} Vertex exit  = cage.getVertex(nChainLinks-1);
+
+
+    \textcolor{keywordflow}{for}(Vertex v : cage.hostedVertices)\{
+
+        \textcolor{keywordflow}{if}(v == entry)\{
+            v.spread(input, events);
+            std::cout << \textcolor{stringliteral}{"Input: "} << input[0] << \textcolor{stringliteral}{" "} << cage.comm.getGlobalContext().getVAddr() << 
+      std::endl;
+        \}
+
+        \textcolor{keywordflow}{if}(v == exit)\{
+            v.collect(output);
+            std::cout << \textcolor{stringliteral}{"Output: "} << output[0] << \textcolor{stringliteral}{" "} << cage.comm.getGlobalContext().getVAddr() << 
+      std::endl;
+        \}
+
+        \textcolor{keywordflow}{if}(v != entry and v != exit)\{
+            v.collect(intermediate);
+            inc(intermediate[0]);
+            std::cout << \textcolor{stringliteral}{"Increment: "} << intermediate[0] << \textcolor{stringliteral}{" "} << cage.comm.getGlobalContext().getVAddr()
+       << std::endl;
+            v.spread(intermediate, events);
+        
+        \}
+    
+    \}
+
+    \textcolor{keywordflow}{for}(\textcolor{keywordtype}{unsigned} i = 0; i < events.size(); ++i)\{
+        events.back().wait();
+        events.pop\_back();
+    \}
+    
+    \textcolor{keywordflow}{return} 0;
+
+\}
+
+\textcolor{keywordtype}{int} main()\{
+    exp();
+    \textcolor{keywordflow}{return} 0;
+\}
+\end{DoxyCodeInclude}
+ 

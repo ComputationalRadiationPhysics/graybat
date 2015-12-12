@@ -1,0 +1,71 @@
+
+\begin{DoxyItemize}
+\item \hyperlink{zmq}{Run Zero\+M\+Q Communication Policy}
+\item \hyperlink{gol}{The Game of Life Example} 
+\end{DoxyItemize}\hypertarget{zmq}{}\section{Run Zero\+M\+Q Communication Policy}\label{zmq}
+The Zero\+M\+Q communication policy needs a connection to the zmq signaling server. The connection parameters need to be provided through the Zero\+M\+Q specific communication policy configuration. This configuration contains\+:
+
+
+\begin{DoxyItemize}
+\item Url of the signaling server
+\item Own Url
+\item Context size
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}
+\textcolor{keywordtype}{int} main()\{
+
+    \textcolor{keyword}{using} GP         = \hyperlink{classgraybat_1_1graphPolicy_1_1BGL}{graybat::graphPolicy::BGL<>};
+    \textcolor{keyword}{using} ZMQ        = \hyperlink{structgraybat_1_1communicationPolicy_1_1ZMQ}{graybat::communicationPolicy::ZMQ};
+    \textcolor{keyword}{using} ZMQCage    = \hyperlink{structgraybat_1_1Cage}{graybat::Cage<ZMQ, GP>};
+    \textcolor{keyword}{using} ZMQConfig  = \hyperlink{structgraybat_1_1communicationPolicy_1_1zmq_1_1Config}{graybat::communicationPolicy::zmq::Config};
+
+    ZMQConfig zmqConfig = \{\textcolor{stringliteral}{"tcp://127.0.0.1:5000"},
+                           \textcolor{stringliteral}{"tcp://127.0.0.1:5001"},
+                           \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{size\_t}\textcolor{keyword}{>}(std::stoi(std::getenv(\textcolor{stringliteral}{"OMPI\_COMM\_WORLD\_SIZE"})))\};
+
+    ZMQCage zmqCage(zmqConfig);
+
+\}
+\end{DoxyCode}
+
+
+First the signaling server needs to be started.
+
+
+\begin{DoxyCode}
+$ ./zmq\_signaling --ip 127:0.0.1 --port 5000 &
+\end{DoxyCode}
+
+
+Afterwards, an application using the Zero\+M\+Q communication policy can be started by {\ttfamily mpiexec}.
+
+
+\begin{DoxyCode}
+$ mpiexec -n 4 ./a.out
+\end{DoxyCode}
+
+
+\subsection*{Further Links}
+
+
+\begin{DoxyItemize}
+\item \hyperlink{structgraybat_1_1communicationPolicy_1_1ZMQ}{graybat\+::communication\+Policy\+::\+Z\+M\+Q}
+\item \hyperlink{structgraybat_1_1communicationPolicy_1_1zmq_1_1Config}{graybat\+::communication\+Policy\+::zmq\+::\+Config} 
+\end{DoxyItemize}\hypertarget{gol}{}\section{The Game of Life Example}\label{gol}
+The following figure shows a sketch of the game of life simulation implemented with Gray\+Bat support. The Game of Life domain (20 x 20 cells) is decomposed very fine grain, such that, every cell is represented by a vertex in a two-\/dimensional grid and neighboring vertices are connected by edges (\hyperlink{structgraybat_1_1pattern_1_1GridDiagonal}{graybat\+::pattern\+::\+Grid\+Diagonal}). The graph is partioned into four partitions and mapped to four peers (graybat\+::pattern\+::\+Graph\+Partition). Therefore, each peer is responsible for the communication of 100 vertices with its neighbors. Finally, each two peers are mapped to a quad core processor on a dual socket system (\hyperlink{structgraybat_1_1communicationPolicy_1_1BMPI}{graybat\+::communication\+Policy\+::\+B\+M\+P\+I}). This is one possible sequence of mappings for a Game of Life simulation within the Gray\+Bat framework. On each step changes are possible to adapt the simulation to other architectures, networks or algorithms.
+
+
+
+\subsection*{See Also}
+
+
+\begin{DoxyItemize}
+\item \hyperlink{gol_8cpp-example}{Go\+L Sources}
+\item \hyperlink{cage}{Communication and Graph Environment}
+\item \hyperlink{communicationPolicy}{Communication Policy}
+\item \hyperlink{graphPolicy}{Graph Policy}
+\item \hyperlink{communicationPattern}{Communication Pattern}
+\item \hyperlink{mapping}{Vertex Mapping} 
+\end{DoxyItemize}

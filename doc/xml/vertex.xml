@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="vertex" kind="page">
+    <compoundname>vertex</compoundname>
+    <title>Vertex Communication Interface</title>
+    <detaileddescription>
+<para>Next to the communication methods provided by the <ref refid="cage" kindref="compound">cage</ref> a vertex also provides methods to communicate with its adjacent vertices.</para><para>It is assume that a <ref refid="cage" kindref="compound">cage</ref> has allready been instantiated and initialised.</para><para><orderedlist>
+<listitem><para>Collect data from all incoming edges: <programlisting><codeline><highlight class="comment">//<sp/>Just<sp/>get<sp/>a<sp/>vertex<sp/>from<sp/>the<sp/>cage</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Vertex<sp/>vertex<sp/>=<sp/>cage.getVertex(0);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Prepare<sp/>the<sp/>receive<sp/>container</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;T_Data&gt;<sp/>collectData(vertex.nInEdges());</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Synchronous<sp/>recv<sp/>messages<sp/>from<sp/>all<sp/>incoming<sp/>edges</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">vertex.collect(recvData);</highlight></codeline>
+</programlisting> This functionality is also available in the cage: <programlisting><codeline><highlight class="normal">cage.collect(vertex,<sp/>collectData);</highlight></codeline>
+</programlisting></para></listitem><listitem><para>Spread data to all outgoing edges: <programlisting><codeline><highlight class="comment">//<sp/>Again,<sp/>take<sp/>some<sp/>random<sp/>vertex</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Vertex<sp/>vertex<sp/>=<sp/>cage.getVertex(0);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Prepare<sp/>the<sp/>container<sp/>to<sp/>spread</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;T_Data&gt;<sp/>spreadData(1,<sp/>static_cast&lt;T_Data&gt;(1));</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Synchron<sp/>send<sp/>same<sp/>data<sp/>over<sp/>all<sp/>outgoing<sp/>edges</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">v.spread(spreadData);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Asynchron<sp/>send<sp/>same<sp/>data<sp/>over<sp/>all<sp/>outgoing<sp/>edges</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;Event&gt;<sp/>events;</highlight></codeline>
+<codeline><highlight class="normal">v.spread(sendData,<sp/>events);</highlight></codeline>
+</programlisting></para></listitem></orderedlist>
+</para><para><heading level="2">Further Links</heading>
+</para><para><itemizedlist>
+<listitem><para><ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">graybat::CommunicationVertex</ref> </para></listitem></itemizedlist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

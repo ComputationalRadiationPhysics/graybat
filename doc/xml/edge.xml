@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="edge" kind="page">
+    <compoundname>edge</compoundname>
+    <title>Edge Communication Interface</title>
+    <detaileddescription>
+<para>Next to the communication methods provided by the <ref refid="cage" kindref="compound">cage</ref> a edge also provides methods to communicate with its connected vertex</para><para>It is assume that a <ref refid="cage" kindref="compound">cage</ref> has allready been instantiated and initialised.</para><para><programlisting><codeline><highlight class="comment">//<sp/>Just<sp/>get<sp/>a<sp/>vertex<sp/>from<sp/>the<sp/>cage</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">Edge<sp/>edge<sp/>=<sp/>cage.getVertex(0).getOutEdges()[0]</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Prepare<sp/>send<sp/>container</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">std::vector&lt;T_Data&gt;<sp/>sendData(10);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Send<sp/>data<sp/>over<sp/>edge</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">edge<sp/>&lt;&lt;<sp/>sendData;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight><highlight class="comment">//<sp/>Recv<sp/>data<sp/>over<sp/>inverse<sp/>edge</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">edge.inverse()<sp/>&gt;&gt;<sp/>recvData</highlight></codeline>
+</programlisting></para><para><heading level="2">Further Links</heading>
+</para><para><itemizedlist>
+<listitem><para><ref refid="structgraybat_1_1CommunicationEdge" kindref="compound">graybat::CommunicationEdge</ref> </para></listitem></itemizedlist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

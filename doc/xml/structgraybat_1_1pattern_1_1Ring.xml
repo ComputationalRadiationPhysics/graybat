@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="structgraybat_1_1pattern_1_1Ring" kind="struct" language="C++" prot="public">
+    <compoundname>graybat::pattern::Ring</compoundname>
+    <templateparamlist>
+      <param>
+        <type>typename T_GraphPolicy</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1Ring_1aebb4517df89c5e5fe6de9b970e0a2815" prot="public" static="no">
+        <type>T_GraphPolicy</type>
+        <definition>using graybat::pattern::Ring&lt; T_GraphPolicy &gt;::GraphPolicy =  T_GraphPolicy</definition>
+        <argsstring></argsstring>
+        <name>GraphPolicy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/Ring.hpp" line="17" column="1" bodyfile="include/graybat/pattern/Ring.hpp" bodystart="17" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1Ring_1aca9cf36b522b5a565189cd7b30c5f594" prot="public" static="no">
+        <type>graybat::graphPolicy::VertexDescription&lt; GraphPolicy &gt;</type>
+        <definition>using graybat::pattern::Ring&lt; T_GraphPolicy &gt;::VertexDescription =  graybat::graphPolicy::VertexDescription&lt;GraphPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>VertexDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/Ring.hpp" line="18" column="1" bodyfile="include/graybat/pattern/Ring.hpp" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1Ring_1a53594d4bfdfaf36aac2b77138f7d9b24" prot="public" static="no">
+        <type>graybat::graphPolicy::EdgeDescription&lt; GraphPolicy &gt;</type>
+        <definition>using graybat::pattern::Ring&lt; T_GraphPolicy &gt;::EdgeDescription =  graybat::graphPolicy::EdgeDescription&lt;GraphPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>EdgeDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/Ring.hpp" line="19" column="1" bodyfile="include/graybat/pattern/Ring.hpp" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1Ring_1a2267dd3093e5d89dc963dfc395771fd0" prot="public" static="no">
+        <type>graybat::graphPolicy::GraphDescription&lt; GraphPolicy &gt;</type>
+        <definition>using graybat::pattern::Ring&lt; T_GraphPolicy &gt;::GraphDescription =  graybat::graphPolicy::GraphDescription&lt;GraphPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>GraphDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/Ring.hpp" line="20" column="1" bodyfile="include/graybat/pattern/Ring.hpp" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1Ring_1a63d5e2d31d9c26b9516c0de8860eb460" prot="public" static="no">
+        <type>graybat::graphPolicy::EdgeProperty&lt; GraphPolicy &gt;</type>
+        <definition>using graybat::pattern::Ring&lt; T_GraphPolicy &gt;::EdgeProperty =  graybat::graphPolicy::EdgeProperty&lt;GraphPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>EdgeProperty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/Ring.hpp" line="21" column="1" bodyfile="include/graybat/pattern/Ring.hpp" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1Ring_1a5091e1a87b0cfc92769718a09451839c" prot="public" static="no">
+        <type>graybat::graphPolicy::VertexProperty&lt; GraphPolicy &gt;</type>
+        <definition>using graybat::pattern::Ring&lt; T_GraphPolicy &gt;::VertexProperty =  graybat::graphPolicy::VertexProperty&lt;GraphPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>VertexProperty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/Ring.hpp" line="22" column="1" bodyfile="include/graybat/pattern/Ring.hpp" bodystart="22" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structgraybat_1_1pattern_1_1Ring_1ab602479b001f377bbb364afd6b9a1cf6" prot="public" static="no" mutable="no">
+        <type>const unsigned</type>
+        <definition>const unsigned graybat::pattern::Ring&lt; T_GraphPolicy &gt;::verticesCount</definition>
+        <argsstring></argsstring>
+        <name>verticesCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/Ring.hpp" line="24" column="1" bodyfile="include/graybat/pattern/Ring.hpp" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structgraybat_1_1pattern_1_1Ring_1a47c498d6957d3c1e777c18663462cccd" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::pattern::Ring&lt; T_GraphPolicy &gt;::Ring</definition>
+        <argsstring>(const unsigned verticesCount)</argsstring>
+        <name>Ring</name>
+        <param>
+          <type>const unsigned</type>
+          <declname>verticesCount</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/Ring.hpp" line="26" column="1" bodyfile="include/graybat/pattern/Ring.hpp" bodystart="26" bodyend="29"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1pattern_1_1Ring_1ae74145d3758ee4ea91cbfc758b21836c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>GraphDescription</type>
+        <definition>GraphDescription graybat::pattern::Ring&lt; T_GraphPolicy &gt;::operator()</definition>
+        <argsstring>()</argsstring>
+        <name>operator()</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/Ring.hpp" line="32" column="1" bodyfile="include/graybat/pattern/Ring.hpp" bodystart="32" bodyend="54"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/pattern/Ring.hpp" line="15" column="1" bodyfile="include/graybat/pattern/Ring.hpp" bodystart="15" bodyend="56"/>
+    <listofallmembers>
+      <member refid="structgraybat_1_1pattern_1_1Ring_1a53594d4bfdfaf36aac2b77138f7d9b24" prot="public" virt="non-virtual"><scope>graybat::pattern::Ring</scope><name>EdgeDescription</name></member>
+      <member refid="structgraybat_1_1pattern_1_1Ring_1a63d5e2d31d9c26b9516c0de8860eb460" prot="public" virt="non-virtual"><scope>graybat::pattern::Ring</scope><name>EdgeProperty</name></member>
+      <member refid="structgraybat_1_1pattern_1_1Ring_1a2267dd3093e5d89dc963dfc395771fd0" prot="public" virt="non-virtual"><scope>graybat::pattern::Ring</scope><name>GraphDescription</name></member>
+      <member refid="structgraybat_1_1pattern_1_1Ring_1aebb4517df89c5e5fe6de9b970e0a2815" prot="public" virt="non-virtual"><scope>graybat::pattern::Ring</scope><name>GraphPolicy</name></member>
+      <member refid="structgraybat_1_1pattern_1_1Ring_1ae74145d3758ee4ea91cbfc758b21836c" prot="public" virt="non-virtual"><scope>graybat::pattern::Ring</scope><name>operator()</name></member>
+      <member refid="structgraybat_1_1pattern_1_1Ring_1a47c498d6957d3c1e777c18663462cccd" prot="public" virt="non-virtual"><scope>graybat::pattern::Ring</scope><name>Ring</name></member>
+      <member refid="structgraybat_1_1pattern_1_1Ring_1aca9cf36b522b5a565189cd7b30c5f594" prot="public" virt="non-virtual"><scope>graybat::pattern::Ring</scope><name>VertexDescription</name></member>
+      <member refid="structgraybat_1_1pattern_1_1Ring_1a5091e1a87b0cfc92769718a09451839c" prot="public" virt="non-virtual"><scope>graybat::pattern::Ring</scope><name>VertexProperty</name></member>
+      <member refid="structgraybat_1_1pattern_1_1Ring_1ab602479b001f377bbb364afd6b9a1cf6" prot="public" virt="non-virtual"><scope>graybat::pattern::Ring</scope><name>verticesCount</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

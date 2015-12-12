@@ -1,0 +1,132 @@
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL}{}\section{graybat\+:\+:graph\+Policy\+:\+:B\+G\+L$<$ T\+\_\+\+Vertex\+Property, T\+\_\+\+Edge\+Property $>$ Class Template Reference}
+\label{classgraybat_1_1graphPolicy_1_1BGL}\index{graybat\+::graph\+Policy\+::\+B\+G\+L$<$ T\+\_\+\+Vertex\+Property, T\+\_\+\+Edge\+Property $>$@{graybat\+::graph\+Policy\+::\+B\+G\+L$<$ T\+\_\+\+Vertex\+Property, T\+\_\+\+Edge\+Property $>$}}
+
+
+A class to describe directed graphs.  
+
+
+
+
+{\ttfamily \#include $<$B\+G\+L.\+hpp$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_a265ad5af8b806b224bb7279bda3193c7}{}using {\bfseries Vertex\+Property} = T\+\_\+\+Vertex\+Property\label{classgraybat_1_1graphPolicy_1_1BGL_a265ad5af8b806b224bb7279bda3193c7}
+
+\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_ab914ee8a3223cc86c73af3046bf417cf}{}using {\bfseries Edge\+Property} = T\+\_\+\+Edge\+Property\label{classgraybat_1_1graphPolicy_1_1BGL_ab914ee8a3223cc86c73af3046bf417cf}
+
+\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_ae9fc60048660948bfc2418ed74cd3882}{}using {\bfseries Vertex\+Description} = graybat\+::graph\+Policy\+::\+Vertex\+Description$<$ \hyperlink{classgraybat_1_1graphPolicy_1_1BGL}{B\+G\+L} $>$\label{classgraybat_1_1graphPolicy_1_1BGL_ae9fc60048660948bfc2418ed74cd3882}
+
+\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_a72d9bad73b4ba1021b384379638b8e1e}{}using {\bfseries Edge\+Description} = graybat\+::graph\+Policy\+::\+Edge\+Description$<$ \hyperlink{classgraybat_1_1graphPolicy_1_1BGL}{B\+G\+L} $>$\label{classgraybat_1_1graphPolicy_1_1BGL_a72d9bad73b4ba1021b384379638b8e1e}
+
+\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_ab58617e8a5ce35716fa72c6c8ecee583}{}using {\bfseries Graph\+Description} = graybat\+::graph\+Policy\+::\+Graph\+Description$<$ \hyperlink{classgraybat_1_1graphPolicy_1_1BGL}{B\+G\+L} $>$\label{classgraybat_1_1graphPolicy_1_1BGL_ab58617e8a5ce35716fa72c6c8ecee583}
+
+\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_a29fc9b001ea3fc7288b710296de29e1c}{}using {\bfseries In\+Edge\+Iter} = typename boost\+::graph\+\_\+traits$<$ B\+G\+L\+Graph $>$\+::in\+\_\+edge\+\_\+iterator\label{classgraybat_1_1graphPolicy_1_1BGL_a29fc9b001ea3fc7288b710296de29e1c}
+
+\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_a275a43ac191b7f9bf5015b29bea4840e}{}using {\bfseries Out\+Edge\+Iter} = typename boost\+::graph\+\_\+traits$<$ B\+G\+L\+Graph $>$\+::out\+\_\+edge\+\_\+iterator\label{classgraybat_1_1graphPolicy_1_1BGL_a275a43ac191b7f9bf5015b29bea4840e}
+
+\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_a43c38b9bb4eab53bd2912809ceec36ff}{}using {\bfseries Adjacent\+Vertex\+Iter} = typename boost\+::graph\+\_\+traits$<$ B\+G\+L\+Graph $>$\+::adjacency\+\_\+iterator\label{classgraybat_1_1graphPolicy_1_1BGL_a43c38b9bb4eab53bd2912809ceec36ff}
+
+\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_acecbb87f46332b42010a20b89918223b}{}using {\bfseries All\+Vertex\+Iter} = typename boost\+::graph\+\_\+traits$<$ B\+G\+L\+Graph $>$\+::vertex\+\_\+iterator\label{classgraybat_1_1graphPolicy_1_1BGL_acecbb87f46332b42010a20b89918223b}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_ae062d8b00efe814ec10ecb9caeea6d48}{}\hyperlink{classgraybat_1_1graphPolicy_1_1BGL_ae062d8b00efe814ec10ecb9caeea6d48}{B\+G\+L} (Graph\+Description graph\+Desc)\label{classgraybat_1_1graphPolicy_1_1BGL_ae062d8b00efe814ec10ecb9caeea6d48}
+
+\begin{DoxyCompactList}\small\item\em The graph has to be described by {\itshape edges} (source Vertex ==$>$ target Vertex) and the {\itshape vertices} of this graph. \end{DoxyCompactList}\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_ade448ae25290e434463d31a27c1387db}{}std\+::pair$<$ All\+Vertex\+Iter, All\+Vertex\+Iter $>$ \hyperlink{classgraybat_1_1graphPolicy_1_1BGL_ade448ae25290e434463d31a27c1387db}{get\+Vertices} ()\label{classgraybat_1_1graphPolicy_1_1BGL_ade448ae25290e434463d31a27c1387db}
+
+\begin{DoxyCompactList}\small\item\em Returns all vertices of the graph. \end{DoxyCompactList}\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_ad23dcf17164f42ec8fb9fe7a3de8c01e}{}std\+::pair$<$ Edge\+I\+D, bool $>$ \hyperlink{classgraybat_1_1graphPolicy_1_1BGL_ad23dcf17164f42ec8fb9fe7a3de8c01e}{get\+Edge} (const Vertex\+I\+D source, const Vertex\+I\+D target)\label{classgraybat_1_1graphPolicy_1_1BGL_ad23dcf17164f42ec8fb9fe7a3de8c01e}
+
+\begin{DoxyCompactList}\small\item\em Returns the edge between source and target vertex. \end{DoxyCompactList}\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_a1f01ae55ce810b789df9f64806c94bec}{}std\+::pair$<$ Adjacent\+Vertex\+Iter, Adjacent\+Vertex\+Iter $>$ \hyperlink{classgraybat_1_1graphPolicy_1_1BGL_a1f01ae55ce810b789df9f64806c94bec}{get\+Adjacent\+Vertices} (const Vertex\+I\+D id)\label{classgraybat_1_1graphPolicy_1_1BGL_a1f01ae55ce810b789df9f64806c94bec}
+
+\begin{DoxyCompactList}\small\item\em Returns all vertices, that are adjacent (connected) to {\itshape vertex} \end{DoxyCompactList}\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_a57d05597e0b6ed9f92828809cb6740f5}{}std\+::pair$<$ Out\+Edge\+Iter, Out\+Edge\+Iter $>$ \hyperlink{classgraybat_1_1graphPolicy_1_1BGL_a57d05597e0b6ed9f92828809cb6740f5}{get\+Out\+Edges} (const Vertex\+I\+D id)\label{classgraybat_1_1graphPolicy_1_1BGL_a57d05597e0b6ed9f92828809cb6740f5}
+
+\begin{DoxyCompactList}\small\item\em Returns all outgoing edgpes of {\itshape src\+Vertex} paired with its target vertex. \end{DoxyCompactList}\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_aed44e414d59e72afee296f92a78917ec}{}std\+::pair$<$ In\+Edge\+Iter, In\+Edge\+Iter $>$ \hyperlink{classgraybat_1_1graphPolicy_1_1BGL_aed44e414d59e72afee296f92a78917ec}{get\+In\+Edges} (const Vertex\+I\+D id)\label{classgraybat_1_1graphPolicy_1_1BGL_aed44e414d59e72afee296f92a78917ec}
+
+\begin{DoxyCompactList}\small\item\em Returns all incoming edges to {\itshape target\+Vertex} paired with its source vertex. \end{DoxyCompactList}\item 
+Bgl\+Vertex\+I\+D \hyperlink{classgraybat_1_1graphPolicy_1_1BGL_a93884489eaf5a2b8367c1cf04c0a3434}{get\+Local\+I\+D} (Vertex\+Property vertex)
+\begin{DoxyCompactList}\small\item\em Returns the local id of {\itshape vertex} in this graph. \end{DoxyCompactList}\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_aed8f8b55547a5a6c92d7f711a9a0fe83}{}void {\bfseries set\+Vertex\+Property} (Bgl\+Vertex\+I\+D vertex, Vertex\+Property value)\label{classgraybat_1_1graphPolicy_1_1BGL_aed8f8b55547a5a6c92d7f711a9a0fe83}
+
+\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_a4b6d62720736780aa068b624bdf29ab7}{}void {\bfseries set\+Vertex\+Property} (Bgl\+Vertex\+I\+D vertex, std\+::pair$<$ Vertex\+I\+D, Vertex\+Property $>$ prop\+Pair)\label{classgraybat_1_1graphPolicy_1_1BGL_a4b6d62720736780aa068b624bdf29ab7}
+
+\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_a9c71ddaa997554f110b060218e956a8f}{}void {\bfseries set\+Edge\+Property} (Bgl\+Edge\+I\+D edge, Edge\+Property value)\label{classgraybat_1_1graphPolicy_1_1BGL_a9c71ddaa997554f110b060218e956a8f}
+
+\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_a1fb088ef6256a68b8999c7b4c04be17d}{}void {\bfseries set\+Edge\+Property} (Bgl\+Edge\+I\+D edge, std\+::pair$<$ Edge\+I\+D, Edge\+Property $>$ prop\+Pair)\label{classgraybat_1_1graphPolicy_1_1BGL_a1fb088ef6256a68b8999c7b4c04be17d}
+
+\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_a73b7e073fda7a9e21c5f420e984ba618}{}std\+::pair$<$ Vertex\+I\+D, Vertex\+Property $>$ \& \hyperlink{classgraybat_1_1graphPolicy_1_1BGL_a73b7e073fda7a9e21c5f420e984ba618}{get\+Vertex\+Property} (const Vertex\+I\+D vertex)\label{classgraybat_1_1graphPolicy_1_1BGL_a73b7e073fda7a9e21c5f420e984ba618}
+
+\begin{DoxyCompactList}\small\item\em Returns the property of {\itshape vertex}. \end{DoxyCompactList}\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_ad628ab3bb283a87337bb5d1da4e6c31b}{}std\+::pair$<$ Edge\+I\+D, Edge\+Property $>$ \& \hyperlink{classgraybat_1_1graphPolicy_1_1BGL_ad628ab3bb283a87337bb5d1da4e6c31b}{get\+Edge\+Property} (const Bgl\+Edge\+I\+D edge)\label{classgraybat_1_1graphPolicy_1_1BGL_ad628ab3bb283a87337bb5d1da4e6c31b}
+
+\begin{DoxyCompactList}\small\item\em Return the property of {\itshape edge}. \end{DoxyCompactList}\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_ab50e44a641bb3e0e3d2f2778419e78c5}{}std\+::pair$<$ Edge\+I\+D, Edge\+Property $>$ \& {\bfseries get\+Edge\+Property} (const Edge\+I\+D edge)\label{classgraybat_1_1graphPolicy_1_1BGL_ab50e44a641bb3e0e3d2f2778419e78c5}
+
+\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_ac54da8279752a79998ae35fbf64c8338}{}Bgl\+Vertex\+I\+D \hyperlink{classgraybat_1_1graphPolicy_1_1BGL_ac54da8279752a79998ae35fbf64c8338}{get\+Edge\+Target} (const Bgl\+Edge\+I\+D edge)\label{classgraybat_1_1graphPolicy_1_1BGL_ac54da8279752a79998ae35fbf64c8338}
+
+\begin{DoxyCompactList}\small\item\em Return the vertex to which {\itshape edge} points to. \end{DoxyCompactList}\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_a47913c1d620cfa54b3c8ca52331e8a1f}{}Vertex\+I\+D {\bfseries get\+Edge\+Target} (const Edge\+I\+D edge)\label{classgraybat_1_1graphPolicy_1_1BGL_a47913c1d620cfa54b3c8ca52331e8a1f}
+
+\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_a2732a7037a0108afda5c7a5c1d51b9c3}{}Bgl\+Vertex\+I\+D \hyperlink{classgraybat_1_1graphPolicy_1_1BGL_a2732a7037a0108afda5c7a5c1d51b9c3}{get\+Edge\+Source} (const Bgl\+Edge\+I\+D edge)\label{classgraybat_1_1graphPolicy_1_1BGL_a2732a7037a0108afda5c7a5c1d51b9c3}
+
+\begin{DoxyCompactList}\small\item\em Return the vertex to which {\itshape edge} points from. \end{DoxyCompactList}\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_ac29f99d16c0fa59f248e8d060ab748e4}{}Vertex\+I\+D {\bfseries get\+Edge\+Source} (const Edge\+I\+D edge)\label{classgraybat_1_1graphPolicy_1_1BGL_ac29f99d16c0fa59f248e8d060ab748e4}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_acdd10fa9cbff26e97387ad12d8fd8726}{}Graph\+I\+D {\bfseries id}\label{classgraybat_1_1graphPolicy_1_1BGL_acdd10fa9cbff26e97387ad12d8fd8726}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$class T\+\_\+\+Vertex\+Property = Simple\+Property, class T\+\_\+\+Edge\+Property = Simple\+Property$>$class graybat\+::graph\+Policy\+::\+B\+G\+L$<$ T\+\_\+\+Vertex\+Property, T\+\_\+\+Edge\+Property $>$}
+
+A class to describe directed graphs. 
+
+Graph\+Policy on basis of the boost graph library. \begin{Desc}
+\item[Examples\+: ]\par
+\hyperlink{anyrecv_8cpp-example}{anyrecv.\+cpp}, \hyperlink{chain_8cpp-example}{chain.\+cpp}, \hyperlink{forward_8cpp-example}{forward.\+cpp}, \hyperlink{gol_8cpp-example}{gol.\+cpp}, and \hyperlink{ring_8cpp-example}{ring.\+cpp}.\end{Desc}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classgraybat_1_1graphPolicy_1_1BGL_a93884489eaf5a2b8367c1cf04c0a3434}{}\index{graybat\+::graph\+Policy\+::\+B\+G\+L@{graybat\+::graph\+Policy\+::\+B\+G\+L}!get\+Local\+I\+D@{get\+Local\+I\+D}}
+\index{get\+Local\+I\+D@{get\+Local\+I\+D}!graybat\+::graph\+Policy\+::\+B\+G\+L@{graybat\+::graph\+Policy\+::\+B\+G\+L}}
+\subsubsection[{get\+Local\+I\+D(\+Vertex\+Property vertex)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T\+\_\+\+Vertex\+Property = Simple\+Property, class T\+\_\+\+Edge\+Property = Simple\+Property$>$ Bgl\+Vertex\+I\+D {\bf graybat\+::graph\+Policy\+::\+B\+G\+L}$<$ T\+\_\+\+Vertex\+Property, T\+\_\+\+Edge\+Property $>$\+::get\+Local\+I\+D (
+\begin{DoxyParamCaption}
+\item[{Vertex\+Property}]{vertex}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{classgraybat_1_1graphPolicy_1_1BGL_a93884489eaf5a2b8367c1cf04c0a3434}
+
+
+Returns the local id of {\itshape vertex} in this graph. 
+
+If this graph has no supergraph (has\+Super\+Graph()==false) then local ids are the same as global ids. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/graybat/graph\+Policy/B\+G\+L.\+hpp\end{DoxyCompactItemize}

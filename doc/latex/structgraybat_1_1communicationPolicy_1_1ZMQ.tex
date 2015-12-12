@@ -1,0 +1,316 @@
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ}{}\section{graybat\+:\+:communication\+Policy\+:\+:Z\+M\+Q Class Reference}
+\label{structgraybat_1_1communicationPolicy_1_1ZMQ}\index{graybat\+::communication\+Policy\+::\+Z\+M\+Q@{graybat\+::communication\+Policy\+::\+Z\+M\+Q}}
+
+
+Implementation of the \hyperlink{structgraybat_1_1Cage}{Cage} communication\+Policy interface based on \hyperlink{structgraybat_1_1communicationPolicy_1_1ZMQ}{Z\+M\+Q}.  
+
+
+
+
+{\ttfamily \#include $<$Z\+M\+Q.\+hpp$>$}
+
+Inheritance diagram for graybat\+:\+:communication\+Policy\+:\+:Z\+M\+Q\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{structgraybat_1_1communicationPolicy_1_1ZMQ}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a70c989500cb46ab5b71768fae699759f}{}using {\bfseries Tag} = typename graybat\+::communication\+Policy\+::\+Tag$<$ \hyperlink{structgraybat_1_1communicationPolicy_1_1ZMQ}{Z\+M\+Q} $>$\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a70c989500cb46ab5b71768fae699759f}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_af14a2e927b90f85e30e2eafe2fb86347}{}using {\bfseries Context\+I\+D} = typename graybat\+::communication\+Policy\+::\+Context\+I\+D$<$ \hyperlink{structgraybat_1_1communicationPolicy_1_1ZMQ}{Z\+M\+Q} $>$\label{structgraybat_1_1communicationPolicy_1_1ZMQ_af14a2e927b90f85e30e2eafe2fb86347}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_ac227f7b180d8eaee5d493b09917e10e7}{}using {\bfseries Msg\+Type} = typename graybat\+::communication\+Policy\+::\+Msg\+Type$<$ \hyperlink{structgraybat_1_1communicationPolicy_1_1ZMQ}{Z\+M\+Q} $>$\label{structgraybat_1_1communicationPolicy_1_1ZMQ_ac227f7b180d8eaee5d493b09917e10e7}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a073da259521988b9e3ecacfc8db18029}{}using {\bfseries Msg\+I\+D} = typename graybat\+::communication\+Policy\+::\+Msg\+I\+D$<$ \hyperlink{structgraybat_1_1communicationPolicy_1_1ZMQ}{Z\+M\+Q} $>$\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a073da259521988b9e3ecacfc8db18029}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a6a60449eee02f72a8b6998dcd8eacb83}{}using {\bfseries V\+Addr} = typename graybat\+::communication\+Policy\+::\+V\+Addr$<$ \hyperlink{structgraybat_1_1communicationPolicy_1_1ZMQ}{Z\+M\+Q} $>$\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a6a60449eee02f72a8b6998dcd8eacb83}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a1675812d40f395451e11cabfd5fb28e1}{}using {\bfseries Context} = typename graybat\+::communication\+Policy\+::\+Context$<$ \hyperlink{structgraybat_1_1communicationPolicy_1_1ZMQ}{Z\+M\+Q} $>$\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a1675812d40f395451e11cabfd5fb28e1}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_aa07df86b7967eeb6e35181995da85b4e}{}using {\bfseries Event} = typename graybat\+::communication\+Policy\+::\+Event$<$ \hyperlink{structgraybat_1_1communicationPolicy_1_1ZMQ}{Z\+M\+Q} $>$\label{structgraybat_1_1communicationPolicy_1_1ZMQ_aa07df86b7967eeb6e35181995da85b4e}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a4b303911562bc088c3f85695a473e538}{}using {\bfseries Config} = typename graybat\+::communication\+Policy\+::\+Config$<$ \hyperlink{structgraybat_1_1communicationPolicy_1_1ZMQ}{Z\+M\+Q} $>$\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a4b303911562bc088c3f85695a473e538}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a1d25a8ae54bc4e64a65bff42470ca286}{}using {\bfseries Uri} = std\+::string\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a1d25a8ae54bc4e64a65bff42470ca286}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a1a8194fd0d25a4bd68f6eb01580ecaf0}{}{\bfseries Z\+M\+Q} (Config const config)\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a1a8194fd0d25a4bd68f6eb01580ecaf0}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a3e2677f395338d07c90b55afd66d9974}{}{\bfseries Z\+M\+Q} (\hyperlink{structgraybat_1_1communicationPolicy_1_1ZMQ}{Z\+M\+Q} \&\&other)=delete\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a3e2677f395338d07c90b55afd66d9974}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a5efe1d58e60411ea1f311b1b4eb61593}{}{\bfseries Z\+M\+Q} (\hyperlink{structgraybat_1_1communicationPolicy_1_1ZMQ}{Z\+M\+Q} \&other)=delete\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a5efe1d58e60411ea1f311b1b4eb61593}
+
+\end{DoxyCompactItemize}
+\begin{Indent}{\bf Point to Point Communication Interface}\par
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T\+\_\+\+Send $>$ }\\void \hyperlink{structgraybat_1_1communicationPolicy_1_1ZMQ_a0b0b0a5a6f6b5c85a6c5b5b31fae6b1f}{send} (const V\+Addr dest\+V\+Addr, const \hyperlink{structTag}{Tag} tag, const Context context, const T\+\_\+\+Send \&send\+Data)
+\begin{DoxyCompactList}\small\item\em Blocking transmission of a message send\+Data to peer with virtual address dest\+V\+Addr. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T\+\_\+\+Send $>$ }\\Event \hyperlink{structgraybat_1_1communicationPolicy_1_1ZMQ_a90e4cec7521e061aa682559d8bc72f1b}{async\+Send} (const V\+Addr dest\+V\+Addr, const \hyperlink{structTag}{Tag} tag, const Context context, T\+\_\+\+Send \&send\+Data)
+\begin{DoxyCompactList}\small\item\em Non blocking transmission of a message send\+Data to peer with virtual address dest\+V\+Addr. \end{DoxyCompactList}\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_aba035ac9e25e20c89581c2e9ebdcf477}{}{\footnotesize template$<$typename T\+\_\+\+Send $>$ }\\void {\bfseries async\+Send\+Impl} (const Msg\+Type msg\+Type, const Msg\+I\+D msg\+I\+D, const Context context, const V\+Addr dest\+V\+Addr, const \hyperlink{structTag}{Tag} tag, T\+\_\+\+Send \&send\+Data)\label{structgraybat_1_1communicationPolicy_1_1ZMQ_aba035ac9e25e20c89581c2e9ebdcf477}
+
+\item 
+{\footnotesize template$<$typename T\+\_\+\+Recv $>$ }\\void \hyperlink{structgraybat_1_1communicationPolicy_1_1ZMQ_aed8fd6ad0f54a44d576f71e812064b17}{recv} (const V\+Addr src\+V\+Addr, const \hyperlink{structTag}{Tag} tag, const Context context, T\+\_\+\+Recv \&recv\+Data)
+\begin{DoxyCompactList}\small\item\em Blocking receive of a message recv\+Data from peer with virtual address src\+V\+Addr. \end{DoxyCompactList}\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a90e24f2d8431d0289d2067ed6a02f64c}{}{\footnotesize template$<$typename T\+\_\+\+Recv $>$ }\\Event {\bfseries recv} (const Context context, T\+\_\+\+Recv \&recv\+Data)\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a90e24f2d8431d0289d2067ed6a02f64c}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_aca65dd2ffd1049f72e194c13968b846c}{}{\footnotesize template$<$typename T\+\_\+\+Recv $>$ }\\void {\bfseries recv\+Impl} (const Msg\+Type msg\+Type, const Context context, const V\+Addr src\+V\+Addr, const \hyperlink{structTag}{Tag} tag, T\+\_\+\+Recv \&recv\+Data)\label{structgraybat_1_1communicationPolicy_1_1ZMQ_aca65dd2ffd1049f72e194c13968b846c}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a0c112e35dba53faa1ee222dc722eb20e}{}{\footnotesize template$<$typename T\+\_\+\+Recv $>$ }\\Event {\bfseries recv\+Impl} (const Context context, T\+\_\+\+Recv \&recv\+Data)\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a0c112e35dba53faa1ee222dc722eb20e}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_aff4a73567456ebb5bf0a2a17bd8170fc}{}void {\bfseries wait} (const Msg\+Type msg\+I\+D, const Context context, const V\+Addr v\+Addr, const \hyperlink{structTag}{Tag} tag)\label{structgraybat_1_1communicationPolicy_1_1ZMQ_aff4a73567456ebb5bf0a2a17bd8170fc}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_acc3da7a5e16668628ae74161f6ab8e7b}{}bool {\bfseries ready} (const Msg\+Type msg\+I\+D, const Context context, const V\+Addr v\+Addr, const \hyperlink{structTag}{Tag} tag)\label{structgraybat_1_1communicationPolicy_1_1ZMQ_acc3da7a5e16668628ae74161f6ab8e7b}
+
+\end{DoxyCompactItemize}
+\end{Indent}
+\begin{Indent}{\bf Context Interface}\par
+\begin{DoxyCompactItemize}
+\item 
+Context \hyperlink{structgraybat_1_1communicationPolicy_1_1ZMQ_a6760648ce6f21fefad245292c46565f4}{split\+Context} (const bool is\+Member, const Context old\+Context)
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a8146abbd757a057ad24a929667a01ee6}{}Context \hyperlink{structgraybat_1_1communicationPolicy_1_1ZMQ_a8146abbd757a057ad24a929667a01ee6}{get\+Global\+Context} ()\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a8146abbd757a057ad24a929667a01ee6}
+
+\begin{DoxyCompactList}\small\item\em Returns the context that contains all peers. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\end{Indent}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_ac28925f4c8d0617d97283c18ed164217}{}\+::zmq\+::context\+\_\+t {\bfseries zmq\+Context}\label{structgraybat_1_1communicationPolicy_1_1ZMQ_ac28925f4c8d0617d97283c18ed164217}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a7f9215005287fcb30fb21d21b10405fb}{}\+::zmq\+::context\+\_\+t {\bfseries zmq\+Signaling\+Context}\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a7f9215005287fcb30fb21d21b10405fb}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a55d3e9da96fd2deeada98ee678860cf9}{}\+::zmq\+::socket\+\_\+t {\bfseries recv\+Socket}\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a55d3e9da96fd2deeada98ee678860cf9}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_ad3d52816f168d192b556ac1dc3d1e885}{}\+::zmq\+::socket\+\_\+t {\bfseries signaling\+Socket}\label{structgraybat_1_1communicationPolicy_1_1ZMQ_ad3d52816f168d192b556ac1dc3d1e885}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a9d39af0540599d02ca1fbe3c3a3c53c6}{}const int {\bfseries zmq\+Hwm}\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a9d39af0540599d02ca1fbe3c3a3c53c6}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_ac3194b52e98b31ada473e873f631b907}{}Context {\bfseries initial\+Context}\label{structgraybat_1_1communicationPolicy_1_1ZMQ_ac3194b52e98b31ada473e873f631b907}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_aaa8ad1285b17daba34d283a34349e3bc}{}std\+::map$<$ Context\+I\+D, std\+::map$<$ V\+Addr, std\+::size\+\_\+t $>$ $>$ {\bfseries send\+Socket\+Mappings}\label{structgraybat_1_1communicationPolicy_1_1ZMQ_aaa8ad1285b17daba34d283a34349e3bc}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a6bd8f4319623f0a5ff4954fed2802009}{}std\+::vector$<$\+::zmq\+::socket\+\_\+t $>$ {\bfseries send\+Sockets}\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a6bd8f4319623f0a5ff4954fed2802009}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_aacf828766b08157f9e13172949bc447b}{}std\+::map$<$ Context\+I\+D, std\+::map$<$ V\+Addr, Uri $>$ $>$ {\bfseries phone\+Book}\label{structgraybat_1_1communicationPolicy_1_1ZMQ_aacf828766b08157f9e13172949bc447b}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a3c28dcbf8c7e5af3b282a3116130ade0}{}std\+::map$<$ Context\+I\+D, std\+::map$<$ Uri, V\+Addr $>$ $>$ {\bfseries inverse\+Phone\+Book}\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a3c28dcbf8c7e5af3b282a3116130ade0}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_ab24f971152ddf296cf9e37a84f72ba43}{}std\+::map$<$ Context\+I\+D, Context $>$ {\bfseries contexts}\label{structgraybat_1_1communicationPolicy_1_1ZMQ_ab24f971152ddf296cf9e37a84f72ba43}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a048cd99c3b30b8269695800aeec8b6b5}{}utils\+::\+Message\+Box$<$\+::zmq\+::message\+\_\+t, Msg\+Type, Context\+I\+D, V\+Addr, \hyperlink{structTag}{Tag} $>$ {\bfseries in\+Box}\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a048cd99c3b30b8269695800aeec8b6b5}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a5d8937267cb65df0d1954304eb60c060}{}unsigned {\bfseries max\+Msg\+I\+D}\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a5d8937267cb65df0d1954304eb60c060}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a0a46bd55b77c5d1638ee45779f591251}{}std\+::thread {\bfseries recv\+Handler}\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a0a46bd55b77c5d1638ee45779f591251}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a6330356fc4e18a28f820ad0d1ffd9b6c}{}std\+::mutex {\bfseries send\+Mtx}\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a6330356fc4e18a28f820ad0d1ffd9b6c}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_ae962deaa23647ec055cdcb7ca91c5da6}{}std\+::mutex {\bfseries recv\+Mtx}\label{structgraybat_1_1communicationPolicy_1_1ZMQ_ae962deaa23647ec055cdcb7ca91c5da6}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_aeeeee6bb1e189218a66f53d442cc0726}{}const Uri {\bfseries master\+Uri}\label{structgraybat_1_1communicationPolicy_1_1ZMQ_aeeeee6bb1e189218a66f53d442cc0726}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a0f4be8b5db76294a90adc532672f86a8}{}const Uri {\bfseries peer\+Uri}\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a0f4be8b5db76294a90adc532672f86a8}
+
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a75693f5486b00722fde46828a370a3e1}{}static const Msg\+Type {\bfseries V\+A\+D\+D\+R\+\_\+\+R\+E\+Q\+U\+E\+S\+T} = 0\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a75693f5486b00722fde46828a370a3e1}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_ac9a6d846b671d488ccc2b48a213cb65c}{}static const Msg\+Type {\bfseries V\+A\+D\+D\+R\+\_\+\+L\+O\+O\+K\+U\+P} = 1\label{structgraybat_1_1communicationPolicy_1_1ZMQ_ac9a6d846b671d488ccc2b48a213cb65c}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_aa5fff922697df13ba51ab9c211125561}{}static const Msg\+Type {\bfseries D\+E\+S\+T\+R\+U\+C\+T} = 2\label{structgraybat_1_1communicationPolicy_1_1ZMQ_aa5fff922697df13ba51ab9c211125561}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a3ebabd8f81881cd6ca82083da5912dc0}{}static const Msg\+Type {\bfseries R\+E\+T\+R\+Y} = 3\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a3ebabd8f81881cd6ca82083da5912dc0}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_ae738003867ad7590787fbd72e470a0c7}{}static const Msg\+Type {\bfseries A\+C\+K} = 4\label{structgraybat_1_1communicationPolicy_1_1ZMQ_ae738003867ad7590787fbd72e470a0c7}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a0fa73b38f80d3d2d2761b014ffd64410}{}static const Msg\+Type {\bfseries C\+O\+N\+T\+E\+X\+T\+\_\+\+I\+N\+I\+T} = 5\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a0fa73b38f80d3d2d2761b014ffd64410}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a36274d861cda1c40bf2cd384f359ac36}{}static const Msg\+Type {\bfseries C\+O\+N\+T\+E\+X\+T\+\_\+\+R\+E\+Q\+U\+E\+S\+T} = 6\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a36274d861cda1c40bf2cd384f359ac36}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a838f1280768e4b09b0f67cf202c4693f}{}static const Msg\+Type {\bfseries P\+E\+E\+R} = 7\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a838f1280768e4b09b0f67cf202c4693f}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a080083ad95e8edd5005dfa87dc247c9e}{}static const Msg\+Type {\bfseries C\+O\+N\+F\+I\+R\+M} = 8\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a080083ad95e8edd5005dfa87dc247c9e}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a253f8c42a3b412656465686ac4302556}{}static const Msg\+Type {\bfseries S\+P\+L\+I\+T} = 9\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a253f8c42a3b412656465686ac4302556}
+
+\end{DoxyCompactItemize}
+\subsection*{Z\+M\+Q Utility functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_acabe8e002759a5893d7f2e935dae401e}{}Context\+I\+D {\bfseries get\+Initial\+Context\+I\+D} (\+::zmq\+::socket\+\_\+t \&socket, const size\+\_\+t context\+Size)\label{structgraybat_1_1communicationPolicy_1_1ZMQ_acabe8e002759a5893d7f2e935dae401e}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a40180b6802337e67d2b5e3b981caad38}{}Context\+I\+D {\bfseries get\+Context\+I\+D} (\+::zmq\+::socket\+\_\+t \&socket)\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a40180b6802337e67d2b5e3b981caad38}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a037bd2bd2fc50566f6f3934f620fd8f2}{}V\+Addr {\bfseries get\+V\+Addr} (\+::zmq\+::socket\+\_\+t \&socket, const Context\+I\+D context\+I\+D, const Uri uri)\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a037bd2bd2fc50566f6f3934f620fd8f2}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a7c902560de928d4e60a7e750afe252b6}{}Uri {\bfseries get\+Uri} (\+::zmq\+::socket\+\_\+t \&socket, const Context\+I\+D context\+I\+D, const V\+Addr v\+Addr)\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a7c902560de928d4e60a7e750afe252b6}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_ac758b90217607dbd584f0fa8c275b5ab}{}Msg\+I\+D {\bfseries get\+Msg\+I\+D} ()\label{structgraybat_1_1communicationPolicy_1_1ZMQ_ac758b90217607dbd584f0fa8c275b5ab}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_ae2a07880da111ca0f60f4fd811b36a63}{}{\footnotesize template$<$typename T\+\_\+\+Data $>$ }\\void {\bfseries zmq\+Message\+To\+Data} (\+::zmq\+::message\+\_\+t \&message, T\+\_\+\+Data \&data)\label{structgraybat_1_1communicationPolicy_1_1ZMQ_ae2a07880da111ca0f60f4fd811b36a63}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a4b944514212a53c7bd653370a5e5523a}{}Uri {\bfseries bind\+To\+Next\+Free\+Port} (\+::zmq\+::socket\+\_\+t \&socket, const std\+::string peer\+Uri)\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a4b944514212a53c7bd653370a5e5523a}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a252494da3e7481ba0858b8989ff3885b}{}void {\bfseries handle\+Recv} ()\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a252494da3e7481ba0858b8989ff3885b}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_ae539febea7852f497dc3e5b45210d8da}{}static char $\ast$ {\bfseries s\+\_\+recv} (\+::zmq\+::socket\+\_\+t \&socket)\label{structgraybat_1_1communicationPolicy_1_1ZMQ_ae539febea7852f497dc3e5b45210d8da}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a61f299de4f180b2981ad1427f7a120fd}{}static int {\bfseries s\+\_\+send} (\+::zmq\+::socket\+\_\+t \&socket, const char $\ast$string)\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a61f299de4f180b2981ad1427f7a120fd}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Implementation of the \hyperlink{structgraybat_1_1Cage}{Cage} communication\+Policy interface based on \hyperlink{structgraybat_1_1communicationPolicy_1_1ZMQ}{Z\+M\+Q}. 
+
+\subsection{Member Function Documentation}
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a90e4cec7521e061aa682559d8bc72f1b}{}\index{graybat\+::communication\+Policy\+::\+Z\+M\+Q@{graybat\+::communication\+Policy\+::\+Z\+M\+Q}!async\+Send@{async\+Send}}
+\index{async\+Send@{async\+Send}!graybat\+::communication\+Policy\+::\+Z\+M\+Q@{graybat\+::communication\+Policy\+::\+Z\+M\+Q}}
+\subsubsection[{async\+Send(const V\+Addr dest\+V\+Addr, const Tag tag, const Context context, T\+\_\+\+Send \&send\+Data)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Send $>$ Event graybat\+::communication\+Policy\+::\+Z\+M\+Q\+::async\+Send (
+\begin{DoxyParamCaption}
+\item[{const V\+Addr}]{dest\+V\+Addr, }
+\item[{const {\bf Tag}}]{tag, }
+\item[{const Context}]{context, }
+\item[{T\+\_\+\+Send \&}]{send\+Data}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a90e4cec7521e061aa682559d8bc72f1b}
+
+
+Non blocking transmission of a message send\+Data to peer with virtual address dest\+V\+Addr. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em dest\+V\+Addr} & V\+Addr of peer that will receive the message \\
+\hline
+\mbox{\tt in}  & {\em tag} & Description of the message to better distinguish messages types \\
+\hline
+\mbox{\tt in}  & {\em context} & Context in which both sender and receiver are included \\
+\hline
+\mbox{\tt in}  & {\em send\+Data} & Data reference of template type T will be. T need to provide the function data(), that returns the pointer to the data memory address. And the function size(), that return the amount of data elements to send. Notice, that std\+::vector and std\+::array implement this interface.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Event 
+\end{DoxyReturn}
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_aed8fd6ad0f54a44d576f71e812064b17}{}\index{graybat\+::communication\+Policy\+::\+Z\+M\+Q@{graybat\+::communication\+Policy\+::\+Z\+M\+Q}!recv@{recv}}
+\index{recv@{recv}!graybat\+::communication\+Policy\+::\+Z\+M\+Q@{graybat\+::communication\+Policy\+::\+Z\+M\+Q}}
+\subsubsection[{recv(const V\+Addr src\+V\+Addr, const Tag tag, const Context context, T\+\_\+\+Recv \&recv\+Data)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Recv $>$ void graybat\+::communication\+Policy\+::\+Z\+M\+Q\+::recv (
+\begin{DoxyParamCaption}
+\item[{const V\+Addr}]{src\+V\+Addr, }
+\item[{const {\bf Tag}}]{tag, }
+\item[{const Context}]{context, }
+\item[{T\+\_\+\+Recv \&}]{recv\+Data}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{structgraybat_1_1communicationPolicy_1_1ZMQ_aed8fd6ad0f54a44d576f71e812064b17}
+
+
+Blocking receive of a message recv\+Data from peer with virtual address src\+V\+Addr. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em src\+V\+Addr} & V\+Addr of peer that sended the message \\
+\hline
+\mbox{\tt in}  & {\em tag} & Description of the message to better distinguish messages types \\
+\hline
+\mbox{\tt in}  & {\em context} & Context in which both sender and receiver are included \\
+\hline
+\mbox{\tt out}  & {\em recv\+Data} & Data reference of template type T will be received from sender peer. T need to provide the function data(), that returns the pointer to the data memory address. And the function size(), that return the amount of data elements to send. Notice, that std\+::vector and std\+::array implement this interface. \\
+\hline
+\end{DoxyParams}
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a0b0b0a5a6f6b5c85a6c5b5b31fae6b1f}{}\index{graybat\+::communication\+Policy\+::\+Z\+M\+Q@{graybat\+::communication\+Policy\+::\+Z\+M\+Q}!send@{send}}
+\index{send@{send}!graybat\+::communication\+Policy\+::\+Z\+M\+Q@{graybat\+::communication\+Policy\+::\+Z\+M\+Q}}
+\subsubsection[{send(const V\+Addr dest\+V\+Addr, const Tag tag, const Context context, const T\+\_\+\+Send \&send\+Data)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Send $>$ void graybat\+::communication\+Policy\+::\+Z\+M\+Q\+::send (
+\begin{DoxyParamCaption}
+\item[{const V\+Addr}]{dest\+V\+Addr, }
+\item[{const {\bf Tag}}]{tag, }
+\item[{const Context}]{context, }
+\item[{const T\+\_\+\+Send \&}]{send\+Data}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a0b0b0a5a6f6b5c85a6c5b5b31fae6b1f}
+
+
+Blocking transmission of a message send\+Data to peer with virtual address dest\+V\+Addr. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em dest\+V\+Addr} & V\+Addr of peer that will receive the message \\
+\hline
+\mbox{\tt in}  & {\em tag} & Description of the message to better distinguish messages types \\
+\hline
+\mbox{\tt in}  & {\em context} & Context in which both sender and receiver are included \\
+\hline
+\mbox{\tt in}  & {\em send\+Data} & Data reference of template type T will be send to receiver peer. T need to provide the function data(), that returns the pointer to the data memory address. And the function size(), that return the amount of data elements to send. Notice, that std\+::vector and std\+::array implement this interface. \\
+\hline
+\end{DoxyParams}
+\hypertarget{structgraybat_1_1communicationPolicy_1_1ZMQ_a6760648ce6f21fefad245292c46565f4}{}\index{graybat\+::communication\+Policy\+::\+Z\+M\+Q@{graybat\+::communication\+Policy\+::\+Z\+M\+Q}!split\+Context@{split\+Context}}
+\index{split\+Context@{split\+Context}!graybat\+::communication\+Policy\+::\+Z\+M\+Q@{graybat\+::communication\+Policy\+::\+Z\+M\+Q}}
+\subsubsection[{split\+Context(const bool is\+Member, const Context old\+Context)}]{\setlength{\rightskip}{0pt plus 5cm}Context graybat\+::communication\+Policy\+::\+Z\+M\+Q\+::split\+Context (
+\begin{DoxyParamCaption}
+\item[{const bool}]{is\+Member, }
+\item[{const Context}]{old\+Context}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{structgraybat_1_1communicationPolicy_1_1ZMQ_a6760648ce6f21fefad245292c46565f4}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/graybat/communication\+Policy/Z\+M\+Q.\+hpp\end{DoxyCompactItemize}

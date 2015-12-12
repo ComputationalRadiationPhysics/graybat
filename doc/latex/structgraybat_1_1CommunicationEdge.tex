@@ -1,0 +1,67 @@
+\hypertarget{structgraybat_1_1CommunicationEdge}{}\section{graybat\+:\+:Communication\+Edge$<$ T\+\_\+\+Cage $>$ Struct Template Reference}
+\label{structgraybat_1_1CommunicationEdge}\index{graybat\+::\+Communication\+Edge$<$ T\+\_\+\+Cage $>$@{graybat\+::\+Communication\+Edge$<$ T\+\_\+\+Cage $>$}}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structgraybat_1_1CommunicationEdge_a013276d41805d452b7ec3f32c5d98863}{}typedef T\+\_\+\+Cage {\bfseries Cage}\label{structgraybat_1_1CommunicationEdge_a013276d41805d452b7ec3f32c5d98863}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationEdge_af7b14d3933ec26615c4e849f32d9cbc7}{}typedef unsigned {\bfseries Edge\+I\+D}\label{structgraybat_1_1CommunicationEdge_af7b14d3933ec26615c4e849f32d9cbc7}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationEdge_a1fd741b205ef5042c9ce064419862ab8}{}typedef Cage\+::\+Graph\+Policy {\bfseries Graph\+Policy}\label{structgraybat_1_1CommunicationEdge_a1fd741b205ef5042c9ce064419862ab8}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationEdge_ad867b26007833b4de0d5b4b9ee5b7d57}{}typedef \hyperlink{structgraybat_1_1CommunicationVertex}{Cage\+::\+Vertex} {\bfseries Vertex}\label{structgraybat_1_1CommunicationEdge_ad867b26007833b4de0d5b4b9ee5b7d57}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationEdge_a30c072501669f1f1709045822bab3383}{}typedef Cage\+::\+Event {\bfseries Event}\label{structgraybat_1_1CommunicationEdge_a30c072501669f1f1709045822bab3383}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationEdge_a5fe445399b0bea6653fe27eb8d5617b6}{}typedef Graph\+Policy\+::\+Edge\+Property {\bfseries Edge\+Property}\label{structgraybat_1_1CommunicationEdge_a5fe445399b0bea6653fe27eb8d5617b6}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationEdge_a1ffdda19998f083210324c321b4599dc}{}typedef Graph\+Policy\+::\+Vertex\+Property {\bfseries Vertex\+Property}\label{structgraybat_1_1CommunicationEdge_a1ffdda19998f083210324c321b4599dc}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structgraybat_1_1CommunicationEdge_a37414bfe7af9097e8ffff9da90fc4226}{}{\bfseries Communication\+Edge} (const Edge\+I\+D id, \hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} source, \hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} target, Edge\+Property \&edge\+Property, Cage \&cage)\label{structgraybat_1_1CommunicationEdge_a37414bfe7af9097e8ffff9da90fc4226}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationEdge_a3a35ef247309c903341a14d207c85f78}{}Edge\+Property \& {\bfseries operator()} ()\label{structgraybat_1_1CommunicationEdge_a3a35ef247309c903341a14d207c85f78}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationEdge_a9fe34dbcec8a1588385c7591fa5ae042}{}\hyperlink{structgraybat_1_1CommunicationEdge}{Communication\+Edge} {\bfseries inverse} ()\label{structgraybat_1_1CommunicationEdge_a9fe34dbcec8a1588385c7591fa5ae042}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationEdge_a6d3bbea5aede74ddb7b8082ed7055c2a}{}{\footnotesize template$<$class T\+\_\+\+Send $>$ }\\Event {\bfseries operator$<$$<$} (const T\+\_\+\+Send \&data)\label{structgraybat_1_1CommunicationEdge_a6d3bbea5aede74ddb7b8082ed7055c2a}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationEdge_a595c4400fd5d837dab1bf8af4f172e5d}{}{\footnotesize template$<$class T\+\_\+\+Recv $>$ }\\void {\bfseries operator$>$$>$} (T\+\_\+\+Recv \&data)\label{structgraybat_1_1CommunicationEdge_a595c4400fd5d837dab1bf8af4f172e5d}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structgraybat_1_1CommunicationEdge_a468626e784f770368bc8335e78137b48}{}Edge\+I\+D {\bfseries id}\label{structgraybat_1_1CommunicationEdge_a468626e784f770368bc8335e78137b48}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationEdge_a6061ba74338b175e03ffdb97347c5e77}{}\hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} {\bfseries target}\label{structgraybat_1_1CommunicationEdge_a6061ba74338b175e03ffdb97347c5e77}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationEdge_ac4fb6170c3d484c65363a197503e5bd7}{}\hyperlink{structgraybat_1_1CommunicationVertex}{Vertex} {\bfseries source}\label{structgraybat_1_1CommunicationEdge_ac4fb6170c3d484c65363a197503e5bd7}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationEdge_a999ecb1277ae0d0c476aed644c71341e}{}Edge\+Property \& {\bfseries edge\+Property}\label{structgraybat_1_1CommunicationEdge_a999ecb1277ae0d0c476aed644c71341e}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationEdge_aa70fd4d28fea47444546f3891c0800ce}{}Cage \& {\bfseries cage}\label{structgraybat_1_1CommunicationEdge_aa70fd4d28fea47444546f3891c0800ce}
+
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/graybat/Edge.\+hpp\end{DoxyCompactItemize}

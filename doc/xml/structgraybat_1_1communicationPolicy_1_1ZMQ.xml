@@ -1,0 +1,1350 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="structgraybat_1_1communicationPolicy_1_1ZMQ" kind="class" language="C++" prot="public">
+    <compoundname>graybat::communicationPolicy::ZMQ</compoundname>
+    <basecompoundref refid="structgraybat_1_1communicationPolicy_1_1Base" prot="public" virt="non-virtual">graybat::communicationPolicy::Base&lt; ZMQ &gt;</basecompoundref>
+    <includes refid="ZMQ_8hpp" local="no">ZMQ.hpp</includes>
+      <sectiondef kind="user-defined">
+      <header>ZMQ Utility functions</header>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1acabe8e002759a5893d7f2e935dae401e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ContextID</type>
+        <definition>ContextID graybat::communicationPolicy::ZMQ::getInitialContextID</definition>
+        <argsstring>(::zmq::socket_t &amp;socket, const size_t contextSize)</argsstring>
+        <name>getInitialContextID</name>
+        <param>
+          <type>::zmq::socket_t &amp;</type>
+          <declname>socket</declname>
+        </param>
+        <param>
+          <type>const size_t</type>
+          <declname>contextSize</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="187" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="187" bodyend="200"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a40180b6802337e67d2b5e3b981caad38" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ContextID</type>
+        <definition>ContextID graybat::communicationPolicy::ZMQ::getContextID</definition>
+        <argsstring>(::zmq::socket_t &amp;socket)</argsstring>
+        <name>getContextID</name>
+        <param>
+          <type>::zmq::socket_t &amp;</type>
+          <declname>socket</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="202" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="202" bodyend="216"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a037bd2bd2fc50566f6f3934f620fd8f2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>VAddr</type>
+        <definition>VAddr graybat::communicationPolicy::ZMQ::getVAddr</definition>
+        <argsstring>(::zmq::socket_t &amp;socket, const ContextID contextID, const Uri uri)</argsstring>
+        <name>getVAddr</name>
+        <param>
+          <type>::zmq::socket_t &amp;</type>
+          <declname>socket</declname>
+        </param>
+        <param>
+          <type>const ContextID</type>
+          <declname>contextID</declname>
+        </param>
+        <param>
+          <type>const Uri</type>
+          <declname>uri</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="218" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="218" bodyend="232"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a7c902560de928d4e60a7e750afe252b6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Uri</type>
+        <definition>Uri graybat::communicationPolicy::ZMQ::getUri</definition>
+        <argsstring>(::zmq::socket_t &amp;socket, const ContextID contextID, const VAddr vAddr)</argsstring>
+        <name>getUri</name>
+        <param>
+          <type>::zmq::socket_t &amp;</type>
+          <declname>socket</declname>
+        </param>
+        <param>
+          <type>const ContextID</type>
+          <declname>contextID</declname>
+        </param>
+        <param>
+          <type>const VAddr</type>
+          <declname>vAddr</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="234" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="234" bodyend="255"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1ac758b90217607dbd584f0fa8c275b5ab" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>MsgID</type>
+        <definition>MsgID graybat::communicationPolicy::ZMQ::getMsgID</definition>
+        <argsstring>()</argsstring>
+        <name>getMsgID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="257" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="257" bodyend="259"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1ae2a07880da111ca0f60f4fd811b36a63" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Data</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::ZMQ::zmqMessageToData</definition>
+        <argsstring>(::zmq::message_t &amp;message, T_Data &amp;data)</argsstring>
+        <name>zmqMessageToData</name>
+        <param>
+          <type>::zmq::message_t &amp;</type>
+          <declname>message</declname>
+        </param>
+        <param>
+          <type>T_Data &amp;</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="279" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="279" bodyend="297"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a4b944514212a53c7bd653370a5e5523a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Uri</type>
+        <definition>Uri graybat::communicationPolicy::ZMQ::bindToNextFreePort</definition>
+        <argsstring>(::zmq::socket_t &amp;socket, const std::string peerUri)</argsstring>
+        <name>bindToNextFreePort</name>
+        <param>
+          <type>::zmq::socket_t &amp;</type>
+          <declname>socket</declname>
+        </param>
+        <param>
+          <type>const std::string</type>
+          <declname>peerUri</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="299" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="299" bodyend="320"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a252494da3e7481ba0858b8989ff3885b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::ZMQ::handleRecv</definition>
+        <argsstring>()</argsstring>
+        <name>handleRecv</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="322" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="322" bodyend="361"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1ae539febea7852f497dc3e5b45210d8da" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>char *</type>
+        <definition>static char* graybat::communicationPolicy::ZMQ::s_recv</definition>
+        <argsstring>(::zmq::socket_t &amp;socket)</argsstring>
+        <name>s_recv</name>
+        <param>
+          <type>::zmq::socket_t &amp;</type>
+          <declname>socket</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="261" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="261" bodyend="269"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a61f299de4f180b2981ad1427f7a120fd" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>static int graybat::communicationPolicy::ZMQ::s_send</definition>
+        <argsstring>(::zmq::socket_t &amp;socket, const char *string)</argsstring>
+        <name>s_send</name>
+        <param>
+          <type>::zmq::socket_t &amp;</type>
+          <declname>socket</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>string</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="271" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="271" bodyend="276"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="user-defined">
+      <header>Point to Point Communication Interface</header>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a0b0b0a5a6f6b5c85a6c5b5b31fae6b1f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Send</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::ZMQ::send</definition>
+        <argsstring>(const VAddr destVAddr, const Tag tag, const Context context, const T_Send &amp;sendData)</argsstring>
+        <name>send</name>
+        <param>
+          <type>const VAddr</type>
+          <declname>destVAddr</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structTag" kindref="compound">Tag</ref></type>
+          <declname>tag</declname>
+        </param>
+        <param>
+          <type>const Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>const T_Send &amp;</type>
+          <declname>sendData</declname>
+        </param>
+        <briefdescription>
+<para>Blocking transmission of a message sendData to peer with virtual address destVAddr. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">destVAddr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>VAddr of peer that will receive the message </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">tag</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Description of the message to better distinguish messages types </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Context in which both sender and receiver are included </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">sendData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data reference of template type T will be send to receiver peer. T need to provide the function data(), that returns the pointer to the data memory address. And the function size(), that return the amount of data elements to send. Notice, that std::vector and std::array implement this interface. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="389" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="389" bodyend="392"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a90e4cec7521e061aa682559d8bc72f1b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Send</type>
+          </param>
+        </templateparamlist>
+        <type>Event</type>
+        <definition>Event graybat::communicationPolicy::ZMQ::asyncSend</definition>
+        <argsstring>(const VAddr destVAddr, const Tag tag, const Context context, T_Send &amp;sendData)</argsstring>
+        <name>asyncSend</name>
+        <param>
+          <type>const VAddr</type>
+          <declname>destVAddr</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structTag" kindref="compound">Tag</ref></type>
+          <declname>tag</declname>
+        </param>
+        <param>
+          <type>const Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>T_Send &amp;</type>
+          <declname>sendData</declname>
+        </param>
+        <briefdescription>
+<para>Non blocking transmission of a message sendData to peer with virtual address destVAddr. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">destVAddr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>VAddr of peer that will receive the message </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">tag</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Description of the message to better distinguish messages types </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Context in which both sender and receiver are included </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">sendData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data reference of template type T will be. T need to provide the function data(), that returns the pointer to the data memory address. And the function size(), that return the amount of data elements to send. Notice, that std::vector and std::array implement this interface.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Event </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="409" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="409" bodyend="415"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1aba035ac9e25e20c89581c2e9ebdcf477" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Send</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::ZMQ::asyncSendImpl</definition>
+        <argsstring>(const MsgType msgType, const MsgID msgID, const Context context, const VAddr destVAddr, const Tag tag, T_Send &amp;sendData)</argsstring>
+        <name>asyncSendImpl</name>
+        <param>
+          <type>const MsgType</type>
+          <declname>msgType</declname>
+        </param>
+        <param>
+          <type>const MsgID</type>
+          <declname>msgID</declname>
+        </param>
+        <param>
+          <type>const Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>const VAddr</type>
+          <declname>destVAddr</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structTag" kindref="compound">Tag</ref></type>
+          <declname>tag</declname>
+        </param>
+        <param>
+          <type>T_Send &amp;</type>
+          <declname>sendData</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="419" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="419" bodyend="447"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1aed8fd6ad0f54a44d576f71e812064b17" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Recv</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::ZMQ::recv</definition>
+        <argsstring>(const VAddr srcVAddr, const Tag tag, const Context context, T_Recv &amp;recvData)</argsstring>
+        <name>recv</name>
+        <param>
+          <type>const VAddr</type>
+          <declname>srcVAddr</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structTag" kindref="compound">Tag</ref></type>
+          <declname>tag</declname>
+        </param>
+        <param>
+          <type>const Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>T_Recv &amp;</type>
+          <declname>recvData</declname>
+        </param>
+        <briefdescription>
+<para>Blocking receive of a message recvData from peer with virtual address srcVAddr. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">srcVAddr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>VAddr of peer that sended the message </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">tag</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Description of the message to better distinguish messages types </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Context in which both sender and receiver are included </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data reference of template type T will be received from sender peer. T need to provide the function data(), that returns the pointer to the data memory address. And the function size(), that return the amount of data elements to send. Notice, that std::vector and std::array implement this interface. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="463" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="463" bodyend="467"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a90e24f2d8431d0289d2067ed6a02f64c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Recv</type>
+          </param>
+        </templateparamlist>
+        <type>Event</type>
+        <definition>Event graybat::communicationPolicy::ZMQ::recv</definition>
+        <argsstring>(const Context context, T_Recv &amp;recvData)</argsstring>
+        <name>recv</name>
+        <param>
+          <type>const Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>T_Recv &amp;</type>
+          <declname>recvData</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="470" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="470" bodyend="472"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1aca65dd2ffd1049f72e194c13968b846c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Recv</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::ZMQ::recvImpl</definition>
+        <argsstring>(const MsgType msgType, const Context context, const VAddr srcVAddr, const Tag tag, T_Recv &amp;recvData)</argsstring>
+        <name>recvImpl</name>
+        <param>
+          <type>const MsgType</type>
+          <declname>msgType</declname>
+        </param>
+        <param>
+          <type>const Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>const VAddr</type>
+          <declname>srcVAddr</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structTag" kindref="compound">Tag</ref></type>
+          <declname>tag</declname>
+        </param>
+        <param>
+          <type>T_Recv &amp;</type>
+          <declname>recvData</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="475" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="475" bodyend="480"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a0c112e35dba53faa1ee222dc722eb20e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Recv</type>
+          </param>
+        </templateparamlist>
+        <type>Event</type>
+        <definition>Event graybat::communicationPolicy::ZMQ::recvImpl</definition>
+        <argsstring>(const Context context, T_Recv &amp;recvData)</argsstring>
+        <name>recvImpl</name>
+        <param>
+          <type>const Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>T_Recv &amp;</type>
+          <declname>recvData</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="484" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="484" bodyend="497"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1aff4a73567456ebb5bf0a2a17bd8170fc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::ZMQ::wait</definition>
+        <argsstring>(const MsgType msgID, const Context context, const VAddr vAddr, const Tag tag)</argsstring>
+        <name>wait</name>
+        <param>
+          <type>const MsgType</type>
+          <declname>msgID</declname>
+        </param>
+        <param>
+          <type>const Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>const VAddr</type>
+          <declname>vAddr</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structTag" kindref="compound">Tag</ref></type>
+          <declname>tag</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="499" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="499" bodyend="503"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1acc3da7a5e16668628ae74161f6ab8e7b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool graybat::communicationPolicy::ZMQ::ready</definition>
+        <argsstring>(const MsgType msgID, const Context context, const VAddr vAddr, const Tag tag)</argsstring>
+        <name>ready</name>
+        <param>
+          <type>const MsgType</type>
+          <declname>msgID</declname>
+        </param>
+        <param>
+          <type>const Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>const VAddr</type>
+          <declname>vAddr</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structTag" kindref="compound">Tag</ref></type>
+          <declname>tag</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="505" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="505" bodyend="525"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="user-defined">
+      <header>Context Interface</header>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a6760648ce6f21fefad245292c46565f4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Context</type>
+        <definition>Context graybat::communicationPolicy::ZMQ::splitContext</definition>
+        <argsstring>(const bool isMember, const Context oldContext)</argsstring>
+        <name>splitContext</name>
+        <param>
+          <type>const bool</type>
+          <declname>isMember</declname>
+        </param>
+        <param>
+          <type>const Context</type>
+          <declname>oldContext</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="552" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="552" bodyend="635"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a8146abbd757a057ad24a929667a01ee6" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Context</type>
+        <definition>Context graybat::communicationPolicy::ZMQ::getGlobalContext</definition>
+        <argsstring>()</argsstring>
+        <name>getGlobalContext</name>
+        <briefdescription>
+<para>Returns the context that contains all peers. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="642" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="642" bodyend="644"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a70c989500cb46ab5b71768fae699759f" prot="public" static="no">
+        <type>typename graybat::communicationPolicy::Tag&lt; <ref refid="structgraybat_1_1communicationPolicy_1_1ZMQ" kindref="compound">ZMQ</ref> &gt;</type>
+        <definition>using graybat::communicationPolicy::ZMQ::Tag =  typename graybat::communicationPolicy::Tag&lt;ZMQ&gt;</definition>
+        <argsstring></argsstring>
+        <name>Tag</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="70" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="70" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1af14a2e927b90f85e30e2eafe2fb86347" prot="public" static="no">
+        <type>typename graybat::communicationPolicy::ContextID&lt; <ref refid="structgraybat_1_1communicationPolicy_1_1ZMQ" kindref="compound">ZMQ</ref> &gt;</type>
+        <definition>using graybat::communicationPolicy::ZMQ::ContextID =  typename graybat::communicationPolicy::ContextID&lt;ZMQ&gt;</definition>
+        <argsstring></argsstring>
+        <name>ContextID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="71" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="71" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1ac227f7b180d8eaee5d493b09917e10e7" prot="public" static="no">
+        <type>typename graybat::communicationPolicy::MsgType&lt; <ref refid="structgraybat_1_1communicationPolicy_1_1ZMQ" kindref="compound">ZMQ</ref> &gt;</type>
+        <definition>using graybat::communicationPolicy::ZMQ::MsgType =  typename graybat::communicationPolicy::MsgType&lt;ZMQ&gt;</definition>
+        <argsstring></argsstring>
+        <name>MsgType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="72" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="72" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a073da259521988b9e3ecacfc8db18029" prot="public" static="no">
+        <type>typename graybat::communicationPolicy::MsgID&lt; <ref refid="structgraybat_1_1communicationPolicy_1_1ZMQ" kindref="compound">ZMQ</ref> &gt;</type>
+        <definition>using graybat::communicationPolicy::ZMQ::MsgID =  typename graybat::communicationPolicy::MsgID&lt;ZMQ&gt;</definition>
+        <argsstring></argsstring>
+        <name>MsgID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="73" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="73" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a6a60449eee02f72a8b6998dcd8eacb83" prot="public" static="no">
+        <type>typename graybat::communicationPolicy::VAddr&lt; <ref refid="structgraybat_1_1communicationPolicy_1_1ZMQ" kindref="compound">ZMQ</ref> &gt;</type>
+        <definition>using graybat::communicationPolicy::ZMQ::VAddr =  typename graybat::communicationPolicy::VAddr&lt;ZMQ&gt;</definition>
+        <argsstring></argsstring>
+        <name>VAddr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="74" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="74" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a1675812d40f395451e11cabfd5fb28e1" prot="public" static="no">
+        <type>typename graybat::communicationPolicy::Context&lt; <ref refid="structgraybat_1_1communicationPolicy_1_1ZMQ" kindref="compound">ZMQ</ref> &gt;</type>
+        <definition>using graybat::communicationPolicy::ZMQ::Context =  typename graybat::communicationPolicy::Context&lt;ZMQ&gt;</definition>
+        <argsstring></argsstring>
+        <name>Context</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="75" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="75" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1aa07df86b7967eeb6e35181995da85b4e" prot="public" static="no">
+        <type>typename graybat::communicationPolicy::Event&lt; <ref refid="structgraybat_1_1communicationPolicy_1_1ZMQ" kindref="compound">ZMQ</ref> &gt;</type>
+        <definition>using graybat::communicationPolicy::ZMQ::Event =  typename graybat::communicationPolicy::Event&lt;ZMQ&gt;</definition>
+        <argsstring></argsstring>
+        <name>Event</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="76" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="76" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a4b303911562bc088c3f85695a473e538" prot="public" static="no">
+        <type>typename graybat::communicationPolicy::Config&lt; <ref refid="structgraybat_1_1communicationPolicy_1_1ZMQ" kindref="compound">ZMQ</ref> &gt;</type>
+        <definition>using graybat::communicationPolicy::ZMQ::Config =  typename graybat::communicationPolicy::Config&lt;ZMQ&gt;</definition>
+        <argsstring></argsstring>
+        <name>Config</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="77" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="77" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a1d25a8ae54bc4e64a65bff42470ca286" prot="public" static="no">
+        <type>std::string</type>
+        <definition>using graybat::communicationPolicy::ZMQ::Uri =  std::string</definition>
+        <argsstring></argsstring>
+        <name>Uri</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="78" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="78" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a75693f5486b00722fde46828a370a3e1" prot="public" static="yes" mutable="no">
+        <type>const MsgType</type>
+        <definition>const MsgType graybat::communicationPolicy::ZMQ::VADDR_REQUEST</definition>
+        <argsstring></argsstring>
+        <name>VADDR_REQUEST</name>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="81" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="81" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1ac9a6d846b671d488ccc2b48a213cb65c" prot="public" static="yes" mutable="no">
+        <type>const MsgType</type>
+        <definition>const MsgType graybat::communicationPolicy::ZMQ::VADDR_LOOKUP</definition>
+        <argsstring></argsstring>
+        <name>VADDR_LOOKUP</name>
+        <initializer>= 1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="82" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="82" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1aa5fff922697df13ba51ab9c211125561" prot="public" static="yes" mutable="no">
+        <type>const MsgType</type>
+        <definition>const MsgType graybat::communicationPolicy::ZMQ::DESTRUCT</definition>
+        <argsstring></argsstring>
+        <name>DESTRUCT</name>
+        <initializer>= 2</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="83" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="83" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a3ebabd8f81881cd6ca82083da5912dc0" prot="public" static="yes" mutable="no">
+        <type>const MsgType</type>
+        <definition>const MsgType graybat::communicationPolicy::ZMQ::RETRY</definition>
+        <argsstring></argsstring>
+        <name>RETRY</name>
+        <initializer>= 3</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="84" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="84" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1ae738003867ad7590787fbd72e470a0c7" prot="public" static="yes" mutable="no">
+        <type>const MsgType</type>
+        <definition>const MsgType graybat::communicationPolicy::ZMQ::ACK</definition>
+        <argsstring></argsstring>
+        <name>ACK</name>
+        <initializer>= 4</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="85" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="85" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a0fa73b38f80d3d2d2761b014ffd64410" prot="public" static="yes" mutable="no">
+        <type>const MsgType</type>
+        <definition>const MsgType graybat::communicationPolicy::ZMQ::CONTEXT_INIT</definition>
+        <argsstring></argsstring>
+        <name>CONTEXT_INIT</name>
+        <initializer>= 5</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="86" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="86" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a36274d861cda1c40bf2cd384f359ac36" prot="public" static="yes" mutable="no">
+        <type>const MsgType</type>
+        <definition>const MsgType graybat::communicationPolicy::ZMQ::CONTEXT_REQUEST</definition>
+        <argsstring></argsstring>
+        <name>CONTEXT_REQUEST</name>
+        <initializer>= 6</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="87" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="87" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a838f1280768e4b09b0f67cf202c4693f" prot="public" static="yes" mutable="no">
+        <type>const MsgType</type>
+        <definition>const MsgType graybat::communicationPolicy::ZMQ::PEER</definition>
+        <argsstring></argsstring>
+        <name>PEER</name>
+        <initializer>= 7</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="90" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="90" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a080083ad95e8edd5005dfa87dc247c9e" prot="public" static="yes" mutable="no">
+        <type>const MsgType</type>
+        <definition>const MsgType graybat::communicationPolicy::ZMQ::CONFIRM</definition>
+        <argsstring></argsstring>
+        <name>CONFIRM</name>
+        <initializer>= 8</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="91" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="91" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a253f8c42a3b412656465686ac4302556" prot="public" static="yes" mutable="no">
+        <type>const MsgType</type>
+        <definition>const MsgType graybat::communicationPolicy::ZMQ::SPLIT</definition>
+        <argsstring></argsstring>
+        <name>SPLIT</name>
+        <initializer>= 9</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="92" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="92" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1ac28925f4c8d0617d97283c18ed164217" prot="public" static="no" mutable="no">
+        <type>::zmq::context_t</type>
+        <definition>::zmq::context_t graybat::communicationPolicy::ZMQ::zmqContext</definition>
+        <argsstring></argsstring>
+        <name>zmqContext</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="95" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="95" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a7f9215005287fcb30fb21d21b10405fb" prot="public" static="no" mutable="no">
+        <type>::zmq::context_t</type>
+        <definition>::zmq::context_t graybat::communicationPolicy::ZMQ::zmqSignalingContext</definition>
+        <argsstring></argsstring>
+        <name>zmqSignalingContext</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="96" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="96" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a55d3e9da96fd2deeada98ee678860cf9" prot="public" static="no" mutable="no">
+        <type>::zmq::socket_t</type>
+        <definition>::zmq::socket_t graybat::communicationPolicy::ZMQ::recvSocket</definition>
+        <argsstring></argsstring>
+        <name>recvSocket</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="97" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="97" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1ad3d52816f168d192b556ac1dc3d1e885" prot="public" static="no" mutable="no">
+        <type>::zmq::socket_t</type>
+        <definition>::zmq::socket_t graybat::communicationPolicy::ZMQ::signalingSocket</definition>
+        <argsstring></argsstring>
+        <name>signalingSocket</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="98" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="98" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a9d39af0540599d02ca1fbe3c3a3c53c6" prot="public" static="no" mutable="no">
+        <type>const int</type>
+        <definition>const int graybat::communicationPolicy::ZMQ::zmqHwm</definition>
+        <argsstring></argsstring>
+        <name>zmqHwm</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="99" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="99" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1ac3194b52e98b31ada473e873f631b907" prot="public" static="no" mutable="no">
+        <type>Context</type>
+        <definition>Context graybat::communicationPolicy::ZMQ::initialContext</definition>
+        <argsstring></argsstring>
+        <name>initialContext</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="102" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="102" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1aaa8ad1285b17daba34d283a34349e3bc" prot="public" static="no" mutable="no">
+        <type>std::map&lt; ContextID, std::map&lt; VAddr, std::size_t &gt; &gt;</type>
+        <definition>std::map&lt;ContextID, std::map&lt;VAddr, std::size_t&gt; &gt; graybat::communicationPolicy::ZMQ::sendSocketMappings</definition>
+        <argsstring></argsstring>
+        <name>sendSocketMappings</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="103" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="103" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a6bd8f4319623f0a5ff4954fed2802009" prot="public" static="no" mutable="no">
+        <type>std::vector&lt;::zmq::socket_t &gt;</type>
+        <definition>std::vector&lt;::zmq::socket_t&gt; graybat::communicationPolicy::ZMQ::sendSockets</definition>
+        <argsstring></argsstring>
+        <name>sendSockets</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="104" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="104" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1aacf828766b08157f9e13172949bc447b" prot="public" static="no" mutable="no">
+        <type>std::map&lt; ContextID, std::map&lt; VAddr, Uri &gt; &gt;</type>
+        <definition>std::map&lt;ContextID, std::map&lt;VAddr, Uri&gt; &gt; graybat::communicationPolicy::ZMQ::phoneBook</definition>
+        <argsstring></argsstring>
+        <name>phoneBook</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="105" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="105" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a3c28dcbf8c7e5af3b282a3116130ade0" prot="public" static="no" mutable="no">
+        <type>std::map&lt; ContextID, std::map&lt; Uri, VAddr &gt; &gt;</type>
+        <definition>std::map&lt;ContextID, std::map&lt;Uri, VAddr&gt; &gt; graybat::communicationPolicy::ZMQ::inversePhoneBook</definition>
+        <argsstring></argsstring>
+        <name>inversePhoneBook</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="106" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="106" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1ab24f971152ddf296cf9e37a84f72ba43" prot="public" static="no" mutable="no">
+        <type>std::map&lt; ContextID, Context &gt;</type>
+        <definition>std::map&lt;ContextID, Context&gt; graybat::communicationPolicy::ZMQ::contexts</definition>
+        <argsstring></argsstring>
+        <name>contexts</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="107" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="107" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a048cd99c3b30b8269695800aeec8b6b5" prot="public" static="no" mutable="no">
+        <type>utils::MessageBox&lt;::zmq::message_t, MsgType, ContextID, VAddr, <ref refid="structTag" kindref="compound">Tag</ref> &gt;</type>
+        <definition>utils::MessageBox&lt;::zmq::message_t, MsgType, ContextID, VAddr, Tag&gt; graybat::communicationPolicy::ZMQ::inBox</definition>
+        <argsstring></argsstring>
+        <name>inBox</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="109" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="109" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a5d8937267cb65df0d1954304eb60c060" prot="public" static="no" mutable="no">
+        <type>unsigned</type>
+        <definition>unsigned graybat::communicationPolicy::ZMQ::maxMsgID</definition>
+        <argsstring></argsstring>
+        <name>maxMsgID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="111" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="111" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a0a46bd55b77c5d1638ee45779f591251" prot="public" static="no" mutable="no">
+        <type>std::thread</type>
+        <definition>std::thread graybat::communicationPolicy::ZMQ::recvHandler</definition>
+        <argsstring></argsstring>
+        <name>recvHandler</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="112" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="112" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a6330356fc4e18a28f820ad0d1ffd9b6c" prot="public" static="no" mutable="no">
+        <type>std::mutex</type>
+        <definition>std::mutex graybat::communicationPolicy::ZMQ::sendMtx</definition>
+        <argsstring></argsstring>
+        <name>sendMtx</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="113" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="113" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1ae962deaa23647ec055cdcb7ca91c5da6" prot="public" static="no" mutable="no">
+        <type>std::mutex</type>
+        <definition>std::mutex graybat::communicationPolicy::ZMQ::recvMtx</definition>
+        <argsstring></argsstring>
+        <name>recvMtx</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="114" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="114" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1aeeeee6bb1e189218a66f53d442cc0726" prot="public" static="no" mutable="no">
+        <type>const Uri</type>
+        <definition>const Uri graybat::communicationPolicy::ZMQ::masterUri</definition>
+        <argsstring></argsstring>
+        <name>masterUri</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="117" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="117" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a0f4be8b5db76294a90adc532672f86a8" prot="public" static="no" mutable="no">
+        <type>const Uri</type>
+        <definition>const Uri graybat::communicationPolicy::ZMQ::peerUri</definition>
+        <argsstring></argsstring>
+        <name>peerUri</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="118" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="118" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a1a8194fd0d25a4bd68f6eb01580ecaf0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::communicationPolicy::ZMQ::ZMQ</definition>
+        <argsstring>(Config const config)</argsstring>
+        <name>ZMQ</name>
+        <param>
+          <type>Config const</type>
+          <declname>config</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="120" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="120" bodyend="160"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a3e2677f395338d07c90b55afd66d9974" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>graybat::communicationPolicy::ZMQ::ZMQ</definition>
+        <argsstring>(ZMQ &amp;&amp;other)=delete</argsstring>
+        <name>ZMQ</name>
+        <param>
+          <type><ref refid="structgraybat_1_1communicationPolicy_1_1ZMQ" kindref="compound">ZMQ</ref> &amp;&amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="162" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a5efe1d58e60411ea1f311b1b4eb61593" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>graybat::communicationPolicy::ZMQ::ZMQ</definition>
+        <argsstring>(ZMQ &amp;other)=delete</argsstring>
+        <name>ZMQ</name>
+        <param>
+          <type><ref refid="structgraybat_1_1communicationPolicy_1_1ZMQ" kindref="compound">ZMQ</ref> &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="163" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1ZMQ_1a98f820b76ab5349b08e342d680fd5d49" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::communicationPolicy::ZMQ::~ZMQ</definition>
+        <argsstring>()</argsstring>
+        <name>~ZMQ</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="166" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="166" bodyend="177"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Implementation of the <ref refid="structgraybat_1_1Cage" kindref="compound">Cage</ref> communicationPolicy interface based on <ref refid="structgraybat_1_1communicationPolicy_1_1ZMQ" kindref="compound">ZMQ</ref>. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="101">
+        <label>graybat::communicationPolicy::ZMQ</label>
+        <link refid="structgraybat_1_1communicationPolicy_1_1ZMQ"/>
+        <childnode refid="102" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="102">
+        <label>graybat::communicationPolicy::Base&lt; ZMQ &gt;</label>
+        <link refid="structgraybat_1_1communicationPolicy_1_1Base"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="112">
+        <label>std::map&lt; ContextID, std::map&lt; VAddr, Uri &gt; &gt;</label>
+      </node>
+      <node id="107">
+        <label>std::map&lt; ContextID, std::map&lt; VAddr, std::size_t &gt; &gt;</label>
+      </node>
+      <node id="105">
+        <label>std::vector&lt;::zmq::socket_t &gt;</label>
+      </node>
+      <node id="109">
+        <label>std::basic_string&lt; char &gt;</label>
+      </node>
+      <node id="110">
+        <label>std::thread</label>
+      </node>
+      <node id="103">
+        <label>graybat::communicationPolicy::ZMQ</label>
+        <link refid="structgraybat_1_1communicationPolicy_1_1ZMQ"/>
+        <childnode refid="104" relation="public-inheritance">
+        </childnode>
+        <childnode refid="105" relation="usage">
+          <edgelabel>sendSockets</edgelabel>
+        </childnode>
+        <childnode refid="106" relation="usage">
+          <edgelabel>contexts</edgelabel>
+        </childnode>
+        <childnode refid="107" relation="usage">
+          <edgelabel>sendSocketMappings</edgelabel>
+        </childnode>
+        <childnode refid="108" relation="usage">
+          <edgelabel>masterUri</edgelabel>
+          <edgelabel>peerUri</edgelabel>
+        </childnode>
+        <childnode refid="110" relation="usage">
+          <edgelabel>recvHandler</edgelabel>
+        </childnode>
+        <childnode refid="111" relation="usage">
+          <edgelabel>inversePhoneBook</edgelabel>
+        </childnode>
+        <childnode refid="112" relation="usage">
+          <edgelabel>phoneBook</edgelabel>
+        </childnode>
+      </node>
+      <node id="106">
+        <label>std::map&lt; ContextID, Context &gt;</label>
+      </node>
+      <node id="111">
+        <label>std::map&lt; ContextID, std::map&lt; Uri, VAddr &gt; &gt;</label>
+      </node>
+      <node id="104">
+        <label>graybat::communicationPolicy::Base&lt; ZMQ &gt;</label>
+        <link refid="structgraybat_1_1communicationPolicy_1_1Base"/>
+      </node>
+      <node id="108">
+        <label>std::string</label>
+        <childnode refid="109" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="include/graybat/communicationPolicy/ZMQ.hpp" line="67" column="1" bodyfile="include/graybat/communicationPolicy/ZMQ.hpp" bodystart="67" bodyend="647"/>
+    <listofallmembers>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1ae738003867ad7590787fbd72e470a0c7" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>ACK</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a1b409ea49d7aba2dee0c83e28dda1b65" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>allGather</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a1bad18907fcc45db9d4a119e726061a8" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>allGatherVar</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1ac77038454619b683f006ba149aea2dcb" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>allReduce</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1ac4aa66d3ed33c810ae48ae762b432b14" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>allScatter</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1adee3935d47f527c2802d3b88b546b0a2" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>asyncRecv</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a90e4cec7521e061aa682559d8bc72f1b" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>asyncSend</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a7dfe96d75727357e0bbac4f8dad93a55" prot="public" virt="non-virtual" ambiguityscope="Base&lt; ZMQ &gt;::"><scope>graybat::communicationPolicy::ZMQ</scope><name>asyncSend</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1aba035ac9e25e20c89581c2e9ebdcf477" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>asyncSendImpl</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a4b944514212a53c7bd653370a5e5523a" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>bindToNextFreePort</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a431ed56b3d5ade805200b565ce98daa0" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>broadcast</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a8809cc88306f4411eff43b185d4a12ba" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>CommunicationPolicy</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a4b303911562bc088c3f85695a473e538" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>Config</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a080083ad95e8edd5005dfa87dc247c9e" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>CONFIRM</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a1675812d40f395451e11cabfd5fb28e1" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>Context</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a0fa73b38f80d3d2d2761b014ffd64410" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>CONTEXT_INIT</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a36274d861cda1c40bf2cd384f359ac36" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>CONTEXT_REQUEST</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1af14a2e927b90f85e30e2eafe2fb86347" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>ContextID</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1ab24f971152ddf296cf9e37a84f72ba43" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>contexts</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1aa5fff922697df13ba51ab9c211125561" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>DESTRUCT</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1aa07df86b7967eeb6e35181995da85b4e" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>Event</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a3db000db20b6cb8fd6e63f3d53e82090" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>gather</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a1434994bead59ef38b6eff8346538f0b" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>gatherVar</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a40180b6802337e67d2b5e3b981caad38" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>getContextID</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a8146abbd757a057ad24a929667a01ee6" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>getGlobalContext</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1acabe8e002759a5893d7f2e935dae401e" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>getInitialContextID</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1ac758b90217607dbd584f0fa8c275b5ab" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>getMsgID</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a7c902560de928d4e60a7e750afe252b6" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>getUri</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a037bd2bd2fc50566f6f3934f620fd8f2" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>getVAddr</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a252494da3e7481ba0858b8989ff3885b" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>handleRecv</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a048cd99c3b30b8269695800aeec8b6b5" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>inBox</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1ac3194b52e98b31ada473e873f631b907" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>initialContext</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a3c28dcbf8c7e5af3b282a3116130ade0" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>inversePhoneBook</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1aeeeee6bb1e189218a66f53d442cc0726" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>masterUri</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a5d8937267cb65df0d1954304eb60c060" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>maxMsgID</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a073da259521988b9e3ecacfc8db18029" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>MsgID</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1ac227f7b180d8eaee5d493b09917e10e7" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>MsgType</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a838f1280768e4b09b0f67cf202c4693f" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>PEER</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a0f4be8b5db76294a90adc532672f86a8" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>peerUri</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1aacf828766b08157f9e13172949bc447b" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>phoneBook</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1acc3da7a5e16668628ae74161f6ab8e7b" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>ready</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1aed8fd6ad0f54a44d576f71e812064b17" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>recv</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a90e24f2d8431d0289d2067ed6a02f64c" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>recv</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a1785dcc6035447fc3c2b1cd9fee9a4b5" prot="public" virt="non-virtual" ambiguityscope="Base&lt; ZMQ &gt;::"><scope>graybat::communicationPolicy::ZMQ</scope><name>recv</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a2c7e5b0d65bfa0fcfa3377598eb79882" prot="public" virt="non-virtual" ambiguityscope="Base&lt; ZMQ &gt;::"><scope>graybat::communicationPolicy::ZMQ</scope><name>recv</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a0a46bd55b77c5d1638ee45779f591251" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>recvHandler</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1aca65dd2ffd1049f72e194c13968b846c" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>recvImpl</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a0c112e35dba53faa1ee222dc722eb20e" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>recvImpl</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1ae962deaa23647ec055cdcb7ca91c5da6" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>recvMtx</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a55d3e9da96fd2deeada98ee678860cf9" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>recvSocket</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1ad3bf74c91931b35b56fbb54ac535bc14" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>reduce</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a3ebabd8f81881cd6ca82083da5912dc0" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>RETRY</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1ae539febea7852f497dc3e5b45210d8da" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>s_recv</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a61f299de4f180b2981ad1427f7a120fd" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>s_send</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1af1ed07ce5f107f04926d7b7c39c9834e" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>scatter</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a0b0b0a5a6f6b5c85a6c5b5b31fae6b1f" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>send</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1a7c7b3cd367ec07fa9d12ebbbb89dabb8" prot="public" virt="non-virtual" ambiguityscope="Base&lt; ZMQ &gt;::"><scope>graybat::communicationPolicy::ZMQ</scope><name>send</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a6330356fc4e18a28f820ad0d1ffd9b6c" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>sendMtx</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1aaa8ad1285b17daba34d283a34349e3bc" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>sendSocketMappings</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a6bd8f4319623f0a5ff4954fed2802009" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>sendSockets</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1ad3d52816f168d192b556ac1dc3d1e885" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>signalingSocket</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a253f8c42a3b412656465686ac4302556" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>SPLIT</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a6760648ce6f21fefad245292c46565f4" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>splitContext</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1Base_1abc4e72365c6ad134ba6e31abd8fa2163" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>synchronize</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a70c989500cb46ab5b71768fae699759f" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>Tag</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a1d25a8ae54bc4e64a65bff42470ca286" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>Uri</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a6a60449eee02f72a8b6998dcd8eacb83" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>VAddr</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1ac9a6d846b671d488ccc2b48a213cb65c" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>VADDR_LOOKUP</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a75693f5486b00722fde46828a370a3e1" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>VADDR_REQUEST</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1aff4a73567456ebb5bf0a2a17bd8170fc" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>wait</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a1a8194fd0d25a4bd68f6eb01580ecaf0" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>ZMQ</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a3e2677f395338d07c90b55afd66d9974" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>ZMQ</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a5efe1d58e60411ea1f311b1b4eb61593" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>ZMQ</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1ac28925f4c8d0617d97283c18ed164217" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>zmqContext</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a9d39af0540599d02ca1fbe3c3a3c53c6" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>zmqHwm</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1ae2a07880da111ca0f60f4fd811b36a63" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>zmqMessageToData</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a7f9215005287fcb30fb21d21b10405fb" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>zmqSignalingContext</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1ZMQ_1a98f820b76ab5349b08e342d680fd5d49" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::ZMQ</scope><name>~ZMQ</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

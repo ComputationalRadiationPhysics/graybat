@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="tutorial" kind="page">
+    <compoundname>tutorial</compoundname>
+    <title>Graybat Tutorials</title>
+    <innerpage refid="zmq">Run ZeroMQ Communication Policy</innerpage>
+    <innerpage refid="gol">The Game of Life Example</innerpage>
+    <detaileddescription>
+<para><itemizedlist>
+<listitem><para><ref refid="zmq" kindref="compound">Run ZeroMQ Communication Policy</ref></para></listitem><listitem><para><ref refid="gol" kindref="compound">The Game of Life Example</ref> </para></listitem></itemizedlist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

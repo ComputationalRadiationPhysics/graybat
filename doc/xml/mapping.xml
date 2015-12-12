@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="mapping" kind="page">
+    <compoundname>mapping</compoundname>
+    <title>Vertex Mapping</title>
+    <detaileddescription>
+<para>A vertex mapping is a class functor which describes the mapping of a graph to peers. A mapping is used by the <ref refid="cage" kindref="compound">cage</ref> in its <ref refid="structgraybat_1_1Cage_1afeddcc035e25382462c38c77b481304d" kindref="member">graybat::Cage::distribute</ref> function and can strongly influence the application performance.GrayBat defines a handful of predefined mappings:</para><para><itemizedlist>
+<listitem><para><ref refid="structgraybat_1_1mapping_1_1Consecutive" kindref="compound">graybat::mapping::Consecutive</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1mapping_1_1Filter" kindref="compound">graybat::mapping::Filter</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1mapping_1_1GraphPartition" kindref="compound">graybat::mapping::GraphPartition</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1mapping_1_1Random" kindref="compound">graybat::mapping::Random</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1mapping_1_1Roundrobin" kindref="compound">graybat::mapping::Roundrobin</ref></para></listitem></itemizedlist>
+</para><para>Own vertex mappings can be build from the following mapping skeleton:</para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacegraybat" kindref="compound">graybat</ref><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">mapping<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">MappingSkeleton<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T_Cage&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;typename<sp/>T_Graph::Vertex&gt;<sp/>operator()(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>processID,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>processCount,<sp/>T_Cage<sp/>&amp;cage)<sp/>{...}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="comment">/*<sp/>mapping<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}<sp/></highlight><highlight class="comment">/*<sp/>graybat<sp/>*/</highlight></codeline>
+</programlisting></para><para><heading level="2">Further Links</heading>
+</para><para><itemizedlist>
+<listitem><para><ref refid="structgraybat_1_1mapping_1_1Consecutive" kindref="compound">graybat::mapping::Consecutive</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1mapping_1_1Filter" kindref="compound">graybat::mapping::Filter</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1mapping_1_1GraphPartition" kindref="compound">graybat::mapping::GraphPartition</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1mapping_1_1Random" kindref="compound">graybat::mapping::Random</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1mapping_1_1Roundrobin" kindref="compound">graybat::mapping::Roundrobin</ref> </para></listitem></itemizedlist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>
