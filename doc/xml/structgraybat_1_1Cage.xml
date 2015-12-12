@@ -1,0 +1,1346 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="structgraybat_1_1Cage" kind="class" language="C++" prot="public">
+    <compoundname>graybat::Cage</compoundname>
+    <includes refid="Cage_8hpp" local="no">Cage.hpp</includes>
+    <innerclass refid="structgraybat_1_1Cage_1_1maximum" prot="public">graybat::Cage::maximum</innerclass>
+    <templateparamlist>
+      <param>
+        <type>typename T_CommunicationPolicy</type>
+      </param>
+      <param>
+        <type>typename T_GraphPolicy</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="user-defined">
+      <header>Graph Operations</header>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1adeb898f46486654a94ee8198d31272fb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T_Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::setGraph</definition>
+        <argsstring>(T_Functor graphFunctor)</argsstring>
+        <name>setGraph</name>
+        <param>
+          <type>T_Functor</type>
+          <declname>graphFunctor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="123" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="123" bodyend="126"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1a2e4558e1f636d7e6db3f0a1fce63a6fb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::vector&lt; <ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref> &gt;</type>
+        <definition>std::vector&lt;Vertex&gt; graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::getVertices</definition>
+        <argsstring>()</argsstring>
+        <name>getVertices</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="128" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="128" bodyend="143"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1a1e979baa57c86526fab054a731f59b32" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref></type>
+        <definition>Vertex graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::getVertex</definition>
+        <argsstring>(const VertexID vertexID)</argsstring>
+        <name>getVertex</name>
+        <param>
+          <type>const VertexID</type>
+          <declname>vertexID</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="146" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="146" bodyend="159"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1afe51aef46fbc4e1f2c3c62fcfee15126" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="structgraybat_1_1CommunicationEdge" kindref="compound">Edge</ref></type>
+        <definition>Edge graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::getEdge</definition>
+        <argsstring>(const Vertex source, const Vertex target)</argsstring>
+        <name>getEdge</name>
+        <param>
+          <type>const <ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref></type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref></type>
+          <declname>target</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="161" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="161" bodyend="175"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1ad8bc02fb9875ce4a66e7cfb7d8cbbd99" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::vector&lt; <ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref> &gt;</type>
+        <definition>std::vector&lt;Vertex&gt; graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::getAdjacentVertices</definition>
+        <argsstring>(const Vertex &amp;v)</argsstring>
+        <name>getAdjacentVertices</name>
+        <param>
+          <type>const <ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref> &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="178" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="178" bodyend="195"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1a21621e29fa96e5334eca259f5ca09b9f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::vector&lt; <ref refid="structgraybat_1_1CommunicationEdge" kindref="compound">Edge</ref> &gt;</type>
+        <definition>std::vector&lt;Edge&gt; graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::getOutEdges</definition>
+        <argsstring>(const Vertex &amp;v)</argsstring>
+        <name>getOutEdges</name>
+        <param>
+          <type>const <ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref> &amp;</type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="197" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="197" bodyend="216"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1a8d8873582c6499be4ae375f0d689c2be" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::vector&lt; <ref refid="structgraybat_1_1CommunicationEdge" kindref="compound">Edge</ref> &gt;</type>
+        <definition>std::vector&lt;Edge&gt; graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::getInEdges</definition>
+        <argsstring>(const Vertex v)</argsstring>
+        <name>getInEdges</name>
+        <param>
+          <type>const <ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref></type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="218" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="218" bodyend="238"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="user-defined">
+      <header>Mapping Operations</header>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1afeddcc035e25382462c38c77b481304d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T_Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::distribute</definition>
+        <argsstring>(T_Functor distFunctor)</argsstring>
+        <name>distribute</name>
+        <param>
+          <type>T_Functor</type>
+          <declname>distFunctor</declname>
+        </param>
+        <briefdescription>
+<para>Distribution of the graph vertices to the peers of the global context. The distFunctor it the function responsible for this distribution. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>distFunctor</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="structFunction" kindref="compound">Function</ref> for vertex distribution with the following interface: distFunctor(OwnVAddr, ContextSize, Graph) </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="260" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="260" bodyend="266"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1a8888227acfa41b0a9127a607ca16d32d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::announce</definition>
+        <argsstring>(const std::vector&lt; Vertex &gt; vertices, const bool global=true)</argsstring>
+        <name>announce</name>
+        <param>
+          <type>const std::vector&lt; <ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref> &gt;</type>
+          <declname>vertices</declname>
+        </param>
+        <param>
+          <type>const bool</type>
+          <declname>global</declname>
+          <defval>true</defval>
+        </param>
+        <briefdescription>
+<para>Announces <emphasis>vertices</emphasis> of a <emphasis>graph</emphasis> to the network, so that other peers know that these <emphasis>vertices</emphasis> are hosted by this peer. </para>        </briefdescription>
+        <detaileddescription>
+<para>The general workflow includes two steps:<orderedlist>
+<listitem><para>Each peer, that hosts vertices of the <emphasis>graph</emphasis> announces its <emphasis>vertices</emphasis><itemizedlist>
+<listitem><para>Each peer will send its hosted vertices and update its vertices location</para></listitem><listitem><para>The host peers will create a new context for <emphasis>graph</emphasis></para></listitem></itemizedlist>
+</para></listitem><listitem><para>Vertices can now be located by <ref refid="structgraybat_1_1Cage_1aefc3bddf2aa1ebbc363a35a35be8fb38" kindref="member">locateVertex()</ref></para></listitem><listitem><para>use Graphpeer to communicate between vertices</para></listitem></orderedlist>
+</para><para><simplesect kind="remark"><para>This is a collective Operation on which either all host peers of the supergraph of <emphasis>graph</emphasis> have to take part or when <emphasis>graph</emphasis> has no supergraph then all Communicatos from the globalContext (which should be all peers in the network).</para></simplesect>
+</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">graph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Its vertices will be announced </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">vertices</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A set of vertices, that will be hosted by this peer </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="293" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="293" bodyend="336"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1aefc3bddf2aa1ebbc363a35a35be8fb38" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>VAddr</type>
+        <definition>VAddr graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::locateVertex</definition>
+        <argsstring>(Vertex vertex)</argsstring>
+        <name>locateVertex</name>
+        <param>
+          <type><ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref></type>
+          <declname>vertex</declname>
+        </param>
+        <briefdescription>
+<para>Returns the VAddr of the host of <emphasis>vertex</emphasis> in the graph. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">vertex</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Will be located. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="359" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="359" bodyend="370"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1ad135a7bfe6929c6dfb0a4ffde2373316" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::vector&lt; <ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref> &gt;</type>
+        <definition>std::vector&lt;Vertex&gt; graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::getHostedVertices</definition>
+        <argsstring>(const VAddr vAddr)</argsstring>
+        <name>getHostedVertices</name>
+        <param>
+          <type>const VAddr</type>
+          <declname>vAddr</declname>
+        </param>
+        <briefdescription>
+<para>Opposite operation of <ref refid="structgraybat_1_1Cage_1aefc3bddf2aa1ebbc363a35a35be8fb38" kindref="member">locateVertex()</ref>. It returns the vertices that are hosted by the peer with <emphasis>vAddr</emphasis> </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="377" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="377" bodyend="380"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1abf0aa8d61511ba1e2593fb45e694aa16" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::peerHostsVertex</definition>
+        <argsstring>(Vertex vertex)</argsstring>
+        <name>peerHostsVertex</name>
+        <param>
+          <type><ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref></type>
+          <declname>vertex</declname>
+        </param>
+        <briefdescription>
+<para>Returns true if the <emphasis>vertex</emphasis> is hosted by the calling peer otherwise false. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="387" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="387" bodyend="397"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1a2eef0dae96d63420aaee9bdc95f7f977" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::vector&lt; Peer &gt;</type>
+        <definition>std::vector&lt;Peer&gt; graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::getPeers</definition>
+        <argsstring>()</argsstring>
+        <name>getPeers</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="399" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="399" bodyend="402"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="user-defined">
+      <header>Point to Point Communication Operations</header>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1ab9a114ae8076ccbe9b233c68ff2d155b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::send</definition>
+        <argsstring>(const Edge edge, const T &amp;data)</argsstring>
+        <name>send</name>
+        <param>
+          <type>const <ref refid="structgraybat_1_1CommunicationEdge" kindref="compound">Edge</ref></type>
+          <declname>edge</declname>
+        </param>
+        <param>
+          <type>const T &amp;</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+<para>Synchron transmission of <emphasis>data</emphasis> to the <emphasis>destVertex</emphasis> on <emphasis>edge</emphasis>. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">graph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The graph in which the communication takes place. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">edge</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Edge over which the <emphasis>data</emphasis> will be transmitted. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">data</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data that will be send. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="424" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="424" bodyend="428"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1abbd6352f368e4d3cafa3ba26f54c6e93" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::send</definition>
+        <argsstring>(const Edge edge, const T &amp;data, std::vector&lt; Event &gt; &amp;events)</argsstring>
+        <name>send</name>
+        <param>
+          <type>const <ref refid="structgraybat_1_1CommunicationEdge" kindref="compound">Edge</ref></type>
+          <declname>edge</declname>
+        </param>
+        <param>
+          <type>const T &amp;</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; Event &gt; &amp;</type>
+          <declname>events</declname>
+        </param>
+        <briefdescription>
+<para>Asynchron transmission of <emphasis>data</emphasis> to the <emphasis>destVertex</emphasis> on <emphasis>edge</emphasis>. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">graph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The graph in which the communication takes place. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">edge</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Edge over which the <emphasis>data</emphasis> will be transmitted. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">data</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data that will be send. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">List</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>of events the send event will be added to. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="443" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="443" bodyend="448"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1aa3085ae78588c6bc49aae16391abc52f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::recv</definition>
+        <argsstring>(const Edge edge, T &amp;data)</argsstring>
+        <name>recv</name>
+        <param>
+          <type>const <ref refid="structgraybat_1_1CommunicationEdge" kindref="compound">Edge</ref></type>
+          <declname>edge</declname>
+        </param>
+        <param>
+          <type>T &amp;</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+<para>Synchron receive of <emphasis>data</emphasis> from the <emphasis>srcVertex</emphasis> on <emphasis>edge</emphasis>. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">graph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The graph in which the communication takes place. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">edge</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Edge over which the <emphasis>data</emphasis> will be transmitted. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">data</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data that will be received </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="460" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="460" bodyend="465"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1a6714c94d1ae252456f7801e47cbee345" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type><ref refid="structgraybat_1_1CommunicationEdge" kindref="compound">Edge</ref></type>
+        <definition>Edge graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::recv</definition>
+        <argsstring>(T &amp;data)</argsstring>
+        <name>recv</name>
+        <param>
+          <type>T &amp;</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="468" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="468" bodyend="476"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1a0c895e002001d07877f7dd311a3c279f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::recv</definition>
+        <argsstring>(const Edge edge, T &amp;data, std::vector&lt; Event &gt; &amp;events)</argsstring>
+        <name>recv</name>
+        <param>
+          <type>const <ref refid="structgraybat_1_1CommunicationEdge" kindref="compound">Edge</ref></type>
+          <declname>edge</declname>
+        </param>
+        <param>
+          <type>T &amp;</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; Event &gt; &amp;</type>
+          <declname>events</declname>
+        </param>
+        <briefdescription>
+<para>Asynchron receive of <emphasis>data</emphasis> from the <emphasis>srcVertex</emphasis> on <emphasis>edge</emphasis>. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">graph</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The graph in which the communication takes place. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">edge</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Edge over which the <emphasis>data</emphasis> will be transmitted. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">data</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data that will be received </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">List</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>of events the send event will be added to. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="489" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="489" bodyend="493"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="user-defined">
+      <header>Collective Communication Operations</header>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1a36fa784cb2d80c8f18005729d1035fee" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Data</type>
+          </param>
+          <param>
+            <type>typename Op</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::reduce</definition>
+        <argsstring>(const Vertex rootVertex, const Vertex srcVertex, Op op, const std::vector&lt; T_Data &gt; sendData, std::vector&lt; T_Data &gt; &amp;recvData)</argsstring>
+        <name>reduce</name>
+        <param>
+          <type>const <ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref></type>
+          <declname>rootVertex</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref></type>
+          <declname>srcVertex</declname>
+        </param>
+        <param>
+          <type>Op</type>
+          <declname>op</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; T_Data &gt;</type>
+          <declname>sendData</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; T_Data &gt; &amp;</type>
+          <declname>recvData</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="506" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="506" bodyend="549"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1aeaefc0dd7e23f1125dabcb9002ad45f2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Data</type>
+          </param>
+          <param>
+            <type>typename T_Recv</type>
+          </param>
+          <param>
+            <type>typename Op</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::allReduce</definition>
+        <argsstring>(const Vertex srcVertex, Op op, const std::vector&lt; T_Data &gt; sendData, T_Recv &amp;recvData)</argsstring>
+        <name>allReduce</name>
+        <param>
+          <type>const <ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref></type>
+          <declname>srcVertex</declname>
+        </param>
+        <param>
+          <type>Op</type>
+          <declname>op</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; T_Data &gt;</type>
+          <declname>sendData</declname>
+        </param>
+        <param>
+          <type>T_Recv &amp;</type>
+          <declname>recvData</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="552" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="552" bodyend="590"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1aa828d0331211a8388b21cee321d8edb9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Send</type>
+          </param>
+          <param>
+            <type>typename T_Recv</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::gather</definition>
+        <argsstring>(const Vertex rootVertex, const Vertex srcVertex, const T_Send sendData, T_Recv &amp;recvData, const bool reorder)</argsstring>
+        <name>gather</name>
+        <param>
+          <type>const <ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref></type>
+          <declname>rootVertex</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref></type>
+          <declname>srcVertex</declname>
+        </param>
+        <param>
+          <type>const T_Send</type>
+          <declname>sendData</declname>
+        </param>
+        <param>
+          <type>T_Recv &amp;</type>
+          <declname>recvData</declname>
+        </param>
+        <param>
+          <type>const bool</type>
+          <declname>reorder</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="597" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="597" bodyend="646"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1a57b8858bb4ae33204c049c50c1a27aca" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Send</type>
+          </param>
+          <param>
+            <type>typename T_Recv</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::allGather</definition>
+        <argsstring>(const Vertex srcVertex, T_Send sendData, T_Recv &amp;recvData, const bool reorder)</argsstring>
+        <name>allGather</name>
+        <param>
+          <type>const <ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref></type>
+          <declname>srcVertex</declname>
+        </param>
+        <param>
+          <type>T_Send</type>
+          <declname>sendData</declname>
+        </param>
+        <param>
+          <type>T_Recv &amp;</type>
+          <declname>recvData</declname>
+        </param>
+        <param>
+          <type>const bool</type>
+          <declname>reorder</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="655" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="655" bodyend="696"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1ad7530589eef3e5d7dc1e70adb74c75f4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::spread</definition>
+        <argsstring>(const Vertex vertex, const T &amp;data, std::vector&lt; Event &gt; &amp;events)</argsstring>
+        <name>spread</name>
+        <param>
+          <type>const <ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref></type>
+          <declname>vertex</declname>
+        </param>
+        <param>
+          <type>const T &amp;</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; Event &gt; &amp;</type>
+          <declname>events</declname>
+        </param>
+        <briefdescription>
+<para>Spread data from a vertex to all adjacent vertices connected by an outgoing edge (async). </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">vertex</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>to spread data from </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">data</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>that will be spreaded </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">events</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>where the events for this async operations will be inserted. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="708" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="708" bodyend="713"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1aa387169a4a053f30479ff478aa8d5cf8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::spread</definition>
+        <argsstring>(const Vertex vertex, const T &amp;data)</argsstring>
+        <name>spread</name>
+        <param>
+          <type>const <ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref></type>
+          <declname>vertex</declname>
+        </param>
+        <param>
+          <type>const T &amp;</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+<para>Spread data from a vertex to all adjacent vertices connected by an outgoing edge (sync). </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">vertex</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>to spread data from </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">data</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>that will be spreaded </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="724" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="724" bodyend="729"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1a9b7eaa7c2302a32e5408bb92ae4b6f53" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::collect</definition>
+        <argsstring>(const Vertex vertex, T &amp;data)</argsstring>
+        <name>collect</name>
+        <param>
+          <type>const <ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref></type>
+          <declname>vertex</declname>
+        </param>
+        <param>
+          <type>T &amp;</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+<para>Collects data from all incoming edges under the assumption that all vertices send the same number of data. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">vertex</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>that collects data </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">data</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>were collected data will be stored </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="742" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="742" bodyend="751"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1a13a8d9fcfbb52bddb37c882d76e940f9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::synchronize</definition>
+        <argsstring>()</argsstring>
+        <name>synchronize</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="755" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="755" bodyend="758"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1a44f5edf7c4ff86661198e53ba20109e0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>int</type>
+        <definition>int graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::ContextID</definition>
+        <argsstring>()</argsstring>
+        <name>ContextID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="761" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="761" bodyend="763"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structgraybat_1_1Cage_1a848caea3a16ff2390c8b0020cef298f2" prot="public" static="no">
+        <type>T_CommunicationPolicy</type>
+        <definition>using graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::CommunicationPolicy =  T_CommunicationPolicy</definition>
+        <argsstring></argsstring>
+        <name>CommunicationPolicy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="47" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1Cage_1afc98171db17598bd0030d90ff101e4c2" prot="public" static="no">
+        <type>T_GraphPolicy</type>
+        <definition>using graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::GraphPolicy =  T_GraphPolicy</definition>
+        <argsstring></argsstring>
+        <name>GraphPolicy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="48" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1Cage_1ac7de84bd47f0af51bf87051355424ce9" prot="public" static="no">
+        <type><ref refid="structgraybat_1_1Cage" kindref="compound">Cage</ref>&lt; CommunicationPolicy, GraphPolicy &gt;</type>
+        <definition>using graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::Cage_t =  Cage&lt;CommunicationPolicy, GraphPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>Cage_t</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="49" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1Cage_1a5fcd15bbd715221a9d05f2fa5f2d14d5" prot="public" static="no">
+        <type>graybat::communicationPolicy::VAddr&lt; CommunicationPolicy &gt;</type>
+        <definition>using graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::VAddr =  graybat::communicationPolicy::VAddr&lt;CommunicationPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>VAddr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="51" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1Cage_1a716c512829be5cca5dcbf2a52754d10d" prot="public" static="no">
+        <type>graybat::communicationPolicy::Context&lt; CommunicationPolicy &gt;</type>
+        <definition>using graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::Context =  graybat::communicationPolicy::Context&lt;CommunicationPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>Context</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="52" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1Cage_1af23858450f27e9dfde241521a13df525" prot="public" static="no">
+        <type>graybat::communicationPolicy::Event&lt; CommunicationPolicy &gt;</type>
+        <definition>using graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::Event =  graybat::communicationPolicy::Event&lt;CommunicationPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>Event</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="53" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1Cage_1a425d340120d20ee287043cbaa3e66d27" prot="public" static="no">
+        <type>graybat::communicationPolicy::Config&lt; CommunicationPolicy &gt;</type>
+        <definition>using graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::CPConfig =  graybat::communicationPolicy::Config&lt;CommunicationPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>CPConfig</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="54" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1Cage_1a1c8a9c50bfa2ac05eb0e36acf2c4f791" prot="public" static="no">
+        <type><ref refid="structgraybat_1_1CommunicationEdge" kindref="compound">graybat::CommunicationEdge</ref>&lt; <ref refid="structgraybat_1_1Cage" kindref="compound">Cage_t</ref> &gt;</type>
+        <definition>using graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::Edge =  graybat::CommunicationEdge&lt;Cage_t&gt;</definition>
+        <argsstring></argsstring>
+        <name>Edge</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="55" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1Cage_1acfd9a202873f8a3d1cc5680bc2ac9267" prot="public" static="no">
+        <type><ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">graybat::CommunicationVertex</ref>&lt; <ref refid="structgraybat_1_1Cage" kindref="compound">Cage_t</ref> &gt;</type>
+        <definition>using graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::Vertex =  graybat::CommunicationVertex&lt;Cage_t&gt;</definition>
+        <argsstring></argsstring>
+        <name>Vertex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="56" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1Cage_1ae6c3a8d91a9e19c48b760216646b07e3" prot="public" static="no">
+        <type>graybat::graphPolicy::EdgeDescription&lt; GraphPolicy &gt;</type>
+        <definition>using graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::EdgeDescription =  graybat::graphPolicy::EdgeDescription&lt;GraphPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>EdgeDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="58" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1Cage_1a8dcd6874d2fbb5a2a731f197aedcb87f" prot="public" static="no">
+        <type>graybat::graphPolicy::GraphDescription&lt; GraphPolicy &gt;</type>
+        <definition>using graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::GraphDescription =  graybat::graphPolicy::GraphDescription&lt;GraphPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>GraphDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="59" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="59" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1Cage_1ad1ae456d67c2804c63a3d651096ec2c8" prot="public" static="no">
+        <type>graybat::graphPolicy::VertexID</type>
+        <definition>using graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::VertexID =  graybat::graphPolicy::VertexID</definition>
+        <argsstring></argsstring>
+        <name>VertexID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="60" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1Cage_1af7f17dd2b92c84abe4b9d49b2ae6f475" prot="public" static="no">
+        <type>graybat::graphPolicy::EdgeID</type>
+        <definition>using graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::EdgeID =  graybat::graphPolicy::EdgeID</definition>
+        <argsstring></argsstring>
+        <name>EdgeID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="61" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="61" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1Cage_1af763549ebaa29f10a5c72246c81a8c5d" prot="public" static="no">
+        <type>graybat::graphPolicy::GraphID</type>
+        <definition>using graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::GraphID =  graybat::graphPolicy::GraphID</definition>
+        <argsstring></argsstring>
+        <name>GraphID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="62" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1Cage_1abcd2ec48a85543b8521fd85ed7dd1927" prot="public" static="no">
+        <type>size_t</type>
+        <definition>using graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::Peer =  size_t</definition>
+        <argsstring></argsstring>
+        <name>Peer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="63" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structgraybat_1_1Cage_1a814df63d13307540a09a734365c6bc17" prot="public" static="no" mutable="no">
+        <type>CommunicationPolicy</type>
+        <definition>CommunicationPolicy graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::comm</definition>
+        <argsstring></argsstring>
+        <name>comm</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="94" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="94" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1Cage_1ac65609fabcd12ea956a50dfc9f7f8822" prot="public" static="no" mutable="no">
+        <type>GraphPolicy</type>
+        <definition>GraphPolicy graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::graph</definition>
+        <argsstring></argsstring>
+        <name>graph</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="95" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="95" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1Cage_1aaae110547d929e8f93c4d43b5c7f5012" prot="public" static="no" mutable="no">
+        <type>Context</type>
+        <definition>Context graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::graphContext</definition>
+        <argsstring></argsstring>
+        <name>graphContext</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="96" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="96" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1Cage_1acae38e3176ae872f115bc277ed896c99" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; <ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref> &gt;</type>
+        <definition>std::vector&lt;Vertex&gt; graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::hostedVertices</definition>
+        <argsstring></argsstring>
+        <name>hostedVertices</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="97" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="97" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1Cage_1a39ab4a85708473a09befb09b2d41d2e5" prot="public" static="no" mutable="no">
+        <type>std::map&lt; VertexID, VAddr &gt;</type>
+        <definition>std::map&lt;VertexID, VAddr&gt; graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::vertexMap</definition>
+        <argsstring></argsstring>
+        <name>vertexMap</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="106" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="106" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1Cage_1aac8f8f77d9b63e53b855c306cb21bda6" prot="public" static="no" mutable="no">
+        <type>std::map&lt; GraphID, Context &gt;</type>
+        <definition>std::map&lt;GraphID, Context&gt; graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::graphMap</definition>
+        <argsstring></argsstring>
+        <name>graphMap</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="109" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="109" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1Cage_1af0cbddbcb1a81ac31b0c6307fd3df542" prot="public" static="no" mutable="no">
+        <type>std::map&lt; VAddr, std::vector&lt; <ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref> &gt; &gt;</type>
+        <definition>std::map&lt;VAddr, std::vector&lt;Vertex&gt; &gt; graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::peerMap</definition>
+        <argsstring></argsstring>
+        <name>peerMap</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="112" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="112" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structgraybat_1_1Cage_1a4a5b4f29c8fef120674b95ac25f05518" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T_Functor</type>
+          </param>
+        </templateparamlist>
+        <type></type>
+        <definition>graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::Cage</definition>
+        <argsstring>(CPConfig const cpConfig, T_Functor graphFunctor)</argsstring>
+        <name>Cage</name>
+        <param>
+          <type>CPConfig const</type>
+          <declname>cpConfig</declname>
+        </param>
+        <param>
+          <type>T_Functor</type>
+          <declname>graphFunctor</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="66" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="66" bodyend="70"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1a9e76d7d8a6dddbb5fbf6882506f80ab1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::Cage</definition>
+        <argsstring>(CPConfig const cpConfig)</argsstring>
+        <name>Cage</name>
+        <param>
+          <type>CPConfig const</type>
+          <declname>cpConfig</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="72" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="72" bodyend="76"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1ad727c660b9eadecb8f6b6bd3ed623886" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::Cage</definition>
+        <argsstring>()</argsstring>
+        <name>Cage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="78" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="78" bodyend="82"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1Cage_1aeeb88c8299dd30728fadd409bc5a0fb5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::~Cage</definition>
+        <argsstring>()</argsstring>
+        <name>~Cage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="84" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="84" bodyend="86"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="structgraybat_1_1Cage_1a225b564f83d92624f9303f71106900f3" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;::reorder</definition>
+        <argsstring>(const std::vector&lt; T &gt; &amp;data, const std::vector&lt; unsigned &gt; &amp;recvCount, std::vector&lt; T &gt; &amp;dataReordered)</argsstring>
+        <name>reorder</name>
+        <param>
+          <type>const std::vector&lt; T &gt; &amp;</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>const std::vector&lt; unsigned &gt; &amp;</type>
+          <declname>recvCount</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; T &gt; &amp;</type>
+          <declname>dataReordered</declname>
+        </param>
+        <briefdescription>
+<para>Reorders data received from vertices into vertex id order. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Cage.hpp" line="774" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="774" bodyend="794"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>The Communication And Graph Environment enables to communicate on basis of a graph with methods of a user defined communication library. </para>    </briefdescription>
+    <detaileddescription>
+<para>A cage is defined by its Communication and Graph policy. The communication policy provides methods for point to point and collective operations. The graph policy provides methods to query graph imformation of the cage graph.</para><para><simplesect kind="remark"><para>A peer can host several vertices. </para></simplesect>
+</para>    </detaileddescription>
+    <collaborationgraph>
+      <node id="13">
+        <label>std::vector&lt; graybat::CommunicationVertex &gt;</label>
+        <childnode refid="14" relation="usage">
+          <edgelabel>elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="12">
+        <label>std::map&lt; GraphID, Context &gt;</label>
+      </node>
+      <node id="16">
+        <label>std::map&lt; VertexID, VAddr &gt;</label>
+      </node>
+      <node id="15">
+        <label>std::map&lt; VAddr, std::vector&lt; graybat::CommunicationVertex &gt; &gt;</label>
+        <childnode refid="13" relation="usage">
+          <edgelabel>elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="14">
+        <label>graybat::CommunicationVertex&lt; T_Cage &gt;</label>
+        <link refid="structgraybat_1_1CommunicationVertex"/>
+      </node>
+      <node id="11">
+        <label>graybat::Cage&lt; T_CommunicationPolicy, T_GraphPolicy &gt;</label>
+        <link refid="structgraybat_1_1Cage"/>
+        <childnode refid="12" relation="usage">
+          <edgelabel>graphMap</edgelabel>
+        </childnode>
+        <childnode refid="13" relation="usage">
+          <edgelabel>hostedVertices</edgelabel>
+        </childnode>
+        <childnode refid="15" relation="usage">
+          <edgelabel>peerMap</edgelabel>
+        </childnode>
+        <childnode refid="16" relation="usage">
+          <edgelabel>vertexMap</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="include/graybat/Cage.hpp" line="46" column="1" bodyfile="include/graybat/Cage.hpp" bodystart="46" bodyend="796"/>
+    <listofallmembers>
+      <member refid="structgraybat_1_1Cage_1a57b8858bb4ae33204c049c50c1a27aca" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>allGather</name></member>
+      <member refid="structgraybat_1_1Cage_1aeaefc0dd7e23f1125dabcb9002ad45f2" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>allReduce</name></member>
+      <member refid="structgraybat_1_1Cage_1a8888227acfa41b0a9127a607ca16d32d" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>announce</name></member>
+      <member refid="structgraybat_1_1Cage_1a4a5b4f29c8fef120674b95ac25f05518" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>Cage</name></member>
+      <member refid="structgraybat_1_1Cage_1a9e76d7d8a6dddbb5fbf6882506f80ab1" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>Cage</name></member>
+      <member refid="structgraybat_1_1Cage_1ad727c660b9eadecb8f6b6bd3ed623886" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>Cage</name></member>
+      <member refid="structgraybat_1_1Cage_1ac7de84bd47f0af51bf87051355424ce9" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>Cage_t</name></member>
+      <member refid="structgraybat_1_1Cage_1a9b7eaa7c2302a32e5408bb92ae4b6f53" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>collect</name></member>
+      <member refid="structgraybat_1_1Cage_1a814df63d13307540a09a734365c6bc17" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>comm</name></member>
+      <member refid="structgraybat_1_1Cage_1a848caea3a16ff2390c8b0020cef298f2" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>CommunicationPolicy</name></member>
+      <member refid="structgraybat_1_1Cage_1a716c512829be5cca5dcbf2a52754d10d" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>Context</name></member>
+      <member refid="structgraybat_1_1Cage_1a44f5edf7c4ff86661198e53ba20109e0" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>ContextID</name></member>
+      <member refid="structgraybat_1_1Cage_1a425d340120d20ee287043cbaa3e66d27" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>CPConfig</name></member>
+      <member refid="structgraybat_1_1Cage_1afeddcc035e25382462c38c77b481304d" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>distribute</name></member>
+      <member refid="structgraybat_1_1Cage_1a1c8a9c50bfa2ac05eb0e36acf2c4f791" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>Edge</name></member>
+      <member refid="structgraybat_1_1Cage_1ae6c3a8d91a9e19c48b760216646b07e3" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>EdgeDescription</name></member>
+      <member refid="structgraybat_1_1Cage_1af7f17dd2b92c84abe4b9d49b2ae6f475" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>EdgeID</name></member>
+      <member refid="structgraybat_1_1Cage_1af23858450f27e9dfde241521a13df525" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>Event</name></member>
+      <member refid="structgraybat_1_1Cage_1aa828d0331211a8388b21cee321d8edb9" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>gather</name></member>
+      <member refid="structgraybat_1_1Cage_1ad8bc02fb9875ce4a66e7cfb7d8cbbd99" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>getAdjacentVertices</name></member>
+      <member refid="structgraybat_1_1Cage_1afe51aef46fbc4e1f2c3c62fcfee15126" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>getEdge</name></member>
+      <member refid="structgraybat_1_1Cage_1ad135a7bfe6929c6dfb0a4ffde2373316" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>getHostedVertices</name></member>
+      <member refid="structgraybat_1_1Cage_1a8d8873582c6499be4ae375f0d689c2be" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>getInEdges</name></member>
+      <member refid="structgraybat_1_1Cage_1a21621e29fa96e5334eca259f5ca09b9f" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>getOutEdges</name></member>
+      <member refid="structgraybat_1_1Cage_1a2eef0dae96d63420aaee9bdc95f7f977" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>getPeers</name></member>
+      <member refid="structgraybat_1_1Cage_1a1e979baa57c86526fab054a731f59b32" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>getVertex</name></member>
+      <member refid="structgraybat_1_1Cage_1a2e4558e1f636d7e6db3f0a1fce63a6fb" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>getVertices</name></member>
+      <member refid="structgraybat_1_1Cage_1ac65609fabcd12ea956a50dfc9f7f8822" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>graph</name></member>
+      <member refid="structgraybat_1_1Cage_1aaae110547d929e8f93c4d43b5c7f5012" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>graphContext</name></member>
+      <member refid="structgraybat_1_1Cage_1a8dcd6874d2fbb5a2a731f197aedcb87f" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>GraphDescription</name></member>
+      <member refid="structgraybat_1_1Cage_1af763549ebaa29f10a5c72246c81a8c5d" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>GraphID</name></member>
+      <member refid="structgraybat_1_1Cage_1aac8f8f77d9b63e53b855c306cb21bda6" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>graphMap</name></member>
+      <member refid="structgraybat_1_1Cage_1afc98171db17598bd0030d90ff101e4c2" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>GraphPolicy</name></member>
+      <member refid="structgraybat_1_1Cage_1acae38e3176ae872f115bc277ed896c99" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>hostedVertices</name></member>
+      <member refid="structgraybat_1_1Cage_1aefc3bddf2aa1ebbc363a35a35be8fb38" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>locateVertex</name></member>
+      <member refid="structgraybat_1_1Cage_1abcd2ec48a85543b8521fd85ed7dd1927" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>Peer</name></member>
+      <member refid="structgraybat_1_1Cage_1abf0aa8d61511ba1e2593fb45e694aa16" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>peerHostsVertex</name></member>
+      <member refid="structgraybat_1_1Cage_1af0cbddbcb1a81ac31b0c6307fd3df542" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>peerMap</name></member>
+      <member refid="structgraybat_1_1Cage_1aa3085ae78588c6bc49aae16391abc52f" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>recv</name></member>
+      <member refid="structgraybat_1_1Cage_1a6714c94d1ae252456f7801e47cbee345" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>recv</name></member>
+      <member refid="structgraybat_1_1Cage_1a0c895e002001d07877f7dd311a3c279f" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>recv</name></member>
+      <member refid="structgraybat_1_1Cage_1a36fa784cb2d80c8f18005729d1035fee" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>reduce</name></member>
+      <member refid="structgraybat_1_1Cage_1a225b564f83d92624f9303f71106900f3" prot="private" virt="non-virtual"><scope>graybat::Cage</scope><name>reorder</name></member>
+      <member refid="structgraybat_1_1Cage_1ab9a114ae8076ccbe9b233c68ff2d155b" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>send</name></member>
+      <member refid="structgraybat_1_1Cage_1abbd6352f368e4d3cafa3ba26f54c6e93" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>send</name></member>
+      <member refid="structgraybat_1_1Cage_1adeb898f46486654a94ee8198d31272fb" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>setGraph</name></member>
+      <member refid="structgraybat_1_1Cage_1ad7530589eef3e5d7dc1e70adb74c75f4" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>spread</name></member>
+      <member refid="structgraybat_1_1Cage_1aa387169a4a053f30479ff478aa8d5cf8" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>spread</name></member>
+      <member refid="structgraybat_1_1Cage_1a13a8d9fcfbb52bddb37c882d76e940f9" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>synchronize</name></member>
+      <member refid="structgraybat_1_1Cage_1a5fcd15bbd715221a9d05f2fa5f2d14d5" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>VAddr</name></member>
+      <member refid="structgraybat_1_1Cage_1acfd9a202873f8a3d1cc5680bc2ac9267" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>Vertex</name></member>
+      <member refid="structgraybat_1_1Cage_1ad1ae456d67c2804c63a3d651096ec2c8" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>VertexID</name></member>
+      <member refid="structgraybat_1_1Cage_1a39ab4a85708473a09befb09b2d41d2e5" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>vertexMap</name></member>
+      <member refid="structgraybat_1_1Cage_1aeeb88c8299dd30728fadd409bc5a0fb5" prot="public" virt="non-virtual"><scope>graybat::Cage</scope><name>~Cage</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

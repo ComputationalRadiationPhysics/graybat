@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="dir_a58e0f5d77f72a68120279d1005dc917" kind="dir">
+    <compoundname>include/graybat/mapping</compoundname>
+    <innerfile refid="Consecutive_8hpp">Consecutive.hpp</innerfile>
+    <innerfile refid="Filter_8hpp">Filter.hpp</innerfile>
+    <innerfile refid="GraphPartition_8hpp">GraphPartition.hpp</innerfile>
+    <innerfile refid="Random_8hpp">Random.hpp</innerfile>
+    <innerfile refid="Roundrobin_8hpp">Roundrobin.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/mapping/"/>
+  </compounddef>
+</doxygen>

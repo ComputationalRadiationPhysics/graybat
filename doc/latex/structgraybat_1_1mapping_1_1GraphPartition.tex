@@ -1,0 +1,47 @@
+\hypertarget{structgraybat_1_1mapping_1_1GraphPartition}{}\section{graybat\+:\+:mapping\+:\+:Graph\+Partition Struct Reference}
+\label{structgraybat_1_1mapping_1_1GraphPartition}\index{graybat\+::mapping\+::\+Graph\+Partition@{graybat\+::mapping\+::\+Graph\+Partition}}
+
+
+{\ttfamily \#include $<$Graph\+Partition.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structgraybat_1_1mapping_1_1GraphPartition_afeeafb75cddcbb05ba2f6d3d3b662f49}{}{\bfseries Graph\+Partition} (unsigned n\+Parts)\label{structgraybat_1_1mapping_1_1GraphPartition_afeeafb75cddcbb05ba2f6d3d3b662f49}
+
+\item 
+{\footnotesize template$<$typename T\+\_\+\+Graph $>$ }\\std\+::pair$<$ std\+::vector$<$ idx\+\_\+t $>$, std\+::vector$<$ idx\+\_\+t $>$ $>$ \hyperlink{structgraybat_1_1mapping_1_1GraphPartition_a917b54b6d70ef3890d1a756fdd97fa6a}{to\+Compressed\+Row\+Storage} (T\+\_\+\+Graph \&graph)
+\item 
+\hypertarget{structgraybat_1_1mapping_1_1GraphPartition_a952baf3f1cbcec52d3296d7acdb912ff}{}{\footnotesize template$<$typename T\+\_\+\+Graph $>$ }\\std\+::vector$<$ typename T\+\_\+\+Graph\+::\+Vertex $>$ {\bfseries operator()} (const unsigned process\+I\+D, const unsigned process\+Count, T\+\_\+\+Graph \&graph)\label{structgraybat_1_1mapping_1_1GraphPartition_a952baf3f1cbcec52d3296d7acdb912ff}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Partitioning of the communication graph into k parts. k is set either to the number of peers that want to take part in communication or is given as an input parameter.
+
+
+\begin{DoxyParams}{Parameters}
+{\em n\+Parts} & number of parts to partition \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+set of vertices that belong \char`\"{}together\char`\"{} 
+\end{DoxyReturn}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{structgraybat_1_1mapping_1_1GraphPartition_a917b54b6d70ef3890d1a756fdd97fa6a}{}\index{graybat\+::mapping\+::\+Graph\+Partition@{graybat\+::mapping\+::\+Graph\+Partition}!to\+Compressed\+Row\+Storage@{to\+Compressed\+Row\+Storage}}
+\index{to\+Compressed\+Row\+Storage@{to\+Compressed\+Row\+Storage}!graybat\+::mapping\+::\+Graph\+Partition@{graybat\+::mapping\+::\+Graph\+Partition}}
+\subsubsection[{to\+Compressed\+Row\+Storage(\+T\+\_\+\+Graph \&graph)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Graph $>$ std\+::pair$<$std\+::vector$<$idx\+\_\+t$>$, std\+::vector$<$idx\+\_\+t$>$ $>$ graybat\+::mapping\+::\+Graph\+Partition\+::to\+Compressed\+Row\+Storage (
+\begin{DoxyParamCaption}
+\item[{T\+\_\+\+Graph \&}]{graph}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{structgraybat_1_1mapping_1_1GraphPartition_a917b54b6d70ef3890d1a756fdd97fa6a}
+Translates the graph into the compressed row storage format (C\+S\+R) which can be parsed by Metis.
+
+\href{http://en.wikipedia.org/wiki/Sparse_matrix#Compressed_row_Storage_.28CRS_or_CSR.29}{\tt http\+://en.\+wikipedia.\+org/wiki/\+Sparse\+\_\+matrix\#\+Compressed\+\_\+row\+\_\+\+Storage\+\_\+.\+28\+C\+R\+S\+\_\+or\+\_\+\+C\+S\+R.\+29} 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/graybat/mapping/Graph\+Partition.\+hpp\end{DoxyCompactItemize}

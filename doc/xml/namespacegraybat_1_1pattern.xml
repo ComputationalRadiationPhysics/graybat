@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="namespacegraybat_1_1pattern" kind="namespace" language="C++">
+    <compoundname>graybat::pattern</compoundname>
+    <innerclass refid="structgraybat_1_1pattern_1_1BiStar" prot="public">graybat::pattern::BiStar</innerclass>
+    <innerclass refid="structgraybat_1_1pattern_1_1Chain" prot="public">graybat::pattern::Chain</innerclass>
+    <innerclass refid="structgraybat_1_1pattern_1_1EdgeLess" prot="public">graybat::pattern::EdgeLess</innerclass>
+    <innerclass refid="structgraybat_1_1pattern_1_1FullyConnected" prot="public">graybat::pattern::FullyConnected</innerclass>
+    <innerclass refid="structgraybat_1_1pattern_1_1Grid" prot="public">graybat::pattern::Grid</innerclass>
+    <innerclass refid="structgraybat_1_1pattern_1_1GridDiagonal" prot="public">graybat::pattern::GridDiagonal</innerclass>
+    <innerclass refid="structgraybat_1_1pattern_1_1HyperCube" prot="public">graybat::pattern::HyperCube</innerclass>
+    <innerclass refid="structgraybat_1_1pattern_1_1InStar" prot="public">graybat::pattern::InStar</innerclass>
+    <innerclass refid="structgraybat_1_1pattern_1_1None" prot="public">graybat::pattern::None</innerclass>
+    <innerclass refid="structgraybat_1_1pattern_1_1OutStar" prot="public">graybat::pattern::OutStar</innerclass>
+    <innerclass refid="structgraybat_1_1pattern_1_1Ring" prot="public">graybat::pattern::Ring</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/pattern/BiStar.hpp" line="10" column="1"/>
+  </compounddef>
+</doxygen>

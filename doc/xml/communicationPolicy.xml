@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="communicationPolicy" kind="page">
+    <compoundname>communicationPolicy</compoundname>
+    <title>Communication Policy</title>
+    <innerpage refid="context">Context</innerpage>
+    <innerpage refid="event">Event</innerpage>
+    <detaileddescription>
+<para>The communication policy is a class which implements the communication interface of its host class (<ref refid="cage" kindref="compound">cage</ref>).</para><para>Communication in graybat is modeled in the way, that an instance that takes part on whatever communication is called a <emphasis>peer</emphasis>. All peers that want to communicate in some way with each other need to group up in a <ref refid="context" kindref="compound">context</ref>. Therefore, a <ref refid="context" kindref="compound">context</ref> is a set of peers that are able to communicate with each other.</para><para>By communication is meant the exchange of arbitrary data between peers or even within one peer. Thus, communication can mean sending a message over the internet, copying data between two memories, or distributing data with the help of MPI. Therefore, a communication policy need to implement the required interface but can interpret the term communication on its own. See the code example below or consider the preimplemented communication policies.</para><para>The communication policy interface is separated into core and collective api. The core api provides the <ref refid="context" kindref="compound">context</ref> type definition, the <ref refid="event" kindref="compound">event</ref> type definition, <bold>point-to-point communication</bold> methods and <bold>context management</bold> methods, while the collective api contains <bold>collective communication</bold> methods. The communication policy needs to implement at least the core api, the collective api based on the core api can be derived from the communication policy <bold><ref refid="structgraybat_1_1communicationPolicy_1_1Base" kindref="compound">graybat::communicationPolicy::Base</ref></bold> class. Thus, it is possible to provide a communication policy implementation that does not implement all interface (core + collective) methods.</para><para>The following source code provides a basic skeleton of a communication policy:</para><para><programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacegraybat" kindref="compound">graybat</ref><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">communicationPolicy<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">traits<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">ContextType&lt;CommunicationPolicySkeleton&gt;<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>type<sp/>=<sp/>...;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">EventType&lt;CommunicationPolicySkeleton&gt;<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>type<sp/>=<sp/>...;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;&gt;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">ConfigType&lt;CommunicationPolicySkeleton&gt;<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>type<sp/>=<sp/>...;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">CommunicationPolicySkeleton<sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="structgraybat_1_1communicationPolicy_1_1Base" kindref="compound">graybat::communicationPolicy::Base</ref>&lt;CommunicationPolicySkeleton&gt;<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">/*******************************************************************</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>COMMUNICATION<sp/>POLICY<sp/>CONSTRUCTIOn</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>******************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ZMQ(Config<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>config)<sp/>{...}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">/*******************************************************************</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>POINT<sp/>TO<sp/>POINT<sp/>COMMUNICATION<sp/>INTERFACE</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>******************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>send(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>VAddr<sp/>destVAddr,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="structTag" kindref="compound">Tag</ref><sp/>tag,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Context<sp/>context,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T_Send&amp;<sp/>sendData)<sp/>{...}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Event<sp/>asyncSend(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>VAddr<sp/>destVAddr,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="structTag" kindref="compound">Tag</ref><sp/>tag,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Context<sp/>context,<sp/>T_Send&amp;<sp/>sendData)<sp/>{...}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>recv(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>VAddr<sp/>srcVAddr,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="structTag" kindref="compound">Tag</ref><sp/>tag,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Context<sp/>context,<sp/>T_Recv&amp;<sp/>recvData)<sp/>{...}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Event<sp/>recv(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Context<sp/>context,<sp/>T_Recv&amp;<sp/>recvData)<sp/>{...}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">/*******************************************************************</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>CONTEXT<sp/>MANAGEMENT<sp/>INTERFACE</highlight></codeline>
+<codeline><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>******************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Context<sp/>splitContext(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>isMember,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Context<sp/>oldContext)<sp/>{...}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Context<sp/>getGlobalContext(){...}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="comment">/*<sp/>namespace<sp/>communicationPolicy*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}<sp/></highlight><highlight class="comment">/*<sp/>namespace<sp/>graybat<sp/>*/</highlight></codeline>
+</programlisting></para><para><heading level="2">Further Links</heading>
+</para><para><itemizedlist>
+<listitem><para><ref refid="structgraybat_1_1communicationPolicy_1_1BMPI" kindref="compound">graybat::communicationPolicy::BMPI</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1communicationPolicy_1_1ZMQ" kindref="compound">graybat::communicationPolicy::ZMQ</ref></para></listitem><listitem><para><ref refid="context" kindref="compound">Context</ref></para></listitem><listitem><para><ref refid="event" kindref="compound">Event</ref> </para></listitem></itemizedlist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

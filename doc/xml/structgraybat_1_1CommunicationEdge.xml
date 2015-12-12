@@ -1,0 +1,314 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="structgraybat_1_1CommunicationEdge" kind="struct" language="C++" prot="public">
+    <compoundname>graybat::CommunicationEdge</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T_Cage</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structgraybat_1_1CommunicationEdge_1a013276d41805d452b7ec3f32c5d98863" prot="public" static="no">
+        <type>T_Cage</type>
+        <definition>typedef T_Cage graybat::CommunicationEdge&lt; T_Cage &gt;::Cage</definition>
+        <argsstring></argsstring>
+        <name>Cage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Edge.hpp" line="10" column="1" bodyfile="include/graybat/Edge.hpp" bodystart="10" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1CommunicationEdge_1af7b14d3933ec26615c4e849f32d9cbc7" prot="public" static="no">
+        <type>unsigned</type>
+        <definition>typedef unsigned graybat::CommunicationEdge&lt; T_Cage &gt;::EdgeID</definition>
+        <argsstring></argsstring>
+        <name>EdgeID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Edge.hpp" line="11" column="1" bodyfile="include/graybat/Edge.hpp" bodystart="11" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1CommunicationEdge_1a1fd741b205ef5042c9ce064419862ab8" prot="public" static="no">
+        <type>Cage::GraphPolicy</type>
+        <definition>typedef Cage::GraphPolicy graybat::CommunicationEdge&lt; T_Cage &gt;::GraphPolicy</definition>
+        <argsstring></argsstring>
+        <name>GraphPolicy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Edge.hpp" line="12" column="1" bodyfile="include/graybat/Edge.hpp" bodystart="12" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1CommunicationEdge_1ad867b26007833b4de0d5b4b9ee5b7d57" prot="public" static="no">
+        <type><ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Cage::Vertex</ref></type>
+        <definition>typedef Cage::Vertex graybat::CommunicationEdge&lt; T_Cage &gt;::Vertex</definition>
+        <argsstring></argsstring>
+        <name>Vertex</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Edge.hpp" line="13" column="1" bodyfile="include/graybat/Edge.hpp" bodystart="13" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1CommunicationEdge_1a30c072501669f1f1709045822bab3383" prot="public" static="no">
+        <type>Cage::Event</type>
+        <definition>typedef Cage::Event graybat::CommunicationEdge&lt; T_Cage &gt;::Event</definition>
+        <argsstring></argsstring>
+        <name>Event</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Edge.hpp" line="14" column="1" bodyfile="include/graybat/Edge.hpp" bodystart="14" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1CommunicationEdge_1a5fe445399b0bea6653fe27eb8d5617b6" prot="public" static="no">
+        <type>GraphPolicy::EdgeProperty</type>
+        <definition>typedef GraphPolicy::EdgeProperty graybat::CommunicationEdge&lt; T_Cage &gt;::EdgeProperty</definition>
+        <argsstring></argsstring>
+        <name>EdgeProperty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Edge.hpp" line="15" column="1" bodyfile="include/graybat/Edge.hpp" bodystart="15" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1CommunicationEdge_1a1ffdda19998f083210324c321b4599dc" prot="public" static="no">
+        <type>GraphPolicy::VertexProperty</type>
+        <definition>typedef GraphPolicy::VertexProperty graybat::CommunicationEdge&lt; T_Cage &gt;::VertexProperty</definition>
+        <argsstring></argsstring>
+        <name>VertexProperty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Edge.hpp" line="16" column="1" bodyfile="include/graybat/Edge.hpp" bodystart="16" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structgraybat_1_1CommunicationEdge_1a468626e784f770368bc8335e78137b48" prot="public" static="no" mutable="no">
+        <type>EdgeID</type>
+        <definition>EdgeID graybat::CommunicationEdge&lt; T_Cage &gt;::id</definition>
+        <argsstring></argsstring>
+        <name>id</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Edge.hpp" line="18" column="1" bodyfile="include/graybat/Edge.hpp" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1CommunicationEdge_1a6061ba74338b175e03ffdb97347c5e77" prot="public" static="no" mutable="no">
+        <type><ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref></type>
+        <definition>Vertex graybat::CommunicationEdge&lt; T_Cage &gt;::target</definition>
+        <argsstring></argsstring>
+        <name>target</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Edge.hpp" line="19" column="1" bodyfile="include/graybat/Edge.hpp" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1CommunicationEdge_1ac4fb6170c3d484c65363a197503e5bd7" prot="public" static="no" mutable="no">
+        <type><ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref></type>
+        <definition>Vertex graybat::CommunicationEdge&lt; T_Cage &gt;::source</definition>
+        <argsstring></argsstring>
+        <name>source</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Edge.hpp" line="20" column="1" bodyfile="include/graybat/Edge.hpp" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1CommunicationEdge_1a999ecb1277ae0d0c476aed644c71341e" prot="public" static="no" mutable="no">
+        <type>EdgeProperty &amp;</type>
+        <definition>EdgeProperty&amp; graybat::CommunicationEdge&lt; T_Cage &gt;::edgeProperty</definition>
+        <argsstring></argsstring>
+        <name>edgeProperty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Edge.hpp" line="21" column="1" bodyfile="include/graybat/Edge.hpp" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1CommunicationEdge_1aa70fd4d28fea47444546f3891c0800ce" prot="public" static="no" mutable="no">
+        <type>Cage &amp;</type>
+        <definition>Cage&amp; graybat::CommunicationEdge&lt; T_Cage &gt;::cage</definition>
+        <argsstring></argsstring>
+        <name>cage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Edge.hpp" line="22" column="1" bodyfile="include/graybat/Edge.hpp" bodystart="22" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structgraybat_1_1CommunicationEdge_1a37414bfe7af9097e8ffff9da90fc4226" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::CommunicationEdge&lt; T_Cage &gt;::CommunicationEdge</definition>
+        <argsstring>(const EdgeID id, Vertex source, Vertex target, EdgeProperty &amp;edgeProperty, Cage &amp;cage)</argsstring>
+        <name>CommunicationEdge</name>
+        <param>
+          <type>const EdgeID</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type><ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref></type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type><ref refid="structgraybat_1_1CommunicationVertex" kindref="compound">Vertex</ref></type>
+          <declname>target</declname>
+        </param>
+        <param>
+          <type>EdgeProperty &amp;</type>
+          <declname>edgeProperty</declname>
+        </param>
+        <param>
+          <type>Cage &amp;</type>
+          <declname>cage</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Edge.hpp" line="24" column="1" bodyfile="include/graybat/Edge.hpp" bodystart="24" bodyend="35"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1CommunicationEdge_1a3a35ef247309c903341a14d207c85f78" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>EdgeProperty &amp;</type>
+        <definition>EdgeProperty&amp; graybat::CommunicationEdge&lt; T_Cage &gt;::operator()</definition>
+        <argsstring>()</argsstring>
+        <name>operator()</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Edge.hpp" line="41" column="1" bodyfile="include/graybat/Edge.hpp" bodystart="41" bodyend="43"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1CommunicationEdge_1a9fe34dbcec8a1588385c7591fa5ae042" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="structgraybat_1_1CommunicationEdge" kindref="compound">CommunicationEdge</ref></type>
+        <definition>CommunicationEdge graybat::CommunicationEdge&lt; T_Cage &gt;::inverse</definition>
+        <argsstring>()</argsstring>
+        <name>inverse</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Edge.hpp" line="45" column="1" bodyfile="include/graybat/Edge.hpp" bodystart="45" bodyend="51"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1CommunicationEdge_1a6d3bbea5aede74ddb7b8082ed7055c2a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T_Send</type>
+          </param>
+        </templateparamlist>
+        <type>Event</type>
+        <definition>Event graybat::CommunicationEdge&lt; T_Cage &gt;::operator&lt;&lt;</definition>
+        <argsstring>(const T_Send &amp;data)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>const T_Send &amp;</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Edge.hpp" line="58" column="1" bodyfile="include/graybat/Edge.hpp" bodystart="58" bodyend="62"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1CommunicationEdge_1a595c4400fd5d837dab1bf8af4f172e5d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T_Recv</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::CommunicationEdge&lt; T_Cage &gt;::operator&gt;&gt;</definition>
+        <argsstring>(T_Recv &amp;data)</argsstring>
+        <name>operator&gt;&gt;</name>
+        <param>
+          <type>T_Recv &amp;</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Edge.hpp" line="65" column="1" bodyfile="include/graybat/Edge.hpp" bodystart="65" bodyend="67"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="23">
+        <label>graybat::CommunicationEdge&lt; T_Cage &gt;</label>
+        <link refid="structgraybat_1_1CommunicationEdge"/>
+        <childnode refid="24" relation="usage">
+          <edgelabel>target</edgelabel>
+          <edgelabel>source</edgelabel>
+        </childnode>
+      </node>
+      <node id="24">
+        <label>graybat::CommunicationVertex&lt; T_Cage &gt;</label>
+        <link refid="structgraybat_1_1CommunicationVertex"/>
+      </node>
+    </collaborationgraph>
+    <location file="include/graybat/Edge.hpp" line="8" column="1" bodyfile="include/graybat/Edge.hpp" bodystart="8" bodyend="69"/>
+    <listofallmembers>
+      <member refid="structgraybat_1_1CommunicationEdge_1a013276d41805d452b7ec3f32c5d98863" prot="public" virt="non-virtual"><scope>graybat::CommunicationEdge</scope><name>Cage</name></member>
+      <member refid="structgraybat_1_1CommunicationEdge_1aa70fd4d28fea47444546f3891c0800ce" prot="public" virt="non-virtual"><scope>graybat::CommunicationEdge</scope><name>cage</name></member>
+      <member refid="structgraybat_1_1CommunicationEdge_1a37414bfe7af9097e8ffff9da90fc4226" prot="public" virt="non-virtual"><scope>graybat::CommunicationEdge</scope><name>CommunicationEdge</name></member>
+      <member refid="structgraybat_1_1CommunicationEdge_1af7b14d3933ec26615c4e849f32d9cbc7" prot="public" virt="non-virtual"><scope>graybat::CommunicationEdge</scope><name>EdgeID</name></member>
+      <member refid="structgraybat_1_1CommunicationEdge_1a999ecb1277ae0d0c476aed644c71341e" prot="public" virt="non-virtual"><scope>graybat::CommunicationEdge</scope><name>edgeProperty</name></member>
+      <member refid="structgraybat_1_1CommunicationEdge_1a5fe445399b0bea6653fe27eb8d5617b6" prot="public" virt="non-virtual"><scope>graybat::CommunicationEdge</scope><name>EdgeProperty</name></member>
+      <member refid="structgraybat_1_1CommunicationEdge_1a30c072501669f1f1709045822bab3383" prot="public" virt="non-virtual"><scope>graybat::CommunicationEdge</scope><name>Event</name></member>
+      <member refid="structgraybat_1_1CommunicationEdge_1a1fd741b205ef5042c9ce064419862ab8" prot="public" virt="non-virtual"><scope>graybat::CommunicationEdge</scope><name>GraphPolicy</name></member>
+      <member refid="structgraybat_1_1CommunicationEdge_1a468626e784f770368bc8335e78137b48" prot="public" virt="non-virtual"><scope>graybat::CommunicationEdge</scope><name>id</name></member>
+      <member refid="structgraybat_1_1CommunicationEdge_1a9fe34dbcec8a1588385c7591fa5ae042" prot="public" virt="non-virtual"><scope>graybat::CommunicationEdge</scope><name>inverse</name></member>
+      <member refid="structgraybat_1_1CommunicationEdge_1a3a35ef247309c903341a14d207c85f78" prot="public" virt="non-virtual"><scope>graybat::CommunicationEdge</scope><name>operator()</name></member>
+      <member refid="structgraybat_1_1CommunicationEdge_1a6d3bbea5aede74ddb7b8082ed7055c2a" prot="public" virt="non-virtual"><scope>graybat::CommunicationEdge</scope><name>operator&lt;&lt;</name></member>
+      <member refid="structgraybat_1_1CommunicationEdge_1a595c4400fd5d837dab1bf8af4f172e5d" prot="public" virt="non-virtual"><scope>graybat::CommunicationEdge</scope><name>operator&gt;&gt;</name></member>
+      <member refid="structgraybat_1_1CommunicationEdge_1ac4fb6170c3d484c65363a197503e5bd7" prot="public" virt="non-virtual"><scope>graybat::CommunicationEdge</scope><name>source</name></member>
+      <member refid="structgraybat_1_1CommunicationEdge_1a6061ba74338b175e03ffdb97347c5e77" prot="public" virt="non-virtual"><scope>graybat::CommunicationEdge</scope><name>target</name></member>
+      <member refid="structgraybat_1_1CommunicationEdge_1ad867b26007833b4de0d5b4b9ee5b7d57" prot="public" virt="non-virtual"><scope>graybat::CommunicationEdge</scope><name>Vertex</name></member>
+      <member refid="structgraybat_1_1CommunicationEdge_1a1ffdda19998f083210324c321b4599dc" prot="public" virt="non-virtual"><scope>graybat::CommunicationEdge</scope><name>VertexProperty</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

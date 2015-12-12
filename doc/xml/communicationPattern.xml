@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="communicationPattern" kind="page">
+    <compoundname>communicationPattern</compoundname>
+    <title>Communication Pattern</title>
+    <detaileddescription>
+<para>A communication pattern is a class functor which generates a graph. They are used to define the communication graph of a <ref refid="cage" kindref="compound">cage</ref>. GrayBat provides a handful of predefined pattern:</para><para><itemizedlist>
+<listitem><para><ref refid="structgraybat_1_1pattern_1_1FullyConnected" kindref="compound">graybat::pattern::FullyConnected</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1pattern_1_1GridDiagonal" kindref="compound">graybat::pattern::GridDiagonal</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1pattern_1_1Grid" kindref="compound">graybat::pattern::Grid</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1pattern_1_1HyperCube" kindref="compound">graybat::pattern::HyperCube</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1pattern_1_1InStar" kindref="compound">graybat::pattern::InStar</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1pattern_1_1OutStar" kindref="compound">graybat::pattern::OutStar</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1pattern_1_1BiStar" kindref="compound">graybat::pattern::BiStar</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1pattern_1_1EdgeLess" kindref="compound">graybat::pattern::EdgeLess</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1pattern_1_1Ring" kindref="compound">graybat::pattern::Ring</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1pattern_1_1None" kindref="compound">graybat::pattern::None</ref></para></listitem></itemizedlist>
+</para><para>Own communication pattern can be build from the following pattern skeleton: <programlisting><codeline><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacegraybat" kindref="compound">graybat</ref><sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">pattern<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">PatternSkeleton<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Functor<sp/>which<sp/>returns<sp/>a<sp/>desired<sp/>graph</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>GraphDescription<sp/>operator()(){</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/>}<sp/></highlight><highlight class="comment">/*<sp/>pattern<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}<sp/></highlight><highlight class="comment">/*<sp/>graybat<sp/>*/</highlight></codeline>
+</programlisting></para><para><heading level="2">Further Links</heading>
+</para><para><itemizedlist>
+<listitem><para><ref refid="structgraybat_1_1pattern_1_1FullyConnected" kindref="compound">graybat::pattern::FullyConnected</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1pattern_1_1GridDiagonal" kindref="compound">graybat::pattern::GridDiagonal</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1pattern_1_1Grid" kindref="compound">graybat::pattern::Grid</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1pattern_1_1HyperCube" kindref="compound">graybat::pattern::HyperCube</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1pattern_1_1InStar" kindref="compound">graybat::pattern::InStar</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1pattern_1_1OutStar" kindref="compound">graybat::pattern::OutStar</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1pattern_1_1BiStar" kindref="compound">graybat::pattern::BiStar</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1pattern_1_1EdgeLess" kindref="compound">graybat::pattern::EdgeLess</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1pattern_1_1Ring" kindref="compound">graybat::pattern::Ring</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1pattern_1_1None" kindref="compound">graybat::pattern::None</ref> </para></listitem></itemizedlist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

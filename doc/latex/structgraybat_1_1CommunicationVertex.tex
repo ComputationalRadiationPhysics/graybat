@@ -1,0 +1,108 @@
+\hypertarget{structgraybat_1_1CommunicationVertex}{}\section{graybat\+:\+:Communication\+Vertex$<$ T\+\_\+\+Cage $>$ Struct Template Reference}
+\label{structgraybat_1_1CommunicationVertex}\index{graybat\+::\+Communication\+Vertex$<$ T\+\_\+\+Cage $>$@{graybat\+::\+Communication\+Vertex$<$ T\+\_\+\+Cage $>$}}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structgraybat_1_1CommunicationVertex_aeee40c9512c61c846a05c2b73f55f2c9}{}typedef unsigned {\bfseries Vertex\+I\+D}\label{structgraybat_1_1CommunicationVertex_aeee40c9512c61c846a05c2b73f55f2c9}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationVertex_a4120bf81952878038cfd69e92265267e}{}typedef T\+\_\+\+Cage {\bfseries Cage}\label{structgraybat_1_1CommunicationVertex_a4120bf81952878038cfd69e92265267e}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationVertex_a8c259ebf87eaefc4c9a18852d5382475}{}typedef Cage\+::\+Graph\+Policy {\bfseries Graph\+Policy}\label{structgraybat_1_1CommunicationVertex_a8c259ebf87eaefc4c9a18852d5382475}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationVertex_abe1383c4d00cea45c02e871433e8612f}{}typedef \hyperlink{structgraybat_1_1CommunicationEdge}{Cage\+::\+Edge} {\bfseries Edge}\label{structgraybat_1_1CommunicationVertex_abe1383c4d00cea45c02e871433e8612f}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationVertex_ab1153fcb89c4d288da7e430baf587a52}{}typedef Cage\+::\+Event {\bfseries Event}\label{structgraybat_1_1CommunicationVertex_ab1153fcb89c4d288da7e430baf587a52}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationVertex_abe4165d0c7c7f813a959f2009015d51c}{}typedef Graph\+Policy\+::\+Vertex\+Property {\bfseries Vertex\+Property}\label{structgraybat_1_1CommunicationVertex_abe4165d0c7c7f813a959f2009015d51c}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structgraybat_1_1CommunicationVertex_aed87c447f125df835e684bad263abbd5}{}{\bfseries Communication\+Vertex} (const Vertex\+I\+D id, Vertex\+Property \&vertex\+Property, Cage \&cage)\label{structgraybat_1_1CommunicationVertex_aed87c447f125df835e684bad263abbd5}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationVertex_ac105903261ca2312c6ca0d679f26aa44}{}Vertex\+Property \& {\bfseries operator()} ()\label{structgraybat_1_1CommunicationVertex_ac105903261ca2312c6ca0d679f26aa44}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationVertex_a058aac41c1bbdc59337af4e10ad9ac40}{}\hyperlink{structgraybat_1_1CommunicationVertex}{Communication\+Vertex} \& {\bfseries operator=} (const \hyperlink{structgraybat_1_1CommunicationVertex}{Communication\+Vertex} \&other)\label{structgraybat_1_1CommunicationVertex_a058aac41c1bbdc59337af4e10ad9ac40}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationVertex_a58ceec635b5b2924734110af83518feb}{}size\+\_\+t {\bfseries n\+In\+Edges} () const \label{structgraybat_1_1CommunicationVertex_a58ceec635b5b2924734110af83518feb}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationVertex_a5705604ec15a24d75f37c7949f0884a9}{}size\+\_\+t {\bfseries n\+Out\+Edges} () const \label{structgraybat_1_1CommunicationVertex_a5705604ec15a24d75f37c7949f0884a9}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationVertex_ab50927eabcb8ac0d97bce641533990a8}{}bool {\bfseries operator==} (\hyperlink{structgraybat_1_1CommunicationVertex}{Communication\+Vertex} v)\label{structgraybat_1_1CommunicationVertex_ab50927eabcb8ac0d97bce641533990a8}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationVertex_ad2924554fd4b661f19c1bb10b8519dd5}{}bool {\bfseries operator!=} (\hyperlink{structgraybat_1_1CommunicationVertex}{Communication\+Vertex} v)\label{structgraybat_1_1CommunicationVertex_ad2924554fd4b661f19c1bb10b8519dd5}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationVertex_a8a64f187996fd556723997e5ff9dcca2}{}{\footnotesize template$<$class T\+\_\+\+Data $>$ }\\void {\bfseries spread} (const T\+\_\+\+Data \&data, std\+::vector$<$ Event $>$ \&events)\label{structgraybat_1_1CommunicationVertex_a8a64f187996fd556723997e5ff9dcca2}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationVertex_a3a0cbc8f98f2eeb60fbe20e437802878}{}{\footnotesize template$<$class T\+\_\+\+Data $>$ }\\void {\bfseries spread} (const T\+\_\+\+Data \&data)\label{structgraybat_1_1CommunicationVertex_a3a0cbc8f98f2eeb60fbe20e437802878}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationVertex_a11ef52a5a8fef1098b60b35c8913da94}{}{\footnotesize template$<$class T\+\_\+\+Data $>$ }\\void {\bfseries collect} (T\+\_\+\+Data \&data)\label{structgraybat_1_1CommunicationVertex_a11ef52a5a8fef1098b60b35c8913da94}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationVertex_aa8c10d97bde2b66352ce88a5bf3bad12}{}{\footnotesize template$<$class T\+\_\+\+Data , class T\+\_\+\+Functor $>$ }\\void {\bfseries forward} (T\+\_\+\+Data \&data, T\+\_\+\+Functor f)\label{structgraybat_1_1CommunicationVertex_aa8c10d97bde2b66352ce88a5bf3bad12}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationVertex_af7139cd8308d3a43060c31a24a9bb6db}{}{\footnotesize template$<$class T\+\_\+\+Data $>$ }\\void {\bfseries forward} (T\+\_\+\+Data \&data)\label{structgraybat_1_1CommunicationVertex_af7139cd8308d3a43060c31a24a9bb6db}
+
+\item 
+{\footnotesize template$<$typename T\+\_\+\+Op $>$ }\\T\+\_\+\+Op\+::result\+\_\+type \hyperlink{structgraybat_1_1CommunicationVertex_a8e222acd742cb03215c93220e19c24ed}{accumulate} (const T\+\_\+\+Op op, const typename T\+\_\+\+Op\+::result\+\_\+type init)
+\begin{DoxyCompactList}\small\item\em Collects from each incoming edge one elements and reduces them by the binary operator op. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structgraybat_1_1CommunicationVertex_a01b16ce123148e1f96ec8b55f7401c81}{}Vertex\+I\+D {\bfseries id}\label{structgraybat_1_1CommunicationVertex_a01b16ce123148e1f96ec8b55f7401c81}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationVertex_a98f6a9b2a8becc8a426b709b7585dd9b}{}Vertex\+Property \& {\bfseries vertex\+Property}\label{structgraybat_1_1CommunicationVertex_a98f6a9b2a8becc8a426b709b7585dd9b}
+
+\item 
+\hypertarget{structgraybat_1_1CommunicationVertex_a9a1d9c75faadb5b9193aba6779e7acb1}{}Cage \& {\bfseries cage}\label{structgraybat_1_1CommunicationVertex_a9a1d9c75faadb5b9193aba6779e7acb1}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{structgraybat_1_1CommunicationVertex_a8e222acd742cb03215c93220e19c24ed}{}\index{graybat\+::\+Communication\+Vertex@{graybat\+::\+Communication\+Vertex}!accumulate@{accumulate}}
+\index{accumulate@{accumulate}!graybat\+::\+Communication\+Vertex@{graybat\+::\+Communication\+Vertex}}
+\subsubsection[{accumulate(const T\+\_\+\+Op op, const typename T\+\_\+\+Op\+::result\+\_\+type init)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T\+\_\+\+Cage $>$ template$<$typename T\+\_\+\+Op $>$ T\+\_\+\+Op\+::result\+\_\+type {\bf graybat\+::\+Communication\+Vertex}$<$ T\+\_\+\+Cage $>$\+::accumulate (
+\begin{DoxyParamCaption}
+\item[{const T\+\_\+\+Op}]{op, }
+\item[{const typename T\+\_\+\+Op\+::result\+\_\+type}]{init}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{structgraybat_1_1CommunicationVertex_a8e222acd742cb03215c93220e19c24ed}
+
+
+Collects from each incoming edge one elements and reduces them by the binary operator op. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em op} & binary operator used for reduction (e.\+g. std\+::plus). \\
+\hline
+{\em init} & initial value of the reduction.\\
+\hline
+\end{DoxyParams}
+Each adjacent vertex can send a most one element.
+
+\begin{DoxyReturn}{Returns}
+reduced value 
+\end{DoxyReturn}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/graybat/Vertex.\+hpp\end{DoxyCompactItemize}

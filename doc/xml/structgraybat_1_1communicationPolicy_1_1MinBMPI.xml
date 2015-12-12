@@ -1,0 +1,723 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="structgraybat_1_1communicationPolicy_1_1MinBMPI" kind="class" language="C++" prot="public">
+    <compoundname>graybat::communicationPolicy::MinBMPI</compoundname>
+    <includes refid="MinBMPI_8hpp" local="no">MinBMPI.hpp</includes>
+    <innerclass refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context" prot="public">graybat::communicationPolicy::MinBMPI::Context</innerclass>
+    <innerclass refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Event" prot="public">graybat::communicationPolicy::MinBMPI::Event</innerclass>
+      <sectiondef kind="user-defined">
+      <header>Collective Communication Interface</header>
+      <description><para>Non blocking transmission of a message sendData to peer with virtual address destVAddr.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">destVAddr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>VAddr of peer that will receive the message </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">tag</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Description of the message to better distinguish messages types </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context" kindref="compound">Context</ref> in which both sender and receiver are included </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">sendData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data reference of template type T will be. T need to provide the function data(), that returns the pointer to the data memory address. And the function size(), that return the amount of data elements to send. Notice, that std::vector and std::array implement this interface.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Event" kindref="compound">Event</ref> Blocking transmission of a message sendData to peer with virtual address destVAddr.</para></simplesect>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">destVAddr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>VAddr of peer that will receive the message </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">tag</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Description of the message to better distinguish messages types </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context" kindref="compound">Context</ref> in which both sender and receiver are included </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">sendData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data reference of template type T will be send to receiver peer. T need to provide the function data(), that returns the pointer to the data memory address. And the function size(), that return the amount of data elements to send. Notice, that std::vector and std::array implement this interface. Non blocking receive of a message recvData from peer with virtual address srcVAddr.</para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">srcVAddr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>VAddr of peer that sended the message </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">tag</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Description of the message to better distinguish messages types </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context" kindref="compound">Context</ref> in which both sender and receiver are included </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data reference of template type T will be received from sender peer. T need to provide the function data(), that returns the pointer to the data memory address. And the function size(), that return the amount of data elements to send. Notice, that std::vector and std::array implement this interface.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Event" kindref="compound">Event</ref> Blocking receive of a message recvData from peer with virtual address srcVAddr.</para></simplesect>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">srcVAddr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>VAddr of peer that sended the message </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">tag</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Description of the message to better distinguish messages types </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context" kindref="compound">Context</ref> in which both sender and receiver are included </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data reference of template type T will be received from sender peer. T need to provide the function data(), that returns the pointer to the data memory address. And the function size(), that return the amount of data elements to send. Notice, that std::vector and std::array implement this interface. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para></description>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1MinBMPI_1aa2a60254d0fe94f2055fe45989164047" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Send</type>
+          </param>
+          <param>
+            <type>typename T_Recv</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::MinBMPI::allGather</definition>
+        <argsstring>(const Context context, const T_Send &amp;sendData, T_Recv &amp;recvData)</argsstring>
+        <name>allGather</name>
+        <param>
+          <type>const <ref refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context" kindref="compound">Context</ref></type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>const T_Send &amp;</type>
+          <declname>sendData</declname>
+        </param>
+        <param>
+          <type>T_Recv &amp;</type>
+          <declname>recvData</declname>
+        </param>
+        <briefdescription>
+<para>Collects <emphasis>sendData</emphasis> from all peers of the <emphasis>context</emphasis> and transmits it as a list to the peer with <emphasis>rootVAddr</emphasis>. Data of all peers has to be from the <bold>same</bold> size. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">rootVAddr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Peer that will receive collcted data from <emphasis>context</emphasis> members </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set of peers that want to send Data </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">sendData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data that every peer in the <emphasis>context</emphasis> sends. Data of all peers in the <emphasis>context</emphasis> need to have <bold>same</bold> size(). </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data from all <emphasis>context</emphasis> members, that peer with virtual address <emphasis>rootVAddr</emphasis> will receive. <emphasis>recvData</emphasis> of all other members of the <emphasis>context</emphasis> will be empty. Collects <emphasis>sendData</emphasis> from all members of the <emphasis>context</emphasis> with <bold>varying</bold> size and transmits it as a list to peer with <emphasis>rootVAddr</emphasis>.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">rootVAddr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Peer that will receive collcted data from <emphasis>context</emphasis> members </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set of peers that want to send Data </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">sendData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data that every peer in the <emphasis>context</emphasis> sends. The Data can have <bold>varying</bold> size </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data from all <emphasis>context</emphasis> peers, that peer with <emphasis>rootVAddr</emphasis> will receive. <emphasis>recvData</emphasis> of all other peers of the <emphasis>context</emphasis> will be empty. The received data is ordered by the VAddr of the peers. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvCount</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of elements each peer sends (can by varying). Collects <emphasis>sendData</emphasis> from all members of the <emphasis>context</emphasis> and transmits it as a list to every peer in the <emphasis>context</emphasis></para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set of peers that want to send Data </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">sendData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data that every peer in the <emphasis>context</emphasis> sends with <bold>same</bold> size </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data from all <emphasis>context</emphasis> members, that all peers* will receive. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="338" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="338" bodyend="341"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1MinBMPI_1aa4b0146f7a8e688ebede83ee0dd8f3ef" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Send</type>
+          </param>
+          <param>
+            <type>typename T_Recv</type>
+          </param>
+          <param>
+            <type>typename T_Op</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::MinBMPI::allReduce</definition>
+        <argsstring>(const Context context, T_Op op, const T_Send &amp;sendData, T_Recv &amp;recvData)</argsstring>
+        <name>allReduce</name>
+        <param>
+          <type>const <ref refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context" kindref="compound">Context</ref></type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>T_Op</type>
+          <declname>op</declname>
+        </param>
+        <param>
+          <type>const T_Send &amp;</type>
+          <declname>sendData</declname>
+        </param>
+        <param>
+          <type>T_Recv &amp;</type>
+          <declname>recvData</declname>
+        </param>
+        <briefdescription>
+<para>Collects <emphasis>sendData</emphasis> from all peers of the <emphasis>context</emphasis>. Size of <emphasis>sendData</emphasis> can vary in size. The data is received by every peer in the <emphasis>context</emphasis>. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set of peers that want to send Data </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">sendData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data that every peer in the <emphasis>context</emphasis> sends with <bold>varying</bold> size </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data from all <emphasis>context</emphasis> members, that all peers* will receive. </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvCount</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of elements each peer sends (can by varying). Distributes <emphasis>sendData</emphasis> from peer <emphasis>rootVAddr</emphasis> to all peers in <emphasis>context</emphasis>. Every peer will receive different data.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="remark"><para>In Contrast to broadcast where every peer receives the same data</para></simplesect>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">rootVAddr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>peer that want to distribute its data </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set of peers that want to receive Data </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">sendData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data that peer with <emphasis>rootVAddr</emphasis> will distribute over the peers of the <emphasis>context</emphasis> </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data from peer with <emphasis>rootVAddr</emphasis>. Distributes <emphasis>sendData</emphasis> of all peer in the <emphasis>context</emphasis> to all peers in the <emphasis>context</emphasis>. Every peer will receive data from every other peer (also the own data)</para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set of peers that want to receive Data </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">sendData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data that each peer wants to send. Each peer will receive same number of data elements, but not the same data elements. sendData will be divided in equal chunks of data and is then distributed.</para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data from all peer. Performs a reduction with a binary operator <emphasis>op</emphasis> on all <emphasis>sendData</emphasis> elements from all peers whithin the <emphasis>context</emphasis>. The result will be received by the peer with <emphasis>rootVAddr</emphasis>. Binary operations like std::plus, std::minus can be used. But, they can also be defined as binary operator simular to std::plus etc.</para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">rootVAddr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>peer that will receive the result of reduction </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set of peers that </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">op</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Binary operator that should be used for reduction </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">sendData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data that every peer contributes to the reduction </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Reduced sendData that will be received by peer with <emphasis>rootVAddr</emphasis>. It will have same size of sendData and contains the ith reduced sendData values. Performs a reduction with a binary operator <emphasis>op</emphasis> on all <emphasis>sendData</emphasis> elements from all peers whithin the <emphasis>context</emphasis>. The result will be received by all peers.</para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set of peers that </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">op</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Binary operator that should be used for reduction </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">sendData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data that every peer contributes to the reduction </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Reduced sendData that will be received by all peers. It will have same size of sendData and contains the ith reduced sendData values. </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="460" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="460" bodyend="463"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="user-defined">
+      <header>Context Interface</header>
+      <description><para>Send <emphasis>sendData</emphasis> from peer <emphasis>rootVAddr</emphasis> to all peers in <emphasis>context</emphasis>. Every peer will receive the same data.</para><para><simplesect kind="remark"><para>In Contrast to scatter where every peer receives different data</para></simplesect>
+<parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername direction="in">rootVAddr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Source peer </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">context</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set of peers that want to receive Data </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="in">sendData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data that peer with <emphasis>rootVAddr</emphasis> will send to the peers of the <emphasis>context</emphasis> </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername direction="out">recvData</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data from peer with <emphasis>rootVAddr</emphasis>. Synchronizes all peers within <emphasis>context</emphasis> to the same point in the programm execution (barrier). Synchronizes all peers within the globalContext in the programm execution (barrier).</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="see"><para><ref refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a66534cd2818fa9d547cb34c056ed025b" kindref="member">getGlobalContext()</ref> </para></simplesect>
+</para></description>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1MinBMPI_1ad1861049c3aed2009703135e0286d297" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context" kindref="compound">Context</ref></type>
+        <definition>Context graybat::communicationPolicy::MinBMPI::createContext</definition>
+        <argsstring>(const std::vector&lt; VAddr &gt; vAddrs, const Context oldContext)</argsstring>
+        <name>createContext</name>
+        <param>
+          <type>const std::vector&lt; VAddr &gt;</type>
+          <declname>vAddrs</declname>
+        </param>
+        <param>
+          <type>const <ref refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context" kindref="compound">Context</ref></type>
+          <declname>oldContext</declname>
+        </param>
+        <briefdescription>
+<para>Creates a new context from peer <emphasis>ids</emphasis> of an <emphasis>oldContext</emphasis> </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="519" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="519" bodyend="558"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a66534cd2818fa9d547cb34c056ed025b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context" kindref="compound">Context</ref></type>
+        <definition>Context graybat::communicationPolicy::MinBMPI::getGlobalContext</definition>
+        <argsstring>()</argsstring>
+        <name>getGlobalContext</name>
+        <briefdescription>
+<para>Returns the context that contains all peers. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="565" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="565" bodyend="567"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structgraybat_1_1communicationPolicy_1_1MinBMPI_1aed5178e73bef1d8db6b0f6b34b92ea0f" prot="public" static="no">
+        <type>unsigned</type>
+        <definition>typedef unsigned graybat::communicationPolicy::MinBMPI::Tag</definition>
+        <argsstring></argsstring>
+        <name>Tag</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="131" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="131" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a2e574cb9dc4c1b37c25377d7932673d2" prot="public" static="no">
+        <type>unsigned</type>
+        <definition>typedef unsigned graybat::communicationPolicy::MinBMPI::ContextID</definition>
+        <argsstring></argsstring>
+        <name>ContextID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="132" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="132" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a6bb19cab1cb37cf1bc3550c28b669bbe" prot="public" static="no">
+        <type>unsigned</type>
+        <definition>typedef unsigned graybat::communicationPolicy::MinBMPI::VAddr</definition>
+        <argsstring></argsstring>
+        <name>VAddr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="133" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="133" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a535c0a141d6e97429b7c7fd3ca26723d" prot="public" static="no">
+        <type>unsigned</type>
+        <definition>typedef unsigned graybat::communicationPolicy::MinBMPI::MsgType</definition>
+        <argsstring></argsstring>
+        <name>MsgType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="135" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="135" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a11917747e10d8d244d51753270ba3024" prot="public" static="no">
+        <type>int</type>
+        <definition>typedef int graybat::communicationPolicy::MinBMPI::Uri</definition>
+        <argsstring></argsstring>
+        <name>Uri</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="136" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="136" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1MinBMPI_1af64eee46bd208dd42eb04eea4a6b6543" prot="private" static="no" mutable="no">
+        <type>ContextID</type>
+        <definition>ContextID graybat::communicationPolicy::MinBMPI::contextCount</definition>
+        <argsstring></argsstring>
+        <name>contextCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="577" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="577" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1MinBMPI_1afb1446ee9d174cefef7d9e99ec9701c8" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; std::vector&lt; Uri &gt; &gt;</type>
+        <definition>std::vector&lt;std::vector&lt;Uri&gt; &gt; graybat::communicationPolicy::MinBMPI::uriMap</definition>
+        <argsstring></argsstring>
+        <name>uriMap</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="578" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="578" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a89e93e4efc9dd4832c30405cb0afeba3" prot="private" static="no" mutable="no">
+        <type><ref refid="classgraybat_1_1communicationPolicy_1_1MinBMPI_1_1Context" kindref="compound">Context</ref></type>
+        <definition>Context graybat::communicationPolicy::MinBMPI::initialContext</definition>
+        <argsstring></argsstring>
+        <name>initialContext</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="579" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="579" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a97fc2b5174eb92803a5ed9ad113a6351" prot="private" static="no" mutable="no">
+        <type>mpi::environment</type>
+        <definition>mpi::environment graybat::communicationPolicy::MinBMPI::env</definition>
+        <argsstring></argsstring>
+        <name>env</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="580" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="580" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a6b6fb9d1976c631f8756ac06d851e06b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::communicationPolicy::MinBMPI::MinBMPI</definition>
+        <argsstring>()</argsstring>
+        <name>MinBMPI</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="139" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="139" bodyend="149"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1MinBMPI_1ac392fea4de3aedc3e3b944e9760777bc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::communicationPolicy::MinBMPI::~MinBMPI</definition>
+        <argsstring>()</argsstring>
+        <name>~MinBMPI</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="152" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="152" bodyend="154"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a392e2cc4c289633b8554fc60b2f96460" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::MinBMPI::error</definition>
+        <argsstring>(VAddr vAddr, std::string msg)</argsstring>
+        <name>error</name>
+        <param>
+          <type>VAddr</type>
+          <declname>vAddr</declname>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>msg</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="589" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="589" bodyend="592"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a324b4f05432e7a5a1508aff0652ed332" prot="private" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Context</type>
+          </param>
+        </templateparamlist>
+        <type>Uri</type>
+        <definition>Uri graybat::communicationPolicy::MinBMPI::getVAddrUri</definition>
+        <argsstring>(const T_Context context, const VAddr vAddr)</argsstring>
+        <name>getVAddrUri</name>
+        <param>
+          <type>const T_Context</type>
+          <declname>context</declname>
+        </param>
+        <param>
+          <type>const VAddr</type>
+          <declname>vAddr</declname>
+        </param>
+        <briefdescription>
+<para>Returns the uri of a vAddr in a specific context. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="600" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="600" bodyend="613"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Implementation of the <ref refid="structgraybat_1_1Cage" kindref="compound">Cage</ref> communicationPolicy interface based on the MPI implementation boost::mpi. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/communicationPolicy/MinBMPI.hpp" line="35" column="1" bodyfile="include/graybat/communicationPolicy/MinBMPI.hpp" bodystart="35" bodyend="615"/>
+    <listofallmembers>
+      <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1aa2a60254d0fe94f2055fe45989164047" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::MinBMPI</scope><name>allGather</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1aa4b0146f7a8e688ebede83ee0dd8f3ef" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::MinBMPI</scope><name>allReduce</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1af64eee46bd208dd42eb04eea4a6b6543" prot="private" virt="non-virtual"><scope>graybat::communicationPolicy::MinBMPI</scope><name>contextCount</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a2e574cb9dc4c1b37c25377d7932673d2" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::MinBMPI</scope><name>ContextID</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1ad1861049c3aed2009703135e0286d297" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::MinBMPI</scope><name>createContext</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a97fc2b5174eb92803a5ed9ad113a6351" prot="private" virt="non-virtual"><scope>graybat::communicationPolicy::MinBMPI</scope><name>env</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a392e2cc4c289633b8554fc60b2f96460" prot="private" virt="non-virtual"><scope>graybat::communicationPolicy::MinBMPI</scope><name>error</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a66534cd2818fa9d547cb34c056ed025b" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::MinBMPI</scope><name>getGlobalContext</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a324b4f05432e7a5a1508aff0652ed332" prot="private" virt="non-virtual"><scope>graybat::communicationPolicy::MinBMPI</scope><name>getVAddrUri</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a89e93e4efc9dd4832c30405cb0afeba3" prot="private" virt="non-virtual"><scope>graybat::communicationPolicy::MinBMPI</scope><name>initialContext</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a6b6fb9d1976c631f8756ac06d851e06b" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::MinBMPI</scope><name>MinBMPI</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a535c0a141d6e97429b7c7fd3ca26723d" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::MinBMPI</scope><name>MsgType</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1aed5178e73bef1d8db6b0f6b34b92ea0f" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::MinBMPI</scope><name>Tag</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a11917747e10d8d244d51753270ba3024" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::MinBMPI</scope><name>Uri</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1afb1446ee9d174cefef7d9e99ec9701c8" prot="private" virt="non-virtual"><scope>graybat::communicationPolicy::MinBMPI</scope><name>uriMap</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1a6bb19cab1cb37cf1bc3550c28b669bbe" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::MinBMPI</scope><name>VAddr</name></member>
+      <member refid="structgraybat_1_1communicationPolicy_1_1MinBMPI_1ac392fea4de3aedc3e3b944e9760777bc" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::MinBMPI</scope><name>~MinBMPI</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

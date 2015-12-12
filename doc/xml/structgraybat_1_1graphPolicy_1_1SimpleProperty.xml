@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="structgraybat_1_1graphPolicy_1_1SimpleProperty" kind="struct" language="C++" prot="public">
+    <compoundname>graybat::graphPolicy::SimpleProperty</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/graphPolicy/BGL.hpp" line="25" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="25" bodyend="27"/>
+    <listofallmembers>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

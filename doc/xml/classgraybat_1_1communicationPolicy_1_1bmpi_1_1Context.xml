@@ -1,0 +1,202 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context" kind="class" language="C++" prot="public">
+    <compoundname>graybat::communicationPolicy::bmpi::Context</compoundname>
+    <includes refid="bmpi_2Context_8hpp" local="no">Context.hpp</includes>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a7afb7a06ab0037e7b7dad504a72a1a1e" prot="private" static="no">
+        <type>unsigned</type>
+        <definition>typedef unsigned graybat::communicationPolicy::bmpi::Context::ContextID</definition>
+        <argsstring></argsstring>
+        <name>ContextID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/bmpi/Context.hpp" line="17" column="1" bodyfile="include/graybat/communicationPolicy/bmpi/Context.hpp" bodystart="17" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a1074ce0b6e6a55b0c9416517bccb2e23" prot="private" static="no">
+        <type>unsigned</type>
+        <definition>typedef unsigned graybat::communicationPolicy::bmpi::Context::VAddr</definition>
+        <argsstring></argsstring>
+        <name>VAddr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/bmpi/Context.hpp" line="18" column="1" bodyfile="include/graybat/communicationPolicy/bmpi/Context.hpp" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a99da94dddaf38f708f66b629b208af13" prot="public" static="no" mutable="no">
+        <type>boost::mpi::communicator</type>
+        <definition>boost::mpi::communicator graybat::communicationPolicy::bmpi::Context::comm</definition>
+        <argsstring></argsstring>
+        <name>comm</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/bmpi/Context.hpp" line="58" column="1" bodyfile="include/graybat/communicationPolicy/bmpi/Context.hpp" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a5f8c64346f6033fc17d15e9ea4e20347" prot="private" static="no" mutable="no">
+        <type>ContextID</type>
+        <definition>ContextID graybat::communicationPolicy::bmpi::Context::id</definition>
+        <argsstring></argsstring>
+        <name>id</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/bmpi/Context.hpp" line="61" column="1" bodyfile="include/graybat/communicationPolicy/bmpi/Context.hpp" bodystart="61" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1ac6fcf8232de9e46cdd076448ec859c7b" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool graybat::communicationPolicy::bmpi::Context::isValid</definition>
+        <argsstring></argsstring>
+        <name>isValid</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/bmpi/Context.hpp" line="62" column="1" bodyfile="include/graybat/communicationPolicy/bmpi/Context.hpp" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1aee05ca0b57a1a644f2c7bbe991fa4a10" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::communicationPolicy::bmpi::Context::Context</definition>
+        <argsstring>()</argsstring>
+        <name>Context</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/bmpi/Context.hpp" line="21" column="1" bodyfile="include/graybat/communicationPolicy/bmpi/Context.hpp" bodystart="21" bodyend="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a010e29a166e4ad76b9598bb7c4ffd5eb" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::communicationPolicy::bmpi::Context::Context</definition>
+        <argsstring>(ContextID contextID, boost::mpi::communicator comm)</argsstring>
+        <name>Context</name>
+        <param>
+          <type>ContextID</type>
+          <declname>contextID</declname>
+        </param>
+        <param>
+          <type>boost::mpi::communicator</type>
+          <declname>comm</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/bmpi/Context.hpp" line="27" column="1" bodyfile="include/graybat/communicationPolicy/bmpi/Context.hpp" bodystart="27" bodyend="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a5a95513936214adcac91f656ada7eda1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context" kindref="compound">Context</ref> &amp;</type>
+        <definition>Context&amp; graybat::communicationPolicy::bmpi::Context::operator=</definition>
+        <argsstring>(const Context &amp;otherContext)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>const <ref refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context" kindref="compound">Context</ref> &amp;</type>
+          <declname>otherContext</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/bmpi/Context.hpp" line="34" column="1" bodyfile="include/graybat/communicationPolicy/bmpi/Context.hpp" bodystart="34" bodyend="40"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a7468f62fc2b8d95bbd002f4d2544b5bc" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t graybat::communicationPolicy::bmpi::Context::size</definition>
+        <argsstring>() const </argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/bmpi/Context.hpp" line="42" column="1" bodyfile="include/graybat/communicationPolicy/bmpi/Context.hpp" bodystart="42" bodyend="44"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a8d085626c0602b1183505792e65d98c2" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>VAddr</type>
+        <definition>VAddr graybat::communicationPolicy::bmpi::Context::getVAddr</definition>
+        <argsstring>() const </argsstring>
+        <name>getVAddr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/bmpi/Context.hpp" line="46" column="1" bodyfile="include/graybat/communicationPolicy/bmpi/Context.hpp" bodystart="46" bodyend="48"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a1717bea0971b858604306ed73a8a2f7f" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>ContextID</type>
+        <definition>ContextID graybat::communicationPolicy::bmpi::Context::getID</definition>
+        <argsstring>() const </argsstring>
+        <name>getID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/bmpi/Context.hpp" line="50" column="1" bodyfile="include/graybat/communicationPolicy/bmpi/Context.hpp" bodystart="50" bodyend="52"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a98b3900695a9dbc6c56364009fe01d51" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool graybat::communicationPolicy::bmpi::Context::valid</definition>
+        <argsstring>() const </argsstring>
+        <name>valid</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/bmpi/Context.hpp" line="54" column="1" bodyfile="include/graybat/communicationPolicy/bmpi/Context.hpp" bodystart="54" bodyend="56"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>A context represents a set of peers which are able to communicate with each other. </para>    </detaileddescription>
+    <location file="include/graybat/communicationPolicy/bmpi/Context.hpp" line="16" column="1" bodyfile="include/graybat/communicationPolicy/bmpi/Context.hpp" bodystart="16" bodyend="63"/>
+    <listofallmembers>
+      <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a99da94dddaf38f708f66b629b208af13" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::bmpi::Context</scope><name>comm</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1aee05ca0b57a1a644f2c7bbe991fa4a10" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::bmpi::Context</scope><name>Context</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a010e29a166e4ad76b9598bb7c4ffd5eb" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::bmpi::Context</scope><name>Context</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a7afb7a06ab0037e7b7dad504a72a1a1e" prot="private" virt="non-virtual"><scope>graybat::communicationPolicy::bmpi::Context</scope><name>ContextID</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a1717bea0971b858604306ed73a8a2f7f" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::bmpi::Context</scope><name>getID</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a8d085626c0602b1183505792e65d98c2" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::bmpi::Context</scope><name>getVAddr</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a5f8c64346f6033fc17d15e9ea4e20347" prot="private" virt="non-virtual"><scope>graybat::communicationPolicy::bmpi::Context</scope><name>id</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1ac6fcf8232de9e46cdd076448ec859c7b" prot="private" virt="non-virtual"><scope>graybat::communicationPolicy::bmpi::Context</scope><name>isValid</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a5a95513936214adcac91f656ada7eda1" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::bmpi::Context</scope><name>operator=</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a7468f62fc2b8d95bbd002f4d2544b5bc" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::bmpi::Context</scope><name>size</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a1074ce0b6e6a55b0c9416517bccb2e23" prot="private" virt="non-virtual"><scope>graybat::communicationPolicy::bmpi::Context</scope><name>VAddr</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1bmpi_1_1Context_1a98b3900695a9dbc6c56364009fe01d51" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::bmpi::Context</scope><name>valid</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

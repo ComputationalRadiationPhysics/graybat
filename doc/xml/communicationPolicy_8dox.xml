@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="communicationPolicy_8dox" kind="file" language="C++">
+    <compoundname>communicationPolicy.dox</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ZMQ(Config<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>config)<sp/>{...}</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">/*******************************************************************</highlight></codeline>
+<codeline lineno="75"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>POINT<sp/>TO<sp/>POINT<sp/>COMMUNICATION<sp/>INTERFACE</highlight></codeline>
+<codeline lineno="76"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>******************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>send(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>VAddr<sp/>destVAddr,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="structTag" kindref="compound">Tag</ref><sp/>tag,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Context<sp/>context,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>T_Send&amp;<sp/>sendData)<sp/>{...}</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Event<sp/>asyncSend(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>VAddr<sp/>destVAddr,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="structTag" kindref="compound">Tag</ref><sp/>tag,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Context<sp/>context,<sp/>T_Send&amp;<sp/>sendData)<sp/>{...}</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>recv(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>VAddr<sp/>srcVAddr,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="structTag" kindref="compound">Tag</ref><sp/>tag,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Context<sp/>context,<sp/>T_Recv&amp;<sp/>recvData)<sp/>{...}</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"></highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Event<sp/>recv(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Context<sp/>context,<sp/>T_Recv&amp;<sp/>recvData)<sp/>{...}</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"></highlight></codeline>
+<codeline lineno="85"><highlight class="normal"></highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">/*******************************************************************</highlight></codeline>
+<codeline lineno="87"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>CONTEXT<sp/>MANAGEMENT<sp/>INTERFACE</highlight></codeline>
+<codeline lineno="88"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>******************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Context<sp/>splitContext(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>isMember,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>Context<sp/>oldContext)<sp/>{...}</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Context<sp/>getGlobalContext(){...}</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"></highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="comment">/*<sp/>namespace<sp/>communicationPolicy*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="97"><highlight class="normal">}<sp/></highlight><highlight class="comment">/*<sp/>namespace<sp/>graybat<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="98"><highlight class="normal">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"></highlight></codeline>
+<codeline lineno="100"><highlight class="normal"></highlight><highlight class="preprocessor">##<sp/>Further<sp/>Links<sp/>##</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="101"><highlight class="normal"></highlight></codeline>
+<codeline lineno="102"><highlight class="normal">-<sp/><ref refid="structgraybat_1_1communicationPolicy_1_1BMPI" kindref="compound">graybat::communicationPolicy::BMPI</ref></highlight></codeline>
+<codeline lineno="103"><highlight class="normal">-<sp/><ref refid="structgraybat_1_1communicationPolicy_1_1ZMQ" kindref="compound">graybat::communicationPolicy::ZMQ</ref></highlight></codeline>
+<codeline lineno="104"><highlight class="normal">-<sp/>\subpage<sp/>context</highlight></codeline>
+<codeline lineno="105"><highlight class="normal">-<sp/>\subpage<sp/></highlight><highlight class="keyword">event</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="106"><highlight class="normal"></highlight></codeline>
+<codeline lineno="107"><highlight class="normal">*/</highlight></codeline>
+    </programlisting>
+    <location file="utils/doxygen/communicationPolicy.dox"/>
+  </compounddef>
+</doxygen>

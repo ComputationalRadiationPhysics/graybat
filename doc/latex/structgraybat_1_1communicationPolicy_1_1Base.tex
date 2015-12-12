@@ -1,0 +1,303 @@
+\hypertarget{structgraybat_1_1communicationPolicy_1_1Base}{}\section{graybat\+:\+:communication\+Policy\+:\+:Base$<$ T\+\_\+\+Communication\+Policy $>$ Struct Template Reference}
+\label{structgraybat_1_1communicationPolicy_1_1Base}\index{graybat\+::communication\+Policy\+::\+Base$<$ T\+\_\+\+Communication\+Policy $>$@{graybat\+::communication\+Policy\+::\+Base$<$ T\+\_\+\+Communication\+Policy $>$}}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1Base_a8809cc88306f4411eff43b185d4a12ba}{}using {\bfseries Communication\+Policy} = T\+\_\+\+Communication\+Policy\label{structgraybat_1_1communicationPolicy_1_1Base_a8809cc88306f4411eff43b185d4a12ba}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1Base_a61555bfaae515788f4832c0f78bc36f4}{}using {\bfseries V\+Addr} = typename graybat\+::communication\+Policy\+::\+V\+Addr$<$ Communication\+Policy $>$\label{structgraybat_1_1communicationPolicy_1_1Base_a61555bfaae515788f4832c0f78bc36f4}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1Base_aced4ab808a9c345a0e698d21736f3a2c}{}using {\bfseries Tag} = typename graybat\+::communication\+Policy\+::\+Tag$<$ Communication\+Policy $>$\label{structgraybat_1_1communicationPolicy_1_1Base_aced4ab808a9c345a0e698d21736f3a2c}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1Base_a12a885bada327fddc91cfe4515af6471}{}using {\bfseries Context} = typename graybat\+::communication\+Policy\+::\+Context$<$ Communication\+Policy $>$\label{structgraybat_1_1communicationPolicy_1_1Base_a12a885bada327fddc91cfe4515af6471}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1Base_a2fc51f670372dfb2d7f8474a5a0f5e89}{}using {\bfseries Event} = typename graybat\+::communication\+Policy\+::\+Event$<$ Communication\+Policy $>$\label{structgraybat_1_1communicationPolicy_1_1Base_a2fc51f670372dfb2d7f8474a5a0f5e89}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{Indent}{\bf Point to Point Communication Interface}\par
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1Base_a7c7b3cd367ec07fa9d12ebbbb89dabb8}{}{\footnotesize template$<$typename T\+\_\+\+Send $>$ }\\void {\bfseries send} (const V\+Addr dest\+V\+Addr, const \hyperlink{structTag}{Tag} tag, const Context context, const T\+\_\+\+Send \&send\+Data)=delete\label{structgraybat_1_1communicationPolicy_1_1Base_a7c7b3cd367ec07fa9d12ebbbb89dabb8}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1Base_a7dfe96d75727357e0bbac4f8dad93a55}{}{\footnotesize template$<$typename T\+\_\+\+Send $>$ }\\Event {\bfseries async\+Send} (const V\+Addr dest\+V\+Addr, const \hyperlink{structTag}{Tag} tag, const Context context, const T\+\_\+\+Send \&send\+Data)=delete\label{structgraybat_1_1communicationPolicy_1_1Base_a7dfe96d75727357e0bbac4f8dad93a55}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1Base_a1785dcc6035447fc3c2b1cd9fee9a4b5}{}{\footnotesize template$<$typename T\+\_\+\+Recv $>$ }\\void {\bfseries recv} (const V\+Addr src\+V\+Addr, const \hyperlink{structTag}{Tag} tag, const Context context, T\+\_\+\+Recv \&recv\+Data)=delete\label{structgraybat_1_1communicationPolicy_1_1Base_a1785dcc6035447fc3c2b1cd9fee9a4b5}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1Base_a2c7e5b0d65bfa0fcfa3377598eb79882}{}{\footnotesize template$<$typename T\+\_\+\+Recv $>$ }\\Event {\bfseries recv} (const Context context, T\+\_\+\+Recv \&recv\+Data)=delete\label{structgraybat_1_1communicationPolicy_1_1Base_a2c7e5b0d65bfa0fcfa3377598eb79882}
+
+\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1Base_adee3935d47f527c2802d3b88b546b0a2}{}{\footnotesize template$<$typename T\+\_\+\+Recv $>$ }\\Event {\bfseries async\+Recv} (const V\+Addr src\+V\+Addr, const \hyperlink{structTag}{Tag} tag, const Context context, T\+\_\+\+Recv \&recv\+Data)=delete\label{structgraybat_1_1communicationPolicy_1_1Base_adee3935d47f527c2802d3b88b546b0a2}
+
+\end{DoxyCompactItemize}
+\end{Indent}
+\begin{Indent}{\bf Collective Communication Interface}\par
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T\+\_\+\+Send , typename T\+\_\+\+Recv $>$ }\\void \hyperlink{structgraybat_1_1communicationPolicy_1_1Base_a3db000db20b6cb8fd6e63f3d53e82090}{gather} (const V\+Addr root\+V\+Addr, const Context context, const T\+\_\+\+Send \&send\+Data, T\+\_\+\+Recv \&recv\+Data)
+\begin{DoxyCompactList}\small\item\em Collects {\itshape send\+Data} from all peers of the {\itshape context} and transmits it as a list to the peer with {\itshape root\+V\+Addr}. Data of all peers has to be from the {\bfseries same} size. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T\+\_\+\+Send , typename T\+\_\+\+Recv $>$ }\\void \hyperlink{structgraybat_1_1communicationPolicy_1_1Base_a1434994bead59ef38b6eff8346538f0b}{gather\+Var} (const V\+Addr root\+V\+Addr, const Context context, const T\+\_\+\+Send \&send\+Data, T\+\_\+\+Recv \&recv\+Data, std\+::vector$<$ unsigned $>$ \&recv\+Count)
+\begin{DoxyCompactList}\small\item\em Collects {\itshape send\+Data} from all members of the {\itshape context} with {\bfseries varying} size and transmits it as a list to peer with {\itshape root\+V\+Addr}. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T\+\_\+\+Send , typename T\+\_\+\+Recv $>$ }\\void \hyperlink{structgraybat_1_1communicationPolicy_1_1Base_a1b409ea49d7aba2dee0c83e28dda1b65}{all\+Gather} (Context context, const T\+\_\+\+Send \&send\+Data, T\+\_\+\+Recv \&recv\+Data)
+\begin{DoxyCompactList}\small\item\em Collects {\itshape send\+Data} from all members of the {\itshape context} and transmits it as a list to every peer in the {\itshape context} \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T\+\_\+\+Send , typename T\+\_\+\+Recv $>$ }\\void \hyperlink{structgraybat_1_1communicationPolicy_1_1Base_a1bad18907fcc45db9d4a119e726061a8}{all\+Gather\+Var} (const Context context, const T\+\_\+\+Send \&send\+Data, T\+\_\+\+Recv \&recv\+Data, std\+::vector$<$ unsigned $>$ \&recv\+Count)
+\begin{DoxyCompactList}\small\item\em Collects {\itshape send\+Data} from all peers of the {\itshape context}. Size of {\itshape send\+Data} can vary in size. The data is received by every peer in the {\itshape context}. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T\+\_\+\+Send , typename T\+\_\+\+Recv $>$ }\\void \hyperlink{structgraybat_1_1communicationPolicy_1_1Base_af1ed07ce5f107f04926d7b7c39c9834e}{scatter} (const V\+Addr root\+V\+Addr, const Context context, const T\+\_\+\+Send \&send\+Data, T\+\_\+\+Recv \&recv\+Data)
+\begin{DoxyCompactList}\small\item\em Distributes {\itshape send\+Data} from peer {\itshape root\+V\+Addr} to all peers in {\itshape context}. Every peer will receive different data. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T\+\_\+\+Send , typename T\+\_\+\+Recv $>$ }\\void \hyperlink{structgraybat_1_1communicationPolicy_1_1Base_ac4aa66d3ed33c810ae48ae762b432b14}{all\+Scatter} (const Context context, const T\+\_\+\+Send \&send\+Data, T\+\_\+\+Recv \&recv\+Data)
+\begin{DoxyCompactList}\small\item\em Distributes {\itshape send\+Data} of all peer in the {\itshape context} to all peers in the {\itshape context}. Every peer will receive data from every other peer (also the own data) \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T\+\_\+\+Send , typename T\+\_\+\+Recv , typename T\+\_\+\+Op $>$ }\\void \hyperlink{structgraybat_1_1communicationPolicy_1_1Base_ad3bf74c91931b35b56fbb54ac535bc14}{reduce} (const V\+Addr root\+V\+Addr, const Context context, const T\+\_\+\+Op op, const T\+\_\+\+Send \&send\+Data, T\+\_\+\+Recv \&recv\+Data)
+\begin{DoxyCompactList}\small\item\em Performs a reduction with a binary operator {\itshape op} on all {\itshape send\+Data} elements from all peers whithin the {\itshape context}. The result will be received by the peer with {\itshape root\+V\+Addr}. Binary operations like std\+::plus, std\+::minus can be used. But, they can also be defined as binary operator simular to std\+::plus etc. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T\+\_\+\+Send , typename T\+\_\+\+Recv , typename T\+\_\+\+Op $>$ }\\void \hyperlink{structgraybat_1_1communicationPolicy_1_1Base_ac77038454619b683f006ba149aea2dcb}{all\+Reduce} (const Context context, T\+\_\+\+Op op, const T\+\_\+\+Send \&send\+Data, T\+\_\+\+Recv \&recv\+Data)
+\begin{DoxyCompactList}\small\item\em Performs a reduction with a binary operator {\itshape op} on all {\itshape send\+Data} elements from all peers whithin the {\itshape context}. The result will be received by all peers. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename T\+\_\+\+Send\+Recv $>$ }\\void \hyperlink{structgraybat_1_1communicationPolicy_1_1Base_a431ed56b3d5ade805200b565ce98daa0}{broadcast} (const V\+Addr root\+V\+Addr, const Context context, T\+\_\+\+Send\+Recv \&data)
+\begin{DoxyCompactList}\small\item\em Send {\itshape send\+Data} from peer {\itshape root\+V\+Addr} to all peers in {\itshape context}. Every peer will receive the same data. \end{DoxyCompactList}\item 
+\hypertarget{structgraybat_1_1communicationPolicy_1_1Base_abc4e72365c6ad134ba6e31abd8fa2163}{}void \hyperlink{structgraybat_1_1communicationPolicy_1_1Base_abc4e72365c6ad134ba6e31abd8fa2163}{synchronize} (const Context context)\label{structgraybat_1_1communicationPolicy_1_1Base_abc4e72365c6ad134ba6e31abd8fa2163}
+
+\begin{DoxyCompactList}\small\item\em Synchronizes all peers within {\itshape context} to the same point in the programm execution (barrier). \end{DoxyCompactList}\end{DoxyCompactItemize}
+\end{Indent}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{structgraybat_1_1communicationPolicy_1_1Base_a1b409ea49d7aba2dee0c83e28dda1b65}{}\index{graybat\+::communication\+Policy\+::\+Base@{graybat\+::communication\+Policy\+::\+Base}!all\+Gather@{all\+Gather}}
+\index{all\+Gather@{all\+Gather}!graybat\+::communication\+Policy\+::\+Base@{graybat\+::communication\+Policy\+::\+Base}}
+\subsubsection[{all\+Gather(\+Context context, const T\+\_\+\+Send \&send\+Data, T\+\_\+\+Recv \&recv\+Data)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Communication\+Policy $>$ template$<$typename T\+\_\+\+Send , typename T\+\_\+\+Recv $>$ void {\bf graybat\+::communication\+Policy\+::\+Base}$<$ T\+\_\+\+Communication\+Policy $>$\+::all\+Gather (
+\begin{DoxyParamCaption}
+\item[{Context}]{context, }
+\item[{const T\+\_\+\+Send \&}]{send\+Data, }
+\item[{T\+\_\+\+Recv \&}]{recv\+Data}
+\end{DoxyParamCaption}
+)}\label{structgraybat_1_1communicationPolicy_1_1Base_a1b409ea49d7aba2dee0c83e28dda1b65}
+
+
+Collects {\itshape send\+Data} from all members of the {\itshape context} and transmits it as a list to every peer in the {\itshape context} 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em context} & Set of peers that want to send Data \\
+\hline
+\mbox{\tt in}  & {\em send\+Data} & Data that every peer in the {\itshape context} sends with {\bfseries same} size \\
+\hline
+\mbox{\tt out}  & {\em recv\+Data} & Data from all {\itshape context} members, that all peers$\ast$ will receive. \\
+\hline
+\end{DoxyParams}
+\hypertarget{structgraybat_1_1communicationPolicy_1_1Base_a1bad18907fcc45db9d4a119e726061a8}{}\index{graybat\+::communication\+Policy\+::\+Base@{graybat\+::communication\+Policy\+::\+Base}!all\+Gather\+Var@{all\+Gather\+Var}}
+\index{all\+Gather\+Var@{all\+Gather\+Var}!graybat\+::communication\+Policy\+::\+Base@{graybat\+::communication\+Policy\+::\+Base}}
+\subsubsection[{all\+Gather\+Var(const Context context, const T\+\_\+\+Send \&send\+Data, T\+\_\+\+Recv \&recv\+Data, std\+::vector$<$ unsigned $>$ \&recv\+Count)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Communication\+Policy $>$ template$<$typename T\+\_\+\+Send , typename T\+\_\+\+Recv $>$ void {\bf graybat\+::communication\+Policy\+::\+Base}$<$ T\+\_\+\+Communication\+Policy $>$\+::all\+Gather\+Var (
+\begin{DoxyParamCaption}
+\item[{const Context}]{context, }
+\item[{const T\+\_\+\+Send \&}]{send\+Data, }
+\item[{T\+\_\+\+Recv \&}]{recv\+Data, }
+\item[{std\+::vector$<$ unsigned $>$ \&}]{recv\+Count}
+\end{DoxyParamCaption}
+)}\label{structgraybat_1_1communicationPolicy_1_1Base_a1bad18907fcc45db9d4a119e726061a8}
+
+
+Collects {\itshape send\+Data} from all peers of the {\itshape context}. Size of {\itshape send\+Data} can vary in size. The data is received by every peer in the {\itshape context}. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em context} & Set of peers that want to send Data \\
+\hline
+\mbox{\tt in}  & {\em send\+Data} & Data that every peer in the {\itshape context} sends with {\bfseries varying} size \\
+\hline
+\mbox{\tt out}  & {\em recv\+Data} & Data from all {\itshape context} members, that all peers$\ast$ will receive. \\
+\hline
+\mbox{\tt out}  & {\em recv\+Count} & Number of elements each peer sends (can by varying). \\
+\hline
+\end{DoxyParams}
+\hypertarget{structgraybat_1_1communicationPolicy_1_1Base_ac77038454619b683f006ba149aea2dcb}{}\index{graybat\+::communication\+Policy\+::\+Base@{graybat\+::communication\+Policy\+::\+Base}!all\+Reduce@{all\+Reduce}}
+\index{all\+Reduce@{all\+Reduce}!graybat\+::communication\+Policy\+::\+Base@{graybat\+::communication\+Policy\+::\+Base}}
+\subsubsection[{all\+Reduce(const Context context, T\+\_\+\+Op op, const T\+\_\+\+Send \&send\+Data, T\+\_\+\+Recv \&recv\+Data)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Communication\+Policy $>$ template$<$typename T\+\_\+\+Send , typename T\+\_\+\+Recv , typename T\+\_\+\+Op $>$ void {\bf graybat\+::communication\+Policy\+::\+Base}$<$ T\+\_\+\+Communication\+Policy $>$\+::all\+Reduce (
+\begin{DoxyParamCaption}
+\item[{const Context}]{context, }
+\item[{T\+\_\+\+Op}]{op, }
+\item[{const T\+\_\+\+Send \&}]{send\+Data, }
+\item[{T\+\_\+\+Recv \&}]{recv\+Data}
+\end{DoxyParamCaption}
+)}\label{structgraybat_1_1communicationPolicy_1_1Base_ac77038454619b683f006ba149aea2dcb}
+
+
+Performs a reduction with a binary operator {\itshape op} on all {\itshape send\+Data} elements from all peers whithin the {\itshape context}. The result will be received by all peers. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em context} & Set of peers that \\
+\hline
+\mbox{\tt in}  & {\em op} & Binary operator that should be used for reduction \\
+\hline
+\mbox{\tt in}  & {\em send\+Data} & Data that every peer contributes to the reduction \\
+\hline
+\mbox{\tt out}  & {\em recv\+Data} & Reduced send\+Data that will be received by all peers. It will have same size of send\+Data and contains the ith reduced send\+Data values. \\
+\hline
+\end{DoxyParams}
+\hypertarget{structgraybat_1_1communicationPolicy_1_1Base_ac4aa66d3ed33c810ae48ae762b432b14}{}\index{graybat\+::communication\+Policy\+::\+Base@{graybat\+::communication\+Policy\+::\+Base}!all\+Scatter@{all\+Scatter}}
+\index{all\+Scatter@{all\+Scatter}!graybat\+::communication\+Policy\+::\+Base@{graybat\+::communication\+Policy\+::\+Base}}
+\subsubsection[{all\+Scatter(const Context context, const T\+\_\+\+Send \&send\+Data, T\+\_\+\+Recv \&recv\+Data)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Communication\+Policy $>$ template$<$typename T\+\_\+\+Send , typename T\+\_\+\+Recv $>$ void {\bf graybat\+::communication\+Policy\+::\+Base}$<$ T\+\_\+\+Communication\+Policy $>$\+::all\+Scatter (
+\begin{DoxyParamCaption}
+\item[{const Context}]{context, }
+\item[{const T\+\_\+\+Send \&}]{send\+Data, }
+\item[{T\+\_\+\+Recv \&}]{recv\+Data}
+\end{DoxyParamCaption}
+)}\label{structgraybat_1_1communicationPolicy_1_1Base_ac4aa66d3ed33c810ae48ae762b432b14}
+
+
+Distributes {\itshape send\+Data} of all peer in the {\itshape context} to all peers in the {\itshape context}. Every peer will receive data from every other peer (also the own data) 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em context} & Set of peers that want to receive Data \\
+\hline
+\mbox{\tt in}  & {\em send\+Data} & Data that each peer wants to send. Each peer will receive same number of data elements, but not the same data elements. send\+Data will be divided in equal chunks of data and is then distributed.\\
+\hline
+\mbox{\tt out}  & {\em recv\+Data} & Data from all peer. \\
+\hline
+\end{DoxyParams}
+\hypertarget{structgraybat_1_1communicationPolicy_1_1Base_a431ed56b3d5ade805200b565ce98daa0}{}\index{graybat\+::communication\+Policy\+::\+Base@{graybat\+::communication\+Policy\+::\+Base}!broadcast@{broadcast}}
+\index{broadcast@{broadcast}!graybat\+::communication\+Policy\+::\+Base@{graybat\+::communication\+Policy\+::\+Base}}
+\subsubsection[{broadcast(const V\+Addr root\+V\+Addr, const Context context, T\+\_\+\+Send\+Recv \&data)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Communication\+Policy $>$ template$<$typename T\+\_\+\+Send\+Recv $>$ void {\bf graybat\+::communication\+Policy\+::\+Base}$<$ T\+\_\+\+Communication\+Policy $>$\+::broadcast (
+\begin{DoxyParamCaption}
+\item[{const V\+Addr}]{root\+V\+Addr, }
+\item[{const Context}]{context, }
+\item[{T\+\_\+\+Send\+Recv \&}]{data}
+\end{DoxyParamCaption}
+)}\label{structgraybat_1_1communicationPolicy_1_1Base_a431ed56b3d5ade805200b565ce98daa0}
+
+
+Send {\itshape send\+Data} from peer {\itshape root\+V\+Addr} to all peers in {\itshape context}. Every peer will receive the same data. 
+
+\begin{DoxyRemark}{Remarks}
+In Contrast to scatter where every peer receives different data
+\end{DoxyRemark}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em root\+V\+Addr} & Source peer \\
+\hline
+\mbox{\tt in}  & {\em context} & Set of peers that want to receive Data \\
+\hline
+\mbox{\tt in}  & {\em send\+Data} & Data that peer with {\itshape root\+V\+Addr} will send to the peers of the {\itshape context} \\
+\hline
+\mbox{\tt out}  & {\em recv\+Data} & Data from peer with {\itshape root\+V\+Addr}. \\
+\hline
+\end{DoxyParams}
+\hypertarget{structgraybat_1_1communicationPolicy_1_1Base_a3db000db20b6cb8fd6e63f3d53e82090}{}\index{graybat\+::communication\+Policy\+::\+Base@{graybat\+::communication\+Policy\+::\+Base}!gather@{gather}}
+\index{gather@{gather}!graybat\+::communication\+Policy\+::\+Base@{graybat\+::communication\+Policy\+::\+Base}}
+\subsubsection[{gather(const V\+Addr root\+V\+Addr, const Context context, const T\+\_\+\+Send \&send\+Data, T\+\_\+\+Recv \&recv\+Data)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Communication\+Policy $>$ template$<$typename T\+\_\+\+Send , typename T\+\_\+\+Recv $>$ void {\bf graybat\+::communication\+Policy\+::\+Base}$<$ T\+\_\+\+Communication\+Policy $>$\+::gather (
+\begin{DoxyParamCaption}
+\item[{const V\+Addr}]{root\+V\+Addr, }
+\item[{const Context}]{context, }
+\item[{const T\+\_\+\+Send \&}]{send\+Data, }
+\item[{T\+\_\+\+Recv \&}]{recv\+Data}
+\end{DoxyParamCaption}
+)}\label{structgraybat_1_1communicationPolicy_1_1Base_a3db000db20b6cb8fd6e63f3d53e82090}
+
+
+Collects {\itshape send\+Data} from all peers of the {\itshape context} and transmits it as a list to the peer with {\itshape root\+V\+Addr}. Data of all peers has to be from the {\bfseries same} size. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em root\+V\+Addr} & Peer that will receive collcted data from {\itshape context} members \\
+\hline
+\mbox{\tt in}  & {\em context} & Set of peers that want to send Data \\
+\hline
+\mbox{\tt in}  & {\em send\+Data} & Data that every peer in the {\itshape context} sends. Data of all peers in the {\itshape context} need to have {\bfseries same} size(). \\
+\hline
+\mbox{\tt out}  & {\em recv\+Data} & Data from all {\itshape context} members, that peer with virtual address {\itshape root\+V\+Addr} will receive. {\itshape recv\+Data} of all other members of the {\itshape context} will be empty. \\
+\hline
+\end{DoxyParams}
+\hypertarget{structgraybat_1_1communicationPolicy_1_1Base_a1434994bead59ef38b6eff8346538f0b}{}\index{graybat\+::communication\+Policy\+::\+Base@{graybat\+::communication\+Policy\+::\+Base}!gather\+Var@{gather\+Var}}
+\index{gather\+Var@{gather\+Var}!graybat\+::communication\+Policy\+::\+Base@{graybat\+::communication\+Policy\+::\+Base}}
+\subsubsection[{gather\+Var(const V\+Addr root\+V\+Addr, const Context context, const T\+\_\+\+Send \&send\+Data, T\+\_\+\+Recv \&recv\+Data, std\+::vector$<$ unsigned $>$ \&recv\+Count)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Communication\+Policy $>$ template$<$typename T\+\_\+\+Send , typename T\+\_\+\+Recv $>$ void {\bf graybat\+::communication\+Policy\+::\+Base}$<$ T\+\_\+\+Communication\+Policy $>$\+::gather\+Var (
+\begin{DoxyParamCaption}
+\item[{const V\+Addr}]{root\+V\+Addr, }
+\item[{const Context}]{context, }
+\item[{const T\+\_\+\+Send \&}]{send\+Data, }
+\item[{T\+\_\+\+Recv \&}]{recv\+Data, }
+\item[{std\+::vector$<$ unsigned $>$ \&}]{recv\+Count}
+\end{DoxyParamCaption}
+)}\label{structgraybat_1_1communicationPolicy_1_1Base_a1434994bead59ef38b6eff8346538f0b}
+
+
+Collects {\itshape send\+Data} from all members of the {\itshape context} with {\bfseries varying} size and transmits it as a list to peer with {\itshape root\+V\+Addr}. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em root\+V\+Addr} & Peer that will receive collcted data from {\itshape context} members \\
+\hline
+\mbox{\tt in}  & {\em context} & Set of peers that want to send Data \\
+\hline
+\mbox{\tt in}  & {\em send\+Data} & Data that every peer in the {\itshape context} sends. The Data can have {\bfseries varying} size \\
+\hline
+\mbox{\tt out}  & {\em recv\+Data} & Data from all {\itshape context} peers, that peer with {\itshape root\+V\+Addr} will receive. {\itshape recv\+Data} of all other peers of the {\itshape context} will be empty. The received data is ordered by the V\+Addr of the peers. \\
+\hline
+\mbox{\tt out}  & {\em recv\+Count} & Number of elements each peer sends (can by varying). \\
+\hline
+\end{DoxyParams}
+\hypertarget{structgraybat_1_1communicationPolicy_1_1Base_ad3bf74c91931b35b56fbb54ac535bc14}{}\index{graybat\+::communication\+Policy\+::\+Base@{graybat\+::communication\+Policy\+::\+Base}!reduce@{reduce}}
+\index{reduce@{reduce}!graybat\+::communication\+Policy\+::\+Base@{graybat\+::communication\+Policy\+::\+Base}}
+\subsubsection[{reduce(const V\+Addr root\+V\+Addr, const Context context, const T\+\_\+\+Op op, const T\+\_\+\+Send \&send\+Data, T\+\_\+\+Recv \&recv\+Data)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Communication\+Policy $>$ template$<$typename T\+\_\+\+Send , typename T\+\_\+\+Recv , typename T\+\_\+\+Op $>$ void {\bf graybat\+::communication\+Policy\+::\+Base}$<$ T\+\_\+\+Communication\+Policy $>$\+::reduce (
+\begin{DoxyParamCaption}
+\item[{const V\+Addr}]{root\+V\+Addr, }
+\item[{const Context}]{context, }
+\item[{const T\+\_\+\+Op}]{op, }
+\item[{const T\+\_\+\+Send \&}]{send\+Data, }
+\item[{T\+\_\+\+Recv \&}]{recv\+Data}
+\end{DoxyParamCaption}
+)}\label{structgraybat_1_1communicationPolicy_1_1Base_ad3bf74c91931b35b56fbb54ac535bc14}
+
+
+Performs a reduction with a binary operator {\itshape op} on all {\itshape send\+Data} elements from all peers whithin the {\itshape context}. The result will be received by the peer with {\itshape root\+V\+Addr}. Binary operations like std\+::plus, std\+::minus can be used. But, they can also be defined as binary operator simular to std\+::plus etc. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em root\+V\+Addr} & peer that will receive the result of reduction \\
+\hline
+\mbox{\tt in}  & {\em context} & Set of peers that \\
+\hline
+\mbox{\tt in}  & {\em op} & Binary operator that should be used for reduction \\
+\hline
+\mbox{\tt in}  & {\em send\+Data} & Data that every peer contributes to the reduction \\
+\hline
+\mbox{\tt out}  & {\em recv\+Data} & Reduced send\+Data that will be received by peer with {\itshape root\+V\+Addr}. It will have same size of send\+Data and contains the ith reduced send\+Data values. \\
+\hline
+\end{DoxyParams}
+\hypertarget{structgraybat_1_1communicationPolicy_1_1Base_af1ed07ce5f107f04926d7b7c39c9834e}{}\index{graybat\+::communication\+Policy\+::\+Base@{graybat\+::communication\+Policy\+::\+Base}!scatter@{scatter}}
+\index{scatter@{scatter}!graybat\+::communication\+Policy\+::\+Base@{graybat\+::communication\+Policy\+::\+Base}}
+\subsubsection[{scatter(const V\+Addr root\+V\+Addr, const Context context, const T\+\_\+\+Send \&send\+Data, T\+\_\+\+Recv \&recv\+Data)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T\+\_\+\+Communication\+Policy $>$ template$<$typename T\+\_\+\+Send , typename T\+\_\+\+Recv $>$ void {\bf graybat\+::communication\+Policy\+::\+Base}$<$ T\+\_\+\+Communication\+Policy $>$\+::scatter (
+\begin{DoxyParamCaption}
+\item[{const V\+Addr}]{root\+V\+Addr, }
+\item[{const Context}]{context, }
+\item[{const T\+\_\+\+Send \&}]{send\+Data, }
+\item[{T\+\_\+\+Recv \&}]{recv\+Data}
+\end{DoxyParamCaption}
+)}\label{structgraybat_1_1communicationPolicy_1_1Base_af1ed07ce5f107f04926d7b7c39c9834e}
+
+
+Distributes {\itshape send\+Data} from peer {\itshape root\+V\+Addr} to all peers in {\itshape context}. Every peer will receive different data. 
+
+\begin{DoxyRemark}{Remarks}
+In Contrast to broadcast where every peer receives the same data
+\end{DoxyRemark}
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em root\+V\+Addr} & peer that want to distribute its data \\
+\hline
+\mbox{\tt in}  & {\em context} & Set of peers that want to receive Data \\
+\hline
+\mbox{\tt in}  & {\em send\+Data} & Data that peer with {\itshape root\+V\+Addr} will distribute over the peers of the {\itshape context} \\
+\hline
+\mbox{\tt out}  & {\em recv\+Data} & Data from peer with {\itshape root\+V\+Addr}. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/graybat/communication\+Policy/Base.\+hpp\end{DoxyCompactItemize}

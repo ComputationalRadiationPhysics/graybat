@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="structgraybat_1_1mapping_1_1GraphPartition" kind="struct" language="C++" prot="public">
+    <compoundname>graybat::mapping::GraphPartition</compoundname>
+    <includes refid="GraphPartition_8hpp" local="no">GraphPartition.hpp</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="structgraybat_1_1mapping_1_1GraphPartition_1ac3d1871a2c31dd53cc31790aaabf6532" prot="private" static="no" mutable="no">
+        <type>idx_t</type>
+        <definition>idx_t graybat::mapping::GraphPartition::nParts</definition>
+        <argsstring></argsstring>
+        <name>nParts</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/mapping/GraphPartition.hpp" line="102" column="1" bodyfile="include/graybat/mapping/GraphPartition.hpp" bodystart="102" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structgraybat_1_1mapping_1_1GraphPartition_1a5f97b54e8c827e9c29ae22747a753131" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::mapping::GraphPartition::GraphPartition</definition>
+        <argsstring>()</argsstring>
+        <name>GraphPartition</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/mapping/GraphPartition.hpp" line="22" column="1" bodyfile="include/graybat/mapping/GraphPartition.hpp" bodystart="22" bodyend="24"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1mapping_1_1GraphPartition_1afeeafb75cddcbb05ba2f6d3d3b662f49" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::mapping::GraphPartition::GraphPartition</definition>
+        <argsstring>(unsigned nParts)</argsstring>
+        <name>GraphPartition</name>
+        <param>
+          <type>unsigned</type>
+          <declname>nParts</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/mapping/GraphPartition.hpp" line="26" column="1" bodyfile="include/graybat/mapping/GraphPartition.hpp" bodystart="26" bodyend="29"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1mapping_1_1GraphPartition_1a917b54b6d70ef3890d1a756fdd97fa6a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Graph</type>
+          </param>
+        </templateparamlist>
+        <type>std::pair&lt; std::vector&lt; idx_t &gt;, std::vector&lt; idx_t &gt; &gt;</type>
+        <definition>std::pair&lt;std::vector&lt;idx_t&gt;, std::vector&lt;idx_t&gt; &gt; graybat::mapping::GraphPartition::toCompressedRowStorage</definition>
+        <argsstring>(T_Graph &amp;graph)</argsstring>
+        <name>toCompressedRowStorage</name>
+        <param>
+          <type>T_Graph &amp;</type>
+          <declname>graph</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Translates the graph into the compressed row storage format (CSR) which can be parsed by Metis.</para><para><ulink url="http://en.wikipedia.org/wiki/Sparse_matrix#Compressed_row_Storage_.28CRS_or_CSR.29">http://en.wikipedia.org/wiki/Sparse_matrix#Compressed_row_Storage_.28CRS_or_CSR.29</ulink> </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/mapping/GraphPartition.hpp" line="39" column="1" bodyfile="include/graybat/mapping/GraphPartition.hpp" bodystart="39" bodyend="61"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1mapping_1_1GraphPartition_1a952baf3f1cbcec52d3296d7acdb912ff" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Graph</type>
+          </param>
+        </templateparamlist>
+        <type>std::vector&lt; typename T_Graph::Vertex &gt;</type>
+        <definition>std::vector&lt;typename T_Graph::Vertex&gt; graybat::mapping::GraphPartition::operator()</definition>
+        <argsstring>(const unsigned processID, const unsigned processCount, T_Graph &amp;graph)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>const unsigned</type>
+          <declname>processID</declname>
+        </param>
+        <param>
+          <type>const unsigned</type>
+          <declname>processCount</declname>
+        </param>
+        <param>
+          <type>T_Graph &amp;</type>
+          <declname>graph</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/mapping/GraphPartition.hpp" line="64" column="1" bodyfile="include/graybat/mapping/GraphPartition.hpp" bodystart="64" bodyend="99"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>Partitioning of the communication graph into k parts. k is set either to the number of peers that want to take part in communication or is given as an input parameter.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>nParts</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of parts to partition </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>set of vertices that belong &quot;together&quot; </para></simplesect>
+</para>    </detaileddescription>
+    <location file="include/graybat/mapping/GraphPartition.hpp" line="20" column="1" bodyfile="include/graybat/mapping/GraphPartition.hpp" bodystart="20" bodyend="104"/>
+    <listofallmembers>
+      <member refid="structgraybat_1_1mapping_1_1GraphPartition_1a5f97b54e8c827e9c29ae22747a753131" prot="public" virt="non-virtual"><scope>graybat::mapping::GraphPartition</scope><name>GraphPartition</name></member>
+      <member refid="structgraybat_1_1mapping_1_1GraphPartition_1afeeafb75cddcbb05ba2f6d3d3b662f49" prot="public" virt="non-virtual"><scope>graybat::mapping::GraphPartition</scope><name>GraphPartition</name></member>
+      <member refid="structgraybat_1_1mapping_1_1GraphPartition_1ac3d1871a2c31dd53cc31790aaabf6532" prot="private" virt="non-virtual"><scope>graybat::mapping::GraphPartition</scope><name>nParts</name></member>
+      <member refid="structgraybat_1_1mapping_1_1GraphPartition_1a952baf3f1cbcec52d3296d7acdb912ff" prot="public" virt="non-virtual"><scope>graybat::mapping::GraphPartition</scope><name>operator()</name></member>
+      <member refid="structgraybat_1_1mapping_1_1GraphPartition_1a917b54b6d70ef3890d1a756fdd97fa6a" prot="public" virt="non-virtual"><scope>graybat::mapping::GraphPartition</scope><name>toCompressedRowStorage</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

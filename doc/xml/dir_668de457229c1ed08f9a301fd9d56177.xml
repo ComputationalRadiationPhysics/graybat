@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="dir_668de457229c1ed08f9a301fd9d56177" kind="dir">
+    <compoundname>example</compoundname>
+    <innerfile refid="anyrecv_8cpp">anyrecv.cpp</innerfile>
+    <innerfile refid="chain_8cpp">chain.cpp</innerfile>
+    <innerfile refid="forward_8cpp">forward.cpp</innerfile>
+    <innerfile refid="gol_8cpp">gol.cpp</innerfile>
+    <innerfile refid="ring_8cpp">ring.cpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="example/"/>
+  </compounddef>
+</doxygen>

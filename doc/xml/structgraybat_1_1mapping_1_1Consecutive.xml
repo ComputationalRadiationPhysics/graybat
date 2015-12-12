@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="structgraybat_1_1mapping_1_1Consecutive" kind="struct" language="C++" prot="public">
+    <compoundname>graybat::mapping::Consecutive</compoundname>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structgraybat_1_1mapping_1_1Consecutive_1a723a783f1ab47359c81521183f97b302" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Graph</type>
+          </param>
+        </templateparamlist>
+        <type>std::vector&lt; typename T_Graph::Vertex &gt;</type>
+        <definition>std::vector&lt;typename T_Graph::Vertex&gt; graybat::mapping::Consecutive::operator()</definition>
+        <argsstring>(const unsigned processID, const unsigned processCount, T_Graph &amp;graph)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>const unsigned</type>
+          <declname>processID</declname>
+        </param>
+        <param>
+          <type>const unsigned</type>
+          <declname>processCount</declname>
+        </param>
+        <param>
+          <type>T_Graph &amp;</type>
+          <declname>graph</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/mapping/Consecutive.hpp" line="14" column="1" bodyfile="include/graybat/mapping/Consecutive.hpp" bodystart="14" bodyend="42"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/mapping/Consecutive.hpp" line="11" column="1" bodyfile="include/graybat/mapping/Consecutive.hpp" bodystart="11" bodyend="44"/>
+    <listofallmembers>
+      <member refid="structgraybat_1_1mapping_1_1Consecutive_1a723a783f1ab47359c81521183f97b302" prot="public" virt="non-virtual"><scope>graybat::mapping::Consecutive</scope><name>operator()</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

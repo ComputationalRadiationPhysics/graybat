@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="event" kind="page">
+    <compoundname>event</compoundname>
+    <title>Event</title>
+    <detaileddescription>
+<para>An event is a class that is returned by non-blocking or asynchronous communication functions like graybat::Cage::asyncSend or graybat::Cage::asyncRecv. Each <ref refid="communicationPolicy" kindref="compound">communication policy</ref> needs to define its event class, since this can be very library dependent. The <ref refid="cage" kindref="compound">cage</ref> determines a strict event interface, but leaves their implementation open to the <ref refid="communicationPolicy" kindref="compound">communication policy</ref>.</para><para>The following listing provides a skeleton for a event class with all necessary methods:</para><para><programlisting><codeline><highlight class="keyword">struct<sp/></highlight><highlight class="normal">EventSkeleton<sp/>{</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Wait<sp/>for<sp/>the<sp/>event<sp/>to<sp/>be<sp/>finished</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>wait()<sp/>{...}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Ask<sp/>for<sp/>current<sp/>state<sp/>of<sp/>the<sp/>event</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>ready()<sp/>{...}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Ask<sp/>for<sp/>VAddr<sp/>where<sp/>message<sp/>of<sp/>event<sp/>comes<sp/>from</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>VAddr<sp/>source()<sp/>{...}</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Ask<sp/>for<sp/>the<sp/>tag<sp/>the<sp/>message<sp/>of<sp/>this<sp/>event<sp/>was<sp/>send<sp/>with</highlight><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structTag" kindref="compound">Tag</ref><sp/>getTag()<sp/>{...}</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting> </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

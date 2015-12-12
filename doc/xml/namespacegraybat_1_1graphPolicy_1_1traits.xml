@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="namespacegraybat_1_1graphPolicy_1_1traits" kind="namespace" language="C++">
+    <compoundname>graybat::graphPolicy::traits</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/graphPolicy/Traits.hpp" line="11" column="1"/>
+  </compounddef>
+</doxygen>

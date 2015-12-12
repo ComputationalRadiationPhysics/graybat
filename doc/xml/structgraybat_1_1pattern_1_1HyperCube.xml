@@ -1,0 +1,176 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="structgraybat_1_1pattern_1_1HyperCube" kind="struct" language="C++" prot="public">
+    <compoundname>graybat::pattern::HyperCube</compoundname>
+    <templateparamlist>
+      <param>
+        <type>typename T_GraphPolicy</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1HyperCube_1a67a6d03f13aa7a690ba00e7dbc51712c" prot="public" static="no">
+        <type>T_GraphPolicy</type>
+        <definition>using graybat::pattern::HyperCube&lt; T_GraphPolicy &gt;::GraphPolicy =  T_GraphPolicy</definition>
+        <argsstring></argsstring>
+        <name>GraphPolicy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/HyperCube.hpp" line="16" column="1" bodyfile="include/graybat/pattern/HyperCube.hpp" bodystart="16" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1HyperCube_1a0c88ca2cfe827c3debc91e8d021d44ca" prot="public" static="no">
+        <type>graybat::graphPolicy::VertexDescription&lt; GraphPolicy &gt;</type>
+        <definition>using graybat::pattern::HyperCube&lt; T_GraphPolicy &gt;::VertexDescription =  graybat::graphPolicy::VertexDescription&lt;GraphPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>VertexDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/HyperCube.hpp" line="17" column="1" bodyfile="include/graybat/pattern/HyperCube.hpp" bodystart="17" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1HyperCube_1adf392d9969a0a73da4dc7f72010dacd7" prot="public" static="no">
+        <type>graybat::graphPolicy::EdgeDescription&lt; GraphPolicy &gt;</type>
+        <definition>using graybat::pattern::HyperCube&lt; T_GraphPolicy &gt;::EdgeDescription =  graybat::graphPolicy::EdgeDescription&lt;GraphPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>EdgeDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/HyperCube.hpp" line="18" column="1" bodyfile="include/graybat/pattern/HyperCube.hpp" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1HyperCube_1a4c23d00b62f8d88be7278a1b8d4051c4" prot="public" static="no">
+        <type>graybat::graphPolicy::GraphDescription&lt; GraphPolicy &gt;</type>
+        <definition>using graybat::pattern::HyperCube&lt; T_GraphPolicy &gt;::GraphDescription =  graybat::graphPolicy::GraphDescription&lt;GraphPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>GraphDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/HyperCube.hpp" line="19" column="1" bodyfile="include/graybat/pattern/HyperCube.hpp" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1HyperCube_1a4e68fc6487ff5b3c32789914920b9314" prot="public" static="no">
+        <type>graybat::graphPolicy::EdgeProperty&lt; GraphPolicy &gt;</type>
+        <definition>using graybat::pattern::HyperCube&lt; T_GraphPolicy &gt;::EdgeProperty =  graybat::graphPolicy::EdgeProperty&lt;GraphPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>EdgeProperty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/HyperCube.hpp" line="20" column="1" bodyfile="include/graybat/pattern/HyperCube.hpp" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1HyperCube_1a1ac5d8bcd72ca589d1d6ee01aeddc836" prot="public" static="no">
+        <type>graybat::graphPolicy::VertexProperty&lt; GraphPolicy &gt;</type>
+        <definition>using graybat::pattern::HyperCube&lt; T_GraphPolicy &gt;::VertexProperty =  graybat::graphPolicy::VertexProperty&lt;GraphPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>VertexProperty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/HyperCube.hpp" line="21" column="1" bodyfile="include/graybat/pattern/HyperCube.hpp" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structgraybat_1_1pattern_1_1HyperCube_1a9d3b75c69fd39c9035251c7a1ddaeacb" prot="public" static="no" mutable="no">
+        <type>const unsigned</type>
+        <definition>const unsigned graybat::pattern::HyperCube&lt; T_GraphPolicy &gt;::dimension</definition>
+        <argsstring></argsstring>
+        <name>dimension</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/HyperCube.hpp" line="23" column="1" bodyfile="include/graybat/pattern/HyperCube.hpp" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structgraybat_1_1pattern_1_1HyperCube_1aef4094e09277a7d45835ad74e19fecaa" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::pattern::HyperCube&lt; T_GraphPolicy &gt;::HyperCube</definition>
+        <argsstring>(const unsigned dimension)</argsstring>
+        <name>HyperCube</name>
+        <param>
+          <type>const unsigned</type>
+          <declname>dimension</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/HyperCube.hpp" line="25" column="1" bodyfile="include/graybat/pattern/HyperCube.hpp" bodystart="25" bodyend="28"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1pattern_1_1HyperCube_1a03de3c97f0dc0b454e8be23f5678b3af" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>unsigned</type>
+        <definition>unsigned graybat::pattern::HyperCube&lt; T_GraphPolicy &gt;::hammingDistance</definition>
+        <argsstring>(unsigned a, unsigned b)</argsstring>
+        <name>hammingDistance</name>
+        <param>
+          <type>unsigned</type>
+          <declname>a</declname>
+        </param>
+        <param>
+          <type>unsigned</type>
+          <declname>b</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/HyperCube.hpp" line="30" column="1" bodyfile="include/graybat/pattern/HyperCube.hpp" bodystart="30" bodyend="33"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1pattern_1_1HyperCube_1aa963c5a07bf028989c244bc861b32144" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>GraphDescription</type>
+        <definition>GraphDescription graybat::pattern::HyperCube&lt; T_GraphPolicy &gt;::operator()</definition>
+        <argsstring>()</argsstring>
+        <name>operator()</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/HyperCube.hpp" line="35" column="1" bodyfile="include/graybat/pattern/HyperCube.hpp" bodystart="35" bodyend="56"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/pattern/HyperCube.hpp" line="14" column="1" bodyfile="include/graybat/pattern/HyperCube.hpp" bodystart="14" bodyend="58"/>
+    <listofallmembers>
+      <member refid="structgraybat_1_1pattern_1_1HyperCube_1a9d3b75c69fd39c9035251c7a1ddaeacb" prot="public" virt="non-virtual"><scope>graybat::pattern::HyperCube</scope><name>dimension</name></member>
+      <member refid="structgraybat_1_1pattern_1_1HyperCube_1adf392d9969a0a73da4dc7f72010dacd7" prot="public" virt="non-virtual"><scope>graybat::pattern::HyperCube</scope><name>EdgeDescription</name></member>
+      <member refid="structgraybat_1_1pattern_1_1HyperCube_1a4e68fc6487ff5b3c32789914920b9314" prot="public" virt="non-virtual"><scope>graybat::pattern::HyperCube</scope><name>EdgeProperty</name></member>
+      <member refid="structgraybat_1_1pattern_1_1HyperCube_1a4c23d00b62f8d88be7278a1b8d4051c4" prot="public" virt="non-virtual"><scope>graybat::pattern::HyperCube</scope><name>GraphDescription</name></member>
+      <member refid="structgraybat_1_1pattern_1_1HyperCube_1a67a6d03f13aa7a690ba00e7dbc51712c" prot="public" virt="non-virtual"><scope>graybat::pattern::HyperCube</scope><name>GraphPolicy</name></member>
+      <member refid="structgraybat_1_1pattern_1_1HyperCube_1a03de3c97f0dc0b454e8be23f5678b3af" prot="public" virt="non-virtual"><scope>graybat::pattern::HyperCube</scope><name>hammingDistance</name></member>
+      <member refid="structgraybat_1_1pattern_1_1HyperCube_1aef4094e09277a7d45835ad74e19fecaa" prot="public" virt="non-virtual"><scope>graybat::pattern::HyperCube</scope><name>HyperCube</name></member>
+      <member refid="structgraybat_1_1pattern_1_1HyperCube_1aa963c5a07bf028989c244bc861b32144" prot="public" virt="non-virtual"><scope>graybat::pattern::HyperCube</scope><name>operator()</name></member>
+      <member refid="structgraybat_1_1pattern_1_1HyperCube_1a0c88ca2cfe827c3debc91e8d021d44ca" prot="public" virt="non-virtual"><scope>graybat::pattern::HyperCube</scope><name>VertexDescription</name></member>
+      <member refid="structgraybat_1_1pattern_1_1HyperCube_1a1ac5d8bcd72ca589d1d6ee01aeddc836" prot="public" virt="non-virtual"><scope>graybat::pattern::HyperCube</scope><name>VertexProperty</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

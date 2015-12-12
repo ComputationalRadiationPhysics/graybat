@@ -1,0 +1,652 @@
+The communication and graph environment (\hyperlink{structgraybat_1_1Cage}{cage}) provides a graph-\/based virtual overlay network which is implemented by the policy based design. Taking this term to pieces, the \hyperlink{structgraybat_1_1Cage}{cage} is an interface which provides communication methods on basis of an existing communication library, where the possible paths of communication are described by a graph.
+
+The behavior of the \hyperlink{structgraybat_1_1Cage}{cage} need to be defined by a \hyperlink{communicationPolicy}{communication policy} and a \hyperlink{graphPolicy}{graph policy}. These policies need to be provided as template arguments to the \hyperlink{structgraybat_1_1Cage}{cage} class. The following listings show examples on how to use and how to configure the \hyperlink{structgraybat_1_1Cage}{cage} with predefined \hyperlink{communicationPolicy}{communication policy} and \hyperlink{graphPolicy}{graph policy}.
+
+\subsection*{Configure the graybat cage}
+
+
+\begin{DoxyEnumerate}
+\item Include graybat cage, communication policy, graph policy and predefined functors for communication patterns and mappings. 
+\begin{DoxyCode}
+\textcolor{preprocessor}{#include <graybat/Cage.hpp>}
+\textcolor{preprocessor}{#include <graybat/communicationPolicy/BMPI.hpp>}
+\textcolor{preprocessor}{#include <graybat/graphPolicy/BGL.hpp>}
+\textcolor{preprocessor}{#include <graybat/pattern/GridDiagonal.hpp>}
+\textcolor{preprocessor}{#include <graybat/mapping/Consecutive.hpp>}
+\end{DoxyCode}
+
+\item Define communication policy to use (boost.\+M\+P\+I). 
+\begin{DoxyCode}
+\textcolor{keyword}{typedef} \hyperlink{structgraybat_1_1communicationPolicy_1_1BMPI}{graybat::communicationPolicy::BMPI}   CommunicationPolicy;
+\textcolor{keyword}{typedef} \textcolor{keyword}{typename} CommunicationPolicy::Config Config;
+\end{DoxyCode}
+
+\item Define graph policy to use (boost graph library). 
+\begin{DoxyCode}
+\textcolor{keyword}{typedef} \hyperlink{classgraybat_1_1graphPolicy_1_1BGL}{graybat::graphPolicy::BGL<>} GraphPolicy;
+\end{DoxyCode}
+
+\item Define cage through policies. 
+\begin{DoxyCode}
+\textcolor{keyword}{typedef} \hyperlink{structgraybat_1_1Cage}{graybat::Cage<CommunicatonPolicy, GraphPolicy>} Cage;
+\end{DoxyCode}
+
+\item Create Cage instance and set graph creation functor that describes the communication \hyperlink{communicationPattern}{pattern}. 
+\begin{DoxyCode}
+Cage cage;
+cage.setGraph(\hyperlink{structgraybat_1_1pattern_1_1GridDiagonal}{graybat::pattern::GridDiagonal}(100,100))
+\end{DoxyCode}
+
+\end{DoxyEnumerate}
+
+\subsection*{Mapping Operations}
+
+
+\begin{DoxyEnumerate}
+\item {\bfseries distribute}\+: Distributes vertices of the graph to peer(s) based on a \hyperlink{mapping}{mapping}. 
+\begin{DoxyCode}
+cage.distribute(\hyperlink{structgraybat_1_1mapping_1_1Consecutive}{graybat::mapping::Consecutive}());
+\end{DoxyCode}
+
+\item {\bfseries hosted\+Vertices}\+: The vertices mapped to the peer itself are called hosted vertices. 
+\begin{DoxyCode}
+\textcolor{keyword}{typedef} Cage::Vertex Vertex;
+
+\textcolor{comment}{// Iterate over all vertices that I host}
+\textcolor{keywordflow}{for}(Vertex vertex: cage.hostedVertices)\{
+    std::cout << vertex.id << std::endl;
+\}
+\end{DoxyCode}
+
+\end{DoxyEnumerate}
+
+\subsection*{Graph Operations}
+
+A peer is responsible for the communication of all its hosted vertices. Therefore, the common approach for communication in graybat is to iterate over the set of hosted vertices and send data to adjacent vertices which are connected with an outgoing edge and receive data from adjacent vertices which are connected with an incoming edge.
+
+
+\begin{DoxyEnumerate}
+\item {\bfseries get\+Out\+Edges}\+: Retrieve outgoing edges of hosted vertices. This information can be used to send data to adjacent vertices. 
+\begin{DoxyCode}
+\textcolor{keyword}{typedef} Cage::Edge Edge;
+\textcolor{keywordflow}{for}(Vertex vertex: cage.hostedVertices)\{
+    \textcolor{keywordflow}{for}(Edge outEdge : cage.getOutEdges(vertex))\{
+        Vertex sourceVertex = outEdge.source;
+        Vertex targetVertex = outEdge.target;
+
+        std::cout << \textcolor{stringliteral}{"From vertex "} << sourceVertex.id
+                  << \textcolor{stringliteral}{"over edge "}   << outEdge.id
+                  << \textcolor{stringliteral}{"to vertex "}   << targetVertex.id << std::endl;
+    \}
+\}
+\end{DoxyCode}
+
+\item {\bfseries get\+In\+Edges}\+: Retrieve incoming edges of hosted vertices. This information can be used to receive data from adjacent vertices. 
+\begin{DoxyCode}
+\textcolor{keywordflow}{for}(Vertex vertex: cage.hostedVertices)\{
+    \textcolor{keywordflow}{for}(Edge inEdge : cage.getInEdges(vertex))\{
+        Vertex sourceVertex = inEdge.source;
+        Vertex targetVertex = inEdge.target;
+
+        std::cout << \textcolor{stringliteral}{"From vertex "} << sourceVertex.id
+                  << \textcolor{stringliteral}{"over edge "}   << inEdge.id
+                  << \textcolor{stringliteral}{"to vertex "}   << targetVertex.id << std::endl;
+    \}
+\}
+\end{DoxyCode}
+
+\end{DoxyEnumerate}
+
+\subsection*{Point to Point Communication Operations}
+
+
+\begin{DoxyItemize}
+\item {\bfseries send/async\+Send}\+: Send synchronous and asynchronous data. The asynchronous version of send returns an event, which can be waited for or tested for its state. 
+\begin{DoxyCode}
+\textcolor{keyword}{typedef} Cage::Edge  Edge;
+\textcolor{keyword}{typedef} Cage::Event Event;
+
+\textcolor{comment}{// Events that will occur}
+std::vector<Event> events;
+
+\textcolor{comment}{// Some data that should be send}
+std::vector<int> data(100,1);
+
+\textcolor{keywordflow}{for}(Vertex vertex: cage.hostedVertices)\{
+    \textcolor{keywordflow}{for}(Edge outEdge : cage.getOutEdges(vertex))\{
+
+          \textcolor{comment}{// Synchronous}
+      cage.send(outEdge, data);
+
+      \textcolor{comment}{// Asynchronous}
+      cage.send(outEdge, data, events);
+
+          \textcolor{comment}{// Wait for and test event}
+      events.back().wait();
+      \textcolor{keywordtype}{bool} eventState = events.back().ready();
+    \}
+\}
+\end{DoxyCode}
+
+\item {\bfseries recv/async\+Recv}\+: Receive synchronous and asynchronous data. The asynchronous version of recv returns an event, which can be waited for or tested for its state. 
+\begin{DoxyCode}
+\textcolor{keyword}{typedef} Cage::Edge  Edge;
+\textcolor{keyword}{typedef} Cage::Event Event;
+
+\textcolor{comment}{// Events that will occur}
+std::vector<Event> events;
+
+\textcolor{comment}{// Some data that should be send}
+std::vector<int> data(100,1);
+
+\textcolor{keywordflow}{for}(Vertex vertex: cage.hostedVertices)\{
+    \textcolor{keywordflow}{for}(Edge inEdge : cage.getInEdges(vertex))\{
+
+        \textcolor{comment}{// Synchronous receive}
+        cage.recv(inEdge, data);
+
+        \textcolor{comment}{// Asynchronous receive}
+        cage.recv(inEdge, data, events);
+
+        \textcolor{comment}{// Wait for and test event}
+        events.back().wait();
+        \textcolor{keywordtype}{bool} eventState = events.back().ready();
+    \}
+\}
+\end{DoxyCode}
+
+\end{DoxyItemize}
+
+\subsection*{Collective Communication Operations}
+
+
+\begin{DoxyItemize}
+\item {\bfseries spread}\+: Spread data to all adjacent vertices of a vertex that are connected by an outgoing edge. 
+\begin{DoxyCode}
+\textcolor{keyword}{typedef} Cage::Edge  Edge;
+\textcolor{keyword}{typedef} Cage::Event Event;
+
+\textcolor{comment}{// Events that will occur}
+std::vector<Event> events;
+
+\textcolor{comment}{// Some data that should be send}
+std::vector<int> data(100,1);
+
+\textcolor{keywordflow}{for}(Vertex vertex: cage.hostedVertices)\{
+    cage.spread(vertex, data, events);
+\}
+\end{DoxyCode}
+
+\item {\bfseries collect}\+: Collect data from all adjacent vertices of a vertex that are connected by an incoming edge. 
+\begin{DoxyCode}
+\textcolor{keyword}{typedef} Cage::Edge  Edge;
+\textcolor{keyword}{typedef} Cage::Event Event;
+
+\textcolor{comment}{// Events that will occur}
+std::vector<Event> events;
+
+\textcolor{keywordflow}{for}(Vertex vertex: cage.hostedVertices)\{
+    \textcolor{comment}{// Some data that should be collected}
+    std::vector<int> data(vertex.nInEdges * 100, 1);
+
+    cage.collect(vertex, data);
+\}
+\end{DoxyCode}
+
+\item {\bfseries reduce}\+: Reduce vector of data with binary operator and receive by some root vertex. 
+\begin{DoxyCode}
+Vertex rootVertex = cage.getVertex(0);
+
+std::vector<int> send(100);
+std::vector<int> recv(100);
+
+\textcolor{comment}{// Each vertex need to reduce its data, the root receives reduction.}
+\textcolor{keywordflow}{for}(Vertex vertex: cage.hostedVertices)\{
+    cage.reduce(rootVertex, vertex, std::plus<int>, send, recv);
+\}
+\end{DoxyCode}
+
+\item {\bfseries all\+Reduce}\+: Reduce vector of data and receive them by every vertex. 
+\begin{DoxyCode}
+std::vector<int> send(100);
+std::vector<int> recv(100);
+
+\textcolor{comment}{// Each vertex need to reduce its data, all receive reduction.}
+\textcolor{keywordflow}{for}(Vertex vertex: cage.hostedVertices)\{
+    cage.allReduce(rootVertex, vertex, std::plus<int>, send, recv);
+\}
+\end{DoxyCode}
+
+\item {\bfseries gather}\+: Root vertex collects data from each vertex. 
+\begin{DoxyCode}
+Vertex rootVertex = cage.getVertex(0);
+
+std::vector<int> send(10);
+std::vector<int> recv(10 * cage.getVertices().size());
+
+\textcolor{comment}{// Each vertex need to send its data, the root receives}
+\textcolor{keywordflow}{for}(Vertex vertex: cage.hostedVertices)\{
+    cage.gather(rootVertex, vertex, send, recv);
+\}
+\end{DoxyCode}
+
+\item {\bfseries all\+Gather}\+: Data is send to all vertices. 
+\begin{DoxyCode}
+std::vector<int> send(10);
+std::vector<int> recv(10 * cage.getVertices().size());
+
+\textcolor{comment}{// Each vertex need to send its data, all receive.}
+\textcolor{keywordflow}{for}(Vertex vertex: cage.hostedVertices)\{
+    cage.allGather(vertex, send, recv);
+\}
+\end{DoxyCode}
+
+\item {\bfseries synchronize}\+: Synchronize all peers (including their hosted vertices). 
+\begin{DoxyCode}
+cage.synchronize();
+\end{DoxyCode}
+
+\end{DoxyItemize}
+
+\subsection*{Further Links}
+
+
+\begin{DoxyItemize}
+\item \hyperlink{communicationPolicy}{Communication Policy}
+\item \hyperlink{graphPolicy}{Graph Policy}
+\item \hyperlink{communicationPattern}{Communication Pattern}
+\item \hyperlink{mapping}{Vertex Mapping}
+\item \hyperlink{vertex}{Vertex Communication Interface}
+\item \hyperlink{edge}{Edge Communication Interface} 
+\end{DoxyItemize}\hypertarget{communicationPolicy}{}\section{Communication Policy}\label{communicationPolicy}
+The communication policy is a class which implements the communication interface of its host class (\hyperlink{cage}{cage}).
+
+Communication in graybat is modeled in the way, that an instance that takes part on whatever communication is called a {\itshape peer}. All peers that want to communicate in some way with each other need to group up in a \hyperlink{context}{context}. Therefore, a \hyperlink{context}{context} is a set of peers that are able to communicate with each other.
+
+By communication is meant the exchange of arbitrary data between peers or even within one peer. Thus, communication can mean sending a message over the internet, copying data between two memories, or distributing data with the help of M\+P\+I. Therefore, a communication policy need to implement the required interface but can interpret the term communication on its own. See the code example below or consider the preimplemented communication policies.
+
+The communication policy interface is separated into core and collective api. The core api provides the \hyperlink{context}{context} type definition, the \hyperlink{event}{event} type definition, {\bfseries point-\/to-\/point communication} methods and {\bfseries context management} methods, while the collective api contains {\bfseries collective communication} methods. The communication policy needs to implement at least the core api, the collective api based on the core api can be derived from the communication policy {\bfseries \hyperlink{structgraybat_1_1communicationPolicy_1_1Base}{graybat\+::communication\+Policy\+::\+Base}} class. Thus, it is possible to provide a communication policy implementation that does not implement all interface (core + collective) methods.
+
+The following source code provides a basic skeleton of a communication policy\+:
+
+
+\begin{DoxyCode}
+\textcolor{keyword}{namespace }\hyperlink{namespacegraybat}{graybat} \{
+
+    \textcolor{keyword}{namespace }communicationPolicy \{
+
+        \textcolor{keyword}{namespace }traits \{
+
+            \textcolor{keyword}{template}<>
+            \textcolor{keyword}{struct }ContextType<CommunicationPolicySkeleton> \{
+                \textcolor{keyword}{using} type = ...;
+            \};
+
+            \textcolor{keyword}{template}<>
+            \textcolor{keyword}{struct }EventType<CommunicationPolicySkeleton> \{
+                \textcolor{keyword}{using} type = ...;
+            \};
+
+            \textcolor{keyword}{template}<>
+            \textcolor{keyword}{struct }ConfigType<CommunicationPolicySkeleton> \{
+                \textcolor{keyword}{using} type = ...;
+            \};
+
+        \}
+
+        \textcolor{keyword}{struct }CommunicationPolicySkeleton : \textcolor{keyword}{public} 
+      \hyperlink{structgraybat_1_1communicationPolicy_1_1Base}{graybat::communicationPolicy::Base}<CommunicationPolicySkeleton> \{
+
+
+            \textcolor{comment}{/*******************************************************************}
+\textcolor{comment}{               COMMUNICATION POLICY CONSTRUCTIOn}
+\textcolor{comment}{             ******************************************************************/}
+            ZMQ(Config \textcolor{keyword}{const} config) \{...\}
+
+
+            \textcolor{comment}{/*******************************************************************}
+\textcolor{comment}{               POINT TO POINT COMMUNICATION INTERFACE}
+\textcolor{comment}{             ******************************************************************/}
+            \textcolor{keywordtype}{void} send(\textcolor{keyword}{const} VAddr destVAddr, \textcolor{keyword}{const} \hyperlink{structTag}{Tag} tag, \textcolor{keyword}{const} Context context, \textcolor{keyword}{const} T\_Send& 
+      sendData) \{...\}
+
+            Event asyncSend(\textcolor{keyword}{const} VAddr destVAddr, \textcolor{keyword}{const} \hyperlink{structTag}{Tag} tag, \textcolor{keyword}{const} Context context, T\_Send& 
+      sendData) \{...\}
+
+            \textcolor{keywordtype}{void} recv(\textcolor{keyword}{const} VAddr srcVAddr, \textcolor{keyword}{const} \hyperlink{structTag}{Tag} tag, \textcolor{keyword}{const} Context context, T\_Recv& recvData) \{...
+      \}
+
+            Event recv(\textcolor{keyword}{const} Context context, T\_Recv& recvData) \{...\}
+
+
+            \textcolor{comment}{/*******************************************************************}
+\textcolor{comment}{               CONTEXT MANAGEMENT INTERFACE}
+\textcolor{comment}{             ******************************************************************/}
+            Context splitContext(\textcolor{keyword}{const} \textcolor{keywordtype}{bool} isMember, \textcolor{keyword}{const} Context oldContext) \{...\}
+
+            Context getGlobalContext()\{...\}
+
+        \};
+
+    \} \textcolor{comment}{/* namespace communicationPolicy*/}
+
+\} \textcolor{comment}{/* namespace graybat */}
+\end{DoxyCode}
+
+
+\subsection*{Further Links}
+
+
+\begin{DoxyItemize}
+\item \hyperlink{structgraybat_1_1communicationPolicy_1_1BMPI}{graybat\+::communication\+Policy\+::\+B\+M\+P\+I}
+\item \hyperlink{structgraybat_1_1communicationPolicy_1_1ZMQ}{graybat\+::communication\+Policy\+::\+Z\+M\+Q}
+\item \hyperlink{context}{Context}
+\item \hyperlink{event}{Event} 
+\end{DoxyItemize}\hypertarget{context}{}\subsection{Context}\label{context}
+A context is a set of peers which are able to communicate with each other. A context need to be defined by a \hyperlink{communicationPolicy}{communication policy}, since every communication library defines a set of peers differently. The \hyperlink{cage}{cage} defines a strict interface of a context, but the implementation is left open to the \hyperlink{communicationPolicy}{communication policy}.
+
+The following listing provides a skeleton for a context class with all necessary methods\+:
+
+
+\begin{DoxyCode}
+struc ContextSkeleton \{
+
+    \textcolor{comment}{// Returns the number of peers in this context}
+    \textcolor{keywordtype}{size\_t} size()\textcolor{keyword}{ const }\{...\}
+
+    \textcolor{comment}{// Returns the virtual address of the peer in this context}
+    VAddr getVAddr()\textcolor{keyword}{ const }\{...\}
+
+    \textcolor{comment}{// Returns the id of this context}
+    ContextID getID()\textcolor{keyword}{ const }\{...\}
+
+    \textcolor{comment}{// Returns whether the peer is member of the context}
+    \textcolor{keywordtype}{bool} valid()\textcolor{keyword}{ const }\{...\}
+
+\};
+\end{DoxyCode}
+ \hypertarget{event}{}\subsection{Event}\label{event}
+An event is a class that is returned by non-\/blocking or asynchronous communication functions like graybat\+::\+Cage\+::async\+Send or graybat\+::\+Cage\+::async\+Recv. Each \hyperlink{communicationPolicy}{communication policy} needs to define its event class, since this can be very library dependent. The \hyperlink{cage}{cage} determines a strict event interface, but leaves their implementation open to the \hyperlink{communicationPolicy}{communication policy}.
+
+The following listing provides a skeleton for a event class with all necessary methods\+:
+
+
+\begin{DoxyCode}
+\textcolor{keyword}{struct }EventSkeleton \{
+
+    \textcolor{comment}{// Wait for the event to be finished}
+    \textcolor{keywordtype}{void} wait() \{...\}
+
+    \textcolor{comment}{// Ask for current state of the event}
+    \textcolor{keywordtype}{bool} ready() \{...\}
+
+        \textcolor{comment}{// Ask for VAddr where message of event comes from}
+        VAddr source() \{...\}
+
+        \textcolor{comment}{// Ask for the tag the message of this event was send with}
+        \hyperlink{structTag}{Tag} getTag() \{...\}
+\};
+\end{DoxyCode}
+ \hypertarget{graphPolicy}{}\section{Graph Policy}\label{graphPolicy}
+The graph policy is a class which implements the graph interface of its host class (\hyperlink{cage}{cage}). A graph is defined by its vertex and edge property through template arguments and its graph description as constructor argument. The following defintion of a graph is defined by a city property which represents a vertex and a road property which represents an edge\+:
+
+
+\begin{DoxyCode}
+\textcolor{keyword}{typedef} \hyperlink{classgraybat_1_1graphPolicy_1_1BGL}{graybat::graphPolicy::BGL<City, Road>} CityGraph;
+\end{DoxyCode}
+
+
+The following property is a very simple and basic property for edges and vertices which does not contain any further information. Therefore, it is called Simple\+Property. The Simple\+Property is used when no other property is specified.
+
+
+\begin{DoxyCode}
+\textcolor{keyword}{struct }SimpleProperty \{
+
+\};
+\end{DoxyCode}
+
+
+A property can be user defined and can contain arbitrary data\+:
+
+
+\begin{DoxyCode}
+\textcolor{keyword}{struct }City \{
+    std::string cityName;
+    \textcolor{keywordtype}{unsigned} nInhabitants;
+\};
+
+\textcolor{keyword}{struct }Road \{
+    std::string roadName;
+\};
+\end{DoxyCode}
+
+
+The following source code provides the full skeleton of a graph policy. Nevertheless, the predefined boost graph library graph policy (\hyperlink{classgraybat_1_1graphPolicy_1_1BGL}{graybat\+::graph\+Policy\+::\+B\+G\+L}) is a good starting point to be used in a \hyperlink{cage}{cage}. A custom implementation might only be necessary if there exist some special requirements.
+
+
+\begin{DoxyCode}
+\textcolor{keyword}{namespace }\hyperlink{namespacegraybat}{graybat} \{
+
+        \textcolor{keyword}{namespace }graphPolicy \{
+
+                \textcolor{keyword}{template} <\textcolor{keyword}{class} T\_VertexProperty, \textcolor{keyword}{class} T\_EdgeProperty>
+                \textcolor{keyword}{class }GraphPolicySkeleton \{
+
+                        \textcolor{comment}{/*******************************************************************}
+\textcolor{comment}{                           REQUIRED TYPE DEFINITIONS}
+\textcolor{comment}{                         ******************************************************************/}
+                        \textcolor{keyword}{using} VertexProperty     = T\_VertexProperty;
+                        \textcolor{keyword}{using} EdgeProperty       = T\_EdgeProperty;
+                        \textcolor{keyword}{using} VertexDescription  = ...;
+                        \textcolor{keyword}{using} EdgeDescription    = ...;
+                        \textcolor{keyword}{using} GraphDescription   = ...;
+                        \textcolor{keyword}{using} InEdgeIter         = ...;
+                        \textcolor{keyword}{using} OutEdgeIter        = ...;
+                        \textcolor{keyword}{using} AdjacentVertexIter = ...;
+                        \textcolor{keyword}{using} AllVertexIter      = ...;
+
+                        \textcolor{comment}{/*******************************************************************}
+\textcolor{comment}{                           GRAPH CONSTRUCTION}
+\textcolor{comment}{                         ******************************************************************/}
+                        GraphPolicySkeleton(GraphDescription description) \{...\}
+
+                        \textcolor{comment}{/*******************************************************************}
+\textcolor{comment}{                           REQUIRED GRAPH OPERATIONS}
+\textcolor{comment}{                         ******************************************************************/}
+
+                        std::pair<AllVertexIter, AllVertexIter> getVertices() \{...\}
+
+                        std::pair<EdgeID, bool> getEdge(\textcolor{keyword}{const} VertexID source, \textcolor{keyword}{const} VertexID target) \{...\}
+       
+
+                        std::pair<AdjacentVertexIter, AdjacentVertexIter> getAdjacentVertices(\textcolor{keyword}{const} 
+      VertexID \textcolor{keywordtype}{id}) \{...\}
+
+                        std::pair<OutEdgeIter, OutEdgeIter> getOutEdges(\textcolor{keyword}{const} VertexID \textcolor{keywordtype}{id}) \{...\}
+
+                        std::pair<InEdgeIter, InEdgeIter> getInEdges(\textcolor{keyword}{const} VertexID \textcolor{keywordtype}{id})\{...\}
+
+                        std::pair<VertexID, VertexProperty>& getVertexProperty(\textcolor{keyword}{const} VertexID vertex) \{...\}
+
+                        std::pair<EdgeID, EdgeProperty>& getEdgeProperty(\textcolor{keyword}{const} EdgeID edge) \{...\}
+
+                        VertexID getEdgeTarget(\textcolor{keyword}{const} EdgeID edge) \{...\}
+
+                        VertexID getEdgeSource(\textcolor{keyword}{const} EdgeID edge) \{...\}
+
+                \}
+        \}
+\}
+\end{DoxyCode}
+
+
+\subsection*{Further Links}
+
+
+\begin{DoxyItemize}
+\item \hyperlink{classgraybat_1_1graphPolicy_1_1BGL}{graybat\+::graph\+Policy\+::\+B\+G\+L} 
+\end{DoxyItemize}\hypertarget{communicationPattern}{}\section{Communication Pattern}\label{communicationPattern}
+A communication pattern is a class functor which generates a graph. They are used to define the communication graph of a \hyperlink{cage}{cage}. Gray\+Bat provides a handful of predefined pattern\+:
+
+
+\begin{DoxyItemize}
+\item \hyperlink{structgraybat_1_1pattern_1_1FullyConnected}{graybat\+::pattern\+::\+Fully\+Connected}
+\item \hyperlink{structgraybat_1_1pattern_1_1GridDiagonal}{graybat\+::pattern\+::\+Grid\+Diagonal}
+\item \hyperlink{structgraybat_1_1pattern_1_1Grid}{graybat\+::pattern\+::\+Grid}
+\item \hyperlink{structgraybat_1_1pattern_1_1HyperCube}{graybat\+::pattern\+::\+Hyper\+Cube}
+\item \hyperlink{structgraybat_1_1pattern_1_1InStar}{graybat\+::pattern\+::\+In\+Star}
+\item \hyperlink{structgraybat_1_1pattern_1_1OutStar}{graybat\+::pattern\+::\+Out\+Star}
+\item \hyperlink{structgraybat_1_1pattern_1_1BiStar}{graybat\+::pattern\+::\+Bi\+Star}
+\item \hyperlink{structgraybat_1_1pattern_1_1EdgeLess}{graybat\+::pattern\+::\+Edge\+Less}
+\item \hyperlink{structgraybat_1_1pattern_1_1Ring}{graybat\+::pattern\+::\+Ring}
+\item \hyperlink{structgraybat_1_1pattern_1_1None}{graybat\+::pattern\+::\+None}
+\end{DoxyItemize}
+
+Own communication pattern can be build from the following pattern skeleton\+: 
+\begin{DoxyCode}
+\textcolor{keyword}{namespace }\hyperlink{namespacegraybat}{graybat} \{
+
+  \textcolor{keyword}{namespace }pattern \{
+
+    \textcolor{keyword}{struct }PatternSkeleton \{
+
+        \textcolor{comment}{// Functor which returns a desired graph}
+        GraphDescription operator()()\{
+    \};
+
+  \} \textcolor{comment}{/* pattern */}
+
+\} \textcolor{comment}{/* graybat */}
+\end{DoxyCode}
+
+
+\subsection*{Further Links}
+
+
+\begin{DoxyItemize}
+\item \hyperlink{structgraybat_1_1pattern_1_1FullyConnected}{graybat\+::pattern\+::\+Fully\+Connected}
+\item \hyperlink{structgraybat_1_1pattern_1_1GridDiagonal}{graybat\+::pattern\+::\+Grid\+Diagonal}
+\item \hyperlink{structgraybat_1_1pattern_1_1Grid}{graybat\+::pattern\+::\+Grid}
+\item \hyperlink{structgraybat_1_1pattern_1_1HyperCube}{graybat\+::pattern\+::\+Hyper\+Cube}
+\item \hyperlink{structgraybat_1_1pattern_1_1InStar}{graybat\+::pattern\+::\+In\+Star}
+\item \hyperlink{structgraybat_1_1pattern_1_1OutStar}{graybat\+::pattern\+::\+Out\+Star}
+\item \hyperlink{structgraybat_1_1pattern_1_1BiStar}{graybat\+::pattern\+::\+Bi\+Star}
+\item \hyperlink{structgraybat_1_1pattern_1_1EdgeLess}{graybat\+::pattern\+::\+Edge\+Less}
+\item \hyperlink{structgraybat_1_1pattern_1_1Ring}{graybat\+::pattern\+::\+Ring}
+\item \hyperlink{structgraybat_1_1pattern_1_1None}{graybat\+::pattern\+::\+None} 
+\end{DoxyItemize}\hypertarget{mapping}{}\section{Vertex Mapping}\label{mapping}
+A vertex mapping is a class functor which describes the mapping of a graph to peers. A mapping is used by the \hyperlink{cage}{cage} in its \hyperlink{structgraybat_1_1Cage_afeddcc035e25382462c38c77b481304d}{graybat\+::\+Cage\+::distribute} function and can strongly influence the application performance.\+Gray\+Bat defines a handful of predefined mappings\+:
+
+
+\begin{DoxyItemize}
+\item \hyperlink{structgraybat_1_1mapping_1_1Consecutive}{graybat\+::mapping\+::\+Consecutive}
+\item \hyperlink{structgraybat_1_1mapping_1_1Filter}{graybat\+::mapping\+::\+Filter}
+\item \hyperlink{structgraybat_1_1mapping_1_1GraphPartition}{graybat\+::mapping\+::\+Graph\+Partition}
+\item \hyperlink{structgraybat_1_1mapping_1_1Random}{graybat\+::mapping\+::\+Random}
+\item \hyperlink{structgraybat_1_1mapping_1_1Roundrobin}{graybat\+::mapping\+::\+Roundrobin}
+\end{DoxyItemize}
+
+Own vertex mappings can be build from the following mapping skeleton\+:
+
+
+\begin{DoxyCode}
+\textcolor{keyword}{namespace }\hyperlink{namespacegraybat}{graybat} \{
+
+    \textcolor{keyword}{namespace }mapping \{
+
+        \textcolor{keyword}{struct }MappingSkeleton \{
+
+            \textcolor{keyword}{template}<\textcolor{keyword}{typename} T\_Cage>
+            std::vector<typename T\_Graph::Vertex> operator()(\textcolor{keyword}{const} \textcolor{keywordtype}{unsigned} processID, \textcolor{keyword}{const} \textcolor{keywordtype}{unsigned} 
+      processCount, T\_Cage &cage) \{...\}
+
+        \};
+
+    \} \textcolor{comment}{/* mapping */}
+
+\} \textcolor{comment}{/* graybat */}
+\end{DoxyCode}
+
+
+\subsection*{Further Links}
+
+
+\begin{DoxyItemize}
+\item \hyperlink{structgraybat_1_1mapping_1_1Consecutive}{graybat\+::mapping\+::\+Consecutive}
+\item \hyperlink{structgraybat_1_1mapping_1_1Filter}{graybat\+::mapping\+::\+Filter}
+\item \hyperlink{structgraybat_1_1mapping_1_1GraphPartition}{graybat\+::mapping\+::\+Graph\+Partition}
+\item \hyperlink{structgraybat_1_1mapping_1_1Random}{graybat\+::mapping\+::\+Random}
+\item \hyperlink{structgraybat_1_1mapping_1_1Roundrobin}{graybat\+::mapping\+::\+Roundrobin} 
+\end{DoxyItemize}\hypertarget{vertex}{}\section{Vertex Communication Interface}\label{vertex}
+Next to the communication methods provided by the \hyperlink{cage}{cage} a vertex also provides methods to communicate with its adjacent vertices.
+
+It is assume that a \hyperlink{cage}{cage} has allready been instantiated and initialised.
+
+
+\begin{DoxyEnumerate}
+\item Collect data from all incoming edges\+: 
+\begin{DoxyCode}
+\textcolor{comment}{// Just get a vertex from the cage}
+Vertex vertex = cage.getVertex(0);
+
+\textcolor{comment}{// Prepare the receive container}
+std::vector<T\_Data> collectData(vertex.nInEdges());
+
+\textcolor{comment}{// Synchronous recv messages from all incoming edges}
+vertex.collect(recvData);
+\end{DoxyCode}
+ This functionality is also available in the cage\+: 
+\begin{DoxyCode}
+cage.collect(vertex, collectData);
+\end{DoxyCode}
+
+\item Spread data to all outgoing edges\+: 
+\begin{DoxyCode}
+\textcolor{comment}{// Again, take some random vertex}
+Vertex vertex = cage.getVertex(0);
+
+\textcolor{comment}{// Prepare the container to spread}
+std::vector<T\_Data> spreadData(1, static\_cast<T\_Data>(1));
+
+\textcolor{comment}{// Synchron send same data over all outgoing edges}
+v.spread(spreadData);
+
+\textcolor{comment}{// Asynchron send same data over all outgoing edges}
+std::vector<Event> events;
+v.spread(sendData, events);
+\end{DoxyCode}
+
+\end{DoxyEnumerate}
+
+\subsection*{Further Links}
+
+
+\begin{DoxyItemize}
+\item \hyperlink{structgraybat_1_1CommunicationVertex}{graybat\+::\+Communication\+Vertex} 
+\end{DoxyItemize}\hypertarget{edge}{}\section{Edge Communication Interface}\label{edge}
+Next to the communication methods provided by the \hyperlink{cage}{cage} a edge also provides methods to communicate with its connected vertex
+
+It is assume that a \hyperlink{cage}{cage} has allready been instantiated and initialised.
+
+
+\begin{DoxyCode}
+\textcolor{comment}{// Just get a vertex from the cage}
+Edge edge = cage.getVertex(0).getOutEdges()[0]
+
+\textcolor{comment}{// Prepare send container}
+std::vector<T\_Data> sendData(10);
+
+\textcolor{comment}{// Send data over edge}
+edge << sendData;
+
+\textcolor{comment}{// Recv data over inverse edge}
+edge.inverse() >> recvData
+\end{DoxyCode}
+
+
+\subsection*{Further Links}
+
+
+\begin{DoxyItemize}
+\item \hyperlink{structgraybat_1_1CommunicationEdge}{graybat\+::\+Communication\+Edge} 
+\end{DoxyItemize}

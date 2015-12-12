@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="dir_50bda8fbc99656cb80fe7f4efb1e17a5" kind="dir">
+    <compoundname>include/graybat/graphPolicy</compoundname>
+    <innerfile refid="BGL_8hpp">BGL.hpp</innerfile>
+    <innerfile refid="graphPolicy_2Traits_8hpp">Traits.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/graphPolicy/"/>
+  </compounddef>
+</doxygen>

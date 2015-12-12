@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="namespacegraybat_1_1mapping" kind="namespace" language="C++">
+    <compoundname>graybat::mapping</compoundname>
+    <innerclass refid="structgraybat_1_1mapping_1_1Consecutive" prot="public">graybat::mapping::Consecutive</innerclass>
+    <innerclass refid="structgraybat_1_1mapping_1_1Filter" prot="public">graybat::mapping::Filter</innerclass>
+    <innerclass refid="structgraybat_1_1mapping_1_1GraphPartition" prot="public">graybat::mapping::GraphPartition</innerclass>
+    <innerclass refid="structgraybat_1_1mapping_1_1Random" prot="public">graybat::mapping::Random</innerclass>
+    <innerclass refid="structgraybat_1_1mapping_1_1Roundrobin" prot="public">graybat::mapping::Roundrobin</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/mapping/Consecutive.hpp" line="9" column="1"/>
+  </compounddef>
+</doxygen>

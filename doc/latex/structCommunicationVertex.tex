@@ -1,0 +1,108 @@
+\hypertarget{structCommunicationVertex}{}\section{Communication\+Vertex$<$ T\+\_\+\+Cage $>$ Struct Template Reference}
+\label{structCommunicationVertex}\index{Communication\+Vertex$<$ T\+\_\+\+Cage $>$@{Communication\+Vertex$<$ T\+\_\+\+Cage $>$}}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structCommunicationVertex_aa8e4d0fd17c1947dd3a631ee6fa4f3cd}{}typedef unsigned {\bfseries Vertex\+I\+D}\label{structCommunicationVertex_aa8e4d0fd17c1947dd3a631ee6fa4f3cd}
+
+\item 
+\hypertarget{structCommunicationVertex_abe667b52bf7dbf37b5d9dad568274ec8}{}typedef T\+\_\+\+Cage {\bfseries Cage}\label{structCommunicationVertex_abe667b52bf7dbf37b5d9dad568274ec8}
+
+\item 
+\hypertarget{structCommunicationVertex_ab287653758a0732b6864146c393aeefd}{}typedef Cage\+::\+Graph\+Policy {\bfseries Graph\+Policy}\label{structCommunicationVertex_ab287653758a0732b6864146c393aeefd}
+
+\item 
+\hypertarget{structCommunicationVertex_a84e0fffdb071f9734f3af84cc3069629}{}typedef Cage\+::\+Edge {\bfseries Edge}\label{structCommunicationVertex_a84e0fffdb071f9734f3af84cc3069629}
+
+\item 
+\hypertarget{structCommunicationVertex_ae895383be74775cad052c1a0bb70c772}{}typedef Cage\+::\+Event {\bfseries Event}\label{structCommunicationVertex_ae895383be74775cad052c1a0bb70c772}
+
+\item 
+\hypertarget{structCommunicationVertex_a5d8ffebe6eebc88c248eb0c6964f1c37}{}typedef Graph\+Policy\+::\+Vertex\+Property {\bfseries Vertex\+Property}\label{structCommunicationVertex_a5d8ffebe6eebc88c248eb0c6964f1c37}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structCommunicationVertex_a602ec19bb4de0a4c371f1b6b5cb2509c}{}{\bfseries Communication\+Vertex} (const Vertex\+I\+D id, Vertex\+Property \&vertex\+Property, Cage \&cage)\label{structCommunicationVertex_a602ec19bb4de0a4c371f1b6b5cb2509c}
+
+\item 
+\hypertarget{structCommunicationVertex_a3b5269b4cb72e697e40f0cbf69376f44}{}Vertex\+Property \& {\bfseries operator()} ()\label{structCommunicationVertex_a3b5269b4cb72e697e40f0cbf69376f44}
+
+\item 
+\hypertarget{structCommunicationVertex_a9e9331af039f9a5c0ecfb80b3f1c2c8c}{}\hyperlink{structCommunicationVertex}{Communication\+Vertex} \& {\bfseries operator=} (const \hyperlink{structCommunicationVertex}{Communication\+Vertex} \&other)\label{structCommunicationVertex_a9e9331af039f9a5c0ecfb80b3f1c2c8c}
+
+\item 
+\hypertarget{structCommunicationVertex_aa50dd2eb08041e5f374742acf499af57}{}size\+\_\+t {\bfseries n\+In\+Edges} () const \label{structCommunicationVertex_aa50dd2eb08041e5f374742acf499af57}
+
+\item 
+\hypertarget{structCommunicationVertex_a65e3d6a8799c094eabd3617d49556b67}{}size\+\_\+t {\bfseries n\+Out\+Edges} () const \label{structCommunicationVertex_a65e3d6a8799c094eabd3617d49556b67}
+
+\item 
+\hypertarget{structCommunicationVertex_aa21714107ee07da908341597bde26ac1}{}bool {\bfseries operator==} (\hyperlink{structCommunicationVertex}{Communication\+Vertex} v)\label{structCommunicationVertex_aa21714107ee07da908341597bde26ac1}
+
+\item 
+\hypertarget{structCommunicationVertex_a689c94044589d9c2574ebcbd3d5e615f}{}bool {\bfseries operator!=} (\hyperlink{structCommunicationVertex}{Communication\+Vertex} v)\label{structCommunicationVertex_a689c94044589d9c2574ebcbd3d5e615f}
+
+\item 
+\hypertarget{structCommunicationVertex_a9e7e8ac4d56e06d84e527672c964111a}{}{\footnotesize template$<$class T\+\_\+\+Data $>$ }\\void {\bfseries spread} (const T\+\_\+\+Data \&data, std\+::vector$<$ Event $>$ \&events)\label{structCommunicationVertex_a9e7e8ac4d56e06d84e527672c964111a}
+
+\item 
+\hypertarget{structCommunicationVertex_ac9944c24156cd67c4757795e9dfcf78a}{}{\footnotesize template$<$class T\+\_\+\+Data $>$ }\\void {\bfseries spread} (const T\+\_\+\+Data \&data)\label{structCommunicationVertex_ac9944c24156cd67c4757795e9dfcf78a}
+
+\item 
+\hypertarget{structCommunicationVertex_aff540a3fd0c2ec72cf95cde4ade98804}{}{\footnotesize template$<$class T\+\_\+\+Data $>$ }\\void {\bfseries collect} (T\+\_\+\+Data \&data)\label{structCommunicationVertex_aff540a3fd0c2ec72cf95cde4ade98804}
+
+\item 
+\hypertarget{structCommunicationVertex_a4147baf269f625a9437eb09efb419cee}{}{\footnotesize template$<$class T\+\_\+\+Data , class T\+\_\+\+Functor $>$ }\\void {\bfseries forward} (T\+\_\+\+Data \&data, T\+\_\+\+Functor f)\label{structCommunicationVertex_a4147baf269f625a9437eb09efb419cee}
+
+\item 
+\hypertarget{structCommunicationVertex_a4899685bdf33f8d7e752100deda85a51}{}{\footnotesize template$<$class T\+\_\+\+Data $>$ }\\void {\bfseries forward} (T\+\_\+\+Data \&data)\label{structCommunicationVertex_a4899685bdf33f8d7e752100deda85a51}
+
+\item 
+{\footnotesize template$<$typename T\+\_\+\+Op $>$ }\\T\+\_\+\+Op\+::result\+\_\+type \hyperlink{structCommunicationVertex_aa3b0c6f5b4cc0a284e74fb8c10da43ae}{accumulate} (const T\+\_\+\+Op op, const typename T\+\_\+\+Op\+::result\+\_\+type init)
+\begin{DoxyCompactList}\small\item\em Collects from each incoming edge one elements and reduces them by the binary operator op. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structCommunicationVertex_a468b0059b1c20ea2da85baf06ba09637}{}Vertex\+I\+D {\bfseries id}\label{structCommunicationVertex_a468b0059b1c20ea2da85baf06ba09637}
+
+\item 
+\hypertarget{structCommunicationVertex_a8669eae91885d6e15f75a21833e296c6}{}Vertex\+Property \& {\bfseries vertex\+Property}\label{structCommunicationVertex_a8669eae91885d6e15f75a21833e296c6}
+
+\item 
+\hypertarget{structCommunicationVertex_a5dfc0cecf345aa1cf5e25b33a708a572}{}Cage \& {\bfseries cage}\label{structCommunicationVertex_a5dfc0cecf345aa1cf5e25b33a708a572}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{structCommunicationVertex_aa3b0c6f5b4cc0a284e74fb8c10da43ae}{}\index{Communication\+Vertex@{Communication\+Vertex}!accumulate@{accumulate}}
+\index{accumulate@{accumulate}!Communication\+Vertex@{Communication\+Vertex}}
+\subsubsection[{accumulate(const T\+\_\+\+Op op, const typename T\+\_\+\+Op\+::result\+\_\+type init)}]{\setlength{\rightskip}{0pt plus 5cm}template$<$class T\+\_\+\+Cage $>$ template$<$typename T\+\_\+\+Op $>$ T\+\_\+\+Op\+::result\+\_\+type {\bf Communication\+Vertex}$<$ T\+\_\+\+Cage $>$\+::accumulate (
+\begin{DoxyParamCaption}
+\item[{const T\+\_\+\+Op}]{op, }
+\item[{const typename T\+\_\+\+Op\+::result\+\_\+type}]{init}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\label{structCommunicationVertex_aa3b0c6f5b4cc0a284e74fb8c10da43ae}
+
+
+Collects from each incoming edge one elements and reduces them by the binary operator op. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em op} & binary operator used for reduction (e.\+g. std\+::plus). \\
+\hline
+{\em init} & initial value of the reduction.\\
+\hline
+\end{DoxyParams}
+Each adjacent vertex can send a most one element.
+
+\begin{DoxyReturn}{Returns}
+reduced value 
+\end{DoxyReturn}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/graybat/Vertex.\+hpp\end{DoxyCompactItemize}

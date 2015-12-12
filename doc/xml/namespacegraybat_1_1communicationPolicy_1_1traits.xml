@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="namespacegraybat_1_1communicationPolicy_1_1traits" kind="namespace" language="C++">
+    <compoundname>graybat::communicationPolicy::traits</compoundname>
+    <innerclass refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ConfigType" prot="public">graybat::communicationPolicy::traits::ConfigType</innerclass>
+    <innerclass refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ConfigType_3_01BMPI_01_4" prot="public">graybat::communicationPolicy::traits::ConfigType&lt; BMPI &gt;</innerclass>
+    <innerclass refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ConfigType_3_01ZMQ_01_4" prot="public">graybat::communicationPolicy::traits::ConfigType&lt; ZMQ &gt;</innerclass>
+    <innerclass refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ContextType" prot="public">graybat::communicationPolicy::traits::ContextType</innerclass>
+    <innerclass refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ContextType_3_01BMPI_01_4" prot="public">graybat::communicationPolicy::traits::ContextType&lt; BMPI &gt;</innerclass>
+    <innerclass refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ContextType_3_01ZMQ_01_4" prot="public">graybat::communicationPolicy::traits::ContextType&lt; ZMQ &gt;</innerclass>
+    <innerclass refid="structgraybat_1_1communicationPolicy_1_1traits_1_1EventType" prot="public">graybat::communicationPolicy::traits::EventType</innerclass>
+    <innerclass refid="structgraybat_1_1communicationPolicy_1_1traits_1_1EventType_3_01BMPI_01_4" prot="public">graybat::communicationPolicy::traits::EventType&lt; BMPI &gt;</innerclass>
+    <innerclass refid="structgraybat_1_1communicationPolicy_1_1traits_1_1EventType_3_01ZMQ_01_4" prot="public">graybat::communicationPolicy::traits::EventType&lt; ZMQ &gt;</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/communicationPolicy/BMPI.hpp" line="49" column="1"/>
+  </compounddef>
+</doxygen>

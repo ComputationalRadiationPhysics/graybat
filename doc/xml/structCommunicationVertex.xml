@@ -1,0 +1,441 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="structCommunicationVertex" kind="struct" language="C++" prot="public">
+    <compoundname>CommunicationVertex</compoundname>
+    <templateparamlist>
+      <param>
+        <type>class T_Cage</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structCommunicationVertex_1aa8e4d0fd17c1947dd3a631ee6fa4f3cd" prot="public" static="no">
+        <type>unsigned</type>
+        <definition>typedef unsigned CommunicationVertex&lt; T_Cage &gt;::VertexID</definition>
+        <argsstring></argsstring>
+        <name>VertexID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Vertex.hpp" line="9" column="1" bodyfile="include/graybat/Vertex.hpp" bodystart="9" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structCommunicationVertex_1abe667b52bf7dbf37b5d9dad568274ec8" prot="public" static="no">
+        <type>T_Cage</type>
+        <definition>typedef T_Cage CommunicationVertex&lt; T_Cage &gt;::Cage</definition>
+        <argsstring></argsstring>
+        <name>Cage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Vertex.hpp" line="10" column="1" bodyfile="include/graybat/Vertex.hpp" bodystart="10" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structCommunicationVertex_1ab287653758a0732b6864146c393aeefd" prot="public" static="no">
+        <type>Cage::GraphPolicy</type>
+        <definition>typedef Cage::GraphPolicy CommunicationVertex&lt; T_Cage &gt;::GraphPolicy</definition>
+        <argsstring></argsstring>
+        <name>GraphPolicy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Vertex.hpp" line="11" column="1" bodyfile="include/graybat/Vertex.hpp" bodystart="11" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structCommunicationVertex_1a84e0fffdb071f9734f3af84cc3069629" prot="public" static="no">
+        <type>Cage::Edge</type>
+        <definition>typedef Cage::Edge CommunicationVertex&lt; T_Cage &gt;::Edge</definition>
+        <argsstring></argsstring>
+        <name>Edge</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Vertex.hpp" line="12" column="1" bodyfile="include/graybat/Vertex.hpp" bodystart="12" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structCommunicationVertex_1ae895383be74775cad052c1a0bb70c772" prot="public" static="no">
+        <type>Cage::Event</type>
+        <definition>typedef Cage::Event CommunicationVertex&lt; T_Cage &gt;::Event</definition>
+        <argsstring></argsstring>
+        <name>Event</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Vertex.hpp" line="13" column="1" bodyfile="include/graybat/Vertex.hpp" bodystart="13" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structCommunicationVertex_1a5d8ffebe6eebc88c248eb0c6964f1c37" prot="public" static="no">
+        <type>GraphPolicy::VertexProperty</type>
+        <definition>typedef GraphPolicy::VertexProperty CommunicationVertex&lt; T_Cage &gt;::VertexProperty</definition>
+        <argsstring></argsstring>
+        <name>VertexProperty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Vertex.hpp" line="14" column="1" bodyfile="include/graybat/Vertex.hpp" bodystart="14" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structCommunicationVertex_1a468b0059b1c20ea2da85baf06ba09637" prot="public" static="no" mutable="no">
+        <type>VertexID</type>
+        <definition>VertexID CommunicationVertex&lt; T_Cage &gt;::id</definition>
+        <argsstring></argsstring>
+        <name>id</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Vertex.hpp" line="16" column="1" bodyfile="include/graybat/Vertex.hpp" bodystart="16" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structCommunicationVertex_1a8669eae91885d6e15f75a21833e296c6" prot="public" static="no" mutable="no">
+        <type>VertexProperty &amp;</type>
+        <definition>VertexProperty&amp; CommunicationVertex&lt; T_Cage &gt;::vertexProperty</definition>
+        <argsstring></argsstring>
+        <name>vertexProperty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Vertex.hpp" line="17" column="1" bodyfile="include/graybat/Vertex.hpp" bodystart="17" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structCommunicationVertex_1a5dfc0cecf345aa1cf5e25b33a708a572" prot="public" static="no" mutable="no">
+        <type>Cage &amp;</type>
+        <definition>Cage&amp; CommunicationVertex&lt; T_Cage &gt;::cage</definition>
+        <argsstring></argsstring>
+        <name>cage</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Vertex.hpp" line="18" column="1" bodyfile="include/graybat/Vertex.hpp" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structCommunicationVertex_1a602ec19bb4de0a4c371f1b6b5cb2509c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>CommunicationVertex&lt; T_Cage &gt;::CommunicationVertex</definition>
+        <argsstring>(const VertexID id, VertexProperty &amp;vertexProperty, Cage &amp;cage)</argsstring>
+        <name>CommunicationVertex</name>
+        <param>
+          <type>const VertexID</type>
+          <declname>id</declname>
+        </param>
+        <param>
+          <type>VertexProperty &amp;</type>
+          <declname>vertexProperty</declname>
+        </param>
+        <param>
+          <type>Cage &amp;</type>
+          <declname>cage</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Vertex.hpp" line="20" column="1" bodyfile="include/graybat/Vertex.hpp" bodystart="20" bodyend="25"/>
+      </memberdef>
+      <memberdef kind="function" id="structCommunicationVertex_1a3b5269b4cb72e697e40f0cbf69376f44" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>VertexProperty &amp;</type>
+        <definition>VertexProperty&amp; CommunicationVertex&lt; T_Cage &gt;::operator()</definition>
+        <argsstring>()</argsstring>
+        <name>operator()</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Vertex.hpp" line="30" column="1" bodyfile="include/graybat/Vertex.hpp" bodystart="30" bodyend="32"/>
+      </memberdef>
+      <memberdef kind="function" id="structCommunicationVertex_1a9e9331af039f9a5c0ecfb80b3f1c2c8c" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type><ref refid="structCommunicationVertex" kindref="compound">CommunicationVertex</ref> &amp;</type>
+        <definition>CommunicationVertex&amp; CommunicationVertex&lt; T_Cage &gt;::operator=</definition>
+        <argsstring>(const CommunicationVertex &amp;other)</argsstring>
+        <name>operator=</name>
+        <param>
+          <type>const <ref refid="structCommunicationVertex" kindref="compound">CommunicationVertex</ref> &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Vertex.hpp" line="34" column="1" bodyfile="include/graybat/Vertex.hpp" bodystart="34" bodyend="39"/>
+      </memberdef>
+      <memberdef kind="function" id="structCommunicationVertex_1aa50dd2eb08041e5f374742acf499af57" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t CommunicationVertex&lt; T_Cage &gt;::nInEdges</definition>
+        <argsstring>() const </argsstring>
+        <name>nInEdges</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Vertex.hpp" line="42" column="1" bodyfile="include/graybat/Vertex.hpp" bodystart="42" bodyend="44"/>
+      </memberdef>
+      <memberdef kind="function" id="structCommunicationVertex_1a65e3d6a8799c094eabd3617d49556b67" prot="public" static="no" const="yes" explicit="no" inline="yes" virt="non-virtual">
+        <type>size_t</type>
+        <definition>size_t CommunicationVertex&lt; T_Cage &gt;::nOutEdges</definition>
+        <argsstring>() const </argsstring>
+        <name>nOutEdges</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Vertex.hpp" line="46" column="1" bodyfile="include/graybat/Vertex.hpp" bodystart="46" bodyend="48"/>
+      </memberdef>
+      <memberdef kind="function" id="structCommunicationVertex_1aa21714107ee07da908341597bde26ac1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool CommunicationVertex&lt; T_Cage &gt;::operator==</definition>
+        <argsstring>(CommunicationVertex v)</argsstring>
+        <name>operator==</name>
+        <param>
+          <type><ref refid="structCommunicationVertex" kindref="compound">CommunicationVertex</ref></type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Vertex.hpp" line="50" column="1" bodyfile="include/graybat/Vertex.hpp" bodystart="50" bodyend="52"/>
+      </memberdef>
+      <memberdef kind="function" id="structCommunicationVertex_1a689c94044589d9c2574ebcbd3d5e615f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool CommunicationVertex&lt; T_Cage &gt;::operator!=</definition>
+        <argsstring>(CommunicationVertex v)</argsstring>
+        <name>operator!=</name>
+        <param>
+          <type><ref refid="structCommunicationVertex" kindref="compound">CommunicationVertex</ref></type>
+          <declname>v</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Vertex.hpp" line="54" column="1" bodyfile="include/graybat/Vertex.hpp" bodystart="54" bodyend="56"/>
+      </memberdef>
+      <memberdef kind="function" id="structCommunicationVertex_1a9e7e8ac4d56e06d84e527672c964111a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T_Data</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void CommunicationVertex&lt; T_Cage &gt;::spread</definition>
+        <argsstring>(const T_Data &amp;data, std::vector&lt; Event &gt; &amp;events)</argsstring>
+        <name>spread</name>
+        <param>
+          <type>const T_Data &amp;</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>std::vector&lt; Event &gt; &amp;</type>
+          <declname>events</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Vertex.hpp" line="63" column="1" bodyfile="include/graybat/Vertex.hpp" bodystart="63" bodyend="65"/>
+      </memberdef>
+      <memberdef kind="function" id="structCommunicationVertex_1ac9944c24156cd67c4757795e9dfcf78a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T_Data</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void CommunicationVertex&lt; T_Cage &gt;::spread</definition>
+        <argsstring>(const T_Data &amp;data)</argsstring>
+        <name>spread</name>
+        <param>
+          <type>const T_Data &amp;</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Vertex.hpp" line="68" column="1" bodyfile="include/graybat/Vertex.hpp" bodystart="68" bodyend="70"/>
+      </memberdef>
+      <memberdef kind="function" id="structCommunicationVertex_1aff540a3fd0c2ec72cf95cde4ade98804" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T_Data</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void CommunicationVertex&lt; T_Cage &gt;::collect</definition>
+        <argsstring>(T_Data &amp;data)</argsstring>
+        <name>collect</name>
+        <param>
+          <type>T_Data &amp;</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Vertex.hpp" line="74" column="1" bodyfile="include/graybat/Vertex.hpp" bodystart="74" bodyend="77"/>
+      </memberdef>
+      <memberdef kind="function" id="structCommunicationVertex_1a4147baf269f625a9437eb09efb419cee" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T_Data</type>
+          </param>
+          <param>
+            <type>class T_Functor</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void CommunicationVertex&lt; T_Cage &gt;::forward</definition>
+        <argsstring>(T_Data &amp;data, T_Functor f)</argsstring>
+        <name>forward</name>
+        <param>
+          <type>T_Data &amp;</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>T_Functor</type>
+          <declname>f</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Vertex.hpp" line="80" column="1" bodyfile="include/graybat/Vertex.hpp" bodystart="80" bodyend="85"/>
+      </memberdef>
+      <memberdef kind="function" id="structCommunicationVertex_1a4899685bdf33f8d7e752100deda85a51" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T_Data</type>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void CommunicationVertex&lt; T_Cage &gt;::forward</definition>
+        <argsstring>(T_Data &amp;data)</argsstring>
+        <name>forward</name>
+        <param>
+          <type>T_Data &amp;</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Vertex.hpp" line="88" column="1" bodyfile="include/graybat/Vertex.hpp" bodystart="88" bodyend="93"/>
+      </memberdef>
+      <memberdef kind="function" id="structCommunicationVertex_1aa3b0c6f5b4cc0a284e74fb8c10da43ae" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Op</type>
+          </param>
+        </templateparamlist>
+        <type>T_Op::result_type</type>
+        <definition>T_Op::result_type CommunicationVertex&lt; T_Cage &gt;::accumulate</definition>
+        <argsstring>(const T_Op op, const typename T_Op::result_type init)</argsstring>
+        <name>accumulate</name>
+        <param>
+          <type>const T_Op</type>
+          <declname>op</declname>
+        </param>
+        <param>
+          <type>const typename T_Op::result_type</type>
+          <declname>init</declname>
+        </param>
+        <briefdescription>
+<para>Collects from each incoming edge one elements and reduces them by the binary operator op. </para>        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>op</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>binary operator used for reduction (e.g. std::plus). </para></parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>init</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>initial value of the reduction.</para></parameterdescription>
+</parameteritem>
+</parameterlist>
+Each adjacent vertex can send a most one element.</para><para><simplesect kind="return"><para>reduced value </para></simplesect>
+</para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/Vertex.hpp" line="108" column="1" bodyfile="include/graybat/Vertex.hpp" bodystart="108" bodyend="113"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/Vertex.hpp" line="7" column="1" bodyfile="include/graybat/Vertex.hpp" bodystart="7" bodyend="115"/>
+    <listofallmembers>
+      <member refid="structCommunicationVertex_1aa3b0c6f5b4cc0a284e74fb8c10da43ae" prot="public" virt="non-virtual"><scope>CommunicationVertex</scope><name>accumulate</name></member>
+      <member refid="structCommunicationVertex_1abe667b52bf7dbf37b5d9dad568274ec8" prot="public" virt="non-virtual"><scope>CommunicationVertex</scope><name>Cage</name></member>
+      <member refid="structCommunicationVertex_1a5dfc0cecf345aa1cf5e25b33a708a572" prot="public" virt="non-virtual"><scope>CommunicationVertex</scope><name>cage</name></member>
+      <member refid="structCommunicationVertex_1aff540a3fd0c2ec72cf95cde4ade98804" prot="public" virt="non-virtual"><scope>CommunicationVertex</scope><name>collect</name></member>
+      <member refid="structCommunicationVertex_1a602ec19bb4de0a4c371f1b6b5cb2509c" prot="public" virt="non-virtual"><scope>CommunicationVertex</scope><name>CommunicationVertex</name></member>
+      <member refid="structCommunicationVertex_1a84e0fffdb071f9734f3af84cc3069629" prot="public" virt="non-virtual"><scope>CommunicationVertex</scope><name>Edge</name></member>
+      <member refid="structCommunicationVertex_1ae895383be74775cad052c1a0bb70c772" prot="public" virt="non-virtual"><scope>CommunicationVertex</scope><name>Event</name></member>
+      <member refid="structCommunicationVertex_1a4147baf269f625a9437eb09efb419cee" prot="public" virt="non-virtual"><scope>CommunicationVertex</scope><name>forward</name></member>
+      <member refid="structCommunicationVertex_1a4899685bdf33f8d7e752100deda85a51" prot="public" virt="non-virtual"><scope>CommunicationVertex</scope><name>forward</name></member>
+      <member refid="structCommunicationVertex_1ab287653758a0732b6864146c393aeefd" prot="public" virt="non-virtual"><scope>CommunicationVertex</scope><name>GraphPolicy</name></member>
+      <member refid="structCommunicationVertex_1a468b0059b1c20ea2da85baf06ba09637" prot="public" virt="non-virtual"><scope>CommunicationVertex</scope><name>id</name></member>
+      <member refid="structCommunicationVertex_1aa50dd2eb08041e5f374742acf499af57" prot="public" virt="non-virtual"><scope>CommunicationVertex</scope><name>nInEdges</name></member>
+      <member refid="structCommunicationVertex_1a65e3d6a8799c094eabd3617d49556b67" prot="public" virt="non-virtual"><scope>CommunicationVertex</scope><name>nOutEdges</name></member>
+      <member refid="structCommunicationVertex_1a689c94044589d9c2574ebcbd3d5e615f" prot="public" virt="non-virtual"><scope>CommunicationVertex</scope><name>operator!=</name></member>
+      <member refid="structCommunicationVertex_1a3b5269b4cb72e697e40f0cbf69376f44" prot="public" virt="non-virtual"><scope>CommunicationVertex</scope><name>operator()</name></member>
+      <member refid="structCommunicationVertex_1a9e9331af039f9a5c0ecfb80b3f1c2c8c" prot="public" virt="non-virtual"><scope>CommunicationVertex</scope><name>operator=</name></member>
+      <member refid="structCommunicationVertex_1aa21714107ee07da908341597bde26ac1" prot="public" virt="non-virtual"><scope>CommunicationVertex</scope><name>operator==</name></member>
+      <member refid="structCommunicationVertex_1a9e7e8ac4d56e06d84e527672c964111a" prot="public" virt="non-virtual"><scope>CommunicationVertex</scope><name>spread</name></member>
+      <member refid="structCommunicationVertex_1ac9944c24156cd67c4757795e9dfcf78a" prot="public" virt="non-virtual"><scope>CommunicationVertex</scope><name>spread</name></member>
+      <member refid="structCommunicationVertex_1aa8e4d0fd17c1947dd3a631ee6fa4f3cd" prot="public" virt="non-virtual"><scope>CommunicationVertex</scope><name>VertexID</name></member>
+      <member refid="structCommunicationVertex_1a8669eae91885d6e15f75a21833e296c6" prot="public" virt="non-virtual"><scope>CommunicationVertex</scope><name>vertexProperty</name></member>
+      <member refid="structCommunicationVertex_1a5d8ffebe6eebc88c248eb0c6964f1c37" prot="public" virt="non-virtual"><scope>CommunicationVertex</scope><name>VertexProperty</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

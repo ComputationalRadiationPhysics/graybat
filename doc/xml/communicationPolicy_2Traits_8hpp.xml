@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="communicationPolicy_2Traits_8hpp" kind="file" language="C++">
+    <compoundname>Traits.hpp</compoundname>
+    <includedby refid="Base_8hpp" local="no">include/graybat/communicationPolicy/Base.hpp</includedby>
+    <includedby refid="BMPI_8hpp" local="no">include/graybat/communicationPolicy/BMPI.hpp</includedby>
+    <includedby refid="ZMQ_8hpp" local="no">include/graybat/communicationPolicy/ZMQ.hpp</includedby>
+    <includedby refid="zmq_2Context_8hpp" local="no">include/graybat/communicationPolicy/zmq/Context.hpp</includedby>
+    <includedby refid="zmq_2Event_8hpp" local="no">include/graybat/communicationPolicy/zmq/Event.hpp</includedby>
+    <includedby refid="Cage_8hpp" local="no">include/graybat/Cage.hpp</includedby>
+    <invincdepgraph>
+      <node id="398">
+        <label>include/graybat/communicationPolicy/ZMQ.hpp</label>
+        <link refid="ZMQ_8hpp_source"/>
+      </node>
+      <node id="399">
+        <label>include/graybat/communicationPolicy/zmq/Context.hpp</label>
+        <link refid="zmq_2Context_8hpp_source"/>
+        <childnode refid="398" relation="include">
+        </childnode>
+      </node>
+      <node id="400">
+        <label>include/graybat/communicationPolicy/zmq/Event.hpp</label>
+        <link refid="zmq_2Event_8hpp_source"/>
+        <childnode refid="398" relation="include">
+        </childnode>
+      </node>
+      <node id="397">
+        <label>include/graybat/communicationPolicy/BMPI.hpp</label>
+        <link refid="BMPI_8hpp_source"/>
+      </node>
+      <node id="401">
+        <label>include/graybat/Cage.hpp</label>
+        <link refid="Cage_8hpp_source"/>
+      </node>
+      <node id="395">
+        <label>include/graybat/communicationPolicy/Traits.hpp</label>
+        <link refid="communicationPolicy/Traits.hpp"/>
+        <childnode refid="396" relation="include">
+        </childnode>
+        <childnode refid="397" relation="include">
+        </childnode>
+        <childnode refid="398" relation="include">
+        </childnode>
+        <childnode refid="399" relation="include">
+        </childnode>
+        <childnode refid="400" relation="include">
+        </childnode>
+        <childnode refid="401" relation="include">
+        </childnode>
+      </node>
+      <node id="396">
+        <label>include/graybat/communicationPolicy/Base.hpp</label>
+        <link refid="Base_8hpp_source"/>
+        <childnode refid="397" relation="include">
+        </childnode>
+        <childnode refid="398" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ContextType" prot="public">graybat::communicationPolicy::traits::ContextType</innerclass>
+    <innerclass refid="structgraybat_1_1communicationPolicy_1_1traits_1_1EventType" prot="public">graybat::communicationPolicy::traits::EventType</innerclass>
+    <innerclass refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ConfigType" prot="public">graybat::communicationPolicy::traits::ConfigType</innerclass>
+    <innernamespace refid="namespacegraybat">graybat</innernamespace>
+    <innernamespace refid="namespacegraybat_1_1communicationPolicy">graybat::communicationPolicy</innernamespace>
+    <innernamespace refid="namespacegraybat_1_1communicationPolicy_1_1traits">graybat::communicationPolicy::traits</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacegraybat" kindref="compound">graybat</ref><sp/>{</highlight></codeline>
+<codeline lineno="4"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">communicationPolicy<sp/>{</highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">traits<sp/>{</highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T_CommunicationPolicy&gt;</highlight></codeline>
+<codeline lineno="10" refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ContextType" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ContextType" kindref="compound">ContextType</ref>;</highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T_CommunicationPolicy&gt;</highlight></codeline>
+<codeline lineno="13" refid="structgraybat_1_1communicationPolicy_1_1traits_1_1EventType" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structgraybat_1_1communicationPolicy_1_1traits_1_1EventType" kindref="compound">EventType</ref>;</highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T_CommunicationPolicy&gt;</highlight></codeline>
+<codeline lineno="16" refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ConfigType" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ConfigType" kindref="compound">ConfigType</ref>;</highlight></codeline>
+<codeline lineno="17"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>traits</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T_CommunicationPolicy&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>VAddr<sp/>=<sp/>unsigned;</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T_CommunicationPolicy&gt;</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/><ref refid="structTag" kindref="compound">Tag</ref><sp/>=<sp/>unsigned;</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T_CommunicationPolicy&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>ContextID<sp/>=<sp/>unsigned;</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T_CommunicationPolicy&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>MsgType<sp/>=<sp/>unsigned;</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T_CommunicationPolicy&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>MsgID<sp/>=<sp/>unsigned;</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T_CommunicationPolicy&gt;</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>Context<sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/><ref refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ContextType" kindref="compound">traits::ContextType&lt;T_CommunicationPolicy&gt;::type</ref>;</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T_CommunicationPolicy&gt;</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>Event<sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/><ref refid="structgraybat_1_1communicationPolicy_1_1traits_1_1EventType" kindref="compound">traits::EventType&lt;T_CommunicationPolicy&gt;::type</ref>;</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal"><sp/>&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T_CommunicationPolicy&gt;</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>Config<sp/>=<sp/></highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/><ref refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ConfigType" kindref="compound">traits::ConfigType&lt;T_CommunicationPolicy&gt;::type</ref>;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/>}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>communicationPolicy</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="46"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>graybat</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="include/graybat/communicationPolicy/Traits.hpp"/>
+  </compounddef>
+</doxygen>

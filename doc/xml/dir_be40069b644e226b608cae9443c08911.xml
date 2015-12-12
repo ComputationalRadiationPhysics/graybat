@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="dir_be40069b644e226b608cae9443c08911" kind="dir">
+    <compoundname>include/graybat/communicationPolicy</compoundname>
+    <innerdir refid="dir_ed3f8fa99ada5bb15f5f9ba5185b02d2">include/graybat/communicationPolicy/bmpi</innerdir>
+    <innerdir refid="dir_99784da671f59b1c48e684edcf9e78fc">include/graybat/communicationPolicy/zmq</innerdir>
+    <innerfile refid="Base_8hpp">Base.hpp</innerfile>
+    <innerfile refid="BMPI_8hpp">BMPI.hpp</innerfile>
+    <innerfile refid="MinBMPI_8hpp">MinBMPI.hpp</innerfile>
+    <innerfile refid="communicationPolicy_2Traits_8hpp">Traits.hpp</innerfile>
+    <innerfile refid="ZMQ_8hpp">ZMQ.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/communicationPolicy/"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,33 @@
+\hypertarget{structgraybat_1_1mapping_1_1Random}{}\section{graybat\+:\+:mapping\+:\+:Random Struct Reference}
+\label{structgraybat_1_1mapping_1_1Random}\index{graybat\+::mapping\+::\+Random@{graybat\+::mapping\+::\+Random}}
+
+
+{\ttfamily \#include $<$Random.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structgraybat_1_1mapping_1_1Random_aa312e299c06353a14462903718bbd4d2}{}{\bfseries Random} (int seed)\label{structgraybat_1_1mapping_1_1Random_aa312e299c06353a14462903718bbd4d2}
+
+\item 
+\hypertarget{structgraybat_1_1mapping_1_1Random_ac605dc1800492f611545fcc80a9767f5}{}{\footnotesize template$<$typename T\+\_\+\+Graph $>$ }\\std\+::vector$<$ typename T\+\_\+\+Graph\+::\+Vertex $>$ {\bfseries operator()} (const unsigned process\+I\+D, const unsigned process\+Count, T\+\_\+\+Graph \&graph)\label{structgraybat_1_1mapping_1_1Random_ac605dc1800492f611545fcc80a9767f5}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{structgraybat_1_1mapping_1_1Random}{Random} distribution of vertices of the {\itshape graph} to the the peers. All peers need to set the same random {\itshape seed}. Thus, all peers have the same random base. Therefore seeds that depend on varying parameters like time or pid or not applicable here.
+
+
+\begin{DoxyParams}{Parameters}
+{\em seed} & static random seed for all peers \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+random set of vertices of the {\itshape graph} 
+\end{DoxyReturn}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/graybat/mapping/Random.\+hpp\end{DoxyCompactItemize}

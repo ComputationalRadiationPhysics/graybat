@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="namespacegraybat_1_1communicationPolicy" kind="namespace" language="C++">
+    <compoundname>graybat::communicationPolicy</compoundname>
+    <innerclass refid="structgraybat_1_1communicationPolicy_1_1Base" prot="public">graybat::communicationPolicy::Base</innerclass>
+    <innerclass refid="structgraybat_1_1communicationPolicy_1_1BMPI" prot="public">graybat::communicationPolicy::BMPI</innerclass>
+    <innerclass refid="structgraybat_1_1communicationPolicy_1_1MinBMPI" prot="public">graybat::communicationPolicy::MinBMPI</innerclass>
+    <innerclass refid="structgraybat_1_1communicationPolicy_1_1ZMQ" prot="public">graybat::communicationPolicy::ZMQ</innerclass>
+    <innernamespace refid="namespacegraybat_1_1communicationPolicy_1_1bmpi">graybat::communicationPolicy::bmpi</innernamespace>
+    <innernamespace refid="namespacegraybat_1_1communicationPolicy_1_1traits">graybat::communicationPolicy::traits</innernamespace>
+    <innernamespace refid="namespacegraybat_1_1communicationPolicy_1_1zmq">graybat::communicationPolicy::zmq</innernamespace>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacegraybat_1_1communicationPolicy_1a022b602e6867f8188044b44ac453750b" prot="public" static="no">
+        <type>unsigned</type>
+        <definition>using graybat::communicationPolicy::VAddr = typedef unsigned</definition>
+        <argsstring></argsstring>
+        <name>VAddr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Traits.hpp" line="21" column="1" bodyfile="include/graybat/communicationPolicy/Traits.hpp" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacegraybat_1_1communicationPolicy_1addb25527b5f6b94913cbbeb83b222cb3" prot="public" static="no">
+        <type>unsigned</type>
+        <definition>using graybat::communicationPolicy::Tag = typedef unsigned</definition>
+        <argsstring></argsstring>
+        <name>Tag</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Traits.hpp" line="24" column="1" bodyfile="include/graybat/communicationPolicy/Traits.hpp" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacegraybat_1_1communicationPolicy_1a911eb446514a36ddd20f9b286ae08500" prot="public" static="no">
+        <type>unsigned</type>
+        <definition>using graybat::communicationPolicy::ContextID = typedef unsigned</definition>
+        <argsstring></argsstring>
+        <name>ContextID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Traits.hpp" line="27" column="1" bodyfile="include/graybat/communicationPolicy/Traits.hpp" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacegraybat_1_1communicationPolicy_1accc8f7ffd83f0ae4bbb889cd26d06e3e" prot="public" static="no">
+        <type>unsigned</type>
+        <definition>using graybat::communicationPolicy::MsgType = typedef unsigned</definition>
+        <argsstring></argsstring>
+        <name>MsgType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Traits.hpp" line="30" column="1" bodyfile="include/graybat/communicationPolicy/Traits.hpp" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacegraybat_1_1communicationPolicy_1a0123fd700b2c2e2dc3d76f2cbed6ca17" prot="public" static="no">
+        <type>unsigned</type>
+        <definition>using graybat::communicationPolicy::MsgID = typedef unsigned</definition>
+        <argsstring></argsstring>
+        <name>MsgID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Traits.hpp" line="33" column="1" bodyfile="include/graybat/communicationPolicy/Traits.hpp" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacegraybat_1_1communicationPolicy_1a5f4cfd996516d47b12b75d9cfc37e51b" prot="public" static="no">
+        <type>typename <ref refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ContextType" kindref="compound">traits::ContextType</ref>&lt; T_CommunicationPolicy &gt;::type</type>
+        <definition>using graybat::communicationPolicy::Context = typedef typename traits::ContextType&lt;T_CommunicationPolicy&gt;::type</definition>
+        <argsstring></argsstring>
+        <name>Context</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Traits.hpp" line="36" column="1" bodyfile="include/graybat/communicationPolicy/Traits.hpp" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacegraybat_1_1communicationPolicy_1a3dfe4f56618b6d9ea50a123fd9a45beb" prot="public" static="no">
+        <type>typename <ref refid="structgraybat_1_1communicationPolicy_1_1traits_1_1EventType" kindref="compound">traits::EventType</ref>&lt; T_CommunicationPolicy &gt;::type</type>
+        <definition>using graybat::communicationPolicy::Event = typedef typename traits::EventType&lt;T_CommunicationPolicy&gt;::type</definition>
+        <argsstring></argsstring>
+        <name>Event</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Traits.hpp" line="39" column="1" bodyfile="include/graybat/communicationPolicy/Traits.hpp" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacegraybat_1_1communicationPolicy_1a025a1c1292812a5230d408a1a4df16cd" prot="public" static="no">
+        <type>typename <ref refid="structgraybat_1_1communicationPolicy_1_1traits_1_1ConfigType" kindref="compound">traits::ConfigType</ref>&lt; T_CommunicationPolicy &gt;::type</type>
+        <definition>using graybat::communicationPolicy::Config = typedef typename traits::ConfigType&lt;T_CommunicationPolicy&gt;::type</definition>
+        <argsstring></argsstring>
+        <name>Config</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/Traits.hpp" line="42" column="1" bodyfile="include/graybat/communicationPolicy/Traits.hpp" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/communicationPolicy/Base.hpp" line="7" column="1"/>
+  </compounddef>
+</doxygen>

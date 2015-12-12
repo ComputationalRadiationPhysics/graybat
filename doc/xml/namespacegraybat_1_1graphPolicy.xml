@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="namespacegraybat_1_1graphPolicy" kind="namespace" language="C++">
+    <compoundname>graybat::graphPolicy</compoundname>
+    <innerclass refid="classgraybat_1_1graphPolicy_1_1BGL" prot="public">graybat::graphPolicy::BGL</innerclass>
+    <innerclass refid="structgraybat_1_1graphPolicy_1_1SimpleProperty" prot="public">graybat::graphPolicy::SimpleProperty</innerclass>
+    <innernamespace refid="namespacegraybat_1_1graphPolicy_1_1traits">graybat::graphPolicy::traits</innernamespace>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacegraybat_1_1graphPolicy_1a9976e45fc381a3d2460ec7b399a95c43" prot="public" static="no">
+        <type>typename T_GraphPolicy::InEdgeIter</type>
+        <definition>using graybat::graphPolicy::InEdgeIter = typedef typename T_GraphPolicy::InEdgeIter</definition>
+        <argsstring></argsstring>
+        <name>InEdgeIter</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/Traits.hpp" line="20" column="1" bodyfile="include/graybat/graphPolicy/Traits.hpp" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacegraybat_1_1graphPolicy_1a7dded9332ba985f67f240ecf49f036fc" prot="public" static="no">
+        <type>typename T_GraphPolicy::OutEdgeIter</type>
+        <definition>using graybat::graphPolicy::OutEdgeIter = typedef typename T_GraphPolicy::OutEdgeIter</definition>
+        <argsstring></argsstring>
+        <name>OutEdgeIter</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/Traits.hpp" line="23" column="1" bodyfile="include/graybat/graphPolicy/Traits.hpp" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacegraybat_1_1graphPolicy_1aa63824a3d870d071f7954d7f80a7c38b" prot="public" static="no">
+        <type>typename T_GraphPolicy::AdjacentVertexIter</type>
+        <definition>using graybat::graphPolicy::AdjacentVertexIter = typedef typename T_GraphPolicy::AdjacentVertexIter</definition>
+        <argsstring></argsstring>
+        <name>AdjacentVertexIter</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/Traits.hpp" line="26" column="1" bodyfile="include/graybat/graphPolicy/Traits.hpp" bodystart="26" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacegraybat_1_1graphPolicy_1a47ceca0842db77a855883e296e8aba6f" prot="public" static="no">
+        <type>typename T_GraphPolicy::AllVertexIter</type>
+        <definition>using graybat::graphPolicy::AllVertexIter = typedef typename T_GraphPolicy::AllVertexIter</definition>
+        <argsstring></argsstring>
+        <name>AllVertexIter</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/Traits.hpp" line="29" column="1" bodyfile="include/graybat/graphPolicy/Traits.hpp" bodystart="29" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacegraybat_1_1graphPolicy_1a83b152e414b6159c203118064b58a9c1" prot="public" static="no">
+        <type>typename T_GraphPolicy::VertexProperty</type>
+        <definition>using graybat::graphPolicy::VertexProperty = typedef typename T_GraphPolicy::VertexProperty</definition>
+        <argsstring></argsstring>
+        <name>VertexProperty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/Traits.hpp" line="35" column="1" bodyfile="include/graybat/graphPolicy/Traits.hpp" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacegraybat_1_1graphPolicy_1ad993c10caf1ec7ee56cde279c496d042" prot="public" static="no">
+        <type>typename T_GraphPolicy::EdgeProperty</type>
+        <definition>using graybat::graphPolicy::EdgeProperty = typedef typename T_GraphPolicy::EdgeProperty</definition>
+        <argsstring></argsstring>
+        <name>EdgeProperty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/Traits.hpp" line="38" column="1" bodyfile="include/graybat/graphPolicy/Traits.hpp" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacegraybat_1_1graphPolicy_1ad5655ad4dbcc48fd9596fdff3afc3cb1" prot="public" static="no">
+        <type>size_t</type>
+        <definition>using graybat::graphPolicy::VertexID = typedef size_t</definition>
+        <argsstring></argsstring>
+        <name>VertexID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/Traits.hpp" line="43" column="1" bodyfile="include/graybat/graphPolicy/Traits.hpp" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacegraybat_1_1graphPolicy_1acab536fd5fdf0ab1149ca3b1fd01470e" prot="public" static="no">
+        <type>size_t</type>
+        <definition>using graybat::graphPolicy::EdgeID = typedef size_t</definition>
+        <argsstring></argsstring>
+        <name>EdgeID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/Traits.hpp" line="44" column="1" bodyfile="include/graybat/graphPolicy/Traits.hpp" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacegraybat_1_1graphPolicy_1a306caa7bf837e689c43e205af69f6553" prot="public" static="no">
+        <type>size_t</type>
+        <definition>using graybat::graphPolicy::GraphID = typedef size_t</definition>
+        <argsstring></argsstring>
+        <name>GraphID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/Traits.hpp" line="45" column="1" bodyfile="include/graybat/graphPolicy/Traits.hpp" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacegraybat_1_1graphPolicy_1a6cf868f0c794468409f997b450ca0c26" prot="public" static="no">
+        <type>std::pair&lt; VertexID, VertexProperty&lt; T_GraphPolicy &gt; &gt;</type>
+        <definition>using graybat::graphPolicy::VertexDescription = typedef std::pair&lt;VertexID, VertexProperty&lt;T_GraphPolicy&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>VertexDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/Traits.hpp" line="48" column="1" bodyfile="include/graybat/graphPolicy/Traits.hpp" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacegraybat_1_1graphPolicy_1a157350613467526bb15d57ee39dbdee0" prot="public" static="no">
+        <type>std::pair&lt; std::pair&lt; VertexID,VertexID &gt;,EdgeProperty&lt; T_GraphPolicy &gt; &gt;</type>
+        <definition>using graybat::graphPolicy::EdgeDescription = typedef std::pair&lt; std::pair&lt; VertexID ,VertexID &gt; ,EdgeProperty&lt;T_GraphPolicy&gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>EdgeDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/Traits.hpp" line="51" column="1" bodyfile="include/graybat/graphPolicy/Traits.hpp" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacegraybat_1_1graphPolicy_1a7ab95378286e3549b1e15e4f36a71ea8" prot="public" static="no">
+        <type>std::pair&lt; std::vector&lt; VertexDescription&lt; T_GraphPolicy &gt; &gt;, std::vector&lt; EdgeDescription&lt; T_GraphPolicy &gt; &gt; &gt;</type>
+        <definition>using graybat::graphPolicy::GraphDescription = typedef std::pair&lt; std::vector&lt;VertexDescription&lt;T_GraphPolicy&gt; &gt;, std::vector&lt;EdgeDescription&lt;T_GraphPolicy&gt; &gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>GraphDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/Traits.hpp" line="57" column="1" bodyfile="include/graybat/graphPolicy/Traits.hpp" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/graphPolicy/BGL.hpp" line="23" column="1"/>
+  </compounddef>
+</doxygen>

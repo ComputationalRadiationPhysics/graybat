@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event" kind="class" language="C++" prot="public">
+    <compoundname>graybat::communicationPolicy::BMPI::Event</compoundname>
+    <includes refid="BMPI_8hpp" local="no">BMPI.hpp</includes>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1a7efe5307924e6df52e13d19c3477ff00" prot="private" static="no">
+        <type>unsigned</type>
+        <definition>typedef unsigned graybat::communicationPolicy::BMPI::Event::Tag</definition>
+        <argsstring></argsstring>
+        <name>Tag</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/BMPI.hpp" line="108" column="1" bodyfile="include/graybat/communicationPolicy/BMPI.hpp" bodystart="108" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1a2bd43f5baa33575b29bfa4ed8190cb60" prot="private" static="no">
+        <type>unsigned</type>
+        <definition>typedef unsigned graybat::communicationPolicy::BMPI::Event::VAddr</definition>
+        <argsstring></argsstring>
+        <name>VAddr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/BMPI.hpp" line="109" column="1" bodyfile="include/graybat/communicationPolicy/BMPI.hpp" bodystart="109" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1ad5a808e8fc3ae880152c4e1663cded6d" prot="private" static="no" mutable="no">
+        <type>mpi::request</type>
+        <definition>mpi::request graybat::communicationPolicy::BMPI::Event::request</definition>
+        <argsstring></argsstring>
+        <name>request</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/BMPI.hpp" line="163" column="1" bodyfile="include/graybat/communicationPolicy/BMPI.hpp" bodystart="163" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1a16507079d86f607e1d6e9014c992421e" prot="private" static="no" mutable="no">
+        <type>mpi::status</type>
+        <definition>mpi::status graybat::communicationPolicy::BMPI::Event::status</definition>
+        <argsstring></argsstring>
+        <name>status</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/BMPI.hpp" line="164" column="1" bodyfile="include/graybat/communicationPolicy/BMPI.hpp" bodystart="164" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1ad059f55df1a403caa763130e09a245d7" prot="private" static="no" mutable="no">
+        <type>const bool</type>
+        <definition>const bool graybat::communicationPolicy::BMPI::Event::async</definition>
+        <argsstring></argsstring>
+        <name>async</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/BMPI.hpp" line="165" column="1" bodyfile="include/graybat/communicationPolicy/BMPI.hpp" bodystart="165" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1ab26d9b8c2006182b069a9e642fe145a8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::communicationPolicy::BMPI::Event::Event</definition>
+        <argsstring>(mpi::request request)</argsstring>
+        <name>Event</name>
+        <param>
+          <type>mpi::request</type>
+          <declname>request</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/BMPI.hpp" line="112" column="1" bodyfile="include/graybat/communicationPolicy/BMPI.hpp" bodystart="112" bodyend="114"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1ad807f147dac5c9b5e112771890a10498" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::communicationPolicy::BMPI::Event::Event</definition>
+        <argsstring>(mpi::status status)</argsstring>
+        <name>Event</name>
+        <param>
+          <type>mpi::status</type>
+          <declname>status</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/BMPI.hpp" line="116" column="1" bodyfile="include/graybat/communicationPolicy/BMPI.hpp" bodystart="116" bodyend="118"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1aa0936ee5421f5142c993194ebaa44465" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::communicationPolicy::BMPI::Event::~Event</definition>
+        <argsstring>()</argsstring>
+        <name>~Event</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/BMPI.hpp" line="121" column="1" bodyfile="include/graybat/communicationPolicy/BMPI.hpp" bodystart="121" bodyend="123"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1ae900e8d70e5ef1f65daa0454e5107f11" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void graybat::communicationPolicy::BMPI::Event::wait</definition>
+        <argsstring>()</argsstring>
+        <name>wait</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/BMPI.hpp" line="125" column="1" bodyfile="include/graybat/communicationPolicy/BMPI.hpp" bodystart="125" bodyend="130"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1a24f71a744d3b980e9f2f7dcf92fdf7b8" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool graybat::communicationPolicy::BMPI::Event::ready</definition>
+        <argsstring>()</argsstring>
+        <name>ready</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/BMPI.hpp" line="132" column="1" bodyfile="include/graybat/communicationPolicy/BMPI.hpp" bodystart="132" bodyend="145"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1a9fbb6d904385973406134ebdc4b0400f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>VAddr</type>
+        <definition>VAddr graybat::communicationPolicy::BMPI::Event::source</definition>
+        <argsstring>()</argsstring>
+        <name>source</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/BMPI.hpp" line="147" column="1" bodyfile="include/graybat/communicationPolicy/BMPI.hpp" bodystart="147" bodyend="152"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1afb39c302ae3c18661d3aa5dbc17216f5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>Tag</type>
+        <definition>Tag graybat::communicationPolicy::BMPI::Event::getTag</definition>
+        <argsstring>()</argsstring>
+        <name>getTag</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/communicationPolicy/BMPI.hpp" line="154" column="1" bodyfile="include/graybat/communicationPolicy/BMPI.hpp" bodystart="154" bodyend="160"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>An event is returned by non-blocking communication operations and can be asked whether an operation has finished or it can be waited for this operation to be finished. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/communicationPolicy/BMPI.hpp" line="107" column="1" bodyfile="include/graybat/communicationPolicy/BMPI.hpp" bodystart="107" bodyend="169"/>
+    <listofallmembers>
+      <member refid="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1ad059f55df1a403caa763130e09a245d7" prot="private" virt="non-virtual"><scope>graybat::communicationPolicy::BMPI::Event</scope><name>async</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1ab26d9b8c2006182b069a9e642fe145a8" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::BMPI::Event</scope><name>Event</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1ad807f147dac5c9b5e112771890a10498" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::BMPI::Event</scope><name>Event</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1afb39c302ae3c18661d3aa5dbc17216f5" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::BMPI::Event</scope><name>getTag</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1a24f71a744d3b980e9f2f7dcf92fdf7b8" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::BMPI::Event</scope><name>ready</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1ad5a808e8fc3ae880152c4e1663cded6d" prot="private" virt="non-virtual"><scope>graybat::communicationPolicy::BMPI::Event</scope><name>request</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1a9fbb6d904385973406134ebdc4b0400f" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::BMPI::Event</scope><name>source</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1a16507079d86f607e1d6e9014c992421e" prot="private" virt="non-virtual"><scope>graybat::communicationPolicy::BMPI::Event</scope><name>status</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1a7efe5307924e6df52e13d19c3477ff00" prot="private" virt="non-virtual"><scope>graybat::communicationPolicy::BMPI::Event</scope><name>Tag</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1a2bd43f5baa33575b29bfa4ed8190cb60" prot="private" virt="non-virtual"><scope>graybat::communicationPolicy::BMPI::Event</scope><name>VAddr</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1ae900e8d70e5ef1f65daa0454e5107f11" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::BMPI::Event</scope><name>wait</name></member>
+      <member refid="classgraybat_1_1communicationPolicy_1_1BMPI_1_1Event_1aa0936ee5421f5142c993194ebaa44465" prot="public" virt="non-virtual"><scope>graybat::communicationPolicy::BMPI::Event</scope><name>~Event</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

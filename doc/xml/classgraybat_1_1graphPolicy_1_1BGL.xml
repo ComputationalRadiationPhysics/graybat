@@ -1,0 +1,658 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="classgraybat_1_1graphPolicy_1_1BGL" kind="class" language="C++" prot="public">
+    <compoundname>graybat::graphPolicy::BGL</compoundname>
+    <includes refid="BGL_8hpp" local="no">BGL.hpp</includes>
+    <templateparamlist>
+      <param>
+        <type>class</type>
+        <declname>T_VertexProperty</declname>
+        <defname>T_VertexProperty</defname>
+        <defval><ref refid="structgraybat_1_1graphPolicy_1_1SimpleProperty" kindref="compound">SimpleProperty</ref></defval>
+      </param>
+      <param>
+        <type>class</type>
+        <declname>T_EdgeProperty</declname>
+        <defname>T_EdgeProperty</defname>
+        <defval><ref refid="structgraybat_1_1graphPolicy_1_1SimpleProperty" kindref="compound">SimpleProperty</ref></defval>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classgraybat_1_1graphPolicy_1_1BGL_1ab6ae7144c11e2ff0d0aaaef9364a0a90" prot="private" static="no">
+        <type>boost::adjacency_list&lt; boost::vecS, boost::vecS, boost::bidirectionalS, boost::property&lt; boost::vertex_index_t, size_t, std::pair&lt; graybat::graphPolicy::VertexID, T_VertexProperty &gt; &gt;, boost::property&lt; boost::edge_index_t, size_t, std::pair&lt; graybat::graphPolicy::EdgeID, T_EdgeProperty &gt; &gt; &gt;</type>
+        <definition>using graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::GraphType =  boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, boost::property&lt;boost::vertex_index_t, size_t, std::pair&lt;graybat::graphPolicy::VertexID, T_VertexProperty&gt; &gt;, boost::property&lt;boost::edge_index_t, size_t, std::pair&lt;graybat::graphPolicy::EdgeID, T_EdgeProperty&gt; &gt; &gt;</definition>
+        <argsstring></argsstring>
+        <name>GraphType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="41" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgraybat_1_1graphPolicy_1_1BGL_1a970baa0488113d6a2684c63d33774887" prot="private" static="no">
+        <type>boost::subgraph&lt; GraphType &gt;</type>
+        <definition>using graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::BGLGraph =  boost::subgraph&lt;GraphType&gt;</definition>
+        <argsstring></argsstring>
+        <name>BGLGraph</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="47" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgraybat_1_1graphPolicy_1_1BGL_1a341705b87cbbadef1f10080f3c007d1d" prot="private" static="no">
+        <type>typename BGLGraph::vertex_descriptor</type>
+        <definition>using graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::BglVertexID =  typename BGLGraph::vertex_descriptor</definition>
+        <argsstring></argsstring>
+        <name>BglVertexID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="48" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgraybat_1_1graphPolicy_1_1BGL_1aa83e29dcafb70fca3e5a814bc4b053ab" prot="private" static="no">
+        <type>typename BGLGraph::edge_descriptor</type>
+        <definition>using graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::BglEdgeID =  typename BGLGraph::edge_descriptor</definition>
+        <argsstring></argsstring>
+        <name>BglEdgeID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="49" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgraybat_1_1graphPolicy_1_1BGL_1ab121e3cd89cda13bb16cdf0a37e20458" prot="private" static="no">
+        <type>graybat::graphPolicy::VertexID</type>
+        <definition>using graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::VertexID =  graybat::graphPolicy::VertexID</definition>
+        <argsstring></argsstring>
+        <name>VertexID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="50" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgraybat_1_1graphPolicy_1_1BGL_1a3e75989926044746a74a8a128c7d34c7" prot="private" static="no">
+        <type>graybat::graphPolicy::EdgeID</type>
+        <definition>using graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::EdgeID =  graybat::graphPolicy::EdgeID</definition>
+        <argsstring></argsstring>
+        <name>EdgeID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="51" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgraybat_1_1graphPolicy_1_1BGL_1a94096c6f7ba2a6146c984f3dd6cb031e" prot="private" static="no">
+        <type>graybat::graphPolicy::GraphID</type>
+        <definition>using graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::GraphID =  graybat::graphPolicy::GraphID</definition>
+        <argsstring></argsstring>
+        <name>GraphID</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="52" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classgraybat_1_1graphPolicy_1_1BGL_1a265ad5af8b806b224bb7279bda3193c7" prot="public" static="no">
+        <type>T_VertexProperty</type>
+        <definition>using graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::VertexProperty =  T_VertexProperty</definition>
+        <argsstring></argsstring>
+        <name>VertexProperty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="56" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgraybat_1_1graphPolicy_1_1BGL_1ab914ee8a3223cc86c73af3046bf417cf" prot="public" static="no">
+        <type>T_EdgeProperty</type>
+        <definition>using graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::EdgeProperty =  T_EdgeProperty</definition>
+        <argsstring></argsstring>
+        <name>EdgeProperty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="57" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgraybat_1_1graphPolicy_1_1BGL_1ae9fc60048660948bfc2418ed74cd3882" prot="public" static="no">
+        <type>graybat::graphPolicy::VertexDescription&lt; <ref refid="classgraybat_1_1graphPolicy_1_1BGL" kindref="compound">BGL</ref> &gt;</type>
+        <definition>using graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::VertexDescription =  graybat::graphPolicy::VertexDescription&lt;BGL&gt;</definition>
+        <argsstring></argsstring>
+        <name>VertexDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="58" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgraybat_1_1graphPolicy_1_1BGL_1a72d9bad73b4ba1021b384379638b8e1e" prot="public" static="no">
+        <type>graybat::graphPolicy::EdgeDescription&lt; <ref refid="classgraybat_1_1graphPolicy_1_1BGL" kindref="compound">BGL</ref> &gt;</type>
+        <definition>using graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::EdgeDescription =  graybat::graphPolicy::EdgeDescription&lt;BGL&gt;</definition>
+        <argsstring></argsstring>
+        <name>EdgeDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="59" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="59" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgraybat_1_1graphPolicy_1_1BGL_1ab58617e8a5ce35716fa72c6c8ecee583" prot="public" static="no">
+        <type>graybat::graphPolicy::GraphDescription&lt; <ref refid="classgraybat_1_1graphPolicy_1_1BGL" kindref="compound">BGL</ref> &gt;</type>
+        <definition>using graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::GraphDescription =  graybat::graphPolicy::GraphDescription&lt;BGL&gt;</definition>
+        <argsstring></argsstring>
+        <name>GraphDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="60" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgraybat_1_1graphPolicy_1_1BGL_1a29fc9b001ea3fc7288b710296de29e1c" prot="public" static="no">
+        <type>typename boost::graph_traits&lt; BGLGraph &gt;::in_edge_iterator</type>
+        <definition>using graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::InEdgeIter =  typename boost::graph_traits&lt;BGLGraph&gt;::in_edge_iterator</definition>
+        <argsstring></argsstring>
+        <name>InEdgeIter</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="61" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="61" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgraybat_1_1graphPolicy_1_1BGL_1a275a43ac191b7f9bf5015b29bea4840e" prot="public" static="no">
+        <type>typename boost::graph_traits&lt; BGLGraph &gt;::out_edge_iterator</type>
+        <definition>using graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::OutEdgeIter =  typename boost::graph_traits&lt;BGLGraph&gt;::out_edge_iterator</definition>
+        <argsstring></argsstring>
+        <name>OutEdgeIter</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="62" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgraybat_1_1graphPolicy_1_1BGL_1a43c38b9bb4eab53bd2912809ceec36ff" prot="public" static="no">
+        <type>typename boost::graph_traits&lt; BGLGraph &gt;::adjacency_iterator</type>
+        <definition>using graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::AdjacentVertexIter =  typename boost::graph_traits&lt;BGLGraph&gt;::adjacency_iterator</definition>
+        <argsstring></argsstring>
+        <name>AdjacentVertexIter</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="63" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgraybat_1_1graphPolicy_1_1BGL_1acecbb87f46332b42010a20b89918223b" prot="public" static="no">
+        <type>typename boost::graph_traits&lt; BGLGraph &gt;::vertex_iterator</type>
+        <definition>using graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::AllVertexIter =  typename boost::graph_traits&lt;BGLGraph&gt;::vertex_iterator</definition>
+        <argsstring></argsstring>
+        <name>AllVertexIter</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="64" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classgraybat_1_1graphPolicy_1_1BGL_1ac91b5f185c1ddfe67151fbe151f8bc2a" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; BGLGraph &gt;</type>
+        <definition>std::shared_ptr&lt;BGLGraph&gt; graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::graph</definition>
+        <argsstring></argsstring>
+        <name>graph</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="68" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="68" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgraybat_1_1graphPolicy_1_1BGL_1a2549a79fb5cb96124fb6de976d8c5d7a" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; <ref refid="classgraybat_1_1graphPolicy_1_1BGL" kindref="compound">BGL</ref>&lt; VertexProperty, EdgeProperty &gt; &gt;</type>
+        <definition>std::vector&lt;BGL&lt;VertexProperty, EdgeProperty&gt; &gt; graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::subGraphs</definition>
+        <argsstring></argsstring>
+        <name>subGraphs</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="69" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="69" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgraybat_1_1graphPolicy_1_1BGL_1ab5090efa37469274e04c0d09fb735147" prot="private" static="no" mutable="no">
+        <type>boost::bimap&lt; EdgeID, BglEdgeID &gt;</type>
+        <definition>boost::bimap&lt;EdgeID, BglEdgeID&gt; graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::edgeIdBiMap</definition>
+        <argsstring></argsstring>
+        <name>edgeIdBiMap</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="70" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="70" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classgraybat_1_1graphPolicy_1_1BGL_1acdd10fa9cbff26e97387ad12d8fd8726" prot="public" static="no" mutable="no">
+        <type>GraphID</type>
+        <definition>GraphID graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::id</definition>
+        <argsstring></argsstring>
+        <name>id</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="73" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="73" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classgraybat_1_1graphPolicy_1_1BGL_1ae062d8b00efe814ec10ecb9caeea6d48" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::BGL</definition>
+        <argsstring>(GraphDescription graphDesc)</argsstring>
+        <name>BGL</name>
+        <param>
+          <type>GraphDescription</type>
+          <declname>graphDesc</declname>
+        </param>
+        <briefdescription>
+<para>The graph has to be described by <emphasis>edges</emphasis> (source Vertex ==&gt; target Vertex) and the <emphasis>vertices</emphasis> of this graph. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="81" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="81" bodyend="105"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1graphPolicy_1_1BGL_1ade448ae25290e434463d31a27c1387db" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::pair&lt; AllVertexIter, AllVertexIter &gt;</type>
+        <definition>std::pair&lt;AllVertexIter, AllVertexIter&gt; graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::getVertices</definition>
+        <argsstring>()</argsstring>
+        <name>getVertices</name>
+        <briefdescription>
+<para>Returns all vertices of the graph. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="115" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="115" bodyend="118"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1graphPolicy_1_1BGL_1ad23dcf17164f42ec8fb9fe7a3de8c01e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::pair&lt; EdgeID, bool &gt;</type>
+        <definition>std::pair&lt;EdgeID, bool&gt; graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::getEdge</definition>
+        <argsstring>(const VertexID source, const VertexID target)</argsstring>
+        <name>getEdge</name>
+        <param>
+          <type>const VertexID</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>const VertexID</type>
+          <declname>target</declname>
+        </param>
+        <briefdescription>
+<para>Returns the edge between source and target vertex. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="124" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="124" bodyend="127"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1graphPolicy_1_1BGL_1a1f01ae55ce810b789df9f64806c94bec" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::pair&lt; AdjacentVertexIter, AdjacentVertexIter &gt;</type>
+        <definition>std::pair&lt;AdjacentVertexIter, AdjacentVertexIter&gt; graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::getAdjacentVertices</definition>
+        <argsstring>(const VertexID id)</argsstring>
+        <name>getAdjacentVertices</name>
+        <param>
+          <type>const VertexID</type>
+          <declname>id</declname>
+        </param>
+        <briefdescription>
+<para>Returns all vertices, that are adjacent (connected) to <emphasis>vertex</emphasis> </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="133" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="133" bodyend="135"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1graphPolicy_1_1BGL_1a57d05597e0b6ed9f92828809cb6740f5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::pair&lt; OutEdgeIter, OutEdgeIter &gt;</type>
+        <definition>std::pair&lt;OutEdgeIter, OutEdgeIter&gt; graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::getOutEdges</definition>
+        <argsstring>(const VertexID id)</argsstring>
+        <name>getOutEdges</name>
+        <param>
+          <type>const VertexID</type>
+          <declname>id</declname>
+        </param>
+        <briefdescription>
+<para>Returns all outgoing edgpes of <emphasis>srcVertex</emphasis> paired with its target vertex. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="141" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="141" bodyend="143"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1graphPolicy_1_1BGL_1aed44e414d59e72afee296f92a78917ec" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::pair&lt; InEdgeIter, InEdgeIter &gt;</type>
+        <definition>std::pair&lt;InEdgeIter, InEdgeIter&gt; graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::getInEdges</definition>
+        <argsstring>(const VertexID id)</argsstring>
+        <name>getInEdges</name>
+        <param>
+          <type>const VertexID</type>
+          <declname>id</declname>
+        </param>
+        <briefdescription>
+<para>Returns all incoming edges to <emphasis>targetVertex</emphasis> paired with its source vertex. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="149" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="149" bodyend="151"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1graphPolicy_1_1BGL_1a93884489eaf5a2b8367c1cf04c0a3434" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>BglVertexID</type>
+        <definition>BglVertexID graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::getLocalID</definition>
+        <argsstring>(VertexProperty vertex)</argsstring>
+        <name>getLocalID</name>
+        <param>
+          <type>VertexProperty</type>
+          <declname>vertex</declname>
+        </param>
+        <briefdescription>
+<para>Returns the local id of <emphasis>vertex</emphasis> in this graph. </para>        </briefdescription>
+        <detaileddescription>
+<para>If this graph has no supergraph (hasSuperGraph()==false) then local ids are the same as global ids. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="158" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="158" bodyend="160"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1graphPolicy_1_1BGL_1aed8f8b55547a5a6c92d7f711a9a0fe83" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::setVertexProperty</definition>
+        <argsstring>(BglVertexID vertex, VertexProperty value)</argsstring>
+        <name>setVertexProperty</name>
+        <param>
+          <type>BglVertexID</type>
+          <declname>vertex</declname>
+        </param>
+        <param>
+          <type>VertexProperty</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="162" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="162" bodyend="165"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1graphPolicy_1_1BGL_1a4b6d62720736780aa068b624bdf29ab7" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::setVertexProperty</definition>
+        <argsstring>(BglVertexID vertex, std::pair&lt; VertexID, VertexProperty &gt; propPair)</argsstring>
+        <name>setVertexProperty</name>
+        <param>
+          <type>BglVertexID</type>
+          <declname>vertex</declname>
+        </param>
+        <param>
+          <type>std::pair&lt; VertexID, VertexProperty &gt;</type>
+          <declname>propPair</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="167" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="167" bodyend="169"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1graphPolicy_1_1BGL_1a9c71ddaa997554f110b060218e956a8f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::setEdgeProperty</definition>
+        <argsstring>(BglEdgeID edge, EdgeProperty value)</argsstring>
+        <name>setEdgeProperty</name>
+        <param>
+          <type>BglEdgeID</type>
+          <declname>edge</declname>
+        </param>
+        <param>
+          <type>EdgeProperty</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="172" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="172" bodyend="175"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1graphPolicy_1_1BGL_1a1fb088ef6256a68b8999c7b4c04be17d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::setEdgeProperty</definition>
+        <argsstring>(BglEdgeID edge, std::pair&lt; EdgeID, EdgeProperty &gt; propPair)</argsstring>
+        <name>setEdgeProperty</name>
+        <param>
+          <type>BglEdgeID</type>
+          <declname>edge</declname>
+        </param>
+        <param>
+          <type>std::pair&lt; EdgeID, EdgeProperty &gt;</type>
+          <declname>propPair</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="177" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="177" bodyend="179"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1graphPolicy_1_1BGL_1a73b7e073fda7a9e21c5f420e984ba618" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::pair&lt; VertexID, VertexProperty &gt; &amp;</type>
+        <definition>std::pair&lt;VertexID, VertexProperty&gt;&amp; graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::getVertexProperty</definition>
+        <argsstring>(const VertexID vertex)</argsstring>
+        <name>getVertexProperty</name>
+        <param>
+          <type>const VertexID</type>
+          <declname>vertex</declname>
+        </param>
+        <briefdescription>
+<para>Returns the property of <emphasis>vertex</emphasis>. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="185" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="185" bodyend="187"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1graphPolicy_1_1BGL_1ad628ab3bb283a87337bb5d1da4e6c31b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::pair&lt; EdgeID, EdgeProperty &gt; &amp;</type>
+        <definition>std::pair&lt;EdgeID, EdgeProperty&gt;&amp; graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::getEdgeProperty</definition>
+        <argsstring>(const BglEdgeID edge)</argsstring>
+        <name>getEdgeProperty</name>
+        <param>
+          <type>const BglEdgeID</type>
+          <declname>edge</declname>
+        </param>
+        <briefdescription>
+<para>Return the property of <emphasis>edge</emphasis>. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="194" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="194" bodyend="196"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1graphPolicy_1_1BGL_1ab50e44a641bb3e0e3d2f2778419e78c5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>std::pair&lt; EdgeID, EdgeProperty &gt; &amp;</type>
+        <definition>std::pair&lt;EdgeID, EdgeProperty&gt;&amp; graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::getEdgeProperty</definition>
+        <argsstring>(const EdgeID edge)</argsstring>
+        <name>getEdgeProperty</name>
+        <param>
+          <type>const EdgeID</type>
+          <declname>edge</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="198" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="198" bodyend="200"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1graphPolicy_1_1BGL_1ac54da8279752a79998ae35fbf64c8338" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>BglVertexID</type>
+        <definition>BglVertexID graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::getEdgeTarget</definition>
+        <argsstring>(const BglEdgeID edge)</argsstring>
+        <name>getEdgeTarget</name>
+        <param>
+          <type>const BglEdgeID</type>
+          <declname>edge</declname>
+        </param>
+        <briefdescription>
+<para>Return the vertex to which <emphasis>edge</emphasis> points to. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="206" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="206" bodyend="208"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1graphPolicy_1_1BGL_1a47913c1d620cfa54b3c8ca52331e8a1f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>VertexID</type>
+        <definition>VertexID graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::getEdgeTarget</definition>
+        <argsstring>(const EdgeID edge)</argsstring>
+        <name>getEdgeTarget</name>
+        <param>
+          <type>const EdgeID</type>
+          <declname>edge</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="210" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="210" bodyend="212"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1graphPolicy_1_1BGL_1a2732a7037a0108afda5c7a5c1d51b9c3" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>BglVertexID</type>
+        <definition>BglVertexID graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::getEdgeSource</definition>
+        <argsstring>(const BglEdgeID edge)</argsstring>
+        <name>getEdgeSource</name>
+        <param>
+          <type>const BglEdgeID</type>
+          <declname>edge</declname>
+        </param>
+        <briefdescription>
+<para>Return the vertex to which <emphasis>edge</emphasis> points from. </para>        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="218" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="218" bodyend="220"/>
+      </memberdef>
+      <memberdef kind="function" id="classgraybat_1_1graphPolicy_1_1BGL_1ac29f99d16c0fa59f248e8d060ab748e4" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>VertexID</type>
+        <definition>VertexID graybat::graphPolicy::BGL&lt; T_VertexProperty, T_EdgeProperty &gt;::getEdgeSource</definition>
+        <argsstring>(const EdgeID edge)</argsstring>
+        <name>getEdgeSource</name>
+        <param>
+          <type>const EdgeID</type>
+          <declname>edge</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/graphPolicy/BGL.hpp" line="222" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="222" bodyend="224"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>A class to describe directed graphs. </para>    </briefdescription>
+    <detaileddescription>
+<para>GraphPolicy on basis of the boost graph library. </para>    </detaileddescription>
+    <location file="include/graybat/graphPolicy/BGL.hpp" line="38" column="1" bodyfile="include/graybat/graphPolicy/BGL.hpp" bodystart="38" bodyend="227"/>
+    <listofallmembers>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a43c38b9bb4eab53bd2912809ceec36ff" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>AdjacentVertexIter</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1acecbb87f46332b42010a20b89918223b" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>AllVertexIter</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ae062d8b00efe814ec10ecb9caeea6d48" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>BGL</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1aa83e29dcafb70fca3e5a814bc4b053ab" prot="private" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>BglEdgeID</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a970baa0488113d6a2684c63d33774887" prot="private" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>BGLGraph</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a341705b87cbbadef1f10080f3c007d1d" prot="private" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>BglVertexID</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a72d9bad73b4ba1021b384379638b8e1e" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>EdgeDescription</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a3e75989926044746a74a8a128c7d34c7" prot="private" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>EdgeID</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ab5090efa37469274e04c0d09fb735147" prot="private" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>edgeIdBiMap</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ab914ee8a3223cc86c73af3046bf417cf" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>EdgeProperty</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a1f01ae55ce810b789df9f64806c94bec" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>getAdjacentVertices</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ad23dcf17164f42ec8fb9fe7a3de8c01e" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>getEdge</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ad628ab3bb283a87337bb5d1da4e6c31b" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>getEdgeProperty</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ab50e44a641bb3e0e3d2f2778419e78c5" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>getEdgeProperty</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a2732a7037a0108afda5c7a5c1d51b9c3" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>getEdgeSource</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ac29f99d16c0fa59f248e8d060ab748e4" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>getEdgeSource</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ac54da8279752a79998ae35fbf64c8338" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>getEdgeTarget</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a47913c1d620cfa54b3c8ca52331e8a1f" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>getEdgeTarget</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1aed44e414d59e72afee296f92a78917ec" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>getInEdges</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a93884489eaf5a2b8367c1cf04c0a3434" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>getLocalID</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a57d05597e0b6ed9f92828809cb6740f5" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>getOutEdges</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a73b7e073fda7a9e21c5f420e984ba618" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>getVertexProperty</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ade448ae25290e434463d31a27c1387db" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>getVertices</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ac91b5f185c1ddfe67151fbe151f8bc2a" prot="private" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>graph</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ab58617e8a5ce35716fa72c6c8ecee583" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>GraphDescription</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a94096c6f7ba2a6146c984f3dd6cb031e" prot="private" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>GraphID</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ab6ae7144c11e2ff0d0aaaef9364a0a90" prot="private" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>GraphType</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1acdd10fa9cbff26e97387ad12d8fd8726" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>id</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a29fc9b001ea3fc7288b710296de29e1c" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>InEdgeIter</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a275a43ac191b7f9bf5015b29bea4840e" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>OutEdgeIter</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a9c71ddaa997554f110b060218e956a8f" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>setEdgeProperty</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a1fb088ef6256a68b8999c7b4c04be17d" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>setEdgeProperty</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1aed8f8b55547a5a6c92d7f711a9a0fe83" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>setVertexProperty</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a4b6d62720736780aa068b624bdf29ab7" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>setVertexProperty</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a2549a79fb5cb96124fb6de976d8c5d7a" prot="private" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>subGraphs</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ae9fc60048660948bfc2418ed74cd3882" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>VertexDescription</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1ab121e3cd89cda13bb16cdf0a37e20458" prot="private" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>VertexID</name></member>
+      <member refid="classgraybat_1_1graphPolicy_1_1BGL_1a265ad5af8b806b224bb7279bda3193c7" prot="public" virt="non-virtual"><scope>graybat::graphPolicy::BGL</scope><name>VertexProperty</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

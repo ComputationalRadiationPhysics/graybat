@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="dir_8405dc8257f0a702718bd2e49a4fcd1b" kind="dir">
+    <compoundname>include/graybat</compoundname>
+    <innerdir refid="dir_be40069b644e226b608cae9443c08911">include/graybat/communicationPolicy</innerdir>
+    <innerdir refid="dir_50bda8fbc99656cb80fe7f4efb1e17a5">include/graybat/graphPolicy</innerdir>
+    <innerdir refid="dir_a58e0f5d77f72a68120279d1005dc917">include/graybat/mapping</innerdir>
+    <innerdir refid="dir_73d31a21f323f2b650efdf02d419d863">include/graybat/pattern</innerdir>
+    <innerfile refid="Cage_8hpp">Cage.hpp</innerfile>
+    <innerfile refid="Edge_8hpp">Edge.hpp</innerfile>
+    <innerfile refid="version_8hpp">version.hpp</innerfile>
+    <innerfile refid="Vertex_8hpp">Vertex.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/"/>
+  </compounddef>
+</doxygen>

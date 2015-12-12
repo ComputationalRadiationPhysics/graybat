@@ -1,0 +1,109 @@
+\hypertarget{anyrecv_8cpp-example}{}\section{anyrecv.\+cpp}
+A master recv messages from all slaves and answers.
+
+
+\begin{DoxyCodeInclude}
+
+\textcolor{comment}{// STL}
+\textcolor{preprocessor}{#include <iostream>}   \textcolor{comment}{/* std::cout */}
+\textcolor{preprocessor}{#include <vector>}     \textcolor{comment}{/* std::vector */}
+\textcolor{preprocessor}{#include <array>}      \textcolor{comment}{/* std::array */}
+\textcolor{preprocessor}{#include <functional>} \textcolor{comment}{/* std::bind */}
+
+\textcolor{comment}{// GRAYBAT}
+\textcolor{preprocessor}{#include <graybat/Cage.hpp>}
+\textcolor{preprocessor}{#include <graybat/communicationPolicy/BMPI.hpp>}
+\textcolor{preprocessor}{#include <graybat/graphPolicy/BGL.hpp>}
+\textcolor{comment}{// GRAYBAT mappings}
+\textcolor{preprocessor}{#include <graybat/mapping/Consecutive.hpp>}
+\textcolor{preprocessor}{#include <graybat/mapping/Random.hpp>}
+\textcolor{preprocessor}{#include <graybat/mapping/Roundrobin.hpp>}
+\textcolor{comment}{// GRAYBAT pattern}
+\textcolor{preprocessor}{#include <graybat/pattern/GridDiagonal.hpp>}
+\textcolor{preprocessor}{#include <graybat/pattern/Chain.hpp>}
+\textcolor{preprocessor}{#include <graybat/pattern/BiStar.hpp>}
+
+\textcolor{keyword}{struct }\hyperlink{structFunction}{Function} \{
+    
+    \textcolor{keywordtype}{void} process(std::array<unsigned, 1> &data)\{
+    foo(std::get<0>(data));
+    
+    \}
+
+    std::function<void (unsigned&)> foo;
+\};
+
+
+\textcolor{keywordtype}{int} exp() \{
+    \textcolor{comment}{/***************************************************************************}
+\textcolor{comment}{     * Configuration}
+\textcolor{comment}{     ****************************************************************************/}
+
+    \textcolor{comment}{// CommunicationPolicy}
+    \textcolor{keyword}{typedef} \hyperlink{structgraybat_1_1communicationPolicy_1_1BMPI}{graybat::communicationPolicy::BMPI} CP;
+    \textcolor{keyword}{typedef} CP::Config                         Config;    
+    
+    \textcolor{comment}{// GraphPolicy}
+    \textcolor{keyword}{typedef} \hyperlink{classgraybat_1_1graphPolicy_1_1BGL}{graybat::graphPolicy::BGL<Function>}    GP;
+    
+    \textcolor{comment}{// Cage}
+    \textcolor{keyword}{typedef} \hyperlink{structgraybat_1_1Cage}{graybat::Cage<CP, GP>} Cage;
+    \textcolor{keyword}{typedef} \textcolor{keyword}{typename} Cage::Vertex Vertex;
+    \textcolor{keyword}{typedef} \textcolor{keyword}{typename} Cage::Edge Edge;
+
+    \textcolor{comment}{/***************************************************************************}
+\textcolor{comment}{     * Initialize Communication}
+\textcolor{comment}{     ****************************************************************************/}
+    \textcolor{comment}{// Create GoL Graph}
+    Config config;
+    Cage cage(config);
+
+    \textcolor{comment}{// Set communication pattern}
+    cage.setGraph(\hyperlink{structgraybat_1_1pattern_1_1BiStar}{graybat::pattern::BiStar<GP>}(cage.getPeers().size()));
+
+    \textcolor{comment}{// Distribute vertices}
+    cage.distribute(\hyperlink{structgraybat_1_1mapping_1_1Consecutive}{graybat::mapping::Consecutive}());
+        
+
+    \textcolor{comment}{/***************************************************************************}
+\textcolor{comment}{     * Run Simulation}
+\textcolor{comment}{     ****************************************************************************/}
+    \textcolor{comment}{//std::vector<Event> events;}
+
+    std::array<unsigned, 1> input \{\{0\}\};
+    std::array<unsigned, 1> output \{\{0\}\};
+
+    \textcolor{keyword}{const} Vertex reply = cage.getVertex(0);
+    
+    \textcolor{keywordflow}{for}(Vertex v : cage.hostedVertices)\{
+
+
+        \textcolor{keywordflow}{if}(v == reply)\{
+            \textcolor{keywordflow}{while}(\textcolor{keyword}{true})\{
+                Edge e = cage.recv(output);
+                std::cout << \textcolor{stringliteral}{"Got msg from "} << e.source.id << \textcolor{stringliteral}{": "}<< output[0] << std::endl;
+                output[0]++;
+                cage.send(e.inverse(), output);
+            \}
+            
+        \}
+        \textcolor{keywordflow}{else} \{
+            input[0] = v.id;
+            v.spread(input);
+            v.collect(input);
+            std::cout << \textcolor{stringliteral}{" Got input from master:"} << input[0] << std::endl;
+        \}
+ 
+    
+    \}
+
+    \textcolor{keywordflow}{return} 0;
+
+\}
+
+\textcolor{keywordtype}{int} main()\{
+    exp();
+    \textcolor{keywordflow}{return} 0;
+\}
+\end{DoxyCodeInclude}
+ 

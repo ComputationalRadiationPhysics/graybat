@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="structgraybat_1_1pattern_1_1OutStar" kind="struct" language="C++" prot="public">
+    <compoundname>graybat::pattern::OutStar</compoundname>
+    <templateparamlist>
+      <param>
+        <type>typename T_GraphPolicy</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1OutStar_1a80ba60b631ad3cd3708037cab7a11614" prot="public" static="no">
+        <type>T_GraphPolicy</type>
+        <definition>using graybat::pattern::OutStar&lt; T_GraphPolicy &gt;::GraphPolicy =  T_GraphPolicy</definition>
+        <argsstring></argsstring>
+        <name>GraphPolicy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/OutStar.hpp" line="18" column="1" bodyfile="include/graybat/pattern/OutStar.hpp" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1OutStar_1a69113e42104417cbe81906ee0d575796" prot="public" static="no">
+        <type>graybat::graphPolicy::VertexDescription&lt; GraphPolicy &gt;</type>
+        <definition>using graybat::pattern::OutStar&lt; T_GraphPolicy &gt;::VertexDescription =  graybat::graphPolicy::VertexDescription&lt;GraphPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>VertexDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/OutStar.hpp" line="19" column="1" bodyfile="include/graybat/pattern/OutStar.hpp" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1OutStar_1a751930588a07e1e5a000601011dad5e7" prot="public" static="no">
+        <type>graybat::graphPolicy::EdgeDescription&lt; GraphPolicy &gt;</type>
+        <definition>using graybat::pattern::OutStar&lt; T_GraphPolicy &gt;::EdgeDescription =  graybat::graphPolicy::EdgeDescription&lt;GraphPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>EdgeDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/OutStar.hpp" line="20" column="1" bodyfile="include/graybat/pattern/OutStar.hpp" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1OutStar_1aa22b54720d47f626b00ea3e20711da7b" prot="public" static="no">
+        <type>graybat::graphPolicy::GraphDescription&lt; GraphPolicy &gt;</type>
+        <definition>using graybat::pattern::OutStar&lt; T_GraphPolicy &gt;::GraphDescription =  graybat::graphPolicy::GraphDescription&lt;GraphPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>GraphDescription</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/OutStar.hpp" line="21" column="1" bodyfile="include/graybat/pattern/OutStar.hpp" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1OutStar_1a529cb17a9c89354e71f18ec03e2c691f" prot="public" static="no">
+        <type>graybat::graphPolicy::EdgeProperty&lt; GraphPolicy &gt;</type>
+        <definition>using graybat::pattern::OutStar&lt; T_GraphPolicy &gt;::EdgeProperty =  graybat::graphPolicy::EdgeProperty&lt;GraphPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>EdgeProperty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/OutStar.hpp" line="22" column="1" bodyfile="include/graybat/pattern/OutStar.hpp" bodystart="22" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="structgraybat_1_1pattern_1_1OutStar_1a04d362d67a1249cf237b57ad78e66f71" prot="public" static="no">
+        <type>graybat::graphPolicy::VertexProperty&lt; GraphPolicy &gt;</type>
+        <definition>using graybat::pattern::OutStar&lt; T_GraphPolicy &gt;::VertexProperty =  graybat::graphPolicy::VertexProperty&lt;GraphPolicy&gt;</definition>
+        <argsstring></argsstring>
+        <name>VertexProperty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/OutStar.hpp" line="23" column="1" bodyfile="include/graybat/pattern/OutStar.hpp" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structgraybat_1_1pattern_1_1OutStar_1ab5bc037b1f31514b277adbf771191424" prot="public" static="no" mutable="no">
+        <type>const unsigned</type>
+        <definition>const unsigned graybat::pattern::OutStar&lt; T_GraphPolicy &gt;::verticesCount</definition>
+        <argsstring></argsstring>
+        <name>verticesCount</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/OutStar.hpp" line="26" column="1" bodyfile="include/graybat/pattern/OutStar.hpp" bodystart="26" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structgraybat_1_1pattern_1_1OutStar_1a210b0709162c18720d2ad707d39c97af" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::pattern::OutStar&lt; T_GraphPolicy &gt;::OutStar</definition>
+        <argsstring>(const unsigned verticesCount)</argsstring>
+        <name>OutStar</name>
+        <param>
+          <type>const unsigned</type>
+          <declname>verticesCount</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/OutStar.hpp" line="28" column="1" bodyfile="include/graybat/pattern/OutStar.hpp" bodystart="28" bodyend="31"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1pattern_1_1OutStar_1a4524b5ced8b3a42839b1d652eba27264" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>GraphDescription</type>
+        <definition>GraphDescription graybat::pattern::OutStar&lt; T_GraphPolicy &gt;::operator()</definition>
+        <argsstring>()</argsstring>
+        <name>operator()</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/pattern/OutStar.hpp" line="34" column="1" bodyfile="include/graybat/pattern/OutStar.hpp" bodystart="34" bodyend="51"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/pattern/OutStar.hpp" line="15" column="1" bodyfile="include/graybat/pattern/OutStar.hpp" bodystart="15" bodyend="53"/>
+    <listofallmembers>
+      <member refid="structgraybat_1_1pattern_1_1OutStar_1a751930588a07e1e5a000601011dad5e7" prot="public" virt="non-virtual"><scope>graybat::pattern::OutStar</scope><name>EdgeDescription</name></member>
+      <member refid="structgraybat_1_1pattern_1_1OutStar_1a529cb17a9c89354e71f18ec03e2c691f" prot="public" virt="non-virtual"><scope>graybat::pattern::OutStar</scope><name>EdgeProperty</name></member>
+      <member refid="structgraybat_1_1pattern_1_1OutStar_1aa22b54720d47f626b00ea3e20711da7b" prot="public" virt="non-virtual"><scope>graybat::pattern::OutStar</scope><name>GraphDescription</name></member>
+      <member refid="structgraybat_1_1pattern_1_1OutStar_1a80ba60b631ad3cd3708037cab7a11614" prot="public" virt="non-virtual"><scope>graybat::pattern::OutStar</scope><name>GraphPolicy</name></member>
+      <member refid="structgraybat_1_1pattern_1_1OutStar_1a4524b5ced8b3a42839b1d652eba27264" prot="public" virt="non-virtual"><scope>graybat::pattern::OutStar</scope><name>operator()</name></member>
+      <member refid="structgraybat_1_1pattern_1_1OutStar_1a210b0709162c18720d2ad707d39c97af" prot="public" virt="non-virtual"><scope>graybat::pattern::OutStar</scope><name>OutStar</name></member>
+      <member refid="structgraybat_1_1pattern_1_1OutStar_1a69113e42104417cbe81906ee0d575796" prot="public" virt="non-virtual"><scope>graybat::pattern::OutStar</scope><name>VertexDescription</name></member>
+      <member refid="structgraybat_1_1pattern_1_1OutStar_1a04d362d67a1249cf237b57ad78e66f71" prot="public" virt="non-virtual"><scope>graybat::pattern::OutStar</scope><name>VertexProperty</name></member>
+      <member refid="structgraybat_1_1pattern_1_1OutStar_1ab5bc037b1f31514b277adbf771191424" prot="public" virt="non-virtual"><scope>graybat::pattern::OutStar</scope><name>verticesCount</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

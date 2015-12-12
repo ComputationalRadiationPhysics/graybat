@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="namespacegraybat" kind="namespace" language="C++">
+    <compoundname>graybat</compoundname>
+    <innerclass refid="structgraybat_1_1Cage" prot="public">graybat::Cage</innerclass>
+    <innerclass refid="structgraybat_1_1CommunicationEdge" prot="public">graybat::CommunicationEdge</innerclass>
+    <innerclass refid="structgraybat_1_1CommunicationVertex" prot="public">graybat::CommunicationVertex</innerclass>
+    <innernamespace refid="namespacegraybat_1_1communicationPolicy">graybat::communicationPolicy</innernamespace>
+    <innernamespace refid="namespacegraybat_1_1graphPolicy">graybat::graphPolicy</innernamespace>
+    <innernamespace refid="namespacegraybat_1_1mapping">graybat::mapping</innernamespace>
+    <innernamespace refid="namespacegraybat_1_1pattern">graybat::pattern</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="include/graybat/pattern/BiStar.hpp" line="8" column="1"/>
+  </compounddef>
+</doxygen>

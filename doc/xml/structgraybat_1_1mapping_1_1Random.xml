@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="structgraybat_1_1mapping_1_1Random" kind="struct" language="C++" prot="public">
+    <compoundname>graybat::mapping::Random</compoundname>
+    <includes refid="Random_8hpp" local="no">Random.hpp</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="structgraybat_1_1mapping_1_1Random_1ad59fe88f2076e58cd00e350d6fcc3b94" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int graybat::mapping::Random::seed</definition>
+        <argsstring></argsstring>
+        <name>seed</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/mapping/Random.hpp" line="53" column="1" bodyfile="include/graybat/mapping/Random.hpp" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structgraybat_1_1mapping_1_1Random_1aa312e299c06353a14462903718bbd4d2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>graybat::mapping::Random::Random</definition>
+        <argsstring>(int seed)</argsstring>
+        <name>Random</name>
+        <param>
+          <type>int</type>
+          <declname>seed</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/mapping/Random.hpp" line="23" column="1" bodyfile="include/graybat/mapping/Random.hpp" bodystart="23" bodyend="26"/>
+      </memberdef>
+      <memberdef kind="function" id="structgraybat_1_1mapping_1_1Random_1ac605dc1800492f611545fcc80a9767f5" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T_Graph</type>
+          </param>
+        </templateparamlist>
+        <type>std::vector&lt; typename T_Graph::Vertex &gt;</type>
+        <definition>std::vector&lt;typename T_Graph::Vertex&gt; graybat::mapping::Random::operator()</definition>
+        <argsstring>(const unsigned processID, const unsigned processCount, T_Graph &amp;graph)</argsstring>
+        <name>operator()</name>
+        <param>
+          <type>const unsigned</type>
+          <declname>processID</declname>
+        </param>
+        <param>
+          <type>const unsigned</type>
+          <declname>processCount</declname>
+        </param>
+        <param>
+          <type>T_Graph &amp;</type>
+          <declname>graph</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="include/graybat/mapping/Random.hpp" line="29" column="1" bodyfile="include/graybat/mapping/Random.hpp" bodystart="29" bodyend="50"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><ref refid="structgraybat_1_1mapping_1_1Random" kindref="compound">Random</ref> distribution of vertices of the <emphasis>graph</emphasis> to the the peers. All peers need to set the same random <emphasis>seed</emphasis>. Thus, all peers have the same random base. Therefore seeds that depend on varying parameters like time or pid or not applicable here.</para><para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>seed</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>static random seed for all peers </para></parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>random set of vertices of the <emphasis>graph</emphasis> </para></simplesect>
+</para>    </detaileddescription>
+    <location file="include/graybat/mapping/Random.hpp" line="21" column="1" bodyfile="include/graybat/mapping/Random.hpp" bodystart="21" bodyend="55"/>
+    <listofallmembers>
+      <member refid="structgraybat_1_1mapping_1_1Random_1ac605dc1800492f611545fcc80a9767f5" prot="public" virt="non-virtual"><scope>graybat::mapping::Random</scope><name>operator()</name></member>
+      <member refid="structgraybat_1_1mapping_1_1Random_1aa312e299c06353a14462903718bbd4d2" prot="public" virt="non-virtual"><scope>graybat::mapping::Random</scope><name>Random</name></member>
+      <member refid="structgraybat_1_1mapping_1_1Random_1ad59fe88f2076e58cd00e350d6fcc3b94" prot="private" virt="non-virtual"><scope>graybat::mapping::Random</scope><name>seed</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

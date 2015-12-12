@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.10">
+  <compounddef id="zmq" kind="page">
+    <compoundname>zmq</compoundname>
+    <title>Run ZeroMQ Communication Policy</title>
+    <detaileddescription>
+<para>The ZeroMQ communication policy needs a connection to the zmq signaling server. The connection parameters need to be provided through the ZeroMQ specific communication policy configuration. This configuration contains:</para><para><itemizedlist>
+<listitem><para>Url of the signaling server</para></listitem><listitem><para>Own Url</para></listitem><listitem><para>Context size</para></listitem></itemizedlist>
+</para><para><programlisting><codeline><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main(){</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>GP<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/><ref refid="classgraybat_1_1graphPolicy_1_1BGL" kindref="compound">graybat::graphPolicy::BGL&lt;&gt;</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>ZMQ<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>=<sp/><ref refid="structgraybat_1_1communicationPolicy_1_1ZMQ" kindref="compound">graybat::communicationPolicy::ZMQ</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>ZMQCage<sp/><sp/><sp/><sp/>=<sp/><ref refid="structgraybat_1_1Cage" kindref="compound">graybat::Cage&lt;ZMQ, GP&gt;</ref>;</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">using</highlight><highlight class="normal"><sp/>ZMQConfig<sp/><sp/>=<sp/><ref refid="structgraybat_1_1communicationPolicy_1_1zmq_1_1Config" kindref="compound">graybat::communicationPolicy::zmq::Config</ref>;</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>ZMQConfig<sp/>zmqConfig<sp/>=<sp/>{</highlight><highlight class="stringliteral">&quot;tcp://127.0.0.1:5000&quot;</highlight><highlight class="normal">,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="stringliteral">&quot;tcp://127.0.0.1:5001&quot;</highlight><highlight class="normal">,</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="keywordtype">size_t</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(std::stoi(std::getenv(</highlight><highlight class="stringliteral">&quot;OMPI_COMM_WORLD_SIZE&quot;</highlight><highlight class="normal">)))};</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>ZMQCage<sp/>zmqCage(zmqConfig);</highlight></codeline>
+<codeline><highlight class="normal"></highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para><para>First the signaling server needs to be started.</para><para><programlisting><codeline><highlight class="normal">$<sp/>./zmq_signaling<sp/>--ip<sp/>127:0.0.1<sp/>--port<sp/>5000<sp/>&amp;</highlight></codeline>
+</programlisting></para><para>Afterwards, an application using the ZeroMQ communication policy can be started by <computeroutput>mpiexec</computeroutput>.</para><para><programlisting><codeline><highlight class="normal">$<sp/>mpiexec<sp/>-n<sp/>4<sp/>./a.out</highlight></codeline>
+</programlisting></para><para><heading level="2">Further Links</heading>
+</para><para><itemizedlist>
+<listitem><para><ref refid="structgraybat_1_1communicationPolicy_1_1ZMQ" kindref="compound">graybat::communicationPolicy::ZMQ</ref></para></listitem><listitem><para><ref refid="structgraybat_1_1communicationPolicy_1_1zmq_1_1Config" kindref="compound">graybat::communicationPolicy::zmq::Config</ref> </para></listitem></itemizedlist>
+</para>    </detaileddescription>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,67 @@
+\hypertarget{structCommunicationEdge}{}\section{Communication\+Edge$<$ T\+\_\+\+Cage $>$ Struct Template Reference}
+\label{structCommunicationEdge}\index{Communication\+Edge$<$ T\+\_\+\+Cage $>$@{Communication\+Edge$<$ T\+\_\+\+Cage $>$}}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structCommunicationEdge_a8ecc7deb6fda51066a2455beb2ea7d2d}{}typedef T\+\_\+\+Cage {\bfseries Cage}\label{structCommunicationEdge_a8ecc7deb6fda51066a2455beb2ea7d2d}
+
+\item 
+\hypertarget{structCommunicationEdge_a99815fbba55f784bf9494e9cf20a1f9e}{}typedef unsigned {\bfseries Edge\+I\+D}\label{structCommunicationEdge_a99815fbba55f784bf9494e9cf20a1f9e}
+
+\item 
+\hypertarget{structCommunicationEdge_ab401daa55d9eed482a91a576134d30f4}{}typedef Cage\+::\+Graph\+Policy {\bfseries Graph\+Policy}\label{structCommunicationEdge_ab401daa55d9eed482a91a576134d30f4}
+
+\item 
+\hypertarget{structCommunicationEdge_a23c1292fcdd3cee3fe62753743286b1f}{}typedef Cage\+::\+Vertex {\bfseries Vertex}\label{structCommunicationEdge_a23c1292fcdd3cee3fe62753743286b1f}
+
+\item 
+\hypertarget{structCommunicationEdge_aca6af3a4d4e7a6958946fb65519012c5}{}typedef Cage\+::\+Event {\bfseries Event}\label{structCommunicationEdge_aca6af3a4d4e7a6958946fb65519012c5}
+
+\item 
+\hypertarget{structCommunicationEdge_a3ccce04bfffd7426efff28f69383f9f1}{}typedef Graph\+Policy\+::\+Edge\+Property {\bfseries Edge\+Property}\label{structCommunicationEdge_a3ccce04bfffd7426efff28f69383f9f1}
+
+\item 
+\hypertarget{structCommunicationEdge_a7a92048769b54908d5d050a078af7bf4}{}typedef Graph\+Policy\+::\+Vertex\+Property {\bfseries Vertex\+Property}\label{structCommunicationEdge_a7a92048769b54908d5d050a078af7bf4}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structCommunicationEdge_a879b382e8fc2016bed9c6bbe01ba8621}{}{\bfseries Communication\+Edge} (const Edge\+I\+D id, Vertex source, Vertex target, Edge\+Property \&edge\+Property, Cage \&cage)\label{structCommunicationEdge_a879b382e8fc2016bed9c6bbe01ba8621}
+
+\item 
+\hypertarget{structCommunicationEdge_a8c9f3d7707c1a75ceb6b94574107255b}{}Edge\+Property \& {\bfseries operator()} ()\label{structCommunicationEdge_a8c9f3d7707c1a75ceb6b94574107255b}
+
+\item 
+\hypertarget{structCommunicationEdge_ad819c876d8b31aafe53fc5cda6ed3dfe}{}\hyperlink{structCommunicationEdge}{Communication\+Edge} {\bfseries inverse} ()\label{structCommunicationEdge_ad819c876d8b31aafe53fc5cda6ed3dfe}
+
+\item 
+\hypertarget{structCommunicationEdge_a73b168905fdaf4d6041f056cbe823d60}{}{\footnotesize template$<$class T\+\_\+\+Send $>$ }\\Event {\bfseries operator$<$$<$} (const T\+\_\+\+Send \&data)\label{structCommunicationEdge_a73b168905fdaf4d6041f056cbe823d60}
+
+\item 
+\hypertarget{structCommunicationEdge_abcef7bf64ae74d3c8a0f17ed56c35bdc}{}{\footnotesize template$<$class T\+\_\+\+Recv $>$ }\\void {\bfseries operator$>$$>$} (T\+\_\+\+Recv \&data)\label{structCommunicationEdge_abcef7bf64ae74d3c8a0f17ed56c35bdc}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structCommunicationEdge_a9f736ff584d124c790461d112539a6fb}{}Edge\+I\+D {\bfseries id}\label{structCommunicationEdge_a9f736ff584d124c790461d112539a6fb}
+
+\item 
+\hypertarget{structCommunicationEdge_aff4e606aaceaf84765361a9902efeb7d}{}Vertex {\bfseries target}\label{structCommunicationEdge_aff4e606aaceaf84765361a9902efeb7d}
+
+\item 
+\hypertarget{structCommunicationEdge_a060dbd77e9c0bb4c4b18380ca7737553}{}Vertex {\bfseries source}\label{structCommunicationEdge_a060dbd77e9c0bb4c4b18380ca7737553}
+
+\item 
+\hypertarget{structCommunicationEdge_a7c4e8b6060785c0884a00c409925e108}{}Edge\+Property \& {\bfseries edge\+Property}\label{structCommunicationEdge_a7c4e8b6060785c0884a00c409925e108}
+
+\item 
+\hypertarget{structCommunicationEdge_a0e5acd688ef9fcd99e7b18032c98a6ca}{}Cage \& {\bfseries cage}\label{structCommunicationEdge_a0e5acd688ef9fcd99e7b18032c98a6ca}
+
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/graybat/Edge.\+hpp\end{DoxyCompactItemize}

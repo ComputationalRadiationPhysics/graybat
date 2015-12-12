@@ -1,0 +1,27 @@
+Next to the communication methods provided by the \hyperlink{cage}{cage} a vertex also provides method to communicate with its adjacent vertices. These methods have collective nature\+:
+
+
+\begin{DoxyCode}
+Vertex v = cage.getVertex(0);
+
+\textcolor{comment}{// Synchron send same data over all outgoing edges}
+std::array<unsigned, 1> sendData;
+v.spread(sendData);
+
+\textcolor{comment}{// Asynchron send same data over all outgoing edges}
+std::vector<Event> events;
+std::array<unsigned, 1> sendData;
+v.spread(sendData, events);
+
+\textcolor{comment}{// Synchronous recv messages from all incoming edges}
+std::vector<unsigned> recvData(v.nInEdges());
+v.collect(recvData);
+
+\textcolor{comment}{// Collect data and spread them immediatly}
+std::vector<unsigned> intermediateData(v.nInEdges());
+v.forward(intermediateData, [](\textcolor{keyword}{auto} &data)\{data[0]++;\})
+
+\textcolor{comment}{// Fold left of data over all incoming edges}
+v.accumulate(std::add<unsigned>(), 0);
+\end{DoxyCode}
+ 
