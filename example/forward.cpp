@@ -55,7 +55,7 @@ int exp() {
 
     /***************************************************************************
      * Initialize Communication
-     ****************************************************************************/
+nn     ****************************************************************************/
     const unsigned nChainLinks = 1000;
     
     // Create GoL Graph
@@ -100,7 +100,7 @@ int exp() {
 	}
 
 	if(v != entry and v != exit){
-	    v.forward(intermediate, std::bind(&VertexProperty::process, v(), _1));
+	    v.forward(intermediate, std::bind(&VertexProperty::process, v(), std::placeholders::_1));
 	    std::cout << "Intermediate: " << intermediate[0] << std::endl;
 	}
 	

@@ -18,12 +18,6 @@ class with all necessary methods:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 struc ContextSkeleton {
 
-	typedef unsigned ContextID;
-	typedef unsigned VAddr;
-
-	// Assignment operator
-	Context& operator=(const Context& otherContext) {...}
-
 	// Returns the number of peers in this context
 	size_t size() const {...}
 

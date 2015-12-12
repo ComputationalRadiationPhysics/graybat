@@ -18,32 +18,28 @@ typedef graybat::graphPolicy::BGL<City, Road> CityGraph;
 
 
 The following property is a very simple and basic property for edges
-and vertices.  Therefore, it is called SimpleProperty. The
-SimpleProperty is used when no other property is specified.
+and vertices which does not contain any further information.  Therefore,
+it is called SimpleProperty. The SimpleProperty is used when no other
+property is specified.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
-struct SimpleProperty{
-
-	SimpleProperty(){
-
-	}
+struct SimpleProperty {
 
 };
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-A property can contain all abitrary data you can imagine:
+A property can be user defined and can contain arbitrary data:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
-struct City{
-
-	City() {
-
-	}
-
+struct City {
 	std::string cityName;
 	unsigned nInhabitants;
-
 };
+
+struct Road {
+	std::string roadName;
+};
+
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -57,33 +53,58 @@ some special requirements.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
 namespace graybat {
 
-	namespace graphPolicy {
+        namespace graphPolicy {
 
-		template <class T_VertexProperty, class T_EdgeProperty>
-		class GraphPolicySkeleton {
-		
-			// Type definitions
-			typedef T_VertexProperty                                                VertexProperty;
-			typedef T_EdgeProperty                                                  EdgeProperty;
-			typedef std::pair<unsigned, unsigned>                                   EdgeDescription;
-			typedef std::pair<std::vector<unsigned>, std::vector<EdgeDescription> > GraphDescription;
-			
-			// Construct the graph from a graph description
-			GraphPolicySkeleton(GraphDescription description) {...}
-			
-			/*******************************************************************
-			 * GRAPH OPERATIONS
-			 ******************************************************************/
-			std::pair<AllVertexIter, AllVertexIter> getVertices() {...}
+                template <class T_VertexProperty, class T_EdgeProperty>
+                class GraphPolicySkeleton {
 
-			std::pair<AdjacentVertexIter, AdjacentVertexIter> getAdjacentVertices(const VertexID id) {...}
+                        /*******************************************************************
+                         * REQUIRED TYPE DEFINITIONS
+                         ******************************************************************/
+                        using VertexProperty     = T_VertexProperty;
+                        using EdgeProperty       = T_EdgeProperty;
+                        using VertexDescription  = ...;
+                        using EdgeDescription    = ...;
+                        using GraphDescription   = ...;
+                        using InEdgeIter         = ...;
+                        using OutEdgeIter        = ...;
+                        using AdjacentVertexIter = ...;
+                        using AllVertexIter      = ...;
 
-			std::pair<OutEdgeIter, OutEdgeIter> getOutEdges(const VertexID id) {...}
+                        /*******************************************************************
+                         * GRAPH CONSTRUCTION
+                         ******************************************************************/
+                        GraphPolicySkeleton(GraphDescription description) {...}
 
-			std::pair<InEdgeIter, InEdgeIter> getInEdges(const VertexID id){...}
-		}
-	}
+                        /*******************************************************************
+                         * REQUIRED GRAPH OPERATIONS
+                         ******************************************************************/
+
+                        std::pair<AllVertexIter, AllVertexIter> getVertices() {...}
+
+                        std::pair<EdgeID, bool> getEdge(const VertexID source, const VertexID target) {...} 
+
+                        std::pair<AdjacentVertexIter, AdjacentVertexIter> getAdjacentVertices(const VertexID id) {...}
+
+                        std::pair<OutEdgeIter, OutEdgeIter> getOutEdges(const VertexID id) {...}
+
+                        std::pair<InEdgeIter, InEdgeIter> getInEdges(const VertexID id){...}
+
+                        std::pair<VertexID, VertexProperty>& getVertexProperty(const VertexID vertex) {...}
+
+                        std::pair<EdgeID, EdgeProperty>& getEdgeProperty(const EdgeID edge) {...}
+
+                        VertexID getEdgeTarget(const EdgeID edge) {...}
+
+                        VertexID getEdgeSource(const EdgeID edge) {...}
+
+                }
+        }
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+## Further Links ##
+
+- graybat::graphPolicy::BGL
 
 */

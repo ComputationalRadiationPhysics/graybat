@@ -12,7 +12,12 @@ a graph. They are used to define the communication graph of a
 - graybat::pattern::GridDiagonal
 - graybat::pattern::Grid
 - graybat::pattern::HyperCube
-- graybat::pattern::Star
+- graybat::pattern::InStar
+- graybat::pattern::OutStar
+- graybat::pattern::BiStar
+- graybat::pattern::EdgeLess
+- graybat::pattern::Ring
+- graybat::pattern::None
 
 Own communication pattern can be build from the following pattern
 skeleton:
@@ -20,10 +25,6 @@ skeleton:
 namespace graybat {
 
   namespace pattern {
-
-    typedef unsigned                                                        VertexID;
-    typedef std::pair<VertexID, VertexID>                                   EdgeDescription;
-    typedef std::pair<std::vector<VertexID>, std::vector<EdgeDescription> > GraphDescription;
 
 	struct PatternSkeleton {
 
@@ -36,5 +37,18 @@ namespace graybat {
 } /* graybat */
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+## Further Links ##
+
+- graybat::pattern::FullyConnected
+- graybat::pattern::GridDiagonal
+- graybat::pattern::Grid
+- graybat::pattern::HyperCube
+- graybat::pattern::InStar
+- graybat::pattern::OutStar
+- graybat::pattern::BiStar
+- graybat::pattern::EdgeLess
+- graybat::pattern::Ring
+- graybat::pattern::None
 
 */

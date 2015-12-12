@@ -1,0 +1,50 @@
+/**
+
+\page zmq Run ZeroMQ Communication Policy
+
+The ZeroMQ communication policy needs a connection to
+the zmq signaling server. The connection parameters
+need to be provided through the ZeroMQ specific communication
+policy configuration. This configuration contains:
+
+- Url of the signaling server
+- Own Url
+- Context size
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
+int main(){
+
+    using GP         = graybat::graphPolicy::BGL<>;
+    using ZMQ        = graybat::communicationPolicy::ZMQ;
+    using ZMQCage    = graybat::Cage<ZMQ, GP>;
+    using ZMQConfig  = graybat::communicationPolicy::zmq::Config;
+
+    ZMQConfig zmqConfig = {"tcp://127.0.0.1:5000",
+                           "tcp://127.0.0.1:5001",
+                           static_cast<size_t>(std::stoi(std::getenv("OMPI_COMM_WORLD_SIZE")))};
+
+    ZMQCage zmqCage(zmqConfig);
+
+}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+First the signaling server needs to be started.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+$ ./zmq_signaling --ip 127:0.0.1 --port 5000 &
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Afterwards, an application using the ZeroMQ communication policy can
+be started by `mpiexec`.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+$ mpiexec -n 4 ./a.out
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+## Further Links ##
+
+- graybat::communicationPolicy::ZMQ
+- graybat::communicationPolicy::zmq::Config
+
+
+*/

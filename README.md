@@ -124,6 +124,8 @@ Finally, the application can use graybat e.g. `#include <graybat/Cage.hpp>`.
 
  * **test** : Build, unit and integration test.
 
+ * **zmq_signaling** : Signaling server for zeroMQ communication policy.
+
  * **doc**: Build documentation in `doc/`.
 
  * **clean**: Cleanup build directory.

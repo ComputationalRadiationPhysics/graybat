@@ -6,16 +6,16 @@ namespace graybat {
 
         namespace traits {
 
-        template <typename T_CommunicationPolicy>
-        struct ContextType;
+            template <typename T_CommunicationPolicy>
+            struct ContextType;
 
-        template <typename T_CommunicationPolicy>
-        struct EventType;
+            template <typename T_CommunicationPolicy>
+            struct EventType;
 
-        template <typename T_CommunicationPolicy>
-        struct ConfigType;
+            template <typename T_CommunicationPolicy>
+            struct ConfigType;
             
-        } // traits
+        } // namespace traits
 
         template <typename T_CommunicationPolicy>        
         using VAddr = unsigned;

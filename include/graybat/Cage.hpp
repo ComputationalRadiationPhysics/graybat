@@ -18,6 +18,8 @@
 #include <graybat/Vertex.hpp>                   /* CommunicationVertex */
 #include <graybat/Edge.hpp>                     /* CommunicationEdge */
 #include <graybat/pattern/None.hpp>             /* graybatt::pattern::None */
+#include <graybat/communicationPolicy/Traits.hpp>
+#include <graybat/graphPolicy/Traits.hpp>
 
 namespace graybat {
 
@@ -42,23 +44,24 @@ namespace graybat {
      ***************************************************************************/
     template <typename T_CommunicationPolicy, typename T_GraphPolicy>
     struct Cage {
-        typedef T_CommunicationPolicy                   CommunicationPolicy;
-        typedef T_GraphPolicy                           GraphPolicy;
-        typedef Cage<CommunicationPolicy, GraphPolicy>  Cage_T;
-        typedef typename GraphPolicy::GraphID           GraphID;
-        typedef typename GraphPolicy::EdgeDescription   EdgeDescription;
-        typedef typename GraphPolicy::GraphDescription  GraphDescription;
-        typedef typename CommunicationPolicy::VAddr     VAddr;
-        typedef typename CommunicationPolicy::Context   Context;
-        typedef typename CommunicationPolicy::Event     Event;
-        typedef typename CommunicationPolicy::Config    CPConfig;
-        typedef CommunicationEdge<Cage_T>               Edge;
-        typedef CommunicationVertex<Cage_T>             Vertex;
-        typedef typename Vertex::VertexID               VertexID;
+        using CommunicationPolicy = T_CommunicationPolicy;
+        using GraphPolicy         = T_GraphPolicy;
+        using Cage_t              = Cage<CommunicationPolicy, GraphPolicy>;
 
-        typedef typename GraphPolicy::EdgeID            EdgeID;
-        typedef unsigned Peer;
-        
+        using VAddr               = graybat::communicationPolicy::VAddr<CommunicationPolicy>;
+        using Context             = graybat::communicationPolicy::Context<CommunicationPolicy>;
+        using Event               = graybat::communicationPolicy::Event<CommunicationPolicy>;
+        using CPConfig            = graybat::communicationPolicy::Config<CommunicationPolicy>;
+        using Edge                = graybat::CommunicationEdge<Cage_t>;
+        using Vertex              = graybat::CommunicationVertex<Cage_t>;
+
+        using EdgeDescription     = graybat::graphPolicy::EdgeDescription<GraphPolicy>;
+        using GraphDescription    = graybat::graphPolicy::GraphDescription<GraphPolicy>;
+        using VertexID            = graybat::graphPolicy::VertexID;
+        using EdgeID              = graybat::graphPolicy::EdgeID; 
+        using GraphID             = graybat::graphPolicy::GraphID;
+        using Peer                = size_t;
+
         template <class T_Functor>
         Cage(CPConfig const cpConfig, T_Functor graphFunctor) :
 	    comm(cpConfig),
@@ -68,6 +71,12 @@ namespace graybat {
 	
 	Cage(CPConfig const cpConfig) :
 	    comm(cpConfig),
+	    graph(GraphPolicy(graybat::pattern::None<GraphPolicy>()())){
+
+	}
+
+        Cage() :
+	    comm(CPConfig()),
 	    graph(GraphPolicy(graybat::pattern::None<GraphPolicy>()())){
 
 	}
@@ -117,7 +126,7 @@ namespace graybat {
         }
 
         std::vector<Vertex> getVertices(){
-            typedef typename GraphPolicy::AllVertexIter Iter;
+            using Iter = graybat::graphPolicy::AllVertexIter<GraphPolicy>;
             std::vector<Vertex> vertices;
 
             Iter vi_first, vi_last;

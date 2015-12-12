@@ -1,0 +1,49 @@
+/**
+
+\page vertex Vertex Communication Interface
+
+[cage]: @ref cage
+
+Next to the communication methods provided by the [cage] a vertex
+also provides methods to communicate with its adjacent vertices.
+
+It is assume that a [cage] has allready been instantiated
+and initialised.
+
+1. Collect data from all incoming edges:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
+// Just get a vertex from the cage
+Vertex vertex = cage.getVertex(0);
+
+// Prepare the receive container
+std::vector<T_Data> collectData(vertex.nInEdges());
+
+// Synchronous recv messages from all incoming edges
+vertex.collect(recvData);
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This functionality is also available in the cage:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
+cage.collect(vertex, collectData);
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+2. Spread data to all outgoing edges:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cc}
+// Again, take some random vertex
+Vertex vertex = cage.getVertex(0);
+
+// Prepare the container to spread
+std::vector<T_Data> spreadData(1, static_cast<T_Data>(1));
+
+// Synchron send same data over all outgoing edges
+v.spread(spreadData);
+
+// Asynchron send same data over all outgoing edges
+std::vector<Event> events;
+v.spread(sendData, events);
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+## Further Links ##
+- graybat::CommunicationVertex
+
+*/

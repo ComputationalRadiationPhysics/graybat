@@ -97,7 +97,6 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 
     // CommunicationPolicy
     typedef graybat::communicationPolicy::BMPI CP;
-    typedef CP::Config                         Config;
     
     // GraphPolicy
     typedef graybat::graphPolicy::BGL<Cell>    GP;
@@ -115,8 +114,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     const unsigned width  = height;
 
     // Create GoL Graph
-    Config config;
-    Cage grid(config);
+    Cage grid;    
     grid.setGraph(graybat::pattern::GridDiagonal<GP>(height, width));
 
     
