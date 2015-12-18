@@ -63,9 +63,15 @@ int main(const int argc, char **argv){
         ("port,p",
          po::value<unsigned>()->default_value(5000),
          "Port to listen for signaling requests")
-        ("ip,i",
-         po::value<std::string>()->default_value("tcp://127.0.0.1"),
-         "IP to listen for signaling requests (protocoll://this.is.my.ip)")
+        ("ip",
+         po::value<std::string>(),
+         "IP to listen for signaling requests. Either ip or interface can be specified. (Example: 127.0.0.1)")
+		("interface,i",
+         po::value<std::string>(),
+         "Interface to listen for signaling requests. Either ip or interface can be specified. Default are all available interfaces. (Example: eth0)")
+		("protocoll",
+         po::value<std::string>()->default_value("tcp"),
+         "Protocoll to listen for signaling requests. Options are tcp and udp. Default is udp.")
         ("help,h",
          "Print this help message and exit");
 
@@ -79,6 +85,23 @@ int main(const int argc, char **argv){
         exit(0);
     }
     
+    if(vm.count("ip") && vm.count("interface")) {
+		std::cerr << "Error: Only one of the following can be specified by parameter. Either ip or interface." << std::endl;
+		exit(1);
+	}
+	
+	std::string masterUri;
+	if(vm.count("ip")) {
+		//Listen to ip
+		masterUri = vm["protocoll"].as<std::string>() + "://" + vm["ip"].as<std::string>() + ":" + std::to_string(vm["port"].as<unsigned>());
+	} else  if(vm.count("interface")) {
+		//Listen to interface
+		masterUri = vm["protocoll"].as<std::string>() + "://" + vm["interface"].as<std::string>() + ":" + std::to_string(vm["port"].as<unsigned>());	
+	} else {
+		//Listen to all interfaces
+		masterUri = vm["protocoll"].as<std::string>() + "://*:" + std::to_string(vm["port"].as<unsigned>());
+	}
+	
     /***************************************************************************
      * Start signaling
      **************************************************************************/
@@ -87,9 +110,6 @@ int main(const int argc, char **argv){
 
     std::map<ContextID, std::map<VAddr, Uri> > phoneBook;
     std::map<ContextID, VAddr> maxVAddr;
-    std::string masterUri = vm["ip"].as<std::string>()
-        + std::string(":")
-        + std::to_string(vm["port"].as<unsigned>());
 
     std::cout << "Listening on: " << masterUri << std::endl;
     
