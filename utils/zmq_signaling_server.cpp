@@ -110,12 +110,7 @@ int main(const int argc, char **argv){
 
     std::map<ContextID, std::map<VAddr, Uri> > phoneBook;
     std::map<ContextID, VAddr> maxVAddr;
-	/*
-	std::string masterUri = vm["ip"].as<std::string>()
-        + std::string(":")
-        + std::to_string(vm["port"].as<unsigned>());
-	*/
-	
+
     std::cout << "Listening on: " << masterUri << std::endl;
     
     zmq::context_t context(1);
