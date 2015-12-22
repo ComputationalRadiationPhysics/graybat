@@ -214,7 +214,30 @@ namespace graybat {
 	     *        
 	     */
             void synchronize(const Context context);
+	    /** @} */
+
+
+            /***********************************************************************//**
+             *
+	     * @name Context Interface
+	     *
+	     * @{
+	     *
+	     ***************************************************************************/
+
+	    /**
+	     * @brief Returns a subcontext of *oldContext* with all peers that want to participate.
+             *        Peers which do not want to participate retrieve an invalid context.
+	     */
+            Context splitContext(const bool isMember, const Context oldContext) = delete;
+
+	    /**
+	     * @brief Returns the context that contains all peers
+	     */
+	    Context getGlobalContext() = delete;            
+
 	    /** @} */            
+            
             
         };
 
