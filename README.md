@@ -60,6 +60,12 @@ The project is organized in a couple of subdirectories.
  * [Boost Hana 1.0](https://github.com/ldionne/hana) (zeromq communication policy) 
 
 
+##Roadmap##
+ * [Dynamic context](https://github.com/ComputationalRadiationPhysics/graybat/milestones/Dynamic%20Context)
+ * [Boost::Asio communication policy](https://github.com/ComputationalRadiationPhysics/graybat/milestones/Boost::Asio%20Communication%20Policy)
+ * [C++11 thread communication policy](https://github.com/ComputationalRadiationPhysics/graybat/milestones/C++11%20Threads%20Communication%20Policy)
+
+
 ##Installation##
 
 ###System Installion###
