@@ -7,9 +7,11 @@ namespace graybat {
         namespace zmq {
 
             struct Config {
+
                 std::string masterUri;
                 std::string peerUri;
-                size_t contextSize;	    
+                size_t contextSize;
+                size_t maxBufferSize = 100 * 1000 * 1000;
             };
 
         } // zmq

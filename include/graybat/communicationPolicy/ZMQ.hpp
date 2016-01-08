@@ -123,7 +123,8 @@ namespace graybat {
 		zmqSignalingContext(1),
                 recvSocket(zmqContext, ZMQ_PULL),
 		signalingSocket(zmqSignalingContext, ZMQ_REQ),
-		zmqHwm(10000),		
+		zmqHwm(10000),
+                inBox(config.maxBufferSize),
 		maxMsgID(0),
                 masterUri(config.masterUri),
 		peerUri(bindToNextFreePort(recvSocket, config.peerUri)){
