@@ -8,6 +8,7 @@
 #include <queue>              /* std::queue */
 #include <utility>            /* std::forward */
 #include <chrono>             /* std::chrono::milliseconds */
+#include <atomic>             /* std::atomic */
 
 
 // HANA
@@ -220,22 +221,38 @@ namespace utils {
     template <typename T_Value, typename... T_Keys>
     struct MessageBox {
 
+        MessageBox(size_t const maxBufferSize) :
+            maxBufferSize(maxBufferSize),
+            bufferSize(0){
+        }
+
+        size_t maxBufferSize;
+        std::atomic<size_t> bufferSize;
 	std::mutex access;
-	std::mutex notify;	
-	std::condition_variable condition;
+	std::mutex writeNotify;
+	std::mutex readNotify;       
+	std::condition_variable writeCondition;
+	std::condition_variable readCondition;        
     
 	using Queue = std::queue<T_Value>;
 	MultiKeyMap<Queue, T_Keys...> multiKeyMap;
 
 	auto enqueue(T_Value&& value, const T_Keys... keys) -> void {
 	    {
-		//std::cout << "Try to enqueue message." << std::endl;
-		std::lock_guard<std::mutex> accessLock(access);
-		multiKeyMap(keys...).push(std::forward<T_Value>(value));
-	    }
-	    //std::cout << "notify on condition variable." << std::endl;
-	    condition.notify_one();
-	}
+                while(maxBufferSize < bufferSize + sizeof(value)){
+                    std::unique_lock<std::mutex> notifyLock(readNotify);                    
+                    readCondition.wait_for(notifyLock, std::chrono::milliseconds(100));                    
+                }
+                
+                bufferSize += sizeof(value);
+                //std::cout << bufferSize << std::endl;
+                //std::cout << "Try to enqueue message." << std::endl;
+                std::lock_guard<std::mutex> accessLock(access);
+                multiKeyMap(keys...).push(std::forward<T_Value>(value));
+            }
+        //std::cout << "notify on condition variable." << std::endl;
+        writeCondition.notify_one();
+        }
 
 	auto waitDequeue(const T_Keys... keys) -> T_Value {
 
@@ -247,9 +264,9 @@ namespace utils {
 	    }
 	    
 	    while(test){
-		std::unique_lock<std::mutex> notifyLock(notify);
+		std::unique_lock<std::mutex> notifyLock(writeNotify);
 		//std::cout << "wait for multikeymap enqueue." << std::endl;
-		condition.wait_for(notifyLock, std::chrono::milliseconds(100));
+		writeCondition.wait_for(notifyLock, std::chrono::milliseconds(100));
 		{
 		    std::lock_guard<std::mutex> accessLock(access);
 		    test = !multiKeyMap.test(keys...);
@@ -258,9 +275,9 @@ namespace utils {
 	    }
 
 	    while(multiKeyMap.at(keys...).empty()){
-		std::unique_lock<std::mutex> notifyLock(notify);
+		std::unique_lock<std::mutex> notifyLock(writeNotify);
 		//std::cout << "wait for queue to be filled." << std::endl;		
-		condition.wait_for(notifyLock, std::chrono::milliseconds(100));
+		writeCondition.wait_for(notifyLock, std::chrono::milliseconds(100));
 		
 	    }
 	    
@@ -269,6 +286,8 @@ namespace utils {
 		//std::cout << "get message from queue" << std::endl;
 		T_Value value = std::move(multiKeyMap.at(keys...).front());
 		multiKeyMap.at(keys...).pop();
+                bufferSize -= sizeof(value);
+                readCondition.notify_one();                
 		return value;
 	    }
 	    
@@ -282,13 +301,13 @@ namespace utils {
 		std::vector<std::reference_wrapper<Queue>> values;
 		std::vector<hana::tuple<T_Keys...> > keysList;
 		while(values.empty()){
-		    std::unique_lock<std::mutex> notifyLock(notify);
+		    std::unique_lock<std::mutex> notifyLock(writeNotify);
 		    {
 			std::lock_guard<std::mutex> accessLock(access);
 			multiKeyMap.values(values, keysList, someKeys...);
 
 		    }
-		    condition.wait_for(notifyLock, std::chrono::milliseconds(100));
+		    writeCondition.wait_for(notifyLock, std::chrono::milliseconds(100));
 		}
 
 		{
@@ -299,13 +318,15 @@ namespace utils {
 			    allKeys = keys;
 			    T_Value value = std::move(queue.front());
 			    queue.pop();
+                            bufferSize -= sizeof(value);                            
+                            readCondition.notify_one();
 			    return value;
 			}
 
 		    }
 		}
-		std::unique_lock<std::mutex> notifyLock(notify);
-		condition.wait_for(notifyLock, std::chrono::milliseconds(100));
+		std::unique_lock<std::mutex> notifyLock(writeNotify);
+		writeCondition.wait_for(notifyLock, std::chrono::milliseconds(100));
 	    
 	    }
 	
