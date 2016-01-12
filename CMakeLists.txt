@@ -35,14 +35,14 @@ if(${CXX_COMPILER_IS_G++})
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wpedantic")      
-  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+  #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 endif(${CXX_COMPILER_IS_G++})
 
 if(${CXX_COMPILER_IS_CLANG++})
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wpedantic")    
-  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+  #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 endif(${CXX_COMPILER_IS_CLANG++})
 
 ###############################################################################
@@ -62,6 +62,12 @@ endif(CCACHE_FOUND)
 file(GLOB TESTS test/*.cpp)
 add_executable(check EXCLUDE_FROM_ALL ${TESTS})
 target_link_libraries(check ${LIBS})
+
+# Fast testing
+file(GLOB TESTSFAST test/UT.cpp test/CommunicationPolicyUT.cpp)
+add_executable(checkFast EXCLUDE_FROM_ALL ${TESTSFAST})
+target_link_libraries(checkFast ${LIBS})
+
 
 # Examples
 add_custom_target(example)

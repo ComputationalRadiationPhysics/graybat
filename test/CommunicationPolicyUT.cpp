@@ -84,6 +84,14 @@ BOOST_AUTO_TEST_SUITE( graybat_cp_point_to_point )
 /***************************************************************************
  * Test Cases
  ****************************************************************************/
+BOOST_AUTO_TEST_CASE( construct ){
+    hana::for_each(communicationPolicies, [](auto cpRef){
+            (void) cpRef;
+        });
+
+}
+
+
 BOOST_AUTO_TEST_CASE( context ){
     hana::for_each(communicationPolicies, [](auto cpRef){
 	    // Test setup
@@ -96,8 +104,9 @@ BOOST_AUTO_TEST_CASE( context ){
 	    {	
 		Context oldContext = cp.getGlobalContext();
 		for(unsigned i = 0; i < nRuns; ++i){
-		    Context newContext = cp.splitContext( true, oldContext);
-		    oldContext = newContext;
+                    //std::cout << "Run: " << i << std::endl;
+                    Context newContext = cp.splitContext( true, oldContext);
+                    oldContext = newContext;
 		    progress.print( nRuns, i);
 	
 		}
