@@ -77,7 +77,7 @@ namespace graybat {
             using Config    = typename graybat::communicationPolicy::Config<BMPI>;                        
             using Uri       = int;
 
-	    BMPI(Config const config) :contextCount(0),
+	    BMPI(Config const) :contextCount(0),
 		    uriMap(0),
 		    initialContext(contextCount, mpi::communicator()){
 
@@ -259,7 +259,7 @@ namespace graybat {
 		recvData.resize(std::accumulate(recvCount.begin(), recvCount.end(), 0U));
 
 		Uri rootUri = getVAddrUri(context, rootVAddr);
-		int rdispls[context.size()];
+                std::vector<int> rdispls(context.size(), 0);
 
 		// Create offset map 
 		unsigned offset  = 0;
@@ -273,7 +273,7 @@ namespace graybat {
 		MPI_Gatherv(const_cast<typename T_Send::value_type*>(sendData.data()), sendData.size(),
 			    mpi::get_mpi_datatype<typename T_Send::value_type>(*(sendData.data())),
 			    const_cast<typename T_Recv::value_type*>(recvData.data()),
-			    const_cast<int*>((int*)recvCount.data()), rdispls,
+			    const_cast<int*>((int*)recvCount.data()), rdispls.data(),
 			    mpi::get_mpi_datatype<typename T_Recv::value_type>(*(recvData.data())), 
 			    rootUri, context.comm);
 		
@@ -314,7 +314,7 @@ namespace graybat {
 	         allGather(context, std::array<unsigned, 1>{{(unsigned)sendData.size()}}, recvCount);
 	         recvData.resize(std::accumulate(recvCount.begin(), recvCount.end(), 0U));
 
-		 int rdispls[context.size()];
+                 std::vector<int> rdispls(context.size());
 
 		 // Create offset map
 		 unsigned offset  = 0;
@@ -328,7 +328,7 @@ namespace graybat {
 		 MPI_Allgatherv(const_cast<typename T_Send::value_type*>(sendData.data()), sendData.size(),
 				mpi::get_mpi_datatype<typename T_Send::value_type>(*(sendData.data())),
 				const_cast<typename T_Recv::value_type*>(recvData.data()),
-				const_cast<int*>((int*)recvCount.data()), rdispls,
+				const_cast<int*>((int*)recvCount.data()), rdispls.data(),
 				mpi::get_mpi_datatype<typename T_Recv::value_type>(*(recvData.data())), 
 				context.comm);
 		 

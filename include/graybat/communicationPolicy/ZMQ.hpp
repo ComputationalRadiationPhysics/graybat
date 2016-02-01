@@ -99,20 +99,22 @@ namespace graybat {
             
 	    // ZMQ Sockets
             ::zmq::context_t zmqContext;
-            Socket signalingSocket;     
             Socket recvSocket;
-            std::vector<Socket> sendSockets;
-            
-            // Uris
-	    const Uri peerUri;
+            Socket signalingSocket;
+            std::vector<Socket> sendSockets;            
+
+            // Uri
+	    const Uri peerUri;            
+
 
             // Construct
 	    ZMQ(Config const config) :
+                SocketBase(config),
 		zmqContext(1),
                 recvSocket(zmqContext, ZMQ_PULL),
 		signalingSocket(zmqContext, ZMQ_REQ),
-                peerUri(bindToNextFreePort(recvSocket, config.peerUri)),
-                SocketBase(config) {
+                peerUri(bindToNextFreePort(recvSocket, config.peerUri))
+            {
 
                 //std::cout << "PeerUri: " << peerUri << std::endl;
                 SocketBase::init();
