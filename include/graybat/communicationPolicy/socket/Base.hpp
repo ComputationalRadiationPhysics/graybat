@@ -550,7 +550,8 @@ namespace graybat {
 		    }
 
 		}
-
+                return std::string("");
+                
 	    }
 
 

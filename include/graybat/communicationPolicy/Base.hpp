@@ -263,6 +263,8 @@ namespace graybat {
                 }
                     
             }
+
+            e.wait();
                 
         }
 
@@ -292,6 +294,8 @@ namespace graybat {
 
             }
 
+            e.wait();
+
         }
         
 
@@ -303,8 +307,10 @@ namespace graybat {
             using CommunicationPolicy = T_CommunicationPolicy;
             using Event               = Base<CommunicationPolicy>::Event;
 
+            std::vector<Event> events;
+            
             for(VAddr vAddr = 0; vAddr < context.size(); vAddr++){
-                Event e = static_cast<CommunicationPolicy*>(this)->asyncSend(vAddr, 0, context, sendData);
+                events.push_back(static_cast<CommunicationPolicy*>(this)->asyncSend(vAddr, 0, context, sendData));
 
             }
 
@@ -315,6 +321,11 @@ namespace graybat {
                 std::copy(tmpData.begin(), tmpData.end(), recvData.begin() + recvOffset);
                         
             }
+
+            for(unsigned i = 0; i < events.size(); ++i){
+                events.back().wait();
+                events.pop_back();
+            }        
             
         }
 
@@ -325,13 +336,15 @@ namespace graybat {
             using CommunicationPolicy = T_CommunicationPolicy;
             using Event               = Base<CommunicationPolicy>::Event;
 
+            std::vector<Event> events;
+            
             std::array<unsigned, 1> nElements{{(unsigned)sendData.size()}};
             recvCount.resize(context.size());
             static_cast<CommunicationPolicy*>(this)->allGather(context, nElements, recvCount);
             recvData.resize(std::accumulate(recvCount.begin(), recvCount.end(), 0U));            
 
             for(VAddr vAddr = 0; vAddr < context.size(); vAddr++){
-                Event e = static_cast<CommunicationPolicy*>(this)->asyncSend(vAddr, 0, context, sendData);
+                events.push_back(static_cast<CommunicationPolicy*>(this)->asyncSend(vAddr, 0, context, sendData));
             }
             
             size_t recvOffset = 0;
@@ -343,7 +356,11 @@ namespace graybat {
                         
             }
 
-
+            for(unsigned i = 0; i < events.size(); ++i){
+                events.back().wait();
+                events.pop_back();
+            }
+            
         }
         
         template <typename T_CommunicationPolicy>
@@ -353,18 +370,25 @@ namespace graybat {
             using CommunicationPolicy = T_CommunicationPolicy;
             using Event               = Base<CommunicationPolicy>::Event;            
 
+            std::vector<Event> events;
+            
             if(rootVAddr == context.getVAddr()){
                 for(VAddr vAddr = 0; vAddr < context.size(); vAddr++){
                     size_t sendOffset = vAddr * recvData.size(); 
                     std::vector<SendValueType> tmpData(sendData.begin() + sendOffset,
                                                        sendData.begin() + sendOffset + recvData.size());
-                    Event e = static_cast<CommunicationPolicy*>(this)->asyncSend(vAddr, 0, context, tmpData);
+                    events.push_back(static_cast<CommunicationPolicy*>(this)->asyncSend(vAddr, 0, context, tmpData));
                         
                 }
                     
             }
 
-            static_cast<CommunicationPolicy*>(this)->recv(rootVAddr, 0, context, recvData);            
+            static_cast<CommunicationPolicy*>(this)->recv(rootVAddr, 0, context, recvData);
+
+            for(unsigned i = 0; i < events.size(); ++i){
+                events.back().wait();
+                events.pop_back();
+            }
 
         }
 
@@ -374,14 +398,15 @@ namespace graybat {
             using SendValueType       = typename T_Recv::value_type;
             using CommunicationPolicy = T_CommunicationPolicy;
             using Event               = Base<CommunicationPolicy>::Event;            
-            
+
+            std::vector<Event> events;
             size_t nElementsPerPeer = static_cast<size_t>(recvData.size() / context.size());
             
             for(VAddr vAddr = 0; vAddr < context.size(); vAddr++){
                 size_t sendOffset = vAddr * nElementsPerPeer; 
                 std::vector<SendValueType> tmpData(sendData.begin() + sendOffset,
                                                    sendData.begin() + sendOffset + nElementsPerPeer);
-                Event e = static_cast<CommunicationPolicy*>(this)->asyncSend(vAddr, 0, context, tmpData);
+                events.push_back(static_cast<CommunicationPolicy*>(this)->asyncSend(vAddr, 0, context, tmpData));
                 
             }
 
@@ -391,7 +416,12 @@ namespace graybat {
                 static_cast<CommunicationPolicy*>(this)->recv(vAddr, 0, context, tmpData);
                 std::copy(tmpData.begin(), tmpData.end(), recvData.begin() + recvOffset);
                 
-            }                
+            }
+
+            for(unsigned i = 0; i < events.size(); ++i){
+                events.back().wait();
+                events.pop_back();
+            }
             
         }
 
@@ -420,6 +450,8 @@ namespace graybat {
                 
             }
 
+            e.wait();
+
         }
 
         
@@ -430,6 +462,7 @@ namespace graybat {
             using CommunicationPolicy = T_CommunicationPolicy;
             using Event               = Base<CommunicationPolicy>::Event;
 
+            std::vector<Event> events;            
             for(VAddr vAddr = 1; vAddr < context.size(); vAddr++){            
                 Event e = static_cast<CommunicationPolicy*>(this)->asyncSend(vAddr, 0, context, sendData);
             }
@@ -445,7 +478,12 @@ namespace graybat {
                 }
                     
             }
-                
+
+            for(unsigned i = 0; i < events.size(); ++i){
+                events.back().wait();
+                events.pop_back();
+            }
+            
         }
 
         
@@ -453,6 +491,8 @@ namespace graybat {
         template <typename T_SendRecv>
         void Base<T_CommunicationPolicy>::broadcast(const VAddr rootVAddr, const Context context, T_SendRecv& data){
             using CommunicationPolicy = T_CommunicationPolicy;
+
+            std::vector<Event> events;
             
             if(rootVAddr == context.getVAddr()){
                 for(VAddr vAddr = 0; vAddr < context.size(); vAddr++){
@@ -464,6 +504,11 @@ namespace graybat {
 
             static_cast<CommunicationPolicy*>(this)->recv(rootVAddr, 0, context, data);
 
+            for(unsigned i = 0; i < events.size(); ++i){
+                events.back().wait();
+                events.pop_back();
+            }
+            
         }
 
         

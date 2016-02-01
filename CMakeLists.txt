@@ -22,37 +22,37 @@ find_package(elegant-progressbars 1.0.0 REQUIRED CONFIG)
 # Graybat
 ###############################################################################
 find_package(graybat 1.0.0 REQUIRED CONFIG PATHS ${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(SYSTEM ${graybat_INCLUDE_DIRS})
+include_directories(${graybat_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${graybat_LIBRARIES})
 
 ###############################################################################
 # Compiler Flags
 ###############################################################################
-string(FIND ${CMAKE_CXX_COMPILER} "clang++" CXX_COMPILER_IS_CLANG++)
-string(FIND ${CMAKE_CXX_COMPILER} "g++" CXX_COMPILER_IS_G++)
+if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+  set  (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wpedantic")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused-parameter")
+  #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+endif()
 
-if(${CXX_COMPILER_IS_G++})
+if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
-  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wpedantic")      
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wpedantic")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused-parameter")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wvla-extension")      
   #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
-endif(${CXX_COMPILER_IS_G++})
-
-if(${CXX_COMPILER_IS_CLANG++})
-  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
-  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wpedantic")    
-  #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
-endif(${CXX_COMPILER_IS_CLANG++})
+endif()
 
 ###############################################################################
 # CCache
 ###############################################################################
-find_program(CCACHE_FOUND ccache)
-if(CCACHE_FOUND)
-  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
-  set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
-endif(CCACHE_FOUND)
+#find_program(CCACHE_FOUND ccache)
+#if(CCACHE_FOUND)
+#  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+#  set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+#endif(CCACHE_FOUND)
 
 ###############################################################################
 # Targets
