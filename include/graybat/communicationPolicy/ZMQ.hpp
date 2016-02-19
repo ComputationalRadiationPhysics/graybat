@@ -100,11 +100,14 @@ namespace graybat {
 	    // ZMQ Sockets
             ::zmq::context_t zmqContext;
             Socket recvSocket;
+            Socket ctrlSocket;            
             Socket signalingSocket;
-            std::vector<Socket> sendSockets;            
+            std::vector<Socket> sendSockets;
+            std::vector<Socket> ctrlSendSockets;                        
 
             // Uri
-	    const Uri peerUri;            
+	    const Uri peerUri;
+            const Uri ctrlUri;
 
 
             // Construct
@@ -112,8 +115,10 @@ namespace graybat {
                 SocketBase(config),
 		zmqContext(1),
                 recvSocket(zmqContext, ZMQ_PULL),
+                ctrlSocket(zmqContext, ZMQ_PULL),                
 		signalingSocket(zmqContext, ZMQ_REQ),
-                peerUri(bindToNextFreePort(recvSocket, config.peerUri))
+                peerUri(bindToNextFreePort(recvSocket, config.peerUri)),
+                ctrlUri(bindToNextFreePort(ctrlSocket, config.peerUri))                
             {
 
                 //std::cout << "PeerUri: " << peerUri << std::endl;
@@ -141,6 +146,7 @@ namespace graybat {
             void createSocketsToPeers(){
 		for(unsigned vAddr = 0; vAddr < initialContext.size(); vAddr++){
 		    sendSockets.emplace_back(Socket(zmqContext, ZMQ_PUSH));
+		    ctrlSendSockets.emplace_back(Socket(zmqContext, ZMQ_PUSH));                    
                 }
             }
             

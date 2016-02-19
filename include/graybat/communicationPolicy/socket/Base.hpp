@@ -6,6 +6,7 @@
 #include <map>    /* std::map */
 #include <vector> /* std::vector */
 #include <thread> /* std::thread */
+#include <exception> /* std::runtime_error */
 
 // HANA
 #include <boost/hana.hpp>
@@ -47,15 +48,19 @@ namespace graybat {
                 std::mutex sendMtx;
                 std::map<ContextID, std::map<VAddr, std::size_t> > sendSocketMappings;
                 utils::MessageBox<Message, MsgType, ContextID, VAddr, Tag> inBox;
+                utils::MessageBox<Message, MsgType, ContextID, VAddr, Tag> ctrlBox;                
 
 
                 std::map<ContextID, Context> contexts;
 
                 Context initialContext;
                 std::map<ContextID, std::map<VAddr, Uri> > phoneBook;
-                std::map<ContextID, std::map<Uri, VAddr> > inversePhoneBook;	    
+                std::map<ContextID, std::map<VAddr, Uri> > ctrlPhoneBook;
+                std::map<ContextID, std::map<Uri, VAddr> > inversePhoneBook;	                    
+                std::map<ContextID, std::map<Uri, VAddr> > inverseCtrlPhoneBook;	    
 
                 std::thread recvHandler;
+                std::thread ctrlHandler;                
                 
                 // Construct/Destruct Methods
                 Base(Config const config);
@@ -155,10 +160,10 @@ namespace graybat {
                 ContextID getContextID(T_Socket& socket, size_t const size);
 
                 template <typename T_Socket>                
-                VAddr getVAddr(T_Socket &socket, ContextID const contextID, Uri const uri);
+                VAddr getVAddr(T_Socket &socket, ContextID const contextID, Uri const uri, Uri const ctrlUri);
 
                 template <typename T_Socket>                                
-                Uri getUri(T_Socket& socket, ContextID const contextID, VAddr const vAddr);
+                std::pair<Uri,Uri> getUri(T_Socket& socket, ContextID const contextID, VAddr const vAddr);
 
 
                 // Auxilary
@@ -174,6 +179,7 @@ namespace graybat {
                 MsgID getMsgID();
 
                 void handleRecv();
+                void handleCtrl();                
                 
             };
 
@@ -183,7 +189,8 @@ namespace graybat {
                 masterUri(config.masterUri),
                 contextSize(config.contextSize),
                 maxMsgID(0),
-                inBox(config.maxBufferSize){
+                inBox(config.maxBufferSize),
+                ctrlBox(config.maxBufferSize){
                 
             }
 
@@ -204,15 +211,19 @@ namespace graybat {
 		ContextID contextID = getInitialContextID(static_cast<CommunicationPolicy*>(this)->signalingSocket, contextSize);
 		    
 		// Retrieve own vAddr from signaling process for initial context
-		VAddr vAddr = getVAddr(static_cast<CommunicationPolicy*>(this)->signalingSocket, contextID, static_cast<CommunicationPolicy*>(this)->peerUri);
+		VAddr vAddr = getVAddr(static_cast<CommunicationPolicy*>(this)->signalingSocket, contextID, static_cast<CommunicationPolicy*>(this)->peerUri, static_cast<CommunicationPolicy*>(this)->ctrlUri);
 		initialContext = Context(contextID, vAddr, contextSize);
 		contexts[initialContext.getID()] = initialContext;
 
 		// Retrieve for uris of other peers from signaling process for the initial context
 		for(unsigned vAddr = 0; vAddr < initialContext.size(); vAddr++){
-		    Uri remoteUri = getUri(static_cast<CommunicationPolicy*>(this)->signalingSocket, initialContext.getID(), vAddr);
+                    Uri remoteUri;
+                    Uri ctrlUri;
+                    std::tie(remoteUri, ctrlUri) = getUri(static_cast<CommunicationPolicy*>(this)->signalingSocket, initialContext.getID(), vAddr);
 		    phoneBook[initialContext.getID()][vAddr] = remoteUri;
+                    ctrlPhoneBook[initialContext.getID()][vAddr] = ctrlUri;                    
 		    inversePhoneBook[initialContext.getID()][remoteUri] = vAddr;
+		    inverseCtrlPhoneBook[initialContext.getID()][ctrlUri] = vAddr;                    
 		}
 
 		// Create socket connection to other peers
@@ -222,6 +233,7 @@ namespace graybat {
 		for(unsigned vAddr = 0; vAddr < initialContext.size(); vAddr++){
 		    sendSocketMappings[initialContext.getID()][vAddr] = vAddr;
                     static_cast<CommunicationPolicy*>(this)->connectToSocket(static_cast<CommunicationPolicy*>(this)->sendSockets.at(sendSocketMappings.at(initialContext.getID()).at(vAddr)), phoneBook.at(initialContext.getID()).at(vAddr).c_str());
+                    static_cast<CommunicationPolicy*>(this)->connectToSocket(static_cast<CommunicationPolicy*>(this)->ctrlSendSockets.at(sendSocketMappings.at(initialContext.getID()).at(vAddr)), ctrlPhoneBook.at(initialContext.getID()).at(vAddr).c_str());
 
                     //std::cout << "sendSocket_i: " << vAddr << " --> " << phoneBook.at(initialContext.getID()).at(vAddr) << std::endl;
 
@@ -229,6 +241,7 @@ namespace graybat {
 
                 // Create thread which recv all messages to this peer
                 recvHandler = std::thread(&Base<CommunicationPolicy>::handleRecv, this);
+                ctrlHandler = std::thread(&Base<CommunicationPolicy>::handleCtrl, this);                
 
             }
 
@@ -242,6 +255,7 @@ namespace graybat {
                 std::array<unsigned, 1>  null;
                 static_cast<CommunicationPolicy*>(this)->asyncSendImpl(MsgType::DESTRUCT, 0, initialContext, initialContext.getVAddr(), 0, null);
                 recvHandler.join();
+                ctrlHandler.join();
 
             }
             
@@ -330,7 +344,7 @@ namespace graybat {
                 using Message             = graybat::communicationPolicy::socket::Message<CommunicationPolicy>;
                 using MsgType             = graybat::communicationPolicy::MsgType<CommunicationPolicy>;                    
                 
-                Message message(std::move(inBox.waitDequeue(MsgType::CONFIRM, context.getID(), vAddr, tag)));
+                Message message(std::move(ctrlBox.waitDequeue(MsgType::CONFIRM, context.getID(), vAddr, tag)));
 
                 // size_t    msgOffset = 0;
                 // MsgType   remoteMsgType;
@@ -341,7 +355,7 @@ namespace graybat {
                     return true;
                 }
                 else {
-                    inBox.enqueue(std::move(message), MsgType::CONFIRM, context.getID(), vAddr, tag);
+                    ctrlBox.enqueue(std::move(message), MsgType::CONFIRM, context.getID(), vAddr, tag);
                 }
 
                 return false;
@@ -410,13 +424,15 @@ namespace graybat {
                     static_cast<CommunicationPolicy*>(this)->recvImpl(MsgType::SPLIT, oldContext, 0, 0, nMembers);
 		    ContextID newContextID = nMembers[1];
 
-		    newContext = Context(newContextID, getVAddr(static_cast<CommunicationPolicy*>(this)->signalingSocket, newContextID, static_cast<CommunicationPolicy*>(this)->peerUri), nMembers[0]);
+		    newContext = Context(newContextID, getVAddr(static_cast<CommunicationPolicy*>(this)->signalingSocket, newContextID, static_cast<CommunicationPolicy*>(this)->peerUri, static_cast<CommunicationPolicy*>(this)->ctrlUri), nMembers[0]);
 		    contexts[newContext.getID()] = newContext;
 
 		    //std::cout  << oldContext.getVAddr() << " check 1" << std::endl;
 		    // Update phonebook for new context
 		    for(unsigned vAddr = 0; vAddr < newContext.size(); vAddr++){
-		 	Uri remoteUri = getUri(static_cast<CommunicationPolicy*>(this)->signalingSocket, newContext.getID(), vAddr);
+                        Uri remoteUri;
+                        Uri ctrlUri;
+                        std::tie(remoteUri, ctrlUri) = getUri(static_cast<CommunicationPolicy*>(this)->signalingSocket, newContext.getID(), vAddr);
 		    	phoneBook[newContext.getID()][vAddr] = remoteUri;
 		 	inversePhoneBook[newContext.getID()][remoteUri] = vAddr;
                         
@@ -500,7 +516,7 @@ namespace graybat {
             
             template <typename T_CommunicationPolicy>
             template <typename T_Socket>
-            auto Base<T_CommunicationPolicy>::getVAddr(T_Socket &socket, ContextID const contextID, Uri const uri)
+            auto Base<T_CommunicationPolicy>::getVAddr(T_Socket &socket, ContextID const contextID, Uri const uri, Uri const ctrlUri)
                 -> graybat::communicationPolicy::VAddr<T_CommunicationPolicy> {
 
                 using VAddr = graybat::communicationPolicy::VAddr<T_CommunicationPolicy>;
@@ -508,7 +524,7 @@ namespace graybat {
 		VAddr vAddr(0);
 		// Send vAddr request
 		std::stringstream ss;
-		ss << static_cast<size_t>(MsgType::VADDR_REQUEST) << " " << contextID << " " << uri << " ";
+		ss << static_cast<size_t>(MsgType::VADDR_REQUEST) << " " << contextID << " " << uri << " " << ctrlUri << " ";
                 static_cast<CommunicationPolicy*>(this)->sendToSocket(socket, ss);         
 
 		// Recv vAddr
@@ -526,7 +542,9 @@ namespace graybat {
 	    auto Base<T_CommunicationPolicy>::getUri(T_Socket& socket,
                         graybat::communicationPolicy::ContextID<T_CommunicationPolicy> const contextID,
                         graybat::communicationPolicy::VAddr<T_CommunicationPolicy> const vAddr)
-                -> graybat::communicationPolicy::socket::Uri<T_CommunicationPolicy> {
+            -> std::pair<graybat::communicationPolicy::socket::Uri<T_CommunicationPolicy>,
+                         graybat::communicationPolicy::socket::Uri<T_CommunicationPolicy>
+                        > {
                 
 		MsgType type = MsgType::RETRY;
                             
@@ -539,18 +557,20 @@ namespace graybat {
 		    // Recv uri
                     std::string msgTypeStr;
 		    std::string remoteUri;
+		    std::string ctrlUri;                    
 		    std::stringstream sss;
                     static_cast<CommunicationPolicy*>(this)->recvFromSocket(socket, sss);                    
 		    sss >> msgTypeStr;
                     type = static_cast<MsgType>(std::stoi(msgTypeStr));
 		    if(type == MsgType::ACK){
-			sss >> remoteUri;   
-			return remoteUri;
+			sss >> remoteUri;
+                        sss >> ctrlUri;
+			return std::make_pair(remoteUri, ctrlUri);
                         
 		    }
 
 		}
-                return std::string("");
+                return std::make_pair(std::string(""), std::string(""));
                 
 	    }
 
@@ -570,13 +590,29 @@ namespace graybat {
                 //std::cout << "send msg: " << static_cast<int>(msgType) << " " << msgID << " " << context.getID() << " " << destVAddr << "(socket_i " <<  sendSocketMappings.at(context.getID()).at(destVAddr)<< ") " << tag << std::endl;
                 
                 // Create message
-                Message message(msgType, msgID, context.getID(), context.getVAddr(), tag, sendData);                
-		
+                Message message(msgType, msgID, context.getID(), context.getVAddr(), tag, sendData);                    
+                
 	        std::size_t sendSocket_i  = sendSocketMappings.at(context.getID()).at(destVAddr);
 	        Socket &sendSocket = static_cast<CommunicationPolicy*>(this)->sendSockets.at(sendSocket_i);
+	        Socket &ctrlSendSocket = static_cast<CommunicationPolicy*>(this)->ctrlSendSockets.at(sendSocket_i);                
 
+                
 	        sendMtx.lock();
-                static_cast<CommunicationPolicy*>(this)->sendToSocket(sendSocket, message.getMessage());
+                if(msgType == MsgType::CONFIRM){
+                   static_cast<CommunicationPolicy*>(this)->sendToSocket(ctrlSendSocket, message.getMessage());                 
+                }
+                else {
+
+                    if(msgType == MsgType::DESTRUCT){
+                        Message message2(msgType, msgID, context.getID(), context.getVAddr(), tag, sendData);                                                        
+                        static_cast<CommunicationPolicy*>(this)->sendToSocket(sendSocket, message.getMessage());
+                        static_cast<CommunicationPolicy*>(this)->sendToSocket(ctrlSendSocket, message2.getMessage());
+
+                    }
+                    else {
+                        static_cast<CommunicationPolicy*>(this)->sendToSocket(sendSocket, message.getMessage());
+                    }
+                }
 	        sendMtx.unlock();
 
             }
@@ -656,12 +692,42 @@ namespace graybat {
                         Context context = contexts.at(message.getContextID());
                         static_cast<CommunicationPolicy*>(this)->asyncSendImpl(MsgType::CONFIRM, message.getMsgID(), context, message.getVAddr(), message.getTag(), null);
                     }
-			
-                    inBox.enqueue(std::move(message), message.getMsgType(), message.getContextID(), message.getVAddr(), message.getTag());
 
+                    inBox.enqueue(std::move(message), message.getMsgType(), message.getContextID(), message.getVAddr(), message.getTag());
+                
                 }
 
             }
+
+            template <typename T_CommunicationPolicy>
+            auto Base<T_CommunicationPolicy>::handleCtrl()
+                -> void {
+
+                using CommunicationPolicy = T_CommunicationPolicy;                
+                using Message = graybat::communicationPolicy::socket::Message<CommunicationPolicy>;
+               
+                while(true){
+                    
+                    Message message;
+                    static_cast<CommunicationPolicy*>(this)->recvFromSocket(static_cast<CommunicationPolicy*>(this)->ctrlSocket, message);
+                    
+                    //std::cout << "recv handler: " << static_cast<int>(message.getMsgType()) << " " << message.getMsgID() << " " << message.getContextID() << " " << message.getVAddr() << " " << message.getTag() << std::endl;
+			
+                    if(message.getMsgType() == MsgType::DESTRUCT){
+                        return;
+                    }
+
+                    if(message.getMsgType() == MsgType::CONFIRM){
+                        ctrlBox.enqueue(std::move(message), message.getMsgType(), message.getContextID(), message.getVAddr(), message.getTag());
+                    }
+                    else {
+                        // Throw exception
+                        throw std::runtime_error("Received wrong message type on ctrl socket (not confirm).");
+                    }
+
+                }
+
+            }            
 
         } // socket
         
