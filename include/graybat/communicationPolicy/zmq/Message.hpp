@@ -85,6 +85,10 @@ namespace graybat {
                     return tag;
 
                 }
+		
+		size_t size() {
+		    return message.size();
+		}
 
                 std::int8_t* getData(){
                     return static_cast<std::int8_t*>(message.data()) + sizeof(MsgType) + sizeof(MsgID) + sizeof(ContextID) + sizeof(VAddr) + sizeof(Tag);

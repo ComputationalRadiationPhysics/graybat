@@ -239,12 +239,12 @@ namespace utils {
 
 	auto enqueue(T_Value&& value, const T_Keys... keys) -> void {
 	    {
-                while(maxBufferSize < bufferSize + sizeof(value)){
+                while(maxBufferSize < bufferSize + value.size()){
                     std::unique_lock<std::mutex> notifyLock(readNotify);                    
                     readCondition.wait_for(notifyLock, std::chrono::milliseconds(100));                    
                 }
                 
-                bufferSize += sizeof(value);
+                bufferSize += value.size();
                 //std::cout << bufferSize << std::endl;
                 //std::cout << "Try to enqueue message." << std::endl;
                 std::lock_guard<std::mutex> accessLock(access);
@@ -286,7 +286,7 @@ namespace utils {
 		//std::cout << "get message from queue" << std::endl;
 		T_Value value = std::move(multiKeyMap.at(keys...).front());
 		multiKeyMap.at(keys...).pop();
-                bufferSize -= sizeof(value);
+                bufferSize -= value.size();
                 readCondition.notify_one();                
 		return value;
 	    }
@@ -318,7 +318,7 @@ namespace utils {
 			    allKeys = keys;
 			    T_Value value = std::move(queue.front());
 			    queue.pop();
-                            bufferSize -= sizeof(value);                            
+                            bufferSize -= value.size();                            
                             readCondition.notify_one();
 			    return value;
 			}
