@@ -23,13 +23,13 @@ typedef unsigned MsgType;
 typedef std::string Uri;
 
 // Message tags
-static const MsgType VADDR_REQUEST   = 0;
-static const MsgType VADDR_LOOKUP    = 1;
-static const MsgType DESTRUCT        = 2;
-static const MsgType RETRY           = 3;
-static const MsgType ACK             = 4;
-static const MsgType CONTEXT_INIT    = 5;
-static const MsgType CONTEXT_REQUEST = 6;
+static const MsgType VADDR_REQUEST     = 0;
+static const MsgType VADDR_LOOKUP      = 1;
+static const MsgType DESTRUCT          = 2;
+static const MsgType RETRY             = 3;
+static const MsgType ACK               = 4;
+static const MsgType CONTEXT_INIT      = 5;
+static const MsgType CONTEXT_REQUEST   = 6;
 
 //  Receive 0MQ string from socket and convert into C string
 //  Caller must free returned string. Returns NULL if the context
@@ -109,6 +109,7 @@ int main(const int argc, char **argv){
     std::cout << "Start zmq signaling server" << std::endl;
 
     std::map<ContextID, std::map<VAddr, Uri> > phoneBook;
+    std::map<ContextID, std::map<VAddr, Uri> > ctrlPhoneBook;    
     std::map<ContextID, VAddr> maxVAddr;
 
     std::cout << "Listening on: " << masterUri << std::endl;
@@ -133,6 +134,7 @@ int main(const int argc, char **argv){
         ss << s_recv(socket);
 
         Uri srcUri;
+        Uri ctrlUri;        
         MsgType type;
 	ContextID contextID;
 	unsigned size;
@@ -168,10 +170,12 @@ int main(const int argc, char **argv){
                 // Reply with correct information
 		ss >> contextID;
                 ss >> srcUri;
+                ss >> ctrlUri;
 
                 phoneBook[contextID][maxVAddr[contextID]] = srcUri;
+                ctrlPhoneBook[contextID][maxVAddr[contextID]] = ctrlUri;                
                 s_send(socket, (std::to_string(maxVAddr[contextID]) + " ").c_str());
-		std::cout << "VADDR REQUEST [contextID:" << contextID << "][srcUri:" << srcUri << "]: " << maxVAddr[contextID] << std::endl;
+		std::cout << "VADDR REQUEST [contextID:" << contextID << "][srcUri:" << srcUri << "]" << "[ctrlUri:" << ctrlUri << "]:" <<  maxVAddr[contextID] << std::endl;
 		maxVAddr[contextID]++;		
                 break;
             }
@@ -185,14 +189,14 @@ int main(const int argc, char **argv){
                 std::stringstream sss;
 
                 if(phoneBook[contextID].count(remoteVAddr) == 0){
-                    sss << RETRY;
+                    sss << RETRY << " ";
                     s_send(socket, sss.str().c_str());
-		    std::cout << "VADDR LOOKUP [contextID:" << contextID << "][remoteVAddr:" << remoteVAddr << "]: " << " RETRY"<< std::endl;		    		    
+		    std::cout << "VADDR LOOKUP [contextID:" << contextID << "][remoteVAddr:" << remoteVAddr << "]: " << " RETRY " << std::endl;		    		    
                 }
                 else {
-                    sss << ACK << " " << phoneBook[contextID][remoteVAddr] << " ";
+                    sss << ACK << " " << phoneBook[contextID][remoteVAddr] << " " << ctrlPhoneBook[contextID][remoteVAddr] << " ";
                     s_send(socket, sss.str().c_str());
-		    std::cout << "VADDR LOOKUP [contextID:" << contextID << "][remoteVAddr:" << remoteVAddr << "]: " << phoneBook[contextID][remoteVAddr] << std::endl;
+		    std::cout << "VADDR LOOKUP [contextID:" << contextID << "][remoteVAddr:" << remoteVAddr << "]: " << phoneBook[contextID][remoteVAddr] << " " << ctrlPhoneBook[contextID][remoteVAddr] << std::endl;
                 }
 
                 break;
