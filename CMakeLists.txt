@@ -104,7 +104,11 @@ install(
 install(
   FILES ${CMAKE_FILES}
   DESTINATION "lib/graybat"
-  )
+)
+
+install( TARGETS gbZMQSignaling
+          RUNTIME DESTINATION "bin"
+        )
 
 # Doxygen
 find_package(Doxygen)
