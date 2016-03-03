@@ -3,12 +3,7 @@
 #include <boost/hana/tuple.hpp>
 
 // STL
-#include <functional> /* std::plus, std::reference_wrapper */
 #include <iostream>   /* std::cout, std::endl */
-#include <array>      /* std::array */
-#include <numeric>    /* std::iota */
-#include <cstdlib>    /* std::getenv */
-#include <string>     /* std::string, std::stoi */
 
 // ELEGANT-PROGRESSBARS
 #include <elegant-progressbars/policyProgressbar.hpp>
@@ -118,7 +113,7 @@ BOOST_AUTO_TEST_CASE( context ){
 }
 
 
-BOOST_AUTO_TEST_CASE( send_recv){
+BOOST_AUTO_TEST_CASE( async_send_recv){
     hana::for_each(communicationPolicies, [](auto cpRef){
 	    // Test setup
 	    using CP      = typename decltype(cpRef)::type;
@@ -162,18 +157,68 @@ BOOST_AUTO_TEST_CASE( send_recv){
 		    }
 
 		    progress.print( nRuns, i);
-	
-		}
 
-	    }
+        }
 
-	});
-    
-}
-	
+        }
+
+    });
+
+    }
+
+    BOOST_AUTO_TEST_CASE( async_send_async_recv){
+        hana::for_each(communicationPolicies, [](auto cpRef){
+            // Test setup
+            using CP      = typename decltype(cpRef)::type;
+            using Context = typename CP::Context;
+            using Event   = typename CP::Event;
+            CP& cp = cpRef.get();
+            Progress progress(cp);
+
+            // Test run
+            {
+
+                const unsigned nElements = 2;
+                const unsigned tag = 99;
+
+                Context context = cp.getGlobalContext();
+
+                for(unsigned i = 0; i < nRuns; ++i){
+                    std::vector<unsigned> recv (nElements, 0);
+                    std::vector<Event> events;
+
+                    for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
+                        std::vector<unsigned> data (nElements, 1);
+                        std::iota(data.begin(), data.end(), context.getVAddr());
+                        events.push_back(cp.asyncSend(vAddr, tag, context, data));
+                    }
+
+                    for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
+                        Event e = cp.asyncRecv(vAddr, tag, context, recv);
+                        e.wait();
+                        for(unsigned i = 0; i < recv.size(); ++i){
+                            BOOST_CHECK_EQUAL(recv[i], vAddr+i);
+                        }
+                    }
+
+                    for(Event &e : events){
+                        e.wait();
+                    }
+
+                    progress.print( nRuns, i);
+
+                }
+
+            }
+
+        });
+
+    }
 
 
-BOOST_AUTO_TEST_CASE( send_recv_all){
+
+
+    BOOST_AUTO_TEST_CASE( send_recv_all){
     hana::for_each(communicationPolicies, [](auto cpRef){
 	    // Test setup
 	    using CP      = typename decltype(cpRef)::type;

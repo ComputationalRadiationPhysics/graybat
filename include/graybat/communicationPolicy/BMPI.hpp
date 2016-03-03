@@ -192,9 +192,9 @@ namespace graybat {
 	     */
 	    template <typename T_Recv>
 	    Event asyncRecv(const VAddr srcVAddr, const Tag tag, const Context context, T_Recv& recvData){
-	    	 Uri srcUri = getVAddrUri(context, srcVAddr);
-		 mpi::request request = context.comm.irecv(srcUri, tag, recvData.data(), recvData.size());
-	    	 return Event(request);
+            Uri srcUri = getVAddrUri(context, srcVAddr);
+			mpi::request request = context.comm.irecv(srcUri, tag, recvData.data(), recvData.size());
+            return Event(request);
 	    }
 
 
