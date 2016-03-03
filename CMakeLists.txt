@@ -81,8 +81,8 @@ foreach(EXAMPLE ${EXAMPLES})
 endforeach(EXAMPLE)
 
 # ZMQ signaling server
-add_executable(zmq_signaling EXCLUDE_FROM_ALL utils/zmq_signaling_server.cpp )
-target_link_libraries(zmq_signaling ${LIBS})
+add_executable(gbZMQSignaling EXCLUDE_FROM_ALL utils/zmq_signaling_server.cpp )
+target_link_libraries(gbZMQSignaling ${LIBS})
 
 # CTest
 enable_testing()
@@ -117,3 +117,15 @@ if(DOXYGEN_FOUND)
     COMMENT "Generating API documentation with Doxygen." VERBATIM
     )
 endif(DOXYGEN_FOUND)
+
+###############################################################################
+# Clion Integration
+###############################################################################
+file(GLOB_RECURSE _SOURCES_PRE "*")
+foreach(P ${_SOURCES_PRE})
+    # Remove dot-directories and the build directory
+    if(NOT ${P} MATCHES  "${CMAKE_CURRENT_LIST_DIR}/([.].*/.*|build/.*)")
+        set(_SOURCES ${_SOURCES} ${P})
+    endif()
+endforeach()
+ADD_LIBRARY(CLION_DUMMY_TARGET EXCLUDE_FROM_ALL ${_SOURCES})

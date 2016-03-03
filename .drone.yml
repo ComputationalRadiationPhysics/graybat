@@ -15,20 +15,19 @@ script:
   - echo "######################"  
   - export CXX=clang++
   - cmake ..
-  - make zmq_signaling
-  - ./zmq_signaling&
+  - make gbZMQSignaling
+  - ./gbZMQSignaling&
   - make test
-  - killall zmq_signaling
   - rm * -rf
   - echo "##################"
   - echo "# G++ build test #"
   - echo "##################"  
   - export CXX=g++
   - cmake ..
-  - make zmq_signaling
-  - ./zmq_signaling&
+  - make gbZMQSignaling
+  - ./gbZMQSignaling&
   - make test
-  - killall zmq_signaling
+  - killall gbZMQSignaling
   - rm * -rf
 
 before_script:
