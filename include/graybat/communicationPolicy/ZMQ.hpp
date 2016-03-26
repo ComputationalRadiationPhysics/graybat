@@ -144,7 +144,7 @@ namespace graybat {
 	     ***************************************************************************/
 
             void createSocketsToPeers(){
-		for(unsigned vAddr = 0; vAddr < initialContext.size(); vAddr++){
+                for(auto const &vAddr : initialContext){                
 		    sendSockets.emplace_back(Socket(zmqContext, ZMQ_PUSH));
 		    ctrlSendSockets.emplace_back(Socket(zmqContext, ZMQ_PUSH));                    
                 }

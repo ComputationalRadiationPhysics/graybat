@@ -227,7 +227,7 @@ namespace graybat {
                 contexts[initialContext.getID()] = initialContext;
 
                 // Retrieve for uris of other peers from signaling process for the initial context
-                for(unsigned vAddr = 0; vAddr < initialContext.size(); vAddr++){
+                for(auto const &vAddr : initialContext){                    
                     Uri remoteUri;
                     Uri ctrlUri;
                     std::tie(remoteUri, ctrlUri) = getUri(static_cast<CommunicationPolicy*>(this)->signalingSocket, initialContext.getID(), vAddr);
@@ -241,7 +241,7 @@ namespace graybat {
                 // Create socketmapping from initial context to sockets of VAddrs
                 static_cast<CommunicationPolicy*>(this)->createSocketsToPeers();
 
-                for(unsigned vAddr = 0; vAddr < initialContext.size(); vAddr++){
+                for(auto const &vAddr : initialContext){                    
                     sendSocketMappings[initialContext.getID()][vAddr] = vAddr;
                     static_cast<CommunicationPolicy*>(this)->connectToSocket(static_cast<CommunicationPolicy*>(this)->sendSockets.at(sendSocketMappings.at(initialContext.getID()).at(vAddr)), phoneBook.at(initialContext.getID()).at(vAddr).c_str());
                     static_cast<CommunicationPolicy*>(this)->connectToSocket(static_cast<CommunicationPolicy*>(this)->ctrlSendSockets.at(sendSocketMappings.at(initialContext.getID()).at(vAddr)), ctrlPhoneBook.at(initialContext.getID()).at(vAddr).c_str());
@@ -407,7 +407,7 @@ namespace graybat {
                     std::array<unsigned, 2> nMembers {{ 0 }};
                     std::vector<VAddr> vAddrs;
 
-                    for(unsigned vAddr = 0; vAddr < oldContext.size(); ++vAddr){
+                    for(auto const &vAddr : oldContext){                        
                         std::array<unsigned, 1> remoteIsMember {{ 0 }};
                         //std::cout << "Recv remoteIsMember: " <<  vAddr << std::endl;
                         static_cast<CommunicationPolicy*>(this)->recvImpl(MsgType::SPLIT, oldContext, vAddr, 0, remoteIsMember);
@@ -442,19 +442,18 @@ namespace graybat {
 
                     //std::cout  << oldContext.getVAddr() << " check 1" << std::endl;
                     // Update phonebook for new context
-                    for(unsigned vAddr = 0; vAddr < newContext.size(); vAddr++){
+                    for(auto const &vAddr : newContext){                        
                         Uri remoteUri;
                         Uri ctrlUri;
                         std::tie(remoteUri, ctrlUri) = getUri(static_cast<CommunicationPolicy*>(this)->signalingSocket, newContext.getID(), vAddr);
                         phoneBook[newContext.getID()][vAddr] = remoteUri;
                         inversePhoneBook[newContext.getID()][remoteUri] = vAddr;
 
-
                     }
 
                     //std::cout  << oldContext.getVAddr() << " check 2" << std::endl;
                     // Create mappings to sockets for new context
-                    for(unsigned vAddr = 0; vAddr < newContext.size(); vAddr++){
+                    for(auto const &vAddr : newContext){                        
                         Uri uri = phoneBook.at(newContext.getID()).at(vAddr);
                         VAddr oldVAddr = inversePhoneBook.at(oldContext.getID()).at(uri);
                         sendSocketMappings[newContext.getID()][vAddr] = sendSocketMappings.at(oldContext.getID()).at(oldVAddr);
@@ -472,10 +471,10 @@ namespace graybat {
                 // Barrier thus recvHandler is up to date with sendSocketMappings
                 // Necessary in environment with multiple zmq objects
                 std::array<unsigned, 0> null;
-                for(unsigned vAddr = 0; vAddr < oldContext.size(); ++vAddr){
+                for(auto const &vAddr : oldContext){                    
                     static_cast<CommunicationPolicy*>(this)->asyncSendImpl(MsgType::SPLIT, getMsgID(), oldContext, vAddr, 0, null);
                 }
-                for(unsigned vAddr = 0; vAddr < oldContext.size(); ++vAddr){
+                for(auto const &vAddr : oldContext){                    
                     static_cast<CommunicationPolicy*>(this)->recvImpl(MsgType::SPLIT, oldContext, vAddr, 0, null);
                 }
 

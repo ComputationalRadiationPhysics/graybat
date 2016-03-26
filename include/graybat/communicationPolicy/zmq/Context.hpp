@@ -1,6 +1,7 @@
 #pragma once
 
-#include <graybat/communicationPolicy/Traits.hpp> 
+#include <graybat/communicationPolicy/Traits.hpp>
+#include <graybat/communicationPolicy/zmq/VAddrIterator.hpp>
 
 namespace graybat {
     
@@ -55,6 +56,22 @@ namespace graybat {
                     return isValid;
                 }
 
+                VAddrIterator<T_CP> begin(){
+                    return VAddrIterator<T_CP>(0);
+                }
+
+                VAddrIterator<T_CP> begin() const {
+                    return VAddrIterator<T_CP>(0);
+                }
+                
+                VAddrIterator<T_CP> end(){
+                    return VAddrIterator<T_CP>(size());
+                }
+
+                VAddrIterator<T_CP> end() const {
+                    return VAddrIterator<T_CP>(size());
+                }
+                
             private:	
                 ContextID contextID;
                 VAddr     vAddr;
