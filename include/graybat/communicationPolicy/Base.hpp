@@ -254,7 +254,7 @@ namespace graybat {
             Event e = static_cast<CommunicationPolicy*>(this)->asyncSend(rootVAddr, 0, context, sendData);
                 
             if(rootVAddr == context.getVAddr()){
-                for(VAddr vAddr = 0; vAddr < context.size(); vAddr++){
+                for(auto const &vAddr : context){
                     size_t recvOffset = vAddr * sendData.size(); 
                     std::vector<RecvValueType> tmpData(sendData.size());
                     static_cast<CommunicationPolicy*>(this)->recv(vAddr, 0, context, tmpData);
@@ -284,7 +284,7 @@ namespace graybat {
             
             if(rootVAddr == context.getVAddr()){
                 size_t recvOffset = 0;
-                for(VAddr vAddr = 0; vAddr < context.size(); vAddr++){
+                for(auto const &vAddr : context){                    
                     std::vector<RecvValueType> tmpData(recvCount.at(vAddr));
                     static_cast<CommunicationPolicy*>(this)->recv(vAddr, 0, context, tmpData);
                     std::copy(tmpData.begin(), tmpData.end(), recvData.begin() + recvOffset);
@@ -309,12 +309,12 @@ namespace graybat {
 
             std::vector<Event> events;
             
-            for(VAddr vAddr = 0; vAddr < context.size(); vAddr++){
+            for(auto const &vAddr : context){                
                 events.push_back(static_cast<CommunicationPolicy*>(this)->asyncSend(vAddr, 0, context, sendData));
 
             }
 
-            for(VAddr vAddr = 0; vAddr < context.size(); vAddr++){
+            for(auto const &vAddr : context){                
                 size_t recvOffset = vAddr * sendData.size(); 
                 std::vector<RecvValueType> tmpData(sendData.size());
                 static_cast<CommunicationPolicy*>(this)->recv(vAddr, 0, context, tmpData);
@@ -343,12 +343,12 @@ namespace graybat {
             static_cast<CommunicationPolicy*>(this)->allGather(context, nElements, recvCount);
             recvData.resize(std::accumulate(recvCount.begin(), recvCount.end(), 0U));            
 
-            for(VAddr vAddr = 0; vAddr < context.size(); vAddr++){
+            for(auto const &vAddr : context){                
                 events.push_back(static_cast<CommunicationPolicy*>(this)->asyncSend(vAddr, 0, context, sendData));
             }
             
             size_t recvOffset = 0;
-            for(VAddr vAddr = 0; vAddr < context.size(); vAddr++){
+            for(auto const &vAddr : context){                
                 std::vector<RecvValueType> tmpData(recvCount.at(vAddr));
                 static_cast<CommunicationPolicy*>(this)->recv(vAddr, 0, context, tmpData);
                 std::copy(tmpData.begin(), tmpData.end(), recvData.begin() + recvOffset);
@@ -373,7 +373,7 @@ namespace graybat {
             std::vector<Event> events;
             
             if(rootVAddr == context.getVAddr()){
-                for(VAddr vAddr = 0; vAddr < context.size(); vAddr++){
+                for(auto const &vAddr : context){                    
                     size_t sendOffset = vAddr * recvData.size(); 
                     std::vector<SendValueType> tmpData(sendData.begin() + sendOffset,
                                                        sendData.begin() + sendOffset + recvData.size());
@@ -402,7 +402,7 @@ namespace graybat {
             std::vector<Event> events;
             size_t nElementsPerPeer = static_cast<size_t>(recvData.size() / context.size());
             
-            for(VAddr vAddr = 0; vAddr < context.size(); vAddr++){
+            for(auto const &vAddr : context){                
                 size_t sendOffset = vAddr * nElementsPerPeer; 
                 std::vector<SendValueType> tmpData(sendData.begin() + sendOffset,
                                                    sendData.begin() + sendOffset + nElementsPerPeer);
@@ -410,7 +410,7 @@ namespace graybat {
                 
             }
 
-            for(VAddr vAddr = 0; vAddr < context.size(); vAddr++){
+            for(auto const &vAddr : context){                
                 size_t recvOffset = vAddr * nElementsPerPeer;
                 std::vector<SendValueType> tmpData(nElementsPerPeer);
                 static_cast<CommunicationPolicy*>(this)->recv(vAddr, 0, context, tmpData);
@@ -436,9 +436,7 @@ namespace graybat {
             Event e = static_cast<CommunicationPolicy*>(this)->asyncSend(rootVAddr, 0, context, sendData);
             
             if(rootVAddr == context.getVAddr()){
-                static_cast<CommunicationPolicy*>(this)->recv(0, 0, context, recvData);
-
-                for(VAddr vAddr = 1; vAddr < context.size(); vAddr++){
+                for(auto const &vAddr : context){
                     std::vector<RecvValueType> tmpData(recvData.size());
                     static_cast<CommunicationPolicy*>(this)->recv(vAddr, 0, context, tmpData);
 
@@ -463,13 +461,11 @@ namespace graybat {
             using Event               = Base<CommunicationPolicy>::Event;
 
             std::vector<Event> events;            
-            for(VAddr vAddr = 1; vAddr < context.size(); vAddr++){            
+            for(auto const &vAddr : context){                
                 Event e = static_cast<CommunicationPolicy*>(this)->asyncSend(vAddr, 0, context, sendData);
             }
             
-            static_cast<CommunicationPolicy*>(this)->recv(0, 0, context, recvData);
-                
-            for(VAddr vAddr = 1; vAddr < context.size(); vAddr++){
+            for(auto const &vAddr : context){                
                 std::vector<RecvValueType> tmpData(recvData.size());
                 static_cast<CommunicationPolicy*>(this)->recv(vAddr, 0, context, tmpData);
 
@@ -495,7 +491,7 @@ namespace graybat {
             std::vector<Event> events;
             
             if(rootVAddr == context.getVAddr()){
-                for(VAddr vAddr = 0; vAddr < context.size(); vAddr++){
+                for(auto const &vAddr : context){                
                     static_cast<CommunicationPolicy*>(this)->asyncSend(vAddr, 0, context, data);
                         
                 }
@@ -517,11 +513,14 @@ namespace graybat {
             std::array<char, 0> null;
             
             if(context.getVAddr() == 0){
-                for(VAddr vAddr = 0; vAddr < context.size(); vAddr++){
+                for(auto const &vAddr : context){                    
                     static_cast<CommunicationPolicy*>(this)->recv(vAddr, 0, context, null);
+                    
                 }
-                for(VAddr vAddr = 0; vAddr < context.size(); vAddr++){
+                
+                for(auto const &vAddr : context){                    
                     static_cast<CommunicationPolicy*>(this)->send(vAddr, 0, context, null);
+                    
                 }
                     
             }

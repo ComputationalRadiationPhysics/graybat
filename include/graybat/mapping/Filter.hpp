@@ -33,11 +33,11 @@ namespace graybat {
                 // Get the information about who wants to
                 // host vertices with the same tag
                 std::array<size_t, 1> sendData{vertexTag};                
-                for(VAddr vAddr = 0; vAddr < context.size(); vAddr++){
+                for(auto const &vAddr : context){
                     comm.asyncSend(vAddr, 0, context, sendData);
                 }
 
-                for(VAddr vAddr = 0; vAddr < context.size(); vAddr++){
+                for(auto const &vAddr : context){                    
                     std::array<size_t, 1> recvData{0};
                     comm.recv(vAddr, 0, context, recvData);
                     if(recvData[0] == vertexTag){

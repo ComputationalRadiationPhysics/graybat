@@ -23,15 +23,12 @@
 
 namespace graybat {
 
-
-    
-    
     /************************************************************************//**
      * @class Cage
      *
      * @brief The Communication And Graph Environment enables to communicate
-     *        on basis of a graph with methods of a user defined communication
-     *              library.
+     *        on basis of a graph with methods provided by a communication 
+     *        policy.
      *
      * A cage is defined by its Communication and Graph policy. The communication
      * policy provides methods for point to point and collective operations.
@@ -310,14 +307,14 @@ namespace graybat {
                 std::for_each(vertices.begin(), vertices.end(), [&vertexIDs](Vertex v){vertexIDs.push_back(v.id);});
 
                 // Send hostedVertices to all other peers
-                for(unsigned vAddr = 0; vAddr < graphContext.size(); ++vAddr){
+                for(auto const &vAddr : graphContext){
                     assert(nVertices[0] != 0);
                     comm.asyncSend(vAddr, 0, graphContext, nVertices);
                     comm.asyncSend(vAddr, 0, graphContext, vertexIDs);
                 }
 
                 // Recv hostedVertices from all other peers
-                for(unsigned vAddr = 0; vAddr < graphContext.size(); ++vAddr){
+                for(auto const &vAddr : graphContext){
                     std::vector<Vertex>  remoteVertices;
                     std::array<unsigned, 1> nVertices {{ 0 }};
                     comm.recv(vAddr, 0, graphContext, nVertices);
@@ -335,14 +332,15 @@ namespace graybat {
 
         }
 
-        template <typename T>
-        struct maximum {
+        
+        // template <typename T>
+        // struct maximum {
 
-            T operator()(const T a, const T b){
-                return std::max(a, b);
-            }
+        //     T operator()(const T a, const T b){
+        //         return std::max(a, b);
+        //     }
             
-        };
+        // };
 
   
         /**
@@ -776,7 +774,7 @@ namespace graybat {
 
             utils::exclusivePrefixSum(recvCount.begin(), recvCount.end(), prefixsum.begin());
 
-            for(unsigned vAddr = 0; vAddr < graphContext.size(); vAddr++){
+            for(auto const &vAddr : graphContext){                
                 const std::vector<Vertex> hostedVertices = getHostedVertices(vAddr);
                 const unsigned nElementsPerVertex = recvCount.at(vAddr) / hostedVertices.size();
 

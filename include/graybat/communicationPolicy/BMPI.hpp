@@ -50,7 +50,7 @@ namespace graybat {
 
             template<>
             struct ContextType<BMPI> {
-                using type = graybat::communicationPolicy::bmpi::Context;
+                using type = graybat::communicationPolicy::bmpi::Context<BMPI>;
             };
 
             template<>
@@ -83,8 +83,8 @@ namespace graybat {
 
 		uriMap.push_back(std::vector<Uri>());
 		
-		for(unsigned i = 0; i < initialContext.size(); ++i){
-		    uriMap.back().push_back(i);
+                for(auto const &vAddr : initialContext){                    
+		    uriMap.back().push_back(vAddr);
 		}
 
 	    }
@@ -263,9 +263,9 @@ namespace graybat {
 
 		// Create offset map 
 		unsigned offset  = 0;
-		for (unsigned i=0; i < context.size(); ++i) { 
-		    rdispls[i] = offset; 
-		    offset += recvCount[i];
+                for(auto const &vAddr : context){                    
+		    rdispls[vAddr] = offset; 
+		    offset += recvCount[vAddr];
 		
 		}
 	    
@@ -482,15 +482,14 @@ namespace graybat {
 
                     std::vector<Event> events;
                     
-                    for(unsigned i = 0; i < newContext.size(); ++i){
-                        events.push_back(Event(newContext.comm.isend(i, 0, uri.data(), 1)));
-                        
+                    for(auto const &vAddr : newContext){
+                        events.push_back(Event(newContext.comm.isend(vAddr, 0, uri.data(), 1)));
                     }
 
-                    for(unsigned i = 0; i < newContext.size(); ++i){
+                    for(auto const &vAddr : newContext){                        
                         std::array<Uri, 1> otherUri {{ 0 }};
-                        newContext.comm.recv(i, 0, otherUri.data(), 1);
-                        uriMap.at(newContext.getID()).at(i) = otherUri[0];
+                        newContext.comm.recv(vAddr, 0, otherUri.data(), 1);
+                        uriMap.at(newContext.getID()).at(vAddr) = otherUri[0];
                         
                     }
 
