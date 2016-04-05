@@ -46,6 +46,11 @@ namespace graybat {
             };
 
             template<>
+            struct ContextIDType<ZMQ> {
+                using type = unsigned;
+            };
+
+            template<>
             struct EventType<ZMQ> {
                 using type = graybat::communicationPolicy::zmq::Event<ZMQ>;
             };
@@ -143,12 +148,13 @@ namespace graybat {
 	     *
 	     ***************************************************************************/
 
-            void createSocketsToPeers(){
-                for(auto const &vAddr : initialContext){                
-		    sendSockets.emplace_back(Socket(zmqContext, ZMQ_PUSH));
-		    ctrlSendSockets.emplace_back(Socket(zmqContext, ZMQ_PUSH));                    
-                }
+        void createSocketsToPeers(){
+            for(auto const &vAddr : initialContext){
+                (void)vAddr;
+                sendSockets.emplace_back(Socket(zmqContext, ZMQ_PUSH));
+                ctrlSendSockets.emplace_back(Socket(zmqContext, ZMQ_PUSH));
             }
+        }
             
             template <typename T_Socket>
             void connectToSocket(T_Socket& socket, std::string const signalingUri) {

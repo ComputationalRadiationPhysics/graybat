@@ -44,10 +44,12 @@ namespace graybat {
                 using Message             = graybat::communicationPolicy::socket::Message<CommunicationPolicy>;
                 using Uri                 = graybat::communicationPolicy::socket::Uri<CommunicationPolicy>;
                 using Socket              = graybat::communicationPolicy::socket::Socket<CommunicationPolicy>;
+                using ContextName         = graybat::communicationPolicy::socket::ContextName<CommunicationPolicy>;
 
                 // Members
                 const Uri masterUri;
                 const size_t contextSize;
+                const ContextName contextName;
                 unsigned maxMsgID;
                 std::mutex sendMtx;
                 std::map<ContextID, std::map<VAddr, std::size_t> > sendSocketMappings;
@@ -62,6 +64,7 @@ namespace graybat {
                 std::map<ContextID, std::map<VAddr, Uri> > ctrlPhoneBook;
                 std::map<ContextID, std::map<Uri, VAddr> > inversePhoneBook;
                 std::map<ContextID, std::map<Uri, VAddr> > inverseCtrlPhoneBook;
+                std::map<ContextID, ContextName> contextNames;
 
                 std::thread recvHandler;
                 std::thread ctrlHandler;
@@ -161,7 +164,7 @@ namespace graybat {
                 ContextID getInitialContextID(T_Socket& socket, size_t const contextSize);
 
                 template <typename T_Socket>
-                ContextID getContextID(T_Socket& socket, size_t const size);
+                ContextID getContextID(T_Socket& socket, ContextName const contextName);
 
                 template <typename T_Socket>
                 VAddr getVAddr(T_Socket &socket, ContextID const contextID, Uri const uri, Uri const ctrlUri);
@@ -199,6 +202,7 @@ namespace graybat {
             Base<T_CommunicationPolicy>::Base(Config const config)  :
                     masterUri(config.masterUri),
                     contextSize(config.contextSize),
+                    contextName(config.contextName),
                     maxMsgID(0),
                     inBox(config.maxBufferSize),
                     ctrlBox(config.maxBufferSize){
@@ -219,7 +223,8 @@ namespace graybat {
                 static_cast<CommunicationPolicy*>(this)->connectToSocket(static_cast<CommunicationPolicy*>(this)->signalingSocket, masterUri);
 
                 // Retrieve Context id for initial context from signaling process
-                ContextID contextID = getInitialContextID(static_cast<CommunicationPolicy*>(this)->signalingSocket, contextSize);
+                ContextID contextID = getContextID(static_cast<CommunicationPolicy*>(this)->signalingSocket, contextName);
+                contextNames[contextID] = contextName;
 
                 // Retrieve own vAddr from signaling process for initial context
                 VAddr vAddr = getVAddr(static_cast<CommunicationPolicy*>(this)->signalingSocket, contextID, static_cast<CommunicationPolicy*>(this)->peerUri, static_cast<CommunicationPolicy*>(this)->ctrlUri);
@@ -260,7 +265,7 @@ namespace graybat {
             auto Base<T_CommunicationPolicy>::deinit()
             -> void {
                 std::stringstream ss;
-                ss << static_cast<size_t>(MsgType::DESTRUCT);
+                ss << static_cast<size_t>(MsgType::DESTRUCT) << " " << contextName;
                 static_cast<CommunicationPolicy*>(this)->sendToSocket(static_cast<CommunicationPolicy*>(this)->signalingSocket, ss);
 
                 std::array<unsigned, 1>  null;
@@ -404,8 +409,9 @@ namespace graybat {
 
                 // Peer with VAddr 0 collects new members
                 if( oldContext.getVAddr() == masterVAddr){
-                    std::array<unsigned, 2> nMembers {{ 0 }};
-                    std::vector<VAddr> vAddrs;
+                    std::array<ContextID, 1> newContextID {{ 0 }};
+                    std::array<unsigned, 1> newContextSize {{ 0 }};
+                    std::vector<VAddr> newContextWhiteList(0, 0);
 
                     for(auto const &vAddr : oldContext){                        
                         std::array<unsigned, 1> remoteIsMember {{ 0 }};
@@ -413,17 +419,21 @@ namespace graybat {
                         static_cast<CommunicationPolicy*>(this)->recvImpl(MsgType::SPLIT, oldContext, vAddr, 0, remoteIsMember);
 
                         if(remoteIsMember[0]) {
-                            nMembers[0]++;
-                            vAddrs.push_back(vAddr);
+                            newContextWhiteList.push_back(vAddr);
 
                         }
 
                     }
 
-                    nMembers[1] = getContextID(static_cast<CommunicationPolicy*>(this)->signalingSocket, nMembers[0]);
+                    ContextName newContextName = contextName + "_" + std::to_string(std::rand());
+                    newContextID[0]   = getContextID(static_cast<CommunicationPolicy*>(this)->signalingSocket, newContextName);
+                    contextNames[newContextID[0]] = newContextName;
+                    newContextSize[0] = newContextWhiteList.size();
 
-                    for(VAddr vAddr : vAddrs){
-                        static_cast<CommunicationPolicy*>(this)->asyncSendImpl(MsgType::SPLIT, getMsgID(), oldContext, vAddr, 0, nMembers);
+                    for(VAddr vAddr : newContextWhiteList){
+                        static_cast<CommunicationPolicy*>(this)->asyncSendImpl(MsgType::SPLIT, getMsgID(), oldContext, vAddr, 0, newContextID);
+                        static_cast<CommunicationPolicy*>(this)->asyncSendImpl(MsgType::SPLIT, getMsgID(), oldContext, vAddr, 0, newContextSize);
+                        static_cast<CommunicationPolicy*>(this)->asyncSendImpl(MsgType::SPLIT, getMsgID(), oldContext, vAddr, 0, newContextWhiteList);
 
                     }
 
@@ -432,29 +442,35 @@ namespace graybat {
                 //std::cout << oldContext.getVAddr() << " check 0" << std::endl;
 
                 if(isMember){
-                    std::array<unsigned, 2> nMembers {{ 0 , 0 }};
+                    std::array<ContextID, 1> newContextID {{  0 }};
+                    std::array<unsigned, 1> newContextSize {{ 0 }};
 
-                    static_cast<CommunicationPolicy*>(this)->recvImpl(MsgType::SPLIT, oldContext, 0, 0, nMembers);
-                    ContextID newContextID = nMembers[1];
+                    static_cast<CommunicationPolicy*>(this)->recvImpl(MsgType::SPLIT, oldContext, 0, 0, newContextID);
+                    static_cast<CommunicationPolicy*>(this)->recvImpl(MsgType::SPLIT, oldContext, 0, 0, newContextSize);
 
-                    newContext = Context(newContextID, getVAddr(static_cast<CommunicationPolicy*>(this)->signalingSocket, newContextID, static_cast<CommunicationPolicy*>(this)->peerUri, static_cast<CommunicationPolicy*>(this)->ctrlUri), nMembers[0]);
+                    std::vector<VAddr> newContextWhiteList(newContextSize[0], 0);
+
+                    static_cast<CommunicationPolicy*>(this)->recvImpl(MsgType::SPLIT, oldContext, 0, 0, newContextWhiteList);
+
+                    newContext = Context(newContextID[0], oldContext.getVAddr(), newContextWhiteList);
                     contexts[newContext.getID()] = newContext;
 
                     //std::cout  << oldContext.getVAddr() << " check 1" << std::endl;
                     // Update phonebook for new context
                     for(auto const &vAddr : newContext){                        
-                        Uri remoteUri;
-                        Uri ctrlUri;
-                        std::tie(remoteUri, ctrlUri) = getUri(static_cast<CommunicationPolicy*>(this)->signalingSocket, newContext.getID(), vAddr);
+                        Uri remoteUri = phoneBook[oldContext.getID()][vAddr];
+                        Uri ctrlUri   = ctrlPhoneBook[oldContext.getID()][vAddr];
                         phoneBook[newContext.getID()][vAddr] = remoteUri;
-                        inversePhoneBook[newContext.getID()][remoteUri] = vAddr;
+                        ctrlPhoneBook[newContext.getID()][vAddr] = ctrlUri;
+                        inversePhoneBook[newContext.getID()][remoteUri]   = inversePhoneBook[oldContext.getID()][remoteUri];
+                        inverseCtrlPhoneBook[newContext.getID()][ctrlUri] = inverseCtrlPhoneBook[oldContext.getID()][ctrlUri];
 
                     }
 
                     //std::cout  << oldContext.getVAddr() << " check 2" << std::endl;
                     // Create mappings to sockets for new context
                     for(auto const &vAddr : newContext){                        
-                        Uri uri = phoneBook.at(newContext.getID()).at(vAddr);
+                        Uri uri = phoneBook.at(oldContext.getID()).at(vAddr);
                         VAddr oldVAddr = inversePhoneBook.at(oldContext.getID()).at(uri);
                         sendSocketMappings[newContext.getID()][vAddr] = sendSocketMappings.at(oldContext.getID()).at(oldVAddr);
 
@@ -505,7 +521,7 @@ namespace graybat {
 
             template <typename T_CommunicationPolicy>
             template <typename T_Socket>
-            auto Base<T_CommunicationPolicy>::getContextID(T_Socket& socket, size_t const size)
+            auto Base<T_CommunicationPolicy>::getContextID(T_Socket& socket, ContextName const contextName)
             -> graybat::communicationPolicy::ContextID<T_CommunicationPolicy> {
                 using ContextID = graybat::communicationPolicy::ContextID<T_CommunicationPolicy>;
 
@@ -513,7 +529,7 @@ namespace graybat {
 
                 // Send vAddr request
                 std::stringstream ss;
-                ss << static_cast<size_t>(MsgType::CONTEXT_REQUEST) << " " << size;;
+                ss << static_cast<size_t>(MsgType::CONTEXT_REQUEST) << " " << contextName << " ";
 
                 static_cast<CommunicationPolicy*>(this)->sendToSocket(socket, ss);
 

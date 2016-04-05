@@ -1,5 +1,9 @@
 #pragma once
 
+// STL
+#include <numeric>
+
+// GRAYBAT
 #include <graybat/communicationPolicy/Traits.hpp>
 #include <graybat/communicationPolicy/zmq/VAddrIterator.hpp>
 
@@ -28,7 +32,8 @@ namespace graybat {
                     contextID(0),
                     vAddr(0),
                     nPeers(1),
-                    isValid(false){
+                    isValid(false),
+                    peers(0){
 
                 }
 
@@ -36,8 +41,20 @@ namespace graybat {
                     contextID(contextID),
                     vAddr(vAddr),
                     nPeers(nPeers),
-                    isValid(true){
-		
+                    isValid(true),
+                    peers(0){
+
+
+                    peers.resize(nPeers);
+                    std::iota(peers.begin(), peers.end(), 0);
+                }
+
+                Context(ContextID contextID, VAddr vAddr, std::vector<VAddr> peers) :
+                    contextID(contextID),
+                    vAddr(vAddr),
+                    nPeers(peers.size()),
+                    isValid(true),
+                    peers(peers) {
                 }
 
                 size_t size() const{
@@ -56,27 +73,28 @@ namespace graybat {
                     return isValid;
                 }
 
-                VAddrIterator<T_CP> begin(){
-                    return VAddrIterator<T_CP>(0);
+                std::vector<VAddr>::iterator begin(){
+                    return peers.begin();
                 }
 
-                VAddrIterator<T_CP> begin() const {
-                    return VAddrIterator<T_CP>(0);
-                }
-                
-                VAddrIterator<T_CP> end(){
-                    return VAddrIterator<T_CP>(size());
+                std::vector<VAddr>::const_iterator begin() const {
+                    return peers.cbegin();
                 }
 
-                VAddrIterator<T_CP> end() const {
-                    return VAddrIterator<T_CP>(size());
+                std::vector<VAddr>::iterator end(){
+                    return peers.end();
+                }
+
+                std::vector<VAddr>::const_iterator end() const {
+                    return peers.cend();
                 }
                 
             private:	
                 ContextID contextID;
                 VAddr     vAddr;
                 unsigned  nPeers;
-                bool      isValid;		
+                bool      isValid;
+                std::vector<VAddr> peers;
             };
 
 
