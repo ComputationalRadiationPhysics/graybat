@@ -157,6 +157,7 @@ namespace graybat {
                 // CONTEXT INTERFACE
                 Context getGlobalContext();
                 Context splitContext(const bool isMember, const Context oldContext);
+                Context update(const Context oldContext);
 
 
                 // SIGNALING METHODS
@@ -482,15 +483,17 @@ namespace graybat {
                     newContext = Context();
                 }
 
+                //static_cast<CommunicationPolicy*>(this)->synchronize(oldContext);
+
                 //std::cout  << oldContext.getVAddr() << " check 3" << std::endl;
 
                 // Barrier thus recvHandler is up to date with sendSocketMappings
                 // Necessary in environment with multiple zmq objects
                 std::array<unsigned, 0> null;
-                for(auto const &vAddr : oldContext){                    
+                for(auto const &vAddr : oldContext){
                     static_cast<CommunicationPolicy*>(this)->asyncSendImpl(MsgType::SPLIT, getMsgID(), oldContext, vAddr, 0, null);
                 }
-                for(auto const &vAddr : oldContext){                    
+                for(auto const &vAddr : oldContext){
                     static_cast<CommunicationPolicy*>(this)->recvImpl(MsgType::SPLIT, oldContext, vAddr, 0, null);
                 }
 
@@ -499,6 +502,11 @@ namespace graybat {
 
             }
 
+            template <typename T_CommunicationPolicy>
+            auto Base<T_CommunicationPolicy>::update(const Context oldContext)
+            -> graybat::communicationPolicy::Context<T_CommunicationPolicy> {
+                return oldContext;
+            }
 
             template <typename T_CommunicationPolicy>
             template <typename T_Socket>
@@ -805,6 +813,9 @@ namespace graybat {
                 }
 
             }
+
+
+
 
         } // socket
 
