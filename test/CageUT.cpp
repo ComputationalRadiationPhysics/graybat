@@ -84,7 +84,8 @@ using BMPIConfig = BMPI::Config;
 
 ZMQConfig zmqConfig = {"tcp://127.0.0.1:5000",
                        "tcp://127.0.0.1:5001",
-                       static_cast<size_t>(std::stoi(std::getenv("OMPI_COMM_WORLD_SIZE")))};
+                       static_cast<size_t>(std::stoi(std::getenv("OMPI_COMM_WORLD_SIZE"))),
+					   "context_cage_test"};
 
 BMPIConfig bmpiConfig;
 

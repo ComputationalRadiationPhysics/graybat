@@ -53,7 +53,12 @@ namespace graybat {
                 using type = graybat::communicationPolicy::bmpi::Context<BMPI>;
             };
 
-            template<>
+			template<>
+			struct ContextIDType<BMPI> {
+				using type = unsigned;
+			};
+
+			template<>
             struct EventType<BMPI> {
                 using type = graybat::communicationPolicy::bmpi::Event;
             };

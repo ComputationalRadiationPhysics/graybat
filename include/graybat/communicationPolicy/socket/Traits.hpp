@@ -28,6 +28,9 @@ namespace graybat {
         
             template <typename T_CommunicationPolicy>
             using Message = typename traits::MessageType<T_CommunicationPolicy>::type;
+
+            template <typename T_CommunicationPolicy>
+            using ContextName = std::string;
             
         } // namespace socket
             

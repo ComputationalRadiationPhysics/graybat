@@ -10,6 +10,9 @@ namespace graybat {
             struct ContextType;
 
             template <typename T_CommunicationPolicy>
+            struct ContextIDType;
+
+            template <typename T_CommunicationPolicy>
             struct EventType;
 
             template <typename T_CommunicationPolicy>
@@ -23,9 +26,7 @@ namespace graybat {
         template <typename T_CommunicationPolicy>
         using Tag = unsigned;
 
-        template <typename T_CommunicationPolicy>        
-        using ContextID = unsigned;
-        
+
         enum class MsgTypeType : std::int8_t { VADDR_REQUEST = 0,
                 VADDR_LOOKUP = 1,
                 DESTRUCT = 2,
@@ -45,6 +46,10 @@ namespace graybat {
 
         template <typename T_CommunicationPolicy>
         using Context = typename traits::ContextType<T_CommunicationPolicy>::type;
+
+        template <typename T_CommunicationPolicy>
+        using ContextID = typename traits::ContextIDType<T_CommunicationPolicy>::type;
+
 
         template <typename T_CommunicationPolicy>
         using Event = typename traits::EventType<T_CommunicationPolicy>::type;
