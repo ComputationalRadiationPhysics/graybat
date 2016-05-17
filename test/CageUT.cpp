@@ -306,6 +306,71 @@ BOOST_AUTO_TEST_CASE( asyncSend_recv ){
 
 }
 
+    BOOST_AUTO_TEST_CASE( asyncSend_asyncRecv ){
+        hana::for_each(cages, [](auto cageRef){
+            // Test setup
+            using Cage    = typename decltype(cageRef)::type;
+            using GP      = typename Cage::GraphPolicy;
+            using Event   = typename Cage::Event;
+            using Vertex  = typename Cage::Vertex;
+            using Edge    = typename Cage::Edge;
+
+            // Test run
+            {
+
+                auto& cage = cageRef.get();
+
+                cage.setGraph(graybat::pattern::FullyConnected<GP>(cage.getPeers().size()));
+                cage.distribute(graybat::mapping::Consecutive());
+
+                const unsigned nElements = 1000;
+
+                for(unsigned run_i = 0; run_i < nRuns; ++run_i){
+                    std::vector<Event> sendEvents;
+                    std::vector<Event> recvEvents;
+                    std::vector<unsigned> send(nElements,0);
+                    std::vector<std::vector<unsigned>> recv(0);
+
+                    for(unsigned i = 0; i < send.size();++i){
+                        send.at(i) = i;
+                    }
+
+                    // Send state to neighbor cells
+                    for(Vertex &v : cage.hostedVertices){
+                        for(Edge edge : cage.getOutEdges(v)){
+                            cage.send(edge, send, sendEvents);
+                        }
+                    }
+
+                    // Recv state from neighbor cells
+                    for(Vertex &v : cage.hostedVertices){
+                        for(Edge edge : cage.getInEdges(v)){
+                            recv.push_back(std::vector<unsigned>(nElements,0));
+                            cage.recv(edge, recv, recvEvents);
+                        }
+                    }
+
+                    // Wait to finish send events
+                    for(unsigned i = 0; i < sendEvents.size(); ++i){
+                        sendEvents.back().wait();
+                        sendEvents.pop_back();
+                    }
+
+                    // Wait to finish recv events
+                    for(unsigned i = 0; i < recvEvents.size(); ++i){
+                        recvEvents.back().wait();
+                        recvEvents.pop_back();
+                    }
+
+                    // progress.print(nRuns, run_i);
+
+                }
+
+            }
+
+	});
+
+}
 
 
 
