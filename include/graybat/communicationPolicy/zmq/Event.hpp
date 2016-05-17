@@ -32,17 +32,17 @@ namespace graybat {
 
         namespace zmq {
 
-	    /**
-	     * @brief An event is returned by non-blocking
-	     *        communication operations and can be
-	     *        asked whether an operation has finished
-	     *        or it can be waited for this operation to
-	     *        be finished.
-	     *
-	     */
+            /**
+             * @brief An event is returned by non-blocking
+             *        communication operations and can be
+             *        asked whether an operation has finished
+             *        or it can be waited for this operation to
+             *        be finished.
+             *
+             */
             template <typename T_CP>
-	    class Event {
-	    public:
+            class Event {
+            public:
 
                 using ContextID = typename graybat::communicationPolicy::ContextID<T_CP>;
                 using VAddr     = typename graybat::communicationPolicy::VAddr<T_CP>;
@@ -51,7 +51,7 @@ namespace graybat {
                 using MsgID     = typename graybat::communicationPolicy::MsgID<T_CP>;
                 using Context   = typename graybat::communicationPolicy::Context<T_CP>;
 
-		Event(MsgID msgID, Context context, VAddr vAddr, Tag tag, T_CP& comm) :
+                Event(MsgID msgID, Context context, VAddr vAddr, Tag tag, T_CP& comm) :
                     msgID(msgID),
                     context(context),
                     vAddr(vAddr),
@@ -59,12 +59,12 @@ namespace graybat {
                     buf(nullptr),
                     size(0),
                     done(false),
-                    comm(comm) {
+                    comm(&comm) {
 
-		}
+                }
 
-            template<typename T_Buf>
-		Event(MsgID msgID, Context context, VAddr vAddr, Tag tag, T_Buf & buf, bool done, T_CP& comm) :
+                template<typename T_Buf>
+                Event(MsgID msgID, Context context, VAddr vAddr, Tag tag, T_Buf & buf, bool done, T_CP& comm) :
                     msgID(msgID),
                     context(context),
                     vAddr(vAddr),
@@ -72,14 +72,16 @@ namespace graybat {
                     buf(reinterpret_cast<std::int8_t*>(buf.data())),
                     size(sizeof(typename T_Buf::value_type) * buf.size()),
                     done(done),
-                    comm(comm) {
+                    comm(&comm) {
 
-		}
+                }
 
-		void wait(){
+                Event& operator=(const Event&) = default;
+
+                void wait(){
                     while(!ready());
 
-		}
+                }
 
                 bool ready(){
                     //std::cout << "ready? size: " << size << std::endl;
@@ -89,19 +91,19 @@ namespace graybat {
                     else {
                         if(buf == nullptr){
                             // asyncSend Event
-                            done = comm.ready(msgID, context, vAddr, tag);
+                            done = comm->ready(msgID, context, vAddr, tag);
                         }
                         else {
                             // asyncRecv Event
-                            done = comm.asyncRecvImpl(MsgType::PEER, context, vAddr, tag, buf, size);
+                            done = comm->asyncRecvImpl(MsgType::PEER, context, vAddr, tag, buf, size);
                         }
                     }
                     return done;
                 }
 
                 VAddr source(){
-		    return vAddr;
-		}
+                    return vAddr;
+                }
 
                 Tag getTag(){
                     return tag;
@@ -113,17 +115,17 @@ namespace graybat {
                 VAddr      vAddr;
                 Tag        tag;
                 std::int8_t * buf;
-                const size_t size;
+                size_t size;
                 bool       done;
-                T_CP&      comm;
+                T_CP *     comm;
 
 
 
 
-	    };
+            };
 
         } // zmq
-        
+
     } // namespace communicationPolicy
-	
+
 } // namespace graybat
