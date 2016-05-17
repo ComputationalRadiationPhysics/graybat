@@ -31,6 +31,7 @@ static const MsgType RETRY             = 3;
 static const MsgType ACK               = 4;
 static const MsgType CONTEXT_INIT      = 5;
 static const MsgType CONTEXT_REQUEST   = 6;
+static const MsgType CONTEXT_STATE     = 10;
 
 //  Receive 0MQ string from socket and convert into C string
 //  Caller must free returned string. Returns NULL if the context
@@ -111,8 +112,7 @@ int main(const int argc, char **argv){
 
     std::map<ContextID, std::map<VAddr, Uri> > phoneBook;
     std::map<ContextID, std::map<VAddr, Uri> > ctrlPhoneBook;
-    std::map<ContextID, VAddr> maxVAddr;
-    std::map<ContextID, std::vector<Uri> > peers;
+        std::map<ContextID, std::vector<Uri> > peers;
     std::map<ContextName, ContextID> contextIds;
 
     std::cout << "Listening on: " << masterUri << std::endl;
@@ -130,7 +130,6 @@ int main(const int argc, char **argv){
     socket.bind(masterUri.c_str());
 
     ContextID maxContextID = 0;
-    ContextID maxInitialContextID = maxContextID;
 
     while(true){
         std::stringstream ss;
@@ -141,7 +140,6 @@ int main(const int argc, char **argv){
         MsgType type;
         ContextID contextID;
         ContextName contextName;
-        unsigned size;
         ss >> type;
 
         switch(type){
@@ -161,6 +159,14 @@ int main(const int argc, char **argv){
                 std::cout << "CONTEXT REQUEST [name:" << contextName << "]: " << contextID << std::endl;
                 break;
 
+            }
+
+            case CONTEXT_STATE:
+            {
+                ss >> contextID;
+                s_send(socket, (std::to_string(peers[contextID].size()) + " ").c_str());
+                std::cout << "CONTEXT STATE [id:" << contextID << "]:" << peers[contextID].size() << std::endl;
+                break;
             }
 
             case VADDR_REQUEST:

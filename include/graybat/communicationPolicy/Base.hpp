@@ -229,12 +229,14 @@ namespace graybat {
 	     * @brief Returns a subcontext of *oldContext* with all peers that want to participate.
              *        Peers which do not want to participate retrieve an invalid context.
 	     */
-            Context splitContext(const bool isMember, const Context oldContext) = delete;
+        Context splitContext(const bool isMember, const Context oldContext) = delete;
 
 	    /**
 	     * @brief Returns the context that contains all peers
 	     */
 	    Context getGlobalContext() = delete;            
+
+        Context updateContext(const Context oldContext);
 
 	    /** @} */            
             
@@ -530,6 +532,13 @@ namespace graybat {
             }
 
         }
+
+        template <typename T_CommunicationPolicy>
+        auto Base<T_CommunicationPolicy>::updateContext(const Context oldContext)
+        -> Context {
+            return oldContext;
+        }
+
 
     } // namespace communicationPolicy
     

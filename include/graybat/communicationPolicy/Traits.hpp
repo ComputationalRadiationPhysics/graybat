@@ -27,16 +27,18 @@ namespace graybat {
         using Tag = unsigned;
 
 
-        enum class MsgTypeType : std::int8_t { VADDR_REQUEST = 0,
-                VADDR_LOOKUP = 1,
-                DESTRUCT = 2,
-                RETRY = 3,
-                ACK = 4,
-                CONTEXT_INIT = 5,
-                CONTEXT_REQUEST = 6,
-                PEER = 7,
-                CONFIRM = 8,
-                SPLIT = 9};
+        enum class MsgTypeType : std::int8_t {
+            VADDR_REQUEST = 0,
+            VADDR_LOOKUP = 1,
+            DESTRUCT = 2,
+            RETRY = 3,
+            ACK = 4,
+            CONTEXT_INIT = 5,
+            CONTEXT_REQUEST = 6,
+            PEER = 7,
+            CONFIRM = 8,
+            SPLIT = 9,
+            CONTEXT_STATE = 10};
         
         template <typename T_CommunicationPolicy>
         using MsgType = MsgTypeType;

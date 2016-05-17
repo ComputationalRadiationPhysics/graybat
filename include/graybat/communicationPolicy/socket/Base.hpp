@@ -157,8 +157,7 @@ namespace graybat {
                 // CONTEXT INTERFACE
                 Context getGlobalContext();
                 Context splitContext(const bool isMember, const Context oldContext);
-                Context update(const Context oldContext);
-
+                Context updateContext(const Context oldContext);
 
                 // SIGNALING METHODS
                 template <typename T_Socket>
@@ -503,12 +502,6 @@ namespace graybat {
             }
 
             template <typename T_CommunicationPolicy>
-            auto Base<T_CommunicationPolicy>::update(const Context oldContext)
-            -> graybat::communicationPolicy::Context<T_CommunicationPolicy> {
-                return oldContext;
-            }
-
-            template <typename T_CommunicationPolicy>
             template <typename T_Socket>
             auto Base<T_CommunicationPolicy>::getInitialContextID(T_Socket& socket, size_t const contextSize)
             -> graybat::communicationPolicy::ContextID<T_CommunicationPolicy> {
@@ -814,7 +807,51 @@ namespace graybat {
 
             }
 
+            template <typename T_CommunicationPolicy>
+            auto Base<T_CommunicationPolicy>::updateContext(Context oldContext)
+            -> graybat::communicationPolicy::Context<T_CommunicationPolicy> {
+                using VAddr = graybat::communicationPolicy::VAddr<T_CommunicationPolicy>;
 
+                size_t newContextSize(0);
+                // Send vAddr request
+                std::stringstream ss;
+                ss << static_cast<size_t>(MsgType::CONTEXT_STATE) << " " << oldContext.getID() << " ";
+                static_cast<CommunicationPolicy*>(this)->sendToSocket(static_cast<CommunicationPolicy*>(this)->signalingSocket, ss);
+
+                // Recv vAddr
+                std::stringstream sss;
+                static_cast<CommunicationPolicy*>(this)->recvFromSocket(static_cast<CommunicationPolicy*>(this)->signalingSocket, sss);
+                sss >> newContextSize;
+
+                Context updatedCotenxt = Context(oldContext.getID(), oldContext.getVAddr(), newContextSize);
+
+                // TODO: now create the new sockets
+                for(auto const &vAddr : initialContext){
+                    Uri remoteUri;
+                    Uri ctrlUri;
+                    std::tie(remoteUri, ctrlUri) = getUri(static_cast<CommunicationPolicy*>(this)->signalingSocket, initialContext.getID(), vAddr);
+                    phoneBook[updatedCotenxt.getID()][vAddr] = remoteUri;
+                    ctrlPhoneBook[updatedCotenxt.getID()][vAddr] = ctrlUri;
+                    inversePhoneBook[updatedCotenxt.getID()][remoteUri] = vAddr;
+                    inverseCtrlPhoneBook[updatedCotenxt.getID()][ctrlUri] = vAddr;
+                }
+
+                // Create socket connection to other peers
+                // Create socketmapping from initial context to sockets of VAddrs
+//                static_cast<CommunicationPolicy*>(this)->createSocketsToPeers();
+//
+//                for(auto const &vAddr : initialContext){
+//                    sendSocketMappings[initialContext.getID()][vAddr] = vAddr;
+//                    static_cast<CommunicationPolicy*>(this)->connectToSocket(static_cast<CommunicationPolicy*>(this)->sendSockets.at(sendSocketMappings.at(initialContext.getID()).at(vAddr)), phoneBook.at(initialContext.getID()).at(vAddr).c_str());
+//                    static_cast<CommunicationPolicy*>(this)->connectToSocket(static_cast<CommunicationPolicy*>(this)->ctrlSendSockets.at(sendSocketMappings.at(initialContext.getID()).at(vAddr)), ctrlPhoneBook.at(initialContext.getID()).at(vAddr).c_str());
+//
+//                    //std::cout << "sendSocket_i: " << vAddr << " --> " << phoneBook.at(initialContext.getID()).at(vAddr) << std::endl;
+//
+//                }
+
+
+                return updatedCotenxt;
+            }
 
 
         } // socket

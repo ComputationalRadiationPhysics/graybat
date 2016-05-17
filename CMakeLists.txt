@@ -64,7 +64,7 @@ add_executable(check EXCLUDE_FROM_ALL ${TESTS})
 target_link_libraries(check ${LIBS})
 
 # Fast testing
-file(GLOB TESTSFAST test/UT.cpp test/CommunicationPolicyUT.cpp)
+file(GLOB TESTSFAST test/UT.cpp test/UpdateUT.cpp)
 add_executable(checkFast EXCLUDE_FROM_ALL ${TESTSFAST})
 target_link_libraries(checkFast ${LIBS})
 
