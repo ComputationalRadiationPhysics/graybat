@@ -103,21 +103,27 @@ namespace graybat {
             using Uri       = int;
 
 	    BMPI(Config const) :contextCount(0),
-		    uriMap(0),
-		    initialContext(contextCount, mpi::communicator()){
+							uriMap(0),
+							initialContext(contextCount, mpi::communicator()){
 
-		uriMap.push_back(std::vector<Uri>());
+			uriMap.push_back(std::vector<Uri>());
 		
-                for(auto const &vAddr : initialContext){                    
-		    uriMap.back().push_back(vAddr);
-		}
+			for(auto const &vAddr : initialContext){
+				uriMap.back().push_back(vAddr);
+			}
 
 	    }
 
-	    // Destructor
-	    ~BMPI(){
-		
-	    }
+		// Copy constructor
+		BMPI(BMPI&) = delete;
+		// Copy assignment constructor
+		BMPI& operator=(BMPI&) = delete;
+		// Move constructor
+		BMPI(BMPI&&) = delete;
+		// Move assignment constructor
+		BMPI& operator=(BMPI&&) = delete;
+        // Destructor
+	    ~BMPI(){}
 	    /***********************************************************************//**
              *
 	     * @name Point to Point Communication Interface

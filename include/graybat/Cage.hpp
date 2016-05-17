@@ -81,26 +81,34 @@ namespace graybat {
 
         template <class T_Functor>
         Cage(CPConfig const cpConfig, T_Functor graphFunctor) :
-	    comm(cpConfig),
-	    graph(GraphPolicy(graphFunctor())){
-	    
-        }
-	
-	Cage(CPConfig const cpConfig) :
-	    comm(cpConfig),
-	    graph(GraphPolicy(graybat::pattern::None<GraphPolicy>()())){
+            comm(new CommunicationPolicy(cpConfig)),
+            graph(GraphPolicy(graphFunctor())){
 
-	}
+        }
+
+        Cage(CPConfig const cpConfig) :
+            comm(new CommunicationPolicy(cpConfig)),
+            graph(GraphPolicy(graybat::pattern::None<GraphPolicy>()())){
+
+        }
 
         Cage() :
-	    comm(CPConfig()),
-	    graph(GraphPolicy(graybat::pattern::None<GraphPolicy>()())){
+            comm(new CommunicationPolicy(CPConfig())),
+            graph(GraphPolicy(graybat::pattern::None<GraphPolicy>()())){
 
-	}
+        }
 
- 	~Cage(){
-	    //std::cout << "Destruct Cage" << std::endl;
-	}
+
+        // Copy constructor
+        Cage (Cage &) = delete;
+        // Copy assignment constructor
+        Cage& operator=(Cage &) = delete;
+        // Move constructor
+        Cage (Cage &&) = default;
+        // Move assignment constructor
+        Cage& operator=(Cage &&) = default;
+        // Destructor
+        ~Cage(){ /* std::cout << "Destruct Cage" << std::endl */ }
 
 
         /***************************************************************************
@@ -108,7 +116,7 @@ namespace graybat {
          * MEMBER
          *
          ***************************************************************************/
-	CommunicationPolicy comm;
+        std::unique_ptr<CommunicationPolicy> comm;
         GraphPolicy         graph;
         Context             graphContext;
         std::vector<Vertex> hostedVertices;
@@ -275,8 +283,8 @@ namespace graybat {
          */
         template<class T_Functor>
         void distribute(T_Functor distFunctor){
-            hostedVertices = distFunctor(comm.getGlobalContext().getVAddr(),
-                                         comm.getGlobalContext().size(),
+            hostedVertices = distFunctor(comm->getGlobalContext().getVAddr(),
+                                         comm->getGlobalContext().size(),
                                          *this);
 
             announce(hostedVertices);
@@ -312,12 +320,12 @@ namespace graybat {
             Context oldContext = graphContext;
 
             if(global){
-                oldContext = comm.getGlobalContext();
+                oldContext = comm->getGlobalContext();
             }
 
             assert(oldContext.valid());
 
-            graphContext = comm.splitContext(vertices.size(), oldContext);
+            graphContext = comm->splitContext(vertices.size(), oldContext);
             
             // Each peer announces the vertices it hosts
             if(graphContext.valid()){
@@ -329,17 +337,17 @@ namespace graybat {
                 // Send hostedVertices to all other peers
                 for(auto const &vAddr : graphContext){
                     assert(nVertices[0] != 0);
-                    comm.asyncSend(vAddr, 0, graphContext, nVertices);
-                    comm.asyncSend(vAddr, 0, graphContext, vertexIDs);
+                    comm->asyncSend(vAddr, 0, graphContext, nVertices);
+                    comm->asyncSend(vAddr, 0, graphContext, vertexIDs);
                 }
 
                 // Recv hostedVertices from all other peers
                 for(auto const &vAddr : graphContext){
                     std::vector<Vertex>  remoteVertices;
                     std::array<unsigned, 1> nVertices {{ 0 }};
-                    comm.recv(vAddr, 0, graphContext, nVertices);
+                    comm->recv(vAddr, 0, graphContext, nVertices);
                     std::vector<unsigned> vertexIDs(nVertices[0]);
-                    comm.recv(vAddr, 0, graphContext, vertexIDs);
+                    comm->recv(vAddr, 0, graphContext, vertexIDs);
 
                     for(unsigned u : vertexIDs){
                         vertexMap[u] = vAddr;
@@ -381,7 +389,7 @@ namespace graybat {
             }
             else {
                 std::stringstream errorMsg;
-                errorMsg << "[" << comm.getGlobalContext().getVAddr() << "] No host of vertex " << vertex.id << " known.";
+                errorMsg << "[" << comm->getGlobalContext().getVAddr() << "] No host of vertex " << vertex.id << " known.";
                 throw std::runtime_error(errorMsg.str());
             }
 
@@ -415,7 +423,7 @@ namespace graybat {
         }
 
         std::vector<Peer> getPeers(){
-            unsigned nPeers = comm.getGlobalContext().size();
+            unsigned nPeers = comm->getGlobalContext().size();
             return std::vector<Peer>(nPeers);
         }
 
@@ -441,7 +449,7 @@ namespace graybat {
         template <typename T>
         void send(const Edge edge, const T& data){
             VAddr destVAddr   = locateVertex(edge.target);
-            comm.send(destVAddr, edge.id, graphContext, data);
+            comm->send(destVAddr, edge.id, graphContext, data);
 
         }
 
@@ -461,7 +469,7 @@ namespace graybat {
         void send(const Edge edge, const T& data, std::vector<Event> &events){
 	    //std::cout << "send cage:" << edge.target.id << " " << edge.id << std::endl;
             VAddr destVAddr  = locateVertex(edge.target);
-            events.push_back(comm.asyncSend(destVAddr, edge.id, graphContext, data));
+            events.push_back(comm->asyncSend(destVAddr, edge.id, graphContext, data));
         
         }
 
@@ -478,13 +486,13 @@ namespace graybat {
         void recv(const Edge edge, T& data){
 	    //std::cout << "recv cage:" << edge.source.id << " " << edge.id << std::endl;
             VAddr srcVAddr   = locateVertex(edge.source);
-            comm.recv(srcVAddr, edge.id, graphContext, data);
+            comm->recv(srcVAddr, edge.id, graphContext, data);
 
         }
 
         template <typename T>
         Edge recv(T& data){
-            Event event = comm.recv(graphContext, data);
+            Event event = comm->recv(graphContext, data);
 
             return Edge(graph.getEdgeProperty(event.getTag()).first,
                         getVertex(graph.getEdgeSource(event.getTag())),
@@ -506,7 +514,7 @@ namespace graybat {
         template <typename T>
         void recv(const Edge edge, T& data, std::vector<Event> &events){
             VAddr srcVAddr = locateVertex(edge.source);
-            events.push_back(comm.asyncRecv(srcVAddr, edge.id, graphContext, data));
+            events.push_back(comm->asyncRecv(srcVAddr, edge.id, graphContext, data));
 
         }
 
@@ -552,10 +560,10 @@ namespace graybat {
             if(vertexCount == vertices.size()){
 
                 if(hasRootVertex){
-                    comm.reduce(rootVAddr, context, op, reduce, *rootRecvData);
+                    comm->reduce(rootVAddr, context, op, reduce, *rootRecvData);
                 }
                 else{
-                    comm.reduce(rootVAddr, context, op, reduce, recvData);
+                    comm->reduce(rootVAddr, context, op, reduce, recvData);
 
                 }
 
@@ -591,7 +599,7 @@ namespace graybat {
             // Finally start reduction
             if(vertexCount == vertices.size()){
 
-                comm.allReduce(context, op, reduce, *(recvDatas[0]));
+                comm->allReduce(context, op, reduce, *(recvDatas[0]));
 
                 // Distribute Received Data to Hosted Vertices
                 for(unsigned i = 1; i < recvDatas.size(); ++i){
@@ -639,7 +647,7 @@ namespace graybat {
             if(nGatherCalls == hostedVertices.size()){
                 std::vector<unsigned> recvCount;
                 if(peerHostsRootVertex){
-                    comm.gatherVar(rootVAddr, context, gather, *rootRecvData, recvCount);
+                    comm->gatherVar(rootVAddr, context, gather, *rootRecvData, recvCount);
 
                     // Reorder the received data, so that the data
                     // is in vertex id order. This operation is no
@@ -653,7 +661,7 @@ namespace graybat {
                 
                 }
                 else {
-                    comm.gatherVar(rootVAddr, context, gather, recvData, recvCount);
+                    comm->gatherVar(rootVAddr, context, gather, recvData, recvCount);
                 }
             
                 gather.clear();
@@ -690,7 +698,7 @@ namespace graybat {
             if(nGatherCalls == hostedVertices.size()){
                 std::vector<unsigned> recvCount;
 
-                comm.allGatherVar(context, gather, *(recvDatas[0]), recvCount);
+                comm->allGatherVar(context, gather, *(recvDatas[0]), recvCount);
 
                 // Reordering code
                 if(reorder){
@@ -771,7 +779,7 @@ namespace graybat {
         
         
         void synchronize(){
-            comm.synchronize(graphContext);
+            comm->synchronize(graphContext);
 
         }
 
