@@ -51,27 +51,47 @@ BOOST_AUTO_TEST_CASE( context ){
 	    CP& cp = cpRef.get();
 
 	    // Test run
-	    {	
+	    {
+            // Get the first context
+            // with default context name
             Context oldContext = cp.getGlobalContext();
 
-            while(true){
-                Context newContext(cp.updateContext(oldContext));
-                if(newContext.size() > oldContext.size()){
-                    std::cout << "NewContext size: " << newContext.size() << std::endl;
-                    oldContext = newContext;
+            while(true) {
+
+                // WORKLOAD PART
+                {
+                    auto firstVAddr = *(oldContext.begin());
+
+                    // everyone is sending vaddr to peer 0
+                    std::vector<unsigned> data(1, oldContext.getVAddr());
+                    cp.send(firstVAddr, 0, oldContext, data);
+
+                    if (oldContext.getVAddr() == firstVAddr) {
+                        for (auto &vAddr: oldContext) {
+                            cp.recv(vAddr, 0, oldContext, data);
+                            std::cout << "recv[" << vAddr << "]: " << data[0] << std::endl;
+                        }
+                    }
                 }
+
+                // UPDATE PART
+                {
+                    // Create an updated context
+                    while (true) {
+                        Context newContext(cp.updateContext(oldContext));
+
+                        // Check if the new context increased in size
+                        if (newContext.size() > oldContext.size()) {
+                            std::cout << "NewContext size: " << newContext.size() << std::endl;
+                            oldContext = newContext;
+                            break;
+                        }
+                    }
+                }
+
 
             };
 
-
-
-//		for(unsigned i = 0; i < nRuns; ++i){
-//                    //std::cout << "Run: " << i << std::endl;
-//                    Context newContext = cp.splitContext( true, oldContext);
-//                    oldContext = newContext;
-//
-//		}
-		
 	    }
 
 	});

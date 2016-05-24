@@ -148,19 +148,24 @@ namespace graybat {
 	     *
 	     ***************************************************************************/
 
-        void createSocketsToPeers(){
-            for(auto const &vAddr : initialContext){
-                (void)vAddr;
-                sendSockets.emplace_back(Socket(zmqContext, ZMQ_PUSH));
-                ctrlSendSockets.emplace_back(Socket(zmqContext, ZMQ_PUSH));
+        void createSocketsToPeers(Context context){
+            for(auto const &vAddr : context){
+                createSocketToPeer(vAddr);
             }
         }
-            
-            template <typename T_Socket>
-            void connectToSocket(T_Socket& socket, std::string const signalingUri) {
-                socket.connect(signalingUri.c_str());
-                    
-            }
+
+        std::size_t createSocketToPeer(VAddr vAddr) {
+            (void)vAddr;
+            sendSockets.emplace_back(Socket(zmqContext, ZMQ_PUSH));
+            ctrlSendSockets.emplace_back(Socket(zmqContext, ZMQ_PUSH));
+            return sendSockets.size() - 1;
+        }
+
+        template <typename T_Socket>
+        void connectToSocket(T_Socket& socket, std::string const signalingUri) {
+            socket.connect(signalingUri.c_str());
+
+        }
 
             template <typename T_Socket>            
 	    void recvFromSocket(T_Socket& socket, std::stringstream& ss) {
