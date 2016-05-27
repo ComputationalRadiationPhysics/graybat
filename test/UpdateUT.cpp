@@ -64,12 +64,13 @@ BOOST_AUTO_TEST_CASE( context ){
 
                     // everyone is sending vaddr to peer 0
                     std::vector<unsigned> data(1, oldContext.getVAddr());
+                    std::cerr << "send[" << firstVAddr << "]: " << data[0] << std::endl;
                     cp.send(firstVAddr, 0, oldContext, data);
 
                     if (oldContext.getVAddr() == firstVAddr) {
                         for (auto &vAddr: oldContext) {
+                            std::cerr << "recv[" << vAddr << "]: " << data[0] << std::endl;
                             cp.recv(vAddr, 0, oldContext, data);
-                            std::cout << "recv[" << vAddr << "]: " << data[0] << std::endl;
                         }
                     }
                 }
