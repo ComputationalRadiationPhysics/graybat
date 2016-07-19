@@ -26,6 +26,8 @@ else (ZMQ_LIBRARIES AND ZMQ_INCLUDE_DIRS)
       /usr/local/include
       /opt/local/include
       /sw/include
+          HINTS "${CMAKE_PREFIX_PATH}/include"
+
   )
 
   find_library(ZMQ_LIBRARY

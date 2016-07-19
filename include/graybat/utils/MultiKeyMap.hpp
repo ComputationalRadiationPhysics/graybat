@@ -132,8 +132,9 @@ namespace utils {
 		template <typename T_KeysTpl>
 		T_Value& atImpl(const T_KeysTpl keysTuple){
 			auto firstKeysSize = hana::int_c<hana::minus(hana::int_c<hana::size(keysTuple)>, 1)>;
-			auto firstKeys     = hana::take_c<firstKeysSize>(keysTuple);
+			auto firstKeys     = hana::take_front_c<firstKeysSize>(keysTuple);
 			auto lastKey       = hana::back(keysTuple);
+
 
 			return traverse(multiKeyMap, firstKeys).at(lastKey);
 		}
@@ -154,7 +155,7 @@ namespace utils {
 		template <typename T_KeysTpl>
 		bool testImpl(const T_KeysTpl keysTuple) {
 			auto firstKeysSize = hana::int_c<hana::minus(hana::int_c<hana::size(keysTuple)>, 1)>;
-			auto firstKeys     = hana::take_c<firstKeysSize>(keysTuple);
+			auto firstKeys     = hana::take_front_c<firstKeysSize>(keysTuple);
 			auto lastKey       = hana::back(keysTuple);
 
 			auto &subMap = traverse(multiKeyMap, firstKeys);
@@ -181,7 +182,7 @@ namespace utils {
 		template <typename T_KeysTpl>
 		bool eraseImpl(const T_KeysTpl keysTuple) {
 			auto firstKeysSize = hana::int_c<hana::minus(hana::int_c<hana::size(keysTuple)>, 1)>;
-			auto firstKeys     = hana::take_c<firstKeysSize>(keysTuple);
+			auto firstKeys     = hana::take_front_c<firstKeysSize>(keysTuple);
 			auto lastKey       = hana::back(keysTuple);
 
 
