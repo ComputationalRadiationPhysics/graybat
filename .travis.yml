@@ -1,0 +1,120 @@
+language: cpp
+sudo: false
+
+cache:
+  apt: true
+  directories:
+    - $HOME/.cache/cmake
+    - $HOME/.cache/boost
+    - $HOME/.cache/zmq
+
+addons:
+  apt:
+    sources:
+        - ubuntu-toolchain-r-test
+        #- llvm-toolchain-precise-3.5
+    packages:
+        - gcc-6
+        - g++-6 # also possible: g++5.2 or g++-6
+        - clang-3.5
+        - openmpi-bin
+        - libopenmpi-dev
+        #      - clang-3.5
+
+env:
+  global:
+    - CMAKE_ROOT: $HOME/.cache/cmake
+    - BOOST_ROOT: $HOME/.cache/boost
+    - ZMQ_ROOT: $HOME/.cache/zmq
+    - BOOST_LIBRARY_DIR: $HOME/.cache/boost
+    - BOOST_MIN: 106100 # careful: hard coded below
+    - GRAYBAT_ROOT: $TRAVIS_BUILD_DIR
+    - OMP_NUM_THREADS: 4 # ignored in thread layer
+  matrix:
+    - COMPILER=gcc  STRATEGY=""
+    #- COMPILER=clang STRATEGY=""
+
+before_install:
+  - mkdir -p $HOME/build
+
+  #- export CMAKE_FLAGS="-DALPAKA_ACC_"$STRATEGY"_ENABLE=ON"
+  - export CMAKE_FLAGS="-DCMAKE_CXX_FLAGS=\"-Werror\""
+  - if [ "$COMPILER" == "gcc" ]; then
+        echo "Using g++-6";
+        export CXX=g++-6;
+        export CC=gcc-6;
+    elif [ "$COMPILER" == "clang" ]; then
+        echo "Using clang++-3.5 & sequential threads ...";
+        export CXX=clang++-3.5;
+        export CC=clang-3.5;
+    fi
+  - echo "$CMAKE_FLAGS"
+  - echo "$CXX $CC"
+  - $CXX --version
+  - $CC --version
+
+install:
+  #############################################################################
+  # CMAKE                                                                     #
+  #############################################################################
+  - export PATH=$CMAKE_ROOT/bin:$PATH
+  - CMAKE_33_FOUND=$(cmake --version | grep " 3\.3\." >/dev/null && { echo 0; } || { echo 1; })
+  - if [ $CMAKE_33_FOUND -ne 0 ]; then
+      mkdir -p $CMAKE_ROOT &&
+      cd $CMAKE_ROOT &&
+      travis_retry wget --no-check-certificate http://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz &&
+      tar -xzf cmake-3.3.2-Linux-x86_64.tar.gz --overwrite &&
+      mv -f cmake-3.3.2-Linux-x86_64/* . &&
+      rm -rf cmake-3.3.2-Linux-x86_64.tar.gz cmake-3.3.2-Linux-x86_64 &&
+      cd -;
+    fi
+  - cmake --version
+  #############################################################################
+  # BOOST                                                                     #
+  #############################################################################
+  - export CMAKE_PREFIX_PATH=$BOOST_ROOT:$CMAKE_PREFIX_PATH
+  # cmake --find-package -DNAME=Boost -DCOMPILER_ID=GNU -DLANGUAGE=CXX -DMODE=EXIST
+  - echo -e "#include <boost/version.hpp>\n#include <iostream>\nint main() { std::cout << BOOST_VERSION << std::endl; return 0; }"
+        | $CXX -I$BOOST_ROOT/include -x c++ - >/dev/null || { echo 0; }
+  - ls $BOOST_ROOT
+  - BOOST_FOUND=$([ $(./a.out) -ge $BOOST_MIN ] && { echo 0; } || { echo 1; })
+  - if [ $BOOST_FOUND -ne 0 ]; then
+      mkdir -p $BOOST_ROOT &&
+      cd $BOOST_ROOT &&
+      travis_retry wget --no-check-certificate -O boost.tar.bz2 http://sourceforge.net/projects/boost/files/boost/1.61.0/boost_1_61_0.tar.bz2/download &&
+      tar -xjf boost.tar.bz2 --overwrite &&
+      cd boost_1_61_0 &&
+      echo "using gcc "":"" 6 "":"" /usr/bin/g++-6 ; " >> tools/build/src/user-config.jam &&
+      ./bootstrap.sh toolset=gcc-6 --with-libraries=filesystem,mpi,program_options,system,test,serialization --prefix=$BOOST_ROOT &&
+      echo "using mpi ;" >> tools/build/src/user-config.jam &&
+      ./b2 -j2 -target=shared,static &&
+      ./b2 install &&
+      rm -rf boost.tar.bz2 boost_1_61_0 &&
+      cd $HOME;
+    fi
+  #############################################################################
+  # ZMQ                                                                       #
+  #############################################################################
+  - export CMAKE_PREFIX_PATH=$ZMQ_ROOT:$CMAKE_PREFIX_PATH
+  - echo $CMAKE_PREFIX_PATH
+  - ls $ZMQ_ROOT
+  - if [ ! "$(ls -A $ZMQ_ROOT)" ]; then
+      cd /tmp/ &&
+      travis_retry git clone https://github.com/zeromq/libzmq.git&&
+      travis_retry git clone https://github.com/zeromq/cppzmq.git;
+      cd /tmp/libzmq/ &&
+      ./autogen.sh &&
+      mkdir -p $ZMQ_ROOT &&
+      ./configure --prefix=$ZMQ_ROOT &&
+      make &&
+      make install &&
+      cp /tmp/cppzmq/zmq.hpp $ZMQ_ROOT/include/ &&
+      cp /tmp/cppzmq/zmq_addon.hpp $ZMQ_ROOT/include/;
+    else
+      echo "ZeroMQ directory already exists";
+    fi
+
+script:
+  - cd $HOME/build
+  - cmake $CMAKE_FLAGS $GRAYBAT_ROOT
+  - make check

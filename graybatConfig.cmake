@@ -10,7 +10,7 @@ cmake_minimum_required(VERSION 3.3.0)
 project("graybat")
 
 set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} "${graybat_DIR}/include")
-set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} "${graybat_DIR}/include/graybat/utils/hana/include/")
+#set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} "${graybat_DIR}/include/graybat/utils/hana/include/")
 
 
 ###############################################################################

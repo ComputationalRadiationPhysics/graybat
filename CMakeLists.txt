@@ -28,7 +28,7 @@ set(LIBS ${LIBS} ${graybat_LIBRARIES})
 ###############################################################################
 # Compiler Flags
 ###############################################################################
-if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   set  (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wpedantic")
@@ -36,13 +36,13 @@ if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
   #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 endif()
 
-if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wpedantic")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused-parameter")
-  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wvla-extension")      
-  #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wvla-extension")
+#  #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 endif()
 
 ###############################################################################

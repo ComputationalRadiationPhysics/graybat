@@ -49,15 +49,14 @@ The project is organized in a couple of subdirectories.
 
 ###Mandatory###
  * cmake 3.0.2
- * Boost 1.56.0
- * g++ 5.2.0 or clang 3.5
+ * Boost 1.61.0
+ * g++ 6.0.0 or clang 3.5
  * c++14
 
 ###Optional###
  * OpenMPI 1.8.0 (mpi communication policy)
  * zeromq 4.1.3 (zeromq communication policy) 
  * metis 5.1 (graph partitioning mapping)
- * [Boost Hana 1.0](https://github.com/ldionne/hana) (zeromq communication policy) 
 
 
 ##Roadmap##
