@@ -23,46 +23,47 @@
 #include <boost/mpi/environment.hpp>
 
 namespace graybat {
-    
+
     namespace communicationPolicy {
 
         namespace bmpi {
 
 
-	    /**
-	     * @brief An event is returned by non-blocking 
-	     *        communication operations and can be 
-	     *        asked whether an operation has finished
-	     *        or it can be waited for this operation to
-	     *        be finished.
-	     *
-	     */
-	    class Event {
-                typedef unsigned Tag;                                            
+            /**
+             * @brief An event is returned by non-blocking
+             *        communication operations and can be
+             *        asked whether an operation has finished
+             *        or it can be waited for this operation to
+             *        be finished.
+             *
+             */
+            class Event {
+                typedef unsigned Tag;
                 typedef unsigned VAddr;
-                
-	    public:
-		Event(boost::mpi::request request) : request(request), async(true){
 
-		}
+            public:
+                Event(boost::mpi::request request) : request(request), async(true){
+
+                }
 
                 Event(boost::mpi::status status) : status(status), async(false){
 
                 }
 
+                Event& operator=(const Event&) = default;
 
-		~Event(){
+                ~Event(){
 
-		}
+                }
 
-		void wait(){
+                void wait(){
                     if(async){
                         request.wait();
                     }
-	
-		}
 
-		bool ready(){
+                }
+
+                bool ready(){
                     if(async){
                         boost::optional<boost::mpi::status> status = request.test();
 
@@ -75,7 +76,7 @@ namespace graybat {
                     }
                     return true;
 
-		}
+                }
 
                 VAddr source(){
                     if(async){
@@ -92,18 +93,18 @@ namespace graybat {
 
                 }
 
-	    private:
-		boost::mpi::request request;
+            private:
+                boost::mpi::request request;
                 boost::mpi::status  status;
-                const bool async;
+                bool async;
 
-                
-                
-	    };
+
+
+            };
 
         } // namespace bmpi
-        
+
     } // namespace communicationPolicy
-	
+
 } // namespace graybat
 
