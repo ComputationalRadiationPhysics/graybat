@@ -129,9 +129,6 @@ BOOST_AUTO_TEST_SUITE( graybat_cage_point_to_point_test )
 
     BOOST_AUTO_TEST_CASE( move_construct ){
         hana::for_each(cages, [](auto cageRef) {
-            // Test setup
-            using Cage    = typename decltype(cageRef)::type;
-
             // Test run
             {
                 auto &cage = cageRef.get();
