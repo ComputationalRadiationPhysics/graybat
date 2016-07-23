@@ -151,14 +151,19 @@ namespace graybat {
                 
             }
 
-	    // Destructor
-	    ~ZMQ(){
-                SocketBase::deinit();
-	    }
-            
+        // Copy constructor
+        ZMQ(ZMQ &)  = delete;
+        // Copy assignment constructor
+        ZMQ& operator=(ZMQ &) = delete;
+        // Move constructor
 	    ZMQ(ZMQ &&other) = delete;
-	    ZMQ(ZMQ &other)  = delete;
+        // Move assignment constructor
+        ZMQ& operator=(ZMQ &&) = delete;
 
+        // Destructor
+        ~ZMQ(){
+            SocketBase::deinit();
+        }
 
 	    /***********************************************************************//**
              *

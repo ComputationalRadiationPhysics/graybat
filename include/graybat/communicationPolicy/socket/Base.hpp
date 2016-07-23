@@ -89,9 +89,17 @@ namespace graybat {
                 std::thread recvHandler;
                 std::thread ctrlHandler;
 
-                // Construct/Destruct Methods
+                // Constructor
                 Base(Config const config);
-
+                // Copy constructor
+                Base(Base&) = delete;
+                // Copy assignment constructor
+                Base& operator=(Base&) = delete;
+                // Move constructor
+                Base(Base&&) = delete;
+                // Move assigment constructor
+                Base& operator=(Base&&) = delete;
+                // Destructor
                 ~Base();
 
                 void init();
