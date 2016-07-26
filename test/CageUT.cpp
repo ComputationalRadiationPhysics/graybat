@@ -39,6 +39,7 @@
 #include <graybat/Cage.hpp>
 #include <graybat/communicationPolicy/BMPI.hpp>
 #include <graybat/communicationPolicy/ZMQ.hpp>
+#include <graybat/communicationPolicy/Asio.hpp>
 #include <graybat/graphPolicy/BGL.hpp>
 #include <graybat/mapping/Random.hpp>
 #include <graybat/mapping/Consecutive.hpp>
