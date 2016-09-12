@@ -64,22 +64,42 @@ void sendToSocket(T_Socket& socket, std::stringstream & ss) {
 
 }
 
-//void recvHandler(const boost::system::error_code& error,std::size_t bytes_transferred){
-//
-//}
+//TODO: needs to be shared
+// http://stackoverflow.com/questions/11014918/boostasio-infinite-loop
+class AcceptHandler {
 
-//void acceptHandler(const boost::system::error_code& error){
-//
-//    std::cout << "Accept" << std::endl;
-//
-//    if(!error){
-//
-//    }
-//
-//
-//}
+public:
+
+    AcceptHandler(boost::asio::ip::tcp::socket & socket, boost::asio::ip::tcp::acceptor & acceptor) :
+        socket(socket),
+        acceptor(acceptor)
+    {
+
+    }
 
 
+    void accept() {
+
+        acceptor.async_accept(
+            socket,
+            [this](boost::system::error_code error) {
+                if (error) {
+                    std::cerr << "Error code:" << error <<" Error on accepting connection." << std::endl;
+                } else {
+                    std::cerr << "Accepted connection." << std::endl;
+                }
+
+                accept();
+            }
+        );
+
+    }
+
+private:
+
+    boost::asio::ip::tcp::socket & socket;
+    boost::asio::ip::tcp::acceptor & acceptor;
+};
 
 int main(const int argc, char **argv){
     /***************************************************************************
@@ -144,29 +164,31 @@ int main(const int argc, char **argv){
     
     boost::asio::io_service io_service;
     boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), vm["port"].as<unsigned>());    
-    //boost::asio::ip::tcp::acceptor acceptor(io_service, endpoint);
+    boost::asio::ip::tcp::acceptor acceptor(io_service, endpoint);
 
 
     // Bind to port
     boost::asio::ip::tcp::socket socket(io_service);
-    socket.open(boost::asio::ip::tcp::v4());
+//    socket.open(boost::asio::ip::tcp::v4());
 
-    boost::system::error_code error;
-    socket.bind(endpoint, error);
-    if(error){
-        std::cerr << "Could not bind to port: " << vm["port"].as<unsigned>() << std::endl;
-    }
+//    boost::system::error_code error;
+//    socket.bind(endpoint, error);
+//    if(error){
+//        std::cerr << "Could not bind to port: " << vm["port"].as<unsigned>() << std::endl;
+//    }
 
-    //acceptor.async_accept(socket, acceptHandler);
+    AcceptHandler acceptHandler(socket, acceptor);
+    acceptHandler.accept();
+
+
     //acceptor.accept(socket);
 
     //std::cout << "accepted connection" << std::endl;
 
-    //io_service.run();
-    
-    while(true){
 
-    }
+    //TODO: implement async read
+    io_service.run();
+    
 
     
     // ContextID maxContextID = 0;

@@ -250,8 +250,8 @@ namespace graybat {
                 // Connect to signaling process
                 static_cast<CommunicationPolicy*>(this)->connectToSocket(static_cast<CommunicationPolicy*>(this)->signalingSocket, masterUri);
 
-//                // Retrieve Context id for initial context from signaling process
-//                ContextID contextID = getContextID(static_cast<CommunicationPolicy*>(this)->signalingSocket, contextName);
+                // Retrieve Context id for initial context from signaling process
+                ContextID contextID = getContextID(static_cast<CommunicationPolicy*>(this)->signalingSocket, contextName);
 //                contextNames[contextID] = contextName;
 //
 //                // Retrieve own vAddr from signaling process for initial context

@@ -181,16 +181,25 @@ namespace graybat {
                 Uri port = uri.substr(uri.rfind(":") + 1);
 
                 boost::asio::ip::tcp::resolver resolver(io_service);
-                boost::asio::ip::tcp::resolver::query url(baseUri, port);
-                boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(url);
+                boost::asio::ip::tcp::resolver::iterator begin = resolver.resolve({baseUri, port});
+                boost::asio::ip::tcp::resolver::iterator end;
 
-                try {
-                    boost::asio::connect(socket, endpoint_iterator);
+                // TODO: No error occurs but I am not sure that it really connects
+                boost::system::error_code error;
+                boost::asio::ip::tcp::resolver::iterator iter = boost::asio::connect(socket, begin, end, error);
+
+                if(iter != end) {
                     std::cout << "connect to: " << baseUri << ":" << port << std::endl;
-                }
-                catch(boost::exception_detail::clone_impl<boost::exception_detail::error_info_injector<boost::system::system_error> > e){
+                } else {
                     std::cout << "failed to connect to: " << baseUri << ":" << port << std::endl;
                 }
+
+                // other way to check for error
+//                if(!error) {
+//                    std::cout << "connect to: " << baseUri << ":" << port << std::endl;
+//                } else {
+//                    std::cout << "failed to connect to: " << baseUri << ":" << port << std::endl;
+//                }
 
             }
 
@@ -292,9 +301,6 @@ namespace graybat {
                     transferred += write_size;
                 }
 
-
-
-                //socket.send(data);
             }
 
         }; // class Asio
