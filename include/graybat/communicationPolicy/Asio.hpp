@@ -1,3 +1,23 @@
+/**
+ * Copyright 2016 Erik Zenker
+ *
+ * This file is part of Graybat.
+ *
+ * Graybat is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Graybat is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Graybat.
+ * If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #pragma once
 
 // CLIB
@@ -123,7 +143,7 @@ namespace graybat {
                 ctrlSocket(io_service),
                 signalingSocket(io_service),
                 peerUri(bindToNextFreePort(recvSocket, config.peerUri)),
-                ctrlUri(bindToNextFreePort(recvSocket, config.peerUri)),
+                ctrlUri(bindToNextFreePort(ctrlSocket, config.peerUri)),
                 SocketBase(config) {
 
                 //std::cout << "PeerUri: " << peerUri << std::endl;
@@ -141,9 +161,8 @@ namespace graybat {
 
             Asio(Asio &other) = delete;
 
-
-            /***********************************************************************//**
-             *
+         /***********************************************************************//**
+         *
 	     * @name Socket base utilities
 	     *
 	     * @{
@@ -157,39 +176,58 @@ namespace graybat {
             }
 
             template<typename T_Socket>
-            void connectToSocket(T_Socket &socket, std::string const uri) {
-                std::string baseUri = uri.substr(0, uri.rfind(":")).substr(uri.rfind("//") + 2);
-                std::string port = uri.substr(uri.rfind(":") + 1);
+            void connectToSocket(T_Socket &socket, Uri const uri) {
+                Uri baseUri = uri.substr(0, uri.rfind(":")).substr(uri.rfind("//") + 2);
+                Uri port = uri.substr(uri.rfind(":") + 1);
 
                 boost::asio::ip::tcp::resolver resolver(io_service);
                 boost::asio::ip::tcp::resolver::query url(baseUri, port);
                 boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(url);
 
-                std::cout << "connect to: " << baseUri << ":" << port << std::endl;
-                boost::asio::connect(socket, endpoint_iterator);
+                try {
+                    boost::asio::connect(socket, endpoint_iterator);
+                    std::cout << "connect to: " << baseUri << ":" << port << std::endl;
+                }
+                catch(boost::exception_detail::clone_impl<boost::exception_detail::error_info_injector<boost::system::system_error> > e){
+                    std::cout << "failed to connect to: " << baseUri << ":" << port << std::endl;
+                }
 
             }
 
-            Uri bindToNextFreePort(Socket &socket, const std::string peerUri) {
+            Uri bindToNextFreePort(Socket &socket, Uri const peerUri) {
+                Uri peerBaseUri = peerUri.substr(0, peerUri.rfind(":"));
+                Uri finalPeerUri;
                 unsigned peerBasePort = std::stoi(peerUri.substr(peerUri.rfind(":") + 1));
-                bool connected = false;
+                unsigned portToBind = 5555;//peerBasePort;
+                bool bind = false;
 
-                std::string uri;
-                while (!connected) {
-                    try {
-                        boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), peerBasePort);
-                        boost::asio::ip::tcp::acceptor acceptor(io_service, endpoint);
-                        //acceptor.accept(socket); 
-                        connected = true;
-                    }
-                    catch (...) {
-                        //std::cout << e.what() << ". PeerUri \"" << uri << "\". Try to increment port and rebind." << std::endl;
-                        peerBasePort++;
-                    }
+                if(!socket.is_open())
+                {
+                    socket.open(boost::asio::ip::tcp::v4());
+                }
+
+                while (!bind) {
+                        boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), portToBind);
+                        boost::system::error_code error;
+                        socket.bind(endpoint, error);
+                        if(!error)
+                        {
+                            bind = true;
+                            finalPeerUri = peerBaseUri + ":" + std::to_string(portToBind);
+
+                        }
+                        else
+                        {
+                            //std::cout << "Could not bind to port:" << portToBind << " of PeerUri \"" << peerUri << "\". Try to increment port and rebind." << std::endl;
+                            portToBind++;
+
+                        }
 
                 }
 
-                return uri;
+                //std::cout << "FinalPeerUri: " << finalPeerUri << std::endl;
+
+                return finalPeerUri;
 
             }
 

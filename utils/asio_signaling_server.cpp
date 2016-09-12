@@ -64,20 +64,20 @@ void sendToSocket(T_Socket& socket, std::stringstream & ss) {
 
 }
 
-void recvHandler(const boost::system::error_code& error,std::size_t bytes_transferred){
+//void recvHandler(const boost::system::error_code& error,std::size_t bytes_transferred){
+//
+//}
 
-}
-
-void acceptHandler(const boost::system::error_code& error){
-
-    std::cout << "Accept" << std::endl;
-    
-    if(!error){
-
-    }
-
-    
-}
+//void acceptHandler(const boost::system::error_code& error){
+//
+//    std::cout << "Accept" << std::endl;
+//
+//    if(!error){
+//
+//    }
+//
+//
+//}
 
 
 
@@ -86,7 +86,7 @@ int main(const int argc, char **argv){
      * Parse Commandline
      **************************************************************************/
     namespace po = boost::program_options;
-    po::options_description options( "ZMQ Signaling Server Options" );
+    po::options_description options( "Asio Signaling Server Options" );
     
     options.add_options()
         ("port,p",
@@ -144,17 +144,28 @@ int main(const int argc, char **argv){
     
     boost::asio::io_service io_service;
     boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), vm["port"].as<unsigned>());    
-    boost::asio::ip::tcp::acceptor acceptor(io_service, endpoint); 
+    //boost::asio::ip::tcp::acceptor acceptor(io_service, endpoint);
 
+
+    // Bind to port
     boost::asio::ip::tcp::socket socket(io_service);
-    acceptor.async_accept(socket, acceptHandler);
+    socket.open(boost::asio::ip::tcp::v4());
+
+    boost::system::error_code error;
+    socket.bind(endpoint, error);
+    if(error){
+        std::cerr << "Could not bind to port: " << vm["port"].as<unsigned>() << std::endl;
+    }
+
+    //acceptor.async_accept(socket, acceptHandler);
     //acceptor.accept(socket);
 
     //std::cout << "accepted connection" << std::endl;
 
-    io_service.run();
+    //io_service.run();
     
     while(true){
+
     }
 
     
