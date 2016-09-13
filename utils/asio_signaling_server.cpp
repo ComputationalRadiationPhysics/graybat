@@ -7,7 +7,7 @@
 #include <map>      /* std::map */
 #include <string>   /* std::string */
 #include <sstream>  /* std::stringstream */
-
+#include <memory>   /* std::enable_shared_from_this */
 // Boost.Asio
 #include <boost/asio.hpp>
 
@@ -64,9 +64,9 @@ void sendToSocket(T_Socket& socket, std::stringstream & ss) {
 
 }
 
-//TODO: needs to be shared
+// TODO: needs to be shared
 // http://stackoverflow.com/questions/11014918/boostasio-infinite-loop
-class AcceptHandler {
+class AcceptHandler : public std::enable_shared_from_this<AcceptHandler> {
 
 public:
 
@@ -77,28 +77,48 @@ public:
 
     }
 
-
     void accept() {
 
         acceptor.async_accept(
             socket,
             [this](boost::system::error_code error) {
                 if (error) {
-                    std::cerr << "Error code:" << error <<" Error on accepting connection." << std::endl;
+                    std::cerr << "Error code:" << error << ". " << error.message() << std::endl;
                 } else {
                     std::cerr << "Accepted connection." << std::endl;
+                    std::make_shared<AcceptHandler>(socket, acceptor)->read();
                 }
 
-                accept();
+                //accept();
             }
         );
 
     }
 
+
+    void read() {
+        auto self(shared_from_this());
+        socket.async_receive(boost::asio::buffer(data_, max_length),
+                               [this, self](boost::system::error_code error, std::size_t length) {
+                                   if (!error) {
+                                       std::string s(data_, length);
+                                       std::cout << "Read:" << s << std::endl;
+                                   } else {
+                                       std::cout << "Failed to read. Error code: " << error.message() << std::endl;
+                                   }
+                                   read();
+                                   socket.close();
+                               });
+    }
+
+
+
 private:
 
     boost::asio::ip::tcp::socket & socket;
     boost::asio::ip::tcp::acceptor & acceptor;
+    enum { max_length = 1024 };
+    char data_[max_length];
 };
 
 int main(const int argc, char **argv){
