@@ -39,6 +39,7 @@
 #include <graybat/Cage.hpp>
 #include <graybat/communicationPolicy/BMPI.hpp>
 #include <graybat/communicationPolicy/ZMQ.hpp>
+#include <graybat/communicationPolicy/Asio.hpp>
 #include <graybat/graphPolicy/BGL.hpp>
 #include <graybat/mapping/Random.hpp>
 #include <graybat/mapping/Consecutive.hpp>
@@ -104,11 +105,14 @@ BOOST_AUTO_TEST_SUITE( graybat_cage_point_to_point_test )
 
     using ZMQ        = graybat::communicationPolicy::ZMQ;
     using BMPI       = graybat::communicationPolicy::BMPI;
+    using ASIO       = graybat::communicationPolicy::Asio;
     using GP         = graybat::graphPolicy::BGL<>;
     using ZMQCage    = graybat::Cage<ZMQ, GP>;
     using BMPICage   = graybat::Cage<BMPI, GP>;
+    using ASIOCage   = graybat::Cage<ASIO, GP>;
     using ZMQConfig  = ZMQ::Config;
     using BMPIConfig = BMPI::Config;
+    using ASIOConfig = ASIO::Config;
 
     ZMQConfig zmqConfig = {"tcp://127.0.0.1:5000",
                            "tcp://127.0.0.1:5001",
@@ -117,8 +121,14 @@ BOOST_AUTO_TEST_SUITE( graybat_cage_point_to_point_test )
 
     BMPIConfig bmpiConfig;
 
+    ASIOConfig asioConfig = {"tcp://127.0.0.1:6000",
+                             "tcp://127.0.0.1:6001",
+                             static_cast<size_t>(std::stoi(std::getenv("OMPI_COMM_WORLD_SIZE"))),
+                             "context_cage_test"};
+
     ZMQCage zmqCage(zmqConfig);
     BMPICage bmpiCage(bmpiConfig);
+    ASIOCage asioCage(asioConfig);
 
     auto cages = hana::make_tuple(std::ref(zmqCage),
                                   std::ref(bmpiCage) );

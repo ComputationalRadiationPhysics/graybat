@@ -46,10 +46,10 @@
 
 
 namespace graybat {
-    
+
     namespace communicationPolicy {
 
-	/************************************************************************//**
+        /************************************************************************//**
 	 * @class ZMQ
 	 *
 	 * @brief Implementation of the Cage communicationPolicy interface
@@ -80,7 +80,7 @@ namespace graybat {
                 using type = graybat::communicationPolicy::zmq::Config;
             };
 
-            
+
         }
 
         namespace socket {
@@ -101,14 +101,14 @@ namespace graybat {
                 struct MessageType<ZMQ> {
                     using type = graybat::communicationPolicy::zmq::Message<ZMQ>;
                 };
-                
+
             }
-            
+
         }
 
-	struct ZMQ : public graybat::communicationPolicy::socket::Base<ZMQ> {
-            
-	    // Type defs
+        struct ZMQ : public graybat::communicationPolicy::socket::Base<ZMQ> {
+
+            // Type defs
             using Tag        = graybat::communicationPolicy::Tag<ZMQ>;
             using ContextID  = graybat::communicationPolicy::ContextID<ZMQ>;
             using MsgID      = graybat::communicationPolicy::MsgID<ZMQ>;
@@ -118,54 +118,56 @@ namespace graybat {
             using Config     = graybat::communicationPolicy::Config<ZMQ>;
             using MsgType    = graybat::communicationPolicy::MsgType<ZMQ>;
             using Uri        = graybat::communicationPolicy::socket::Uri<ZMQ>;
-            using Socket     = graybat::communicationPolicy::socket::Socket<ZMQ>;            
+            using Socket     = graybat::communicationPolicy::socket::Socket<ZMQ>;
             using Message    = graybat::communicationPolicy::socket::Message<ZMQ>;
             using SocketBase = graybat::communicationPolicy::socket::Base<ZMQ>;
-            
-	    // ZMQ Sockets
+
+            // ZMQ Sockets
             ::zmq::context_t zmqContext;
             Socket recvSocket;
-            Socket ctrlSocket;            
+            Socket ctrlSocket;
             Socket signalingSocket;
             std::vector<Socket> sendSockets;
-            std::vector<Socket> ctrlSendSockets;                        
+            std::vector<Socket> ctrlSendSockets;
 
             // Uri
-	    const Uri peerUri;
+            const Uri peerUri;
             const Uri ctrlUri;
 
 
             // Construct
-	    ZMQ(Config const config) :
+            ZMQ(Config const config) :
                 SocketBase(config),
-		zmqContext(1),
+                zmqContext(1),
                 recvSocket(zmqContext, ZMQ_PULL),
-                ctrlSocket(zmqContext, ZMQ_PULL),                
-		signalingSocket(zmqContext, ZMQ_REQ),
+                ctrlSocket(zmqContext, ZMQ_PULL),
+                signalingSocket(zmqContext, ZMQ_REQ),
                 peerUri(bindToNextFreePort(recvSocket, config.peerUri)),
-                ctrlUri(bindToNextFreePort(ctrlSocket, config.peerUri))                
-            {
+                ctrlUri(bindToNextFreePort(ctrlSocket, config.peerUri)) {
 
                 //std::cout << "PeerUri: " << peerUri << std::endl;
                 SocketBase::init();
-                
+
             }
 
-        // Copy constructor
-        ZMQ(ZMQ &)  = delete;
-        // Copy assignment constructor
-        ZMQ& operator=(ZMQ &) = delete;
-        // Move constructor
-	    ZMQ(ZMQ &&other) = delete;
-        // Move assignment constructor
-        ZMQ& operator=(ZMQ &&) = delete;
+            // Copy constructor
+            ZMQ(ZMQ &) = delete;
 
-        // Destructor
-        ~ZMQ(){
-            SocketBase::deinit();
-        }
+            // Copy assignment constructor
+            ZMQ &operator=(ZMQ &) = delete;
 
-	    /***********************************************************************//**
+            // Move constructor
+            ZMQ(ZMQ &&other) = delete;
+
+            // Move assignment constructor
+            ZMQ &operator=(ZMQ &&) = delete;
+
+            // Destructor
+            ~ZMQ() {
+                SocketBase::deinit();
+            }
+
+            /***********************************************************************//**
              *
 	     * @name Socket base utilities
 	     *
@@ -173,70 +175,70 @@ namespace graybat {
 	     *
 	     ***************************************************************************/
 
-        void createSocketsToPeers(){
-            for(auto const &vAddr : initialContext){
-                (void)vAddr;
-                sendSockets.emplace_back(Socket(zmqContext, ZMQ_PUSH));
-                ctrlSendSockets.emplace_back(Socket(zmqContext, ZMQ_PUSH));
+            void createSocketsToPeers() {
+                for (auto const &vAddr : initialContext) {
+                    (void) vAddr;
+                    sendSockets.emplace_back(Socket(zmqContext, ZMQ_PUSH));
+                    ctrlSendSockets.emplace_back(Socket(zmqContext, ZMQ_PUSH));
+                }
             }
-        }
-            
-            template <typename T_Socket>
-            void connectToSocket(T_Socket& socket, std::string const signalingUri) {
+
+            template<typename T_Socket>
+            void connectToSocket(T_Socket &socket, std::string const signalingUri) {
                 socket.connect(signalingUri.c_str());
-                    
+
             }
 
-            template <typename T_Socket>            
-	    void recvFromSocket(T_Socket& socket, std::stringstream& ss) {
-		::zmq::message_t message;                
-		socket.recv(&message);
-                ss << static_cast<char*>(message.data());
-	    }
+            template<typename T_Socket>
+            void recvFromSocket(T_Socket &socket, std::stringstream &ss) {
+                ::zmq::message_t message;
+                socket.recv(&message);
+                ss << static_cast<char *>(message.data());
+            }
 
-            template <typename T_Socket>            
-	    void recvFromSocket(T_Socket& socket, Message & message) {
-                socket.recv(&message.getMessage());                
-	    }
+            template<typename T_Socket>
+            void recvFromSocket(T_Socket &socket, Message &message) {
+                socket.recv(&message.getMessage());
+            }
 
-            template <typename T_Socket>
-	    void sendToSocket(T_Socket& socket, std::stringstream const & ss) {
+            template<typename T_Socket>
+            void sendToSocket(T_Socket &socket, std::stringstream const &ss) {
                 std::string string = ss.str();
-		::zmq::message_t message(sizeof(char) * string.size());
-		memcpy (static_cast<char*>(message.data()), string.data(), sizeof(char) * string.size());
-		socket.send(message);
-	    }
+                ::zmq::message_t message(sizeof(char) * string.size());
+                memcpy(static_cast<char *>(message.data()), string.data(), sizeof(char) * string.size());
+                socket.send(message);
+            }
 
-            template <typename T_Socket>
-	    void sendToSocket(T_Socket& socket, ::zmq::message_t & data) {
+            template<typename T_Socket>
+            void sendToSocket(T_Socket &socket, ::zmq::message_t &data) {
                 socket.send(data);
             }
 
-	    Uri bindToNextFreePort(Socket &socket, const std::string peerUri){
-		std::string peerBaseUri = peerUri.substr(0, peerUri.rfind(":"));
-		unsigned peerBasePort   = std::stoi(peerUri.substr(peerUri.rfind(":") + 1));		
-		bool connected          = false;
+            Uri bindToNextFreePort(Socket &socket, const std::string peerUri) {
+                std::string peerBaseUri = peerUri.substr(0, peerUri.rfind(":"));
+                unsigned peerBasePort = std::stoi(peerUri.substr(peerUri.rfind(":") + 1));
+                bool connected = false;
 
-		std::string uri;
-		while(!connected){
+                std::string uri;
+                while (!connected) {
                     try {
                         uri = peerBaseUri + ":" + std::to_string(peerBasePort);
                         socket.bind(uri.c_str());
                         connected = true;
                     }
-                    catch(::zmq::error_t e){
-			//std::cout << e.what() << ". PeerUri \"" << uri << "\". Try to increment port and rebind." << std::endl;
+                    catch (::zmq::error_t e) {
+                        //std::cout << e.what() << ". PeerUri \"" << uri << "\". Try to increment port and rebind." << std::endl;
                         peerBasePort++;
                     }
-		    
+
                 }
 
-		return uri;
-		
+                return uri;
+
             }
-                
-	}; // class ZMQ
+
+        }; // class ZMQ
 
     } // namespace communicationPolicy
-	
+
 } // namespace graybat

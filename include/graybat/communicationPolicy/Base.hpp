@@ -45,18 +45,6 @@ namespace graybat {
             using Context             = typename graybat::communicationPolicy::Context<CommunicationPolicy>;
             using Event               = typename graybat::communicationPolicy::Event<CommunicationPolicy>;
 
-            // TODO
-            // ====
-            //
-            // Is there a way to prevent a lot of functions for
-            // slightly different functionality regarding the
-            // following options:
-            //
-            // * Blocking / Non Blocking
-            // * Var / Non Var
-            // * All / Single Receive
-            //
-
             /***********************************************************************
              * Interface
              ***********************************************************************/

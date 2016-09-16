@@ -252,54 +252,54 @@ namespace graybat {
 
                 // Retrieve Context id for initial context from signaling process
                 ContextID contextID = getContextID(static_cast<CommunicationPolicy*>(this)->signalingSocket, contextName);
-                contextNames[contextID] = contextName;
-
-                // Retrieve own vAddr from signaling process for initial context
-                VAddr vAddr = getVAddr(static_cast<CommunicationPolicy*>(this)->signalingSocket, contextID, static_cast<CommunicationPolicy*>(this)->peerUri, static_cast<CommunicationPolicy*>(this)->ctrlUri);
-                initialContext = Context(contextID, vAddr, contextSize);
-                contexts[initialContext.getID()] = initialContext;
-
-                // Retrieve for uris of other peers from signaling process for the initial context
-                for(auto const &vAddr : initialContext){                    
-                    Uri remoteUri;
-                    Uri ctrlUri;
-                    std::tie(remoteUri, ctrlUri) = getUri(static_cast<CommunicationPolicy*>(this)->signalingSocket, initialContext.getID(), vAddr);
-                    phoneBook[initialContext.getID()][vAddr] = remoteUri;
-                    ctrlPhoneBook[initialContext.getID()][vAddr] = ctrlUri;
-                    inversePhoneBook[initialContext.getID()][remoteUri] = vAddr;
-                    inverseCtrlPhoneBook[initialContext.getID()][ctrlUri] = vAddr;
-                }
-
-                // Create socket connection to other peers
-                // Create socketmapping from initial context to sockets of VAddrs
-                static_cast<CommunicationPolicy*>(this)->createSocketsToPeers();
-
-                for(auto const &vAddr : initialContext){                    
-                    sendSocketMappings[initialContext.getID()][vAddr] = vAddr;
-                    static_cast<CommunicationPolicy*>(this)->connectToSocket(static_cast<CommunicationPolicy*>(this)->sendSockets.at(sendSocketMappings.at(initialContext.getID()).at(vAddr)), phoneBook.at(initialContext.getID()).at(vAddr).c_str());
-                    static_cast<CommunicationPolicy*>(this)->connectToSocket(static_cast<CommunicationPolicy*>(this)->ctrlSendSockets.at(sendSocketMappings.at(initialContext.getID()).at(vAddr)), ctrlPhoneBook.at(initialContext.getID()).at(vAddr).c_str());
-
-                    //std::cout << "sendSocket_i: " << vAddr << " --> " << phoneBook.at(initialContext.getID()).at(vAddr) << std::endl;
-
-                }
-
-                // Create thread which recv all messages to this peer
-                recvHandler = std::thread(&Base<CommunicationPolicy>::handleRecv, this);
-                ctrlHandler = std::thread(&Base<CommunicationPolicy>::handleCtrl, this);
+//                contextNames[contextID] = contextName;
+//
+//                // Retrieve own vAddr from signaling process for initial context
+//                VAddr vAddr = getVAddr(static_cast<CommunicationPolicy*>(this)->signalingSocket, contextID, static_cast<CommunicationPolicy*>(this)->peerUri, static_cast<CommunicationPolicy*>(this)->ctrlUri);
+//                initialContext = Context(contextID, vAddr, contextSize);
+//                contexts[initialContext.getID()] = initialContext;
+//
+//                // Retrieve for uris of other peers from signaling process for the initial context
+//                for(auto const &vAddr : initialContext){
+//                    Uri remoteUri;
+//                    Uri ctrlUri;
+//                    std::tie(remoteUri, ctrlUri) = getUri(static_cast<CommunicationPolicy*>(this)->signalingSocket, initialContext.getID(), vAddr);
+//                    phoneBook[initialContext.getID()][vAddr] = remoteUri;
+//                    ctrlPhoneBook[initialContext.getID()][vAddr] = ctrlUri;
+//                    inversePhoneBook[initialContext.getID()][remoteUri] = vAddr;
+//                    inverseCtrlPhoneBook[initialContext.getID()][ctrlUri] = vAddr;
+//                }
+//
+//                // Create socket connection to other peers
+//                // Create socketmapping from initial context to sockets of VAddrs
+//                static_cast<CommunicationPolicy*>(this)->createSocketsToPeers();
+//
+//                for(auto const &vAddr : initialContext){
+//                    sendSocketMappings[initialContext.getID()][vAddr] = vAddr;
+//                    static_cast<CommunicationPolicy*>(this)->connectToSocket(static_cast<CommunicationPolicy*>(this)->sendSockets.at(sendSocketMappings.at(initialContext.getID()).at(vAddr)), phoneBook.at(initialContext.getID()).at(vAddr).c_str());
+//                    static_cast<CommunicationPolicy*>(this)->connectToSocket(static_cast<CommunicationPolicy*>(this)->ctrlSendSockets.at(sendSocketMappings.at(initialContext.getID()).at(vAddr)), ctrlPhoneBook.at(initialContext.getID()).at(vAddr).c_str());
+//
+//                    //std::cout << "sendSocket_i: " << vAddr << " --> " << phoneBook.at(initialContext.getID()).at(vAddr) << std::endl;
+//
+//                }
+//
+//                // Create thread which recv all messages to this peer
+//                recvHandler = std::thread(&Base<CommunicationPolicy>::handleRecv, this);
+//                ctrlHandler = std::thread(&Base<CommunicationPolicy>::handleCtrl, this);
 
             }
 
             template <typename T_CommunicationPolicy>
             auto Base<T_CommunicationPolicy>::deinit()
             -> void {
-                std::stringstream ss;
-                ss << static_cast<size_t>(MsgType::DESTRUCT) << " " << contextName;
-                static_cast<CommunicationPolicy*>(this)->sendToSocket(static_cast<CommunicationPolicy*>(this)->signalingSocket, ss);
-
-                std::array<unsigned, 1>  null;
-                static_cast<CommunicationPolicy*>(this)->asyncSendImpl(MsgType::DESTRUCT, 0, initialContext, initialContext.getVAddr(), 0, null);
-                recvHandler.join();
-                ctrlHandler.join();
+//                std::stringstream ss;
+//                ss << static_cast<size_t>(MsgType::DESTRUCT) << " " << contextName;
+//                static_cast<CommunicationPolicy*>(this)->sendToSocket(static_cast<CommunicationPolicy*>(this)->signalingSocket, ss);
+//
+//                std::array<unsigned, 1>  null;
+//                static_cast<CommunicationPolicy*>(this)->asyncSendImpl(MsgType::DESTRUCT, 0, initialContext, initialContext.getVAddr(), 0, null);
+//                recvHandler.join();
+//                ctrlHandler.join();
 
             }
 

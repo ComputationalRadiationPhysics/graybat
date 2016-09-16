@@ -104,6 +104,10 @@ endforeach(EXAMPLE)
 add_executable(gbZMQSignaling EXCLUDE_FROM_ALL utils/zmq_signaling_server.cpp )
 target_link_libraries(gbZMQSignaling ${LIBS})
 
+# ASIO signaling server
+add_executable(gbASIOSignaling EXCLUDE_FROM_ALL utils/asio_signaling_server.cpp )
+target_link_libraries(gbASIOSignaling ${LIBS})
+
 # CTest
 enable_testing()
 add_test(graybat_check_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target check)

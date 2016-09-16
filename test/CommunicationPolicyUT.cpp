@@ -33,6 +33,7 @@
 #include <graybat/Cage.hpp>
 #include <graybat/communicationPolicy/ZMQ.hpp>
 #include <graybat/communicationPolicy/BMPI.hpp>
+#include <graybat/communicationPolicy/Asio.hpp>
 
 /*******************************************************************************
  * Communication Policies to Test
@@ -43,21 +44,30 @@ size_t const nRuns = 1000;
 
 using ZMQ        = graybat::communicationPolicy::ZMQ;
 using BMPI       = graybat::communicationPolicy::BMPI;
+using Asio       = graybat::communicationPolicy::Asio;
 using ZMQConfig  = ZMQ::Config;
 using BMPIConfig = BMPI::Config;
+using AsioConfig = Asio::Config;
 
 ZMQConfig zmqConfig = {"tcp://127.0.0.1:5000",
                        "tcp://127.0.0.1:5001",
                        static_cast<size_t>(std::stoi(std::getenv("OMPI_COMM_WORLD_SIZE"))),
                        "context_cp_test"};
 
+AsioConfig asioConfig = {"tcp://127.0.0.1:6000",
+                         "tcp://127.0.0.1:5001",
+                         static_cast<size_t>(std::stoi(std::getenv("OMPI_COMM_WORLD_SIZE"))),
+                         "context_cp_test"};
+
 BMPIConfig bmpiConfig;
 
 ZMQ zmqCP(zmqConfig);
 BMPI bmpiCP(bmpiConfig);
+Asio asioCP(asioConfig);
 
-auto communicationPolicies = hana::make_tuple(std::ref(zmqCP),
-                                              std::ref(bmpiCP) );
+auto communicationPolicies = hana::make_tuple(//std::ref(zmqCP),
+                                              //std::ref(bmpiCP),
+                                              std::ref(asioCP));
 
 
 /*******************************************************************************
