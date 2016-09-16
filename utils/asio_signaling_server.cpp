@@ -14,7 +14,7 @@
 // Boost
 #include <boost/program_options.hpp>
 
-#define CHUNK_SIZE 8096
+#define CHUNK_SIZE 4096
 
 // Type defs
 typedef unsigned Tag;                                            
@@ -34,18 +34,20 @@ static const MsgType CONTEXT_REQUEST = 6;
 
 template <typename T_Socket>            
 void recvFromSocket(T_Socket& socket, std::stringstream& ss) {
-    const size_t size = ss.str().size();
-    std::array<char, CHUNK_SIZE> chunk; 
-    size_t transferred = 0;
+    std::array<char, CHUNK_SIZE> chunk;
+    boost::system::error_code error;
 
-    while (transferred != size) { 
-        size_t remaining = size - transferred; 
-        size_t read_size = (remaining > CHUNK_SIZE) ? CHUNK_SIZE : remaining;
-        boost::asio::read(socket, boost::asio::buffer(chunk, read_size)); 
-        ss.write(chunk.data(), read_size); 
-        transferred += read_size; 
+    std::size_t length = chunk.size();
+
+    while (length != 0) {
+        length = boost::asio::read(socket, boost::asio::buffer(chunk.data(), chunk.size()), error);
+        if(error){
+            std::cout << error.message() << std::endl;
+            break;
+        }
+        ss << std::string(chunk.data(), length);
     }
-                
+
 }
 
 template <typename T_Socket>
@@ -64,62 +66,62 @@ void sendToSocket(T_Socket& socket, std::stringstream & ss) {
 
 }
 
-// TODO: needs to be shared
-// http://stackoverflow.com/questions/11014918/boostasio-infinite-loop
-class AcceptHandler : public std::enable_shared_from_this<AcceptHandler> {
-
-public:
-
-    AcceptHandler(boost::asio::ip::tcp::socket & socket, boost::asio::ip::tcp::acceptor & acceptor) :
-        socket(socket),
-        acceptor(acceptor)
-    {
-
-    }
-
-    void accept() {
-
-        acceptor.async_accept(
-            socket,
-            [this](boost::system::error_code error) {
-                if (error) {
-                    std::cerr << "Error code:" << error << ". " << error.message() << std::endl;
-                } else {
-                    std::cerr << "Accepted connection." << std::endl;
-                    std::make_shared<AcceptHandler>(socket, acceptor)->read();
-                }
-
-                //accept();
-            }
-        );
-
-    }
-
-
-    void read() {
-        auto self(shared_from_this());
-        socket.async_receive(boost::asio::buffer(data_, max_length),
-                               [this, self](boost::system::error_code error, std::size_t length) {
-                                   if (!error) {
-                                       std::string s(data_, length);
-                                       std::cout << "Read:" << s << std::endl;
-                                   } else {
-                                       std::cout << "Failed to read. Error code: " << error.message() << std::endl;
-                                   }
-                                   read();
-                                   socket.close();
-                               });
-    }
-
-
-
-private:
-
-    boost::asio::ip::tcp::socket & socket;
-    boost::asio::ip::tcp::acceptor & acceptor;
-    enum { max_length = 1024 };
-    char data_[max_length];
-};
+//// TODO: needs to be shared
+//// http://stackoverflow.com/questions/11014918/boostasio-infinite-loop
+//class AcceptHandler : public std::enable_shared_from_this<AcceptHandler> {
+//
+//public:
+//
+//    AcceptHandler(boost::asio::ip::tcp::socket & socket, boost::asio::ip::tcp::acceptor & acceptor) :
+//        socket(socket),
+//        acceptor(acceptor)
+//    {
+//
+//    }
+//
+//    void accept() {
+//
+//        acceptor.async_accept(
+//            socket,
+//            [this](boost::system::error_code error) {
+//                if (error) {
+//                    std::cerr << "Error code:" << error << ". " << error.message() << std::endl;
+//                } else {
+//                    std::cerr << "Accepted connection." << std::endl;
+//                    //std::make_shared<AcceptHandler>(socket, acceptor)->read();
+//                    read();
+//                }
+//
+//                //accept();
+//            }
+//        );
+//
+//    }
+//
+//
+//    void read() {
+//        auto self(shared_from_this());
+//        socket.async_receive(boost::asio::buffer(data_, max_length),
+//                               [this, self](boost::system::error_code error, std::size_t length) {
+//                                   if (!error) {
+//                                       std::string s(data_, length);
+//                                       std::cout << "Read:" << s << std::endl;
+//                                   } else {
+//                                       std::cout << "Failed to read. Error code: " << error.message() << std::endl;
+//                                   }
+//                                   socket.close();
+//                               });
+//    }
+//
+//
+//
+//private:
+//
+//    boost::asio::ip::tcp::socket & socket;
+//    boost::asio::ip::tcp::acceptor & acceptor;
+//    enum { max_length = 1024 };
+//    char data_[max_length];
+//};
 
 int main(const int argc, char **argv){
     /***************************************************************************
@@ -183,12 +185,12 @@ int main(const int argc, char **argv){
     std::cout << "Listening on: " << masterUri << std::endl;
     
     boost::asio::io_service io_service;
-    boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), vm["port"].as<unsigned>());    
-    boost::asio::ip::tcp::acceptor acceptor(io_service, endpoint);
+
+
 
 
     // Bind to port
-    boost::asio::ip::tcp::socket socket(io_service);
+
 //    socket.open(boost::asio::ip::tcp::v4());
 
 //    boost::system::error_code error;
@@ -197,14 +199,29 @@ int main(const int argc, char **argv){
 //        std::cerr << "Could not bind to port: " << vm["port"].as<unsigned>() << std::endl;
 //    }
 
-    AcceptHandler acceptHandler(socket, acceptor);
-    acceptHandler.accept();
+    //AcceptHandler acceptHandler(socket, acceptor);
+    //acceptHandler.accept();
 
 
     //acceptor.accept(socket);
 
     //std::cout << "accepted connection" << std::endl;
 
+
+    while (true) {
+        boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), vm["port"].as<unsigned>());
+        boost::asio::ip::tcp::socket socket(io_service);
+        boost::asio::ip::tcp::acceptor acceptor(io_service, endpoint);
+        acceptor.accept(socket);
+
+        std::stringstream ss;
+        recvFromSocket(socket, ss);
+        std::cout << ss.str() << std::endl;
+
+        ss << "Hello World";
+
+        sendToSocket(socket, ss);
+    }
 
     //TODO: implement async read
     io_service.run();
