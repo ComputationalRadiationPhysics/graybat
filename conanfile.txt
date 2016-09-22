@@ -1,0 +1,5 @@
+[requires]
+zmqcpp/4.1.1@memsharded/stable
+
+[generators]
+cmake

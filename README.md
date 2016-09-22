@@ -58,6 +58,7 @@ The project is organized in a couple of subdirectories.
  * zeromq 4.1.3 (zeromq communication policy) 
  * metis 5.1 (graph partitioning mapping)
 
+**Note** that some graybat dependencies can be resolved using [conan](https://www.conan.io/) automatically. Have a look into the [conan documentation](http://docs.conan.io/en/latest/getting_started.html) for more details on that.
 
 ##Roadmap##
  * [Dynamic context](https://github.com/ComputationalRadiationPhysics/graybat/milestones/Dynamic%20Context)
@@ -110,7 +111,6 @@ The following is a an example of how to embed graybat into your `CMakeLists.txt`
      set(LIBS ${LIBS} ${graybat_LIBRARIES})
 
 Finally, the application can use graybat e.g. `#include <graybat/Cage.hpp>`.
-
 
 ##Compiling Tests/Examples##
 

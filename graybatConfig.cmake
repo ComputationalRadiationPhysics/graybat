@@ -48,6 +48,17 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${graybat_DIR}/include/graybat/utils
 ###############################################################################
 
 ###############################################################################
+# Conan 
+# - Resolves dependencies of ZMQ
+###############################################################################
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
+
+set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${CONAN_INCLUDE_DIRS})
+set(graybat_LIBRARIES ${graybat_LIBRARIES} ${CONAN_LIBS})
+
+
+###############################################################################
 # METIS LIB
 ###############################################################################
 find_package(METIS MODULE 5.1.0)
@@ -57,9 +68,9 @@ set(graybat_LIBRARIES ${graybat_LIBRARIES} ${METIS_LIBRARIES})
 ###############################################################################
 # ZMQ LIB
 ###############################################################################
-find_package(ZMQ MODULE 4.0.0)
-set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${ZMQ_INCLUDE_DIRS})
-set(graybat_LIBRARIES ${graybat_LIBRARIES} ${ZMQ_LIBRARIES})
+#find_package(ZMQ MODULE 4.0.0)
+#set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${ZMQ_INCLUDE_DIRS})
+#set(graybat_LIBRARIES ${graybat_LIBRARIES} ${ZMQ_LIBRARIES})
 
 ###############################################################################
 # Boost LIB
@@ -67,6 +78,7 @@ set(graybat_LIBRARIES ${graybat_LIBRARIES} ${ZMQ_LIBRARIES})
 find_package(Boost 1.56.0 MODULE COMPONENTS mpi serialization REQUIRED)
 set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 set(graybat_LIBRARIES ${graybat_LIBRARIES} ${Boost_LIBRARIES})
+
 
 ################################################################################
 # MPI LIB
