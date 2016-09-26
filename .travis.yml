@@ -116,8 +116,8 @@ install:
   #############################################################################
   # Conan
   #############################################################################
-  - pip install --upgrade pip
-  - pip install conan
+  - pip install --user -r --upgrade pip
+  - pip install --user -r conan
 
 script:
   - cd $HOME/build
