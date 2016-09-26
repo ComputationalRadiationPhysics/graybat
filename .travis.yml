@@ -113,6 +113,10 @@ install:
     else
       echo "ZeroMQ directory already exists";
     fi
+  #############################################################################
+  # Conan
+  #############################################################################
+  - pip install conan
 
 script:
   - cd $HOME/build

@@ -43,6 +43,7 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 ###############################################################################
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${graybat_DIR}/include/graybat/utils/cmake/modules/" )
 
+
 ###############################################################################
 # DEPENDENCIES
 ###############################################################################
@@ -51,45 +52,67 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${graybat_DIR}/include/graybat/utils
 # Conan 
 # - Resolves dependencies of ZMQ
 ###############################################################################
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
-
-set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${CONAN_INCLUDE_DIRS})
-set(graybat_LIBRARIES ${graybat_LIBRARIES} ${CONAN_LIBS})
+if(EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
+  include("${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
+  conan_basic_setup()
+endif()  
 
 
 ###############################################################################
 # METIS LIB
 ###############################################################################
 find_package(METIS MODULE 5.1.0)
-set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${METIS_INCLUDE_DIRS})
-set(graybat_LIBRARIES ${graybat_LIBRARIES} ${METIS_LIBRARIES})
+if(METIS_FOUND)
+  set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${METIS_INCLUDE_DIRS})
+  set(graybat_LIBRARIES ${graybat_LIBRARIES} ${METIS_LIBRARIES})
+else()
+  message(WARNING "METIS not found (not necessary).")
+endif()
+
 
 ###############################################################################
 # ZMQ LIB
 ###############################################################################
-#find_package(ZMQ MODULE 4.0.0)
-#set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${ZMQ_INCLUDE_DIRS})
-#set(graybat_LIBRARIES ${graybat_LIBRARIES} ${ZMQ_LIBRARIES})
+find_package(ZMQ MODULE 4.0.0)
+if(ZMQ_FOUND)
+  set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${ZMQ_INCLUDE_DIRS})
+  set(graybat_LIBRARIES ${graybat_LIBRARIES} ${ZMQ_LIBRARIES})
+else()
+  message(FATAL_ERROR "ZMQ not found.")
+endif()
+  
 
 ###############################################################################
 # Boost LIB
 ###############################################################################
 find_package(Boost 1.56.0 MODULE COMPONENTS mpi serialization REQUIRED)
-set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
-set(graybat_LIBRARIES ${graybat_LIBRARIES} ${Boost_LIBRARIES})
+if(Boost_FOUND)
+  set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
+  set(graybat_LIBRARIES ${graybat_LIBRARIES} ${Boost_LIBRARIES})
+else()
+  message(FATAL_ERROR "Boost not found.")
+endif()
 
 
 ################################################################################
 # MPI LIB
 ################################################################################
 find_package(MPI MODULE)
-set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${MPI_C_INCLUDE_PATH})
-set(graybat_LIBRARIES ${graybat_LIBRARIES} ${MPI_C_LIBRARIES})
-set(graybat_LIBRARIES ${graybat_LIBRARIES} ${MPI_CXX_LIBRARIES})
+if(MPI_FOUND)
+  set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${MPI_C_INCLUDE_PATH})
+  set(graybat_LIBRARIES ${graybat_LIBRARIES} ${MPI_C_LIBRARIES})
+  set(graybat_LIBRARIES ${graybat_LIBRARIES} ${MPI_CXX_LIBRARIES})
+else()
+  message(FATAL_ERROR "MPI not found.")
+endif()
+
 
 ################################################################################
 # Find PThreads
 ################################################################################
 find_package(Threads MODULE)
-set(graybat_LIBRARIES ${graybat_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+if(Threads_FOUND)
+  set(graybat_LIBRARIES ${graybat_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+else()
+  message(FATAL_ERROR "Threads not found.")
+endif()
