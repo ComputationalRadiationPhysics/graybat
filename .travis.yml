@@ -73,7 +73,6 @@ install:
   # BOOST                                                                     #
   #############################################################################
   - export CMAKE_PREFIX_PATH=$BOOST_ROOT:$CMAKE_PREFIX_PATH;
-  - cmake --find-package -DNAME=Boost -DCOMPILER_ID=GNU -DLANGUAGE=CXX -DMODE=EXIST
   - echo -e "#include <boost/version.hpp>\n#include <iostream>\nint main() { std::cout << BOOST_VERSION << std::endl; return 0; }"
     | $CXX -I$BOOST_ROOT/include -x c++ - >/dev/null || { echo 0; }
   - ls $BOOST_ROOT
