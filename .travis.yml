@@ -55,10 +55,17 @@ before_install:
 
 install:
 
+    #############################################################################
+    # Resolve dependencies manually
+    #############################################################################
   - if [ "$DEPS_RESOLVE_BY" == "manual" ]; then
       echo "Resolve library dependencies manually.";
+    #############################################################################
+    # Resolve dependencies using conan
+    #############################################################################
     elif [ "$DEPS_RESOLVE_BY" == "conan" ]; then
-      echo "Resolve library dependencies using conan.";
+      pip install --upgrade pip --user;
+      pip install conan --user;
     fi
   #############################################################################
   # CMAKE                                                                     #
@@ -123,29 +130,30 @@ install:
   #elif [ "$DEPS_RESOLVE_BY" = "conan" ]; then
  # else
 #    echo "Resolve library dependencies using conan.";
-  #############################################################################
-  # Conan
-  #############################################################################
-#      pip install --upgrade pip --user;
-#      pip install conan --user;
+
 #  fi
 
 script:
-- if ["$DEPS_RESOLVE_BY" = "manual"]; then
-    cd $HOME/build;
-    cmake $CMAKE_FLAGS $GRAYBAT_ROOT;
-    make check;
-    make gbZMQSignaling;
-    ./gbZMQSignaling&;
-    ctest --output-on-failure;
-    killall gbZMQSignaling;
-  elif ["$DEPS_RESOLVE_BY" = "conan"]; then
-    cd $HOME/build;
-    conan install $GRAYBAT_ROOT --build=missing;
-    cmake $CMAKE_FLAGS $GRAYBAT_ROOT;
-    make check
-    make gbZMQSignaling;
-    ./gbZMQSignaling&;
-    ctest --output-on-failure;
-    killall gbZMQSignaling;
-  fi
+  - if [ "$DEPS_RESOLVE_BY" == "manual" ]; then
+      echo "Build with manually installed dependencies.";
+    elif [ "$DEPS_RESOLVE_BY" == "conan" ]; then
+      cd $HOME/build;
+      conan install $GRAYBAT_ROOT --build=missing;
+      cmake $CMAKE_FLAGS $GRAYBAT_ROOT;
+      make check;
+      make gbZMQSignaling;
+     ./gbZMQSignaling&;
+     ctest --output-on-failure;
+     killall gbZMQSignaling;
+    fi
+#- if ["$DEPS_RESOLVE_BY" = "manual"]; then
+#    cd $HOME/build;
+#    cmake $CMAKE_FLAGS $GRAYBAT_ROOT;
+#    make check
+#  elif ["$DEPS_RESOLVE_BY" = "conan"]; then
+#    cd $HOME/build;
+#    conan install $GRAYBAT_ROOT --build=missing;
+#    cmake $CMAKE_FLAGS $GRAYBAT_ROOT;
+#    make check
+#  fi
+
