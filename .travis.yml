@@ -54,11 +54,12 @@ before_install:
   - $CC --version
 
 install:
-  - echo $DEPS_RESOLVE_BY
-  - echo $COMPILER
 
-#  - if [ "$DEPS_RESOLVE_BY" = "manual" ]; then
-#      echo "Resolve library dependencies manually.";
+  - if [ "$DEPS_RESOLVE_BY" == "manual" ]; then
+      echo "Resolve library dependencies manually.";
+    elif [ "$DEPS_RESOLVE_BY" == "conan" ]; then
+      echo "Resolve library dependencies using conan.";
+    fi
   #############################################################################
   # CMAKE                                                                     #
   #############################################################################
