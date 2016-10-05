@@ -33,6 +33,7 @@ env:
 
 matrix:
   env:
+    - COMPILER=gcc
     - DEPS_RESOLVE_BY=manual
     - DEPS_RESOLVE_BY=conan
 
