@@ -118,7 +118,8 @@ install:
 #      echo "ZeroMQ directory already exists";
 #    fi;
 #
-  elif [ "$DEPS_RESOLVE_BY" = "conan" ]; then
+  #elif [ "$DEPS_RESOLVE_BY" = "conan" ]; then
+  else
     echo "Resolve library dependencies using conan.";
   #############################################################################
   # Conan
