@@ -56,8 +56,11 @@ before_install:
   - $CC --version
 
 install:
-  - if [ "$DEPS_RESOLVE_BY" = "manual" ]; then
-      echo "Resolve library dependencies manually.";
+  - echo "$DEPS_RESOLVE_BY"
+  - echo "$COMPILER"
+
+#  - if [ "$DEPS_RESOLVE_BY" = "manual" ]; then
+#      echo "Resolve library dependencies manually.";
   #############################################################################
   # CMAKE                                                                     #
   #############################################################################
@@ -119,14 +122,14 @@ install:
 #    fi;
 #
   #elif [ "$DEPS_RESOLVE_BY" = "conan" ]; then
-  else
-    echo "Resolve library dependencies using conan.";
+ # else
+#    echo "Resolve library dependencies using conan.";
   #############################################################################
   # Conan
   #############################################################################
 #      pip install --upgrade pip --user;
 #      pip install conan --user;
-  fi
+#  fi
 
 script:
 - if ["$DEPS_RESOLVE_BY" = "manual"]; then
