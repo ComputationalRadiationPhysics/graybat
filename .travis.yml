@@ -30,12 +30,10 @@ env:
     - BOOST_MIN: 106100 # careful: hard coded below
     - GRAYBAT_ROOT: $TRAVIS_BUILD_DIR
     - OMP_NUM_THREADS: 4 # ignored in thread layer
-
-matrix:
-  env:
-    - COMPILER=gcc
-    - DEPS_RESOLVE_BY=manual
-    - DEPS_RESOLVE_BY=conan
+    - COMPILER: gcc
+  matrix:
+    - DEPS_RESOLVE_BY: manual
+    - DEPS_RESOLVE_BY: conan
 
 before_install:
   - mkdir -p $HOME/build
@@ -56,8 +54,8 @@ before_install:
   - $CC --version
 
 install:
-  - echo "$DEPS_RESOLVE_BY"
-  - echo "$COMPILER"
+  - echo $DEPS_RESOLVE_BY
+  - echo $COMPILER
 
 #  - if [ "$DEPS_RESOLVE_BY" = "manual" ]; then
 #      echo "Resolve library dependencies manually.";
