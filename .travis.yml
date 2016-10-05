@@ -61,9 +61,9 @@ install:
   #############################################################################
   # CMAKE                                                                     #
   #############################################################################
-  - export PATH=$CMAKE_ROOT/bin:$PATH
-  - CMAKE_33_FOUND=$(cmake --version | grep " 3\.3\." >/dev/null && { echo 0; } || { echo 1; })
-  - if [ $CMAKE_33_FOUND -ne 0 ]; then
+   export PATH=$CMAKE_ROOT/bin:$PATH;
+   CMAKE_33_FOUND=$(cmake --version | grep " 3\.3\." >/dev/null && { echo 0; } || { echo 1; });
+   if [ $CMAKE_33_FOUND -ne 0 ]; then
       mkdir -p $CMAKE_ROOT &&
       cd $CMAKE_ROOT &&
       travis_retry wget --no-check-certificate http://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz &&
@@ -71,18 +71,18 @@ install:
       mv -f cmake-3.3.2-Linux-x86_64/* . &&
       rm -rf cmake-3.3.2-Linux-x86_64.tar.gz cmake-3.3.2-Linux-x86_64 &&
       cd -;
-    fi
-  - cmake --version
+   fi;
+   cmake --version;
   #############################################################################
   # BOOST                                                                     #
   #############################################################################
-  - export CMAKE_PREFIX_PATH=$BOOST_ROOT:$CMAKE_PREFIX_PATH
+  export CMAKE_PREFIX_PATH=$BOOST_ROOT:$CMAKE_PREFIX_PATH;
   # cmake --find-package -DNAME=Boost -DCOMPILER_ID=GNU -DLANGUAGE=CXX -DMODE=EXIST
-  - echo -e "#include <boost/version.hpp>\n#include <iostream>\nint main() { std::cout << BOOST_VERSION << std::endl; return 0; }"
+  echo -e "#include <boost/version.hpp>\n#include <iostream>\nint main() { std::cout << BOOST_VERSION << std::endl; return 0; }";
         | $CXX -I$BOOST_ROOT/include -x c++ - >/dev/null || { echo 0; }
-  - ls $BOOST_ROOT
-  - BOOST_FOUND=$([ $(./a.out) -ge $BOOST_MIN ] && { echo 0; } || { echo 1; })
-  - if [ $BOOST_FOUND -ne 0 ]; then
+  ls $BOOST_ROOT;
+  BOOST_FOUND=$([ $(./a.out) -ge $BOOST_MIN ] && { echo 0; } || { echo 1; });
+  if [ $BOOST_FOUND -ne 0 ]; then
       mkdir -p $BOOST_ROOT &&
       cd $BOOST_ROOT &&
       travis_retry wget --no-check-certificate -O boost.tar.bz2 http://sourceforge.net/projects/boost/files/boost/1.61.0/boost_1_61_0.tar.bz2/download &&
@@ -95,14 +95,14 @@ install:
       ./b2 install &&
       rm -rf boost.tar.bz2 boost_1_61_0 &&
       cd $HOME;
-    fi
+    fi;
   #############################################################################
   # ZMQ                                                                       #
   #############################################################################
-  - export CMAKE_PREFIX_PATH=$ZMQ_ROOT:$CMAKE_PREFIX_PATH
-  - echo $CMAKE_PREFIX_PATH
-  - ls $ZMQ_ROOT
-  - if [ ! "$(ls -A $ZMQ_ROOT)" ]; then
+  export CMAKE_PREFIX_PATH=$ZMQ_ROOT:$CMAKE_PREFIX_PATH;
+  echo $CMAKE_PREFIX_PATH;
+  ls $ZMQ_ROOT;
+  if [ ! "$(ls -A $ZMQ_ROOT)" ]; then
       cd /tmp/ &&
       travis_retry git clone https://github.com/zeromq/libzmq.git&&
       travis_retry git clone https://github.com/zeromq/cppzmq.git;
@@ -116,15 +116,15 @@ install:
       cp /tmp/cppzmq/zmq_addon.hpp $ZMQ_ROOT/include/;
     else
       echo "ZeroMQ directory already exists";
-    fi
+    fi;
 
-  - elif ["$DEPS_RESOLVE_BY" = "conan"]; then
+  elif ["$DEPS_RESOLVE_BY" = "conan"]; then
   #############################################################################
   # Conan
   #############################################################################
       pip install --upgrade pip --user;
       pip install conan --user;
-    fi
+  fi
 
 script:
 - if ["$DEPS_RESOLVE_BY" = "manual"]; then
@@ -137,8 +137,8 @@ script:
     killall gbZMQSignaling;
   elif ["$DEPS_RESOLVE_BY" = "conan"]; then
     cd $HOME/build;
-    conan install $GRAYBAT_ROOT --build=missing
-    cmake $CMAKE_FLAGS $GRAYBAT_ROOT
+    conan install $GRAYBAT_ROOT --build=missing;
+    cmake $CMAKE_FLAGS $GRAYBAT_ROOT;
     make check
     make gbZMQSignaling;
     ./gbZMQSignaling&;
