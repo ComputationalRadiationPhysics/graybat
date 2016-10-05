@@ -30,14 +30,15 @@ env:
     - BOOST_MIN: 106100 # careful: hard coded below
     - GRAYBAT_ROOT: $TRAVIS_BUILD_DIR
     - OMP_NUM_THREADS: 4 # ignored in thread layer
-  matrix:
-    - COMPILER=gcc  STRATEGY=""
-    #- COMPILER=clang STRATEGY=""
+
+matrix:
+  env:
+    - DEPS_RESOLVE_BY=manual
+    - DEPS_RESOLVE_BY=conan
 
 before_install:
   - mkdir -p $HOME/build
 
-  #- export CMAKE_FLAGS="-DALPAKA_ACC_"$STRATEGY"_ENABLE=ON"
   - export CMAKE_FLAGS="-DCMAKE_CXX_FLAGS=\"-Werror\""
   - if [ "$COMPILER" == "gcc" ]; then
         echo "Using g++-6";
@@ -54,6 +55,8 @@ before_install:
   - $CC --version
 
 install:
+  - if ["$DEPS_RESOLVE_BY" = "manual"]; then
+
   #############################################################################
   # CMAKE                                                                     #
   #############################################################################
@@ -113,17 +116,31 @@ install:
     else
       echo "ZeroMQ directory already exists";
     fi
+
+  - elif ["$DEPS_RESOLVE_BY" = "conan"]; then
   #############################################################################
   # Conan
   #############################################################################
-  - pip install --upgrade pip --user
-  - pip install conan --user
+      pip install --upgrade pip --user;
+      pip install conan --user;
+    fi
 
 script:
-  - cd $HOME/build
-  - cmake $CMAKE_FLAGS $GRAYBAT_ROOT
-  - make check
-  - make gbZMQSignaling
-  - ./gbZMQSignaling&
-  - ctest --output-on-failure
-  - killall gbZMQSignaling
+- if ["$DEPS_RESOLVE_BY" = "manual"]; then
+    cd $HOME/build;
+    cmake $CMAKE_FLAGS $GRAYBAT_ROOT;
+    make check;
+    make gbZMQSignaling;
+    ./gbZMQSignaling&;
+    ctest --output-on-failure;
+    killall gbZMQSignaling;
+  elif ["$DEPS_RESOLVE_BY" = "conan"]; then
+    cd $HOME/build;
+    conan install $GRAYBAT_ROOT --build=missing
+    cmake $CMAKE_FLAGS $GRAYBAT_ROOT
+    make check
+    make gbZMQSignaling;
+    ./gbZMQSignaling&;
+    ctest --output-on-failure;
+    killall gbZMQSignaling;
+  fi

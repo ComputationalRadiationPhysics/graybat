@@ -62,57 +62,37 @@ endif()
 # METIS LIB
 ###############################################################################
 find_package(METIS MODULE 5.1.0)
-if(METIS_FOUND)
-  set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${METIS_INCLUDE_DIRS})
-  set(graybat_LIBRARIES ${graybat_LIBRARIES} ${METIS_LIBRARIES})
-else()
-  message(ERROR " METIS not found (not necessary).")
-endif()
+set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${METIS_INCLUDE_DIRS})
+set(graybat_LIBRARIES ${graybat_LIBRARIES} ${METIS_LIBRARIES})
 
 
 ###############################################################################
 # ZMQ LIB
 ###############################################################################
-find_package(ZMQ MODULE 4.0.0)
-if(ZMQ_FOUND)
-  set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${ZMQ_INCLUDE_DIRS})
-  set(graybat_LIBRARIES ${graybat_LIBRARIES} ${ZMQ_LIBRARIES})
-else()
-  message(FATAL_ERROR " ZMQ not found.")
-endif()
-  
+find_package(ZMQ MODULE 4.0.0 REQUIRED)
+set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${ZMQ_INCLUDE_DIRS})
+set(graybat_LIBRARIES ${graybat_LIBRARIES} ${ZMQ_LIBRARIES})
 
+  
 ###############################################################################
 # Boost LIB
 ###############################################################################
 find_package(Boost 1.56.0 MODULE COMPONENTS mpi serialization REQUIRED)
-if(Boost_FOUND)
-  set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
-  set(graybat_LIBRARIES ${graybat_LIBRARIES} ${Boost_LIBRARIES})
-else()
-  message(FATAL_ERROR " Boost not found.")
-endif()
+set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
+set(graybat_LIBRARIES ${graybat_LIBRARIES} ${Boost_LIBRARIES})
 
 
 ################################################################################
 # MPI LIB
 ################################################################################
-find_package(MPI MODULE)
-if(MPI_FOUND)
-  set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${MPI_C_INCLUDE_PATH})
-  set(graybat_LIBRARIES ${graybat_LIBRARIES} ${MPI_C_LIBRARIES})
-  set(graybat_LIBRARIES ${graybat_LIBRARIES} ${MPI_CXX_LIBRARIES})
-else()
-  message(FATAL_ERROR " MPI not found.")
-endif()
+find_package(MPI MODULE REQUIRED)
+set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${MPI_C_INCLUDE_PATH})
+set(graybat_LIBRARIES ${graybat_LIBRARIES} ${MPI_C_LIBRARIES})
+set(graybat_LIBRARIES ${graybat_LIBRARIES} ${MPI_CXX_LIBRARIES})
 
 
 ################################################################################
 # Find PThreads
 ################################################################################
-find_package(Threads MODULE)
-if(Threads_FOUND)
-  set(graybat_LIBRARIES ${graybat_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
-else()
-  message(FATAL_ERROR " Threads not found.")
-endif()
+find_package(Threads MODULE REQUIRED)
+set(graybat_LIBRARIES ${graybat_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
