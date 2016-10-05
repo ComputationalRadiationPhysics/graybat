@@ -69,6 +69,30 @@ install:
       cd -;
    fi
   - cmake --version;
+  #############################################################################
+  # BOOST                                                                     #
+  #############################################################################
+  - export CMAKE_PREFIX_PATH=$BOOST_ROOT:$CMAKE_PREFIX_PATH;
+  - cmake --find-package -DNAME=Boost -DCOMPILER_ID=GNU -DLANGUAGE=CXX -DMODE=EXIST
+  - echo -e "#include <boost/version.hpp>\n#include <iostream>\nint main() { std::cout << BOOST_VERSION << std::endl; return 0; }"
+    | $CXX -I$BOOST_ROOT/include -x c++ - >/dev/null || { echo 0; }
+  - ls $BOOST_ROOT
+  - BOOST_FOUND=$([ $(./a.out) -ge $BOOST_MIN ] && { echo 0; } || { echo 1; });
+  - if [ $BOOST_FOUND -ne 0 ]; then
+      mkdir -p $BOOST_ROOT &&
+      cd $BOOST_ROOT &&
+      travis_retry wget --no-check-certificate -O boost.tar.bz2 http://sourceforge.net/projects/boost/files/boost/1.61.0/boost_1_61_0.tar.bz2/download &&
+      tar -xjf boost.tar.bz2 --overwrite &&
+      cd boost_1_61_0 &&
+      echo "using gcc "":"" 6 "":"" /usr/bin/g++-6 ; " >> tools/build/src/user-config.jam &&
+      ./bootstrap.sh toolset=gcc-6 --with-libraries=filesystem,mpi,program_options,system,test,serialization --prefix=$BOOST_ROOT &&
+      echo "using mpi ;" >> tools/build/src/user-config.jam &&
+      ./b2 -j2 -target=shared,static &&
+      ./b2 install &&
+      rm -rf boost.tar.bz2 boost_1_61_0 &&
+      cd $HOME;
+    fi;
+
 
     #############################################################################
     # Resolve dependencies manually
@@ -80,29 +104,7 @@ install:
       pip install conan --user;
     fi
 
-  #############################################################################
-  # BOOST                                                                     #
-  #############################################################################
-#  export CMAKE_PREFIX_PATH=$BOOST_ROOT:$CMAKE_PREFIX_PATH;
-#  # cmake --find-package -DNAME=Boost -DCOMPILER_ID=GNU -DLANGUAGE=CXX -DMODE=EXIST
-#  echo -e "#include <boost/version.hpp>\n#include <iostream>\nint main() { std::cout << BOOST_VERSION << std::endl; return 0; }";
-#        | $CXX -I$BOOST_ROOT/include -x c++ - >/dev/null || { echo 0; }
-#  ls $BOOST_ROOT;
-#  BOOST_FOUND=$([ $(./a.out) -ge $BOOST_MIN ] && { echo 0; } || { echo 1; });
-#  if [ $BOOST_FOUND -ne 0 ]; then
-#      mkdir -p $BOOST_ROOT &&
-#      cd $BOOST_ROOT &&
-#      travis_retry wget --no-check-certificate -O boost.tar.bz2 http://sourceforge.net/projects/boost/files/boost/1.61.0/boost_1_61_0.tar.bz2/download &&
-#      tar -xjf boost.tar.bz2 --overwrite &&
-#      cd boost_1_61_0 &&
-#      echo "using gcc "":"" 6 "":"" /usr/bin/g++-6 ; " >> tools/build/src/user-config.jam &&
-#      ./bootstrap.sh toolset=gcc-6 --with-libraries=filesystem,mpi,program_options,system,test,serialization --prefix=$BOOST_ROOT &&
-#      echo "using mpi ;" >> tools/build/src/user-config.jam &&
-#      ./b2 -j2 -target=shared,static &&
-#      ./b2 install &&
-#      rm -rf boost.tar.bz2 boost_1_61_0 &&
-#      cd $HOME;
-#    fi;
+
   #############################################################################
   # ZMQ                                                                       #
   #############################################################################
@@ -130,6 +132,7 @@ install:
 #    echo "Resolve library dependencies using conan.";
 
 #  fi
+# TODO Metis
 
 script:
   - if [ "$RESOLVE_DEPS_BY" == "manual" ]; then
