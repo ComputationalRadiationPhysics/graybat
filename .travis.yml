@@ -60,9 +60,6 @@ install:
     #############################################################################
   - if [ "$DEPS_RESOLVE_BY" == "manual" ]; then
       echo "Resolve library dependencies manually.";
-    #############################################################################
-    # Resolve dependencies using conan
-    #############################################################################
     elif [ "$DEPS_RESOLVE_BY" == "conan" ]; then
       pip install --upgrade pip --user;
       pip install conan --user;
