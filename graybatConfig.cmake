@@ -52,8 +52,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${graybat_DIR}/include/graybat/utils
 # Conan 
 # - Resolves dependencies of ZMQ
 ###############################################################################
-message("${CMAKE_CXX_COMPILER}")
-message("${CMAKE_CXX_COMPILER_ID}")
+
+#TODO: workaround since id is empty on travis build
+set(CMAKE_CXX_COMPILER_ID "GNU")
 
 if(EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
   include("${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
