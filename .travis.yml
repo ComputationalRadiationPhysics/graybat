@@ -94,7 +94,7 @@ install:
 
 
     #############################################################################
-    # Resolve dependencies manually
+    # Resolve missing dependencies
     #############################################################################
   - if [ "$RESOLVE_DEPS_BY" == "manual" ]; then
       echo "Resolve library dependencies manually.";
@@ -138,7 +138,7 @@ script:
       echo "Build with manually installed dependencies.";
     elif [ "$RESOLVE_DEPS_BY" == "conan" ]; then
       cd $HOME/build;
-      conan install $GRAYBAT_ROOT --build=missing;
+      conan install $GRAYBAT_ROOT --build=missing -s compiler=gcc-6;
       cmake $CMAKE_FLAGS $GRAYBAT_ROOT;
       make check;
       make gbZMQSignaling;
