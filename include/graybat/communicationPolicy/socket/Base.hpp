@@ -32,10 +32,6 @@
 #include <boost/optional.hpp>
 #include <boost/utility/in_place_factory.hpp>
 
-// HANA
-#include <boost/hana.hpp>
-namespace hana = boost::hana;
-
 // GrayBat
 #include <graybat/communicationPolicy/Base.hpp>          /* graybat::communicationPolicy::Base */
 #include <graybat/communicationPolicy/Traits.hpp>        /* cp related types */
@@ -702,13 +698,13 @@ namespace graybat {
                 using Event   = graybat::communicationPolicy::Event<CommunicationPolicy>;
                 using Message = graybat::communicationPolicy::socket::Message<CommunicationPolicy>;
 
-                hana::tuple<MsgType, ContextID, VAddr, Tag> keys;
+                std::tuple<MsgType, ContextID, VAddr, Tag> keys;
                 VAddr destVAddr;
                 Tag tag;
 
                 Message message(std::move(inBox.waitDequeue(keys, MsgType::PEER, context.getID())));
-                destVAddr = hana::at(keys, hana::size_c<2>);
-                tag = hana::at(keys, hana::size_c<3>);
+                destVAddr = std::get<2>(keys);
+                tag = std::get<3>(keys);
 
                 memcpy (static_cast<void*>(recvData.data()),
                         static_cast<std::int8_t*>(message.getData()),
