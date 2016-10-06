@@ -139,7 +139,7 @@ script:
     elif [ "$RESOLVE_DEPS_BY" == "conan" ]; then
       cd $HOME/build;
       conan install $GRAYBAT_ROOT --build=missing -s compiler=gcc -s compiler.version=6.2 -s compiler.libcxx=libstdc++;
-      cmake $CMAKE_FLAGS $GRAYBAT_ROOT;
+      cmake $CMAKE_FLAGS -DCONAN_DISABLE_CHECK_COMPILER=TRUE $GRAYBAT_ROOT;
       make check;
       make gbZMQSignaling;
      ./gbZMQSignaling&;
