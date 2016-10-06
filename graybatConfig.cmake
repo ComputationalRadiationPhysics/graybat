@@ -54,14 +54,11 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${graybat_DIR}/include/graybat/utils
 ###############################################################################
 
 if(EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
-  #set(CONAN_DISABLE_CHECK_COMPILER "TRUE")
   include("${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
   conan_basic_setup()
-      message("${CMAKE_INCLUDE_PATH}")
-      message("${CMAKE_LIBRARY_PATH}")
-  #set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${CONAN_INCLUDE_DIRS})
-  #set(graybat_LIBRARIES ${graybat_LIBRARIES} ${CONAN_LIB_DIRS})
-endif()  
+  message("${CMAKE_INCLUDE_PATH}")
+  message("${CMAKE_LIBRARY_PATH}")
+endif()
 
 
 ###############################################################################
@@ -71,8 +68,6 @@ find_package(METIS MODULE 5.1.0)
 set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${METIS_INCLUDE_DIRS})
 set(graybat_LIBRARIES ${graybat_LIBRARIES} ${METIS_LIBRARIES})
 
-message("${METIS_INCLUDE_DIRS}")
-message("${METIS_LIBRARIES}")
 
 ###############################################################################
 # ZMQ LIB
