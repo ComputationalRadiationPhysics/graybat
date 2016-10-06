@@ -54,7 +54,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${graybat_DIR}/include/graybat/utils
 ###############################################################################
 
 if(EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
-  set(CONAN_DISABLE_CHECK_COMPILER "FALSE")
+  #set(CONAN_DISABLE_CHECK_COMPILER "TRUE")
   include("${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
   conan_basic_setup()
       message("${CMAKE_INCLUDE_PATH}")
