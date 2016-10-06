@@ -34,6 +34,10 @@
 #include <graybat/communicationPolicy/ZMQ.hpp>
 #include <graybat/communicationPolicy/BMPI.hpp>
 
+// HANA
+
+#include <boost/hana/for_each.hpp>
+
 /*******************************************************************************
  * Communication Policies to Test
  ******************************************************************************/

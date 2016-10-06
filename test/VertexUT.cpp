@@ -21,6 +21,7 @@
 // BOOST
 #include <boost/test/unit_test.hpp>
 #include <boost/hana/tuple.hpp>
+#include <boost/hana/for_each.hpp>
 
 // STL
 #include <vector>
