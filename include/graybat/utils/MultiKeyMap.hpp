@@ -34,6 +34,17 @@
 #include <boost/optional.hpp>
 
 namespace utils {
+	
+	/** 
+	 * @brief Compares two tuple types and calculates the "Difference" of both both tuples
+	 * @param[in] std::tuple<T1, ... , Tn>
+	 * @param[in] std::tuple<T1, ..., Tn, ..., Tm>
+	 * @result ValueType = std::tuple<Tn+1, ..., Tm>
+	 * 
+	 * T1 to Tn has to be the same for both tuples. Otherwise it will not compile.
+	 * 
+	 */
+	
 	template <class... Types>
 	struct Difference;
 
@@ -59,6 +70,15 @@ namespace utils {
 		using ValueType = std::tuple<Types...>; 
 	};
 
+	/** 
+	 * 
+	 * @brief Compares the nth to mth element of two tuples. If all of them are the same it will return true.
+	 * @param[in] std::tuple<T1, ... , Tn>
+	 * @param[in] std::tuple<T1, ..., Tn, ..., Tm>
+	 * @param[in] unsigned int n
+	 * @param[in] unsigned int m
+	 * 
+	 */
 	template <class T1, class T2, unsigned int pos, unsigned int end>
 	struct PrefixMatch;
 
