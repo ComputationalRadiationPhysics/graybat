@@ -90,7 +90,7 @@ int exp() {
 
         // Calculate relative pagerank and spread it to
         // adjacent vertices
-        for(Vertex &v : cage.hostedVertices){
+        for(Vertex &v : cage.getHostedVertices()){
             assert(cage.getAdjacentVertices(v).size() > 0);            
             std::vector<float> relativePageRank{1};
             relativePageRank[0] = v().pageRank[0] / static_cast<float>(cage.getAdjacentVertices(v).size());
@@ -99,7 +99,7 @@ int exp() {
 
         // Calculate vertex page rank based on
         // relative page rank of adjacent vertices
-        for(Vertex &v : cage.hostedVertices){
+        for(Vertex &v : cage.getHostedVertices()){
             std::vector<float> relativePageRank{1};            
             float relativePageRankSum = 0;
             
@@ -117,7 +117,7 @@ int exp() {
     }
 
     // Print page final page rank
-    for(Vertex &v : cage.hostedVertices){
+    for(Vertex &v : cage.getHostedVertices()){
         std::cout << "Pagerank[" <<v.id << "] : " << v().pageRank[0] << std::endl;
     }
     

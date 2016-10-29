@@ -119,14 +119,14 @@ BOOST_AUTO_TEST_CASE(send_recv) {
         }
 
         // Send state to neighbor cells
-        for (Vertex &v : cage.hostedVertices) {
+        for (Vertex &v : cage.getHostedVertices()) {
           for (Edge edge : cage.getOutEdges(v)) {
             cage.send(edge, send, events);
           }
         }
 
         // Recv state from neighbor cells
-        for (Vertex &v : cage.hostedVertices) {
+        for (Vertex &v : cage.getHostedVertices()) {
           for (Edge edge : cage.getInEdges(v)) {
             cage.recv(edge, recv);
             for (unsigned i = 0; i < recv.size(); ++i) {
@@ -174,14 +174,14 @@ BOOST_AUTO_TEST_CASE(asyncSend_recv) {
         }
 
         // Send state to neighbor cells
-        for (Vertex &v : cage.hostedVertices) {
+        for (Vertex &v : cage.getHostedVertices()) {
           for (Edge edge : cage.getOutEdges(v)) {
             cage.send(edge, send, events);
           }
         }
 
         // Recv state from neighbor cells
-        for (Vertex &v : cage.hostedVertices) {
+        for (Vertex &v : cage.getHostedVertices()) {
           for (Edge edge : cage.getInEdges(v)) {
             cage.recv(edge, recv);
             for (unsigned i = 0; i < recv.size(); ++i) {
@@ -232,14 +232,14 @@ BOOST_AUTO_TEST_CASE(asyncSend_asyncRecv) {
         }
 
         // Send state to neighbor cells
-        for (Vertex &v : cage.hostedVertices) {
+        for (Vertex &v : cage.getHostedVertices()) {
           for (Edge edge : cage.getOutEdges(v)) {
             cage.send(edge, send, sendEvents);
           }
         }
 
         // Recv state from neighbor cells
-        for (Vertex &v : cage.hostedVertices) {
+        for (Vertex &v : cage.getHostedVertices()) {
           for (Edge edge : cage.getInEdges(v)) {
             recv.push_back(std::vector<unsigned>(nElements, 0));
             cage.recv(edge, recv.back(), recvEvents);
@@ -304,11 +304,11 @@ BOOST_AUTO_TEST_CASE(reduce) {
 
       Vertex rootVertex = cage.getVertex(0);
 
-      for (Vertex v : cage.hostedVertices) {
+      for (Vertex v : cage.getHostedVertices()) {
         cage.reduce(rootVertex, v, std::plus<unsigned>(), send, recv);
       }
 
-      if (cage.peerHostsVertex(rootVertex)) {
+      if (cage.isHosting(rootVertex)) {
         for (unsigned receivedElement : recv) {
           BOOST_CHECK_EQUAL(receivedElement, cage.getVertices().size());
         }
@@ -338,7 +338,7 @@ BOOST_AUTO_TEST_CASE(allReduce) {
       std::vector<unsigned> send(nElements, 1);
       std::vector<unsigned> recv(nElements, 0);
 
-      for (Vertex v : cage.hostedVertices) {
+      for (Vertex v : cage.getHostedVertices()) {
         cage.allReduce(v, std::plus<unsigned>(), send, recv);
       }
 
@@ -357,9 +357,9 @@ BOOST_AUTO_TEST_CASE(gather) {
     using GP = typename Cage::GraphPolicy;
     using Vertex = typename Cage::Vertex;
 
+
     // Test run
     {
-
       auto &cage = cageRef.get();
 
       cage.setGraph(graybat::pattern::Grid<GP>(3, 3));
@@ -374,11 +374,11 @@ BOOST_AUTO_TEST_CASE(gather) {
 
       Vertex rootVertex = cage.getVertex(0);
 
-      for (Vertex v : cage.hostedVertices) {
+      for (Vertex v : cage.getHostedVertices()) {
         cage.gather(rootVertex, v, send, recv, reorder);
       }
 
-      if (cage.peerHostsVertex(rootVertex)) {
+      if (cage.isHosting(rootVertex)) {
         for (unsigned receivedElement : recv) {
           BOOST_CHECK_EQUAL(receivedElement, testValue);
         }
@@ -386,6 +386,7 @@ BOOST_AUTO_TEST_CASE(gather) {
     }
   });
 }
+
 
 BOOST_AUTO_TEST_CASE(allGather) {
   hana::for_each(cages, [](auto cageRef) {
@@ -410,7 +411,7 @@ BOOST_AUTO_TEST_CASE(allGather) {
       std::vector<unsigned> send(nElements, testValue);
       std::vector<unsigned> recv(nElements * cage.getVertices().size(), 0);
 
-      for (Vertex v : cage.hostedVertices) {
+      for (Vertex v : cage.getHostedVertices()) {
         cage.allGather(v, send, recv, reorder);
       }
 
@@ -443,11 +444,11 @@ BOOST_AUTO_TEST_CASE(spreadAndCollect) {
 
       std::vector<unsigned> send(nElements, testValue);
 
-      for (Vertex v : cage.hostedVertices) {
+      for (Vertex v : cage.getHostedVertices()) {
         v.spread(send, events);
       }
 
-      for (Vertex v : cage.hostedVertices) {
+      for (Vertex v : cage.getHostedVertices()) {
         std::vector<unsigned> recv(v.nInEdges() * nElements, 0);
         v.collect(recv);
         for (unsigned receivedElement : recv) {

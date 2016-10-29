@@ -96,12 +96,12 @@ BOOST_AUTO_TEST_CASE( spread_collect ){
 		std::vector<unsigned> send(nElements, testValue);
 
     
-		for(Vertex v : grid.hostedVertices){
+		for(Vertex v : grid.getHostedVertices()){
 		    v.spread(send, events);
         
 		}
 
-		for(Vertex v : grid.hostedVertices){
+		for(Vertex v : grid.getHostedVertices()){
 		    std::vector<unsigned> recv(nElements * v.nInEdges(), 0);
 		    v.collect(recv);
 		    for(unsigned r: recv){
@@ -149,12 +149,12 @@ BOOST_AUTO_TEST_CASE( accumulate ){
 		std::vector<unsigned> send(nElements, testValue);
 
     
-		for(Vertex v : grid.hostedVertices){
+		for(Vertex v : grid.getHostedVertices()){
 		    v.spread(send, events);
         
 		}
 
-		for(Vertex v : grid.hostedVertices){
+		for(Vertex v : grid.getHostedVertices()){
 		    BOOST_CHECK_EQUAL(v.accumulate(std::plus<unsigned>(), 0),
 				      testValue * nElements * v.nInEdges());
                 
@@ -200,7 +200,7 @@ BOOST_AUTO_TEST_CASE( forward ){
 		const Vertex exit  = chain.getVertex(chain.getVertices().size()-1);
     
     
-		for(Vertex v : chain.hostedVertices){
+		for(Vertex v : chain.getHostedVertices()){
 
 		    if(v == entry){
 			v.spread(input, events);
