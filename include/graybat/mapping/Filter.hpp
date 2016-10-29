@@ -19,9 +19,10 @@
  */
 
 #pragma once
-
+#include <boost/core/ignore_unused.hpp> /* boost::ignore_unused */
 #include <algorithm> /* std::sort*/
 #include <vector>    /* std::vector */
+#include <memory>    /* std::shared_memory */
 
 namespace graybat {
     
@@ -44,20 +45,24 @@ namespace graybat {
                 using Context             = typename CommunicationPolicy::Context;
                 using VAddr               = typename CommunicationPolicy::VAddr;
 
-                std::vector<VAddr> peersWithSameTag;
+                boost::ignore_unused(processID);
+                boost::ignore_unused(processCount);
 
-                Context context = cage.comm->getGlobalContext();
+                std::vector<VAddr> peersWithSameTag;
+                
+                std::shared_ptr<CommunicationPolicy> comm = cage.getCommunicationPolicy();
+                Context context = comm->getGlobalContext();
 
                 // Get the information about who wants to
                 // host vertices with the same tag
                 std::array<size_t, 1> sendData{vertexTag};                
                 for(auto const &vAddr : context){
-                  cage.comm->asyncSend(vAddr, 0, context, sendData);
+                    comm->asyncSend(vAddr, 0, context, sendData);
                 }
 
                 for(auto const &vAddr : context){                    
                     std::array<size_t, 1> recvData{0};
-                    cage.comm->recv(vAddr, 0, context, recvData);
+                    comm->recv(vAddr, 0, context, recvData);
                     if(recvData[0] == vertexTag){
                         peersWithSameTag.push_back(vAddr);
                     }

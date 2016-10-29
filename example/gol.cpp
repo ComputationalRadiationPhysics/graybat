@@ -152,18 +152,18 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
     for(unsigned timestep = 0; timestep < nTimeSteps; ++timestep){
 
 	// Print life field by owner of vertex 0
-	if(grid.peerHostsVertex(root)){
+	if(grid.isHosting(root)){
 	    printGolDomain(golDomain, width, height, timestep);
 	}
 	
 	// Send cell state to neighbor cells
 	std::vector<Event> es;	 
-	for(Vertex &cell : grid.hostedVertices){
+	for(Vertex &cell : grid.getHostedVertices()){
 	    cell.spread(cell().isAlive, events);
 	}
 
 	// Recv cell state from neighbor cells and update own cell states
-	for(Vertex &cell : grid.hostedVertices){
+	for(Vertex &cell : grid.getHostedVertices()){
 	    cell().aliveNeighbors = cell.accumulate(std::plus<unsigned>(), 0);
 	    updateState(cell);
 	}
@@ -175,7 +175,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 	}
 
 	// Gather state by vertex with id = 0
-	for(Vertex &cell: grid.hostedVertices){
+	for(Vertex &cell: grid.getHostedVertices()){
 	    grid.gather(root, cell, cell().isAlive, golDomain, true);
 	}
 	

@@ -96,7 +96,7 @@ int exp() {
 
     const Vertex reply = cage.getVertex(0);
     
-    for(Vertex v : cage.hostedVertices){
+    for(Vertex &v : cage.getHostedVertices()){
 
 
         if(v == reply){
