@@ -32,6 +32,7 @@
 #include <tuple>      /* std::tie */
 #include <memory>     /* std::shared_memory */
 #include <sstream>    /* std::stringstream */
+#include <cstring>    /* std::memcpy */
 
 // Boost
 #include <boost/core/ignore_unused.hpp> /* boost::ignore_unused */
@@ -45,6 +46,7 @@
 #include <graybat/communicationPolicy/Traits.hpp>
 #include <graybat/graphPolicy/Traits.hpp>
 #include <graybat/serializationPolicy/Forward.hpp>
+#include <graybat/Concept.hpp>
 
 namespace graybat {
 
@@ -92,6 +94,7 @@ struct Cage {
   using Peer = size_t;
 
   template <class T_Functor>
+  /// requires GraphFactoryFunctor<T_Functor>
   Cage(CPConfig const cpConfig, T_Functor graphFunctor)
       : communicator(new CommunicationPolicy(cpConfig)),
         graph(GraphPolicy(graphFunctor())) {}
@@ -127,6 +130,7 @@ struct Cage {
     * @{
     *
     ***************************************************************************/
+  /// requires GraphFactoryFunctor<T_Functor>
   template <typename T_Functor> void setGraph(T_Functor graphFunctor);
 
   auto getVertices() -> std::vector<Vertex>;
@@ -160,6 +164,7 @@ struct Cage {
    *                    distFunctor(OwnVAddr, ContextSize, Graph)
    *
    */
+  // requires concept::DistributionFunctor<T_Functor>
   template <class T_Functor> auto distribute(T_Functor distFunctor) -> void;
 
   /**
@@ -259,17 +264,20 @@ struct Cage {
   /**
    * @brief Synchron transmission of *data* to the *destVertex* on *edge*.
    *
+
+   *
    * @param[in] graph The graph in which the communication takes place.
    * @param[in] edge Edge over which the *data* will be transmitted.
    * @param[in] data Data that will be send.
-   *
    */
-  template <typename T> void send(const Edge &edge, const T &data);
+  template <typename T>
+  /// requires concept::ContiguousContainer<T>
+  void send(const Edge &edge, const T &data);
 
   /**
    * @brief Asynchron transmission of *data* to the *destVertex* on *edge*.
    *
-   * @todo Documentation how data should be formated !!!
+
    *
    * @param[in] graph The graph in which the communication takes place.
    * @param[in] edge Edge over which the *data* will be transmitted.
@@ -278,6 +286,7 @@ struct Cage {
    *
    */
   template <typename T>
+  /// requires concept::ContiguousContainer<T>
   void send(const Edge &edge, const T &data, std::vector<Event> &events);
 
   /**
@@ -288,9 +297,13 @@ struct Cage {
    * @param[out] data Data that will be received
    *
    */
-  template <typename T> void recv(const Edge &edge, T &data);
+  template <typename T>
+  /// requires concept::ContiguousContainer<T>
+  void recv(const Edge &edge, T &data);
 
-  template <typename T> Edge recv(T &data);
+  template <typename T>
+  /// requires concept::ContiguousContainer<T>
+  Edge recv(T &data);
 
   /**
    * @brief Asynchron receive of *data* from the *srcVertex* on *edge*.
@@ -302,6 +315,7 @@ struct Cage {
    *
    */
   template <typename T>
+  /// requires concept::ContiguousContainer<T>
   void recv(const Edge &edge, T &data, std::vector<Event> &events);
 
   /** @} */
@@ -314,20 +328,28 @@ struct Cage {
     *
     **************************************************************************/
 
-  template <typename T_Data, typename Op>
-  void reduce(const Vertex &rootVertex, const Vertex &srcVertex, Op op,
-              const std::vector<T_Data> sendData,
-              std::vector<T_Data> &recvData);
+  template <typename T, typename T_Op>
+  /// requires concept::ContiguousContainer<T>
+  /// requires concept::BinaeryOperator<T_Op>
+  void reduce(const Vertex &rootVertex, const Vertex &srcVertex, T_Op op,
+              const T sendData,
+              T &recvData);
 
-  template <typename T_Data, typename T_Recv, typename Op>
-  void allReduce(const Vertex &srcVertex, Op op,
-                 const std::vector<T_Data> sendData, T_Recv &recvData);
+  template <typename T, typename T_Op>
+  /// requires concept::ContiguousContainer<T>
+  /// requires concept::BinaeryOperator<T_Op>
+  void allReduce(const Vertex &srcVertex, T_Op op,
+                 const T sendData, T &recvData);
 
   template <typename T_Send, typename T_Recv>
+  /// requires concept::ContiguousContainer<T_Send>
+  /// requires concept::ContiguousContainer<T_Recv>
   void gather(const Vertex &rootVertex, const Vertex &srcVertex,
               const T_Send sendData, T_Recv &recvData, const bool reorder);
 
   template <typename T_Send, typename T_Recv>
+  /// requires concept::ContiguousContainer<T_Send>
+  /// requires concept::ContiguousContainer<T_Recv>
   void allGather(const Vertex &srcVertex, T_Send sendData, T_Recv &recvData,
                  const bool reorder);
 
@@ -342,6 +364,7 @@ struct Cage {
    *
    */
   template <typename T>
+  /// requires concept::ContiguousContainer<T>
   void spread(const Vertex &vertex, const T &data, std::vector<Event> &events);
 
   /**
@@ -352,6 +375,7 @@ struct Cage {
    * @param[in]  data   that will be spreaded
    *
    */
+  /// requires concept::ContiguousContainer<T>
   template <typename T> void spread(const Vertex &vertex, const T &data);
 
   /**
@@ -364,6 +388,7 @@ struct Cage {
    * @param[in]  data were collected data will be stored
    *
    */
+  /// requires concept::ContiguousContainer<T>
   template <typename T> void collect(const Vertex &vertex, T &data);
 
   void synchronize();
@@ -743,12 +768,14 @@ private:
 
     template<typename T_CommunicationPolicy, typename T_GraphPolicy, typename SerializationPolicy>
     template<typename T_Data, typename Op>
-    auto Cage<T_CommunicationPolicy,T_GraphPolicy,  SerializationPolicy>::
-    reduce(const Vertex &rootVertex, const Vertex &srcVertex, Op op, const std::vector<T_Data> sendData,
-           std::vector<T_Data> &recvData)
+    auto Cage<T_CommunicationPolicy, T_GraphPolicy, SerializationPolicy>::
+    reduce(const Vertex &rootVertex, const Vertex &srcVertex, Op op, const T_Data sendData,
+           T_Data &recvData)
     -> void {
-        static std::vector<T_Data> reduce;
-        static std::vector<T_Data> *rootRecvData;
+        using value_type = typename T_Data::value_type;
+
+        static std::vector<value_type> reduce;
+        static std::vector<value_type> *rootRecvData;
         static unsigned vertexCount = 0;
         static bool hasRootVertex = false;
 
@@ -760,11 +787,13 @@ private:
         vertexCount++;
 
         if (reduce.empty()) {
-            reduce = std::vector<T_Data>(sendData.size(), 0);
+            reduce = std::vector<value_type>(sendData.size(), 0);
         }
 
         // Reduce locally
-        std::transform(reduce.begin(), reduce.end(), sendData.begin(), reduce.begin(), op);
+        for(std::size_t i = 0; i < reduce.size(); ++i){
+            reduce[i] = op(reduce[i], sendData.data()[i]);
+        }
 
         // Remember pointer of recvData from rootVertex
         if (rootVertex.id == srcVertex.id) {
@@ -793,50 +822,52 @@ private:
 
     }
 
-    template<typename T_CommunicationPolicy, typename T_GraphPolicy, typename SerializationPolicy>
-    template<typename T_Data, typename T_Recv, typename Op>
-    auto Cage<T_CommunicationPolicy,T_GraphPolicy,  SerializationPolicy>::
-    allReduce(const Vertex &srcVertex, Op op, const std::vector<T_Data> sendData, T_Recv &recvData)
-    -> void {
+    template <typename T_CommunicationPolicy, typename T_GraphPolicy,
+              typename SerializationPolicy>
+    template <typename T, typename T_Op>
+    auto
+    Cage<T_CommunicationPolicy, T_GraphPolicy, SerializationPolicy>::allReduce(
+        const Vertex &srcVertex, T_Op op, const T sendData, T &recvData) -> void {
 
-        static std::vector<T_Data> reduce;
-        static unsigned vertexCount = 0;
-        static std::vector<T_Recv *> recvDatas;
+      static std::vector<typename T::value_type> reduce;
+      static unsigned vertexCount = 0;
+      static std::vector<T *> recvDatas;
 
-        VAddr srcVAddr = locateVertex(srcVertex);
-        Context context = graphContext;
-        std::vector<Vertex> vertices = getVerticesHostedBy(srcVAddr);
+      VAddr srcVAddr = locateVertex(srcVertex);
+      Context context = graphContext;
+      std::vector<Vertex> vertices = getVerticesHostedBy(srcVAddr);
 
-        recvDatas.push_back(&recvData);
+      recvDatas.push_back(&recvData);
 
-        vertexCount++;
+      vertexCount++;
 
-        if (reduce.empty()) {
-            reduce = std::vector<T_Data>(sendData.size(), 0);
+      if (reduce.empty()) {
+        reduce = std::vector<typename T::value_type>(sendData.size(), 0);
+      }
+
+      // Reduce locally
+      for (std::size_t i = 0; i < reduce.size(); ++i) {
+        reduce[i] = op(reduce[i], sendData.data()[i]);
+      }
+
+      // Finally start reduction
+      if (vertexCount == vertices.size()) {
+
+        decltype(auto) serialized = SerializationPolicy::serialize(reduce);
+        decltype(auto) skeleton = SerializationPolicy::prepare(*(recvDatas[0]));
+        communicator->allReduce(context, op, serialized, skeleton);
+        SerializationPolicy::restore(*(recvDatas[0]), skeleton);
+
+        // Distribute Received Data to Hosted Vertices
+        for (unsigned i = 1; i < recvDatas.size(); ++i) {
+          std::copy(recvDatas[0]->begin(), recvDatas[0]->end(),
+                    recvDatas[i]->begin());
         }
 
-        // Reduce locally
-        std::transform(reduce.begin(), reduce.end(), sendData.begin(), reduce.begin(), op);
-
-        // Finally start reduction
-        if (vertexCount == vertices.size()) {
-
-            decltype(auto) serialized = SerializationPolicy::serialize(reduce);
-            decltype(auto) skeleton = SerializationPolicy::prepare(*(recvDatas[0]));
-            communicator->allReduce(context, op, serialized, skeleton);
-            SerializationPolicy::restore(*(recvDatas[0]), skeleton);
-
-            // Distribute Received Data to Hosted Vertices
-            for (unsigned i = 1; i < recvDatas.size(); ++i) {
-                std::copy(recvDatas[0]->begin(), recvDatas[0]->end(), recvDatas[i]->begin());
-
-            }
-
-
-            reduce.clear();
-            vertexCount = 0;
-        }
-        assert(vertexCount <= vertices.size());
+        reduce.clear();
+        vertexCount = 0;
+      }
+      assert(vertexCount <= vertices.size());
     }
 
     template<typename T_CommunicationPolicy, typename T_GraphPolicy, typename SerializationPolicy>
@@ -860,7 +891,9 @@ private:
         Context context = graphContext;
 
         // Insert data of srcVertex to the end of the gather vector
-        gather.insert(gather.end(), sendData.begin(), sendData.end());
+        for(std::size_t i = 0; i < sendData.size(); ++i){
+            gather.push_back(sendData.data()[i]);
+        }
 
         // Store recv pointer of rootVertex
         if (srcVertex.id == rootVertex.id) {
@@ -911,8 +944,9 @@ private:
 
         Context context = graphContext;
 
-        // TODO get rid of sendData.begin(), sendData.end() T_Data should only use .size() and .data()
-        gather.insert(gather.end(), sendData.begin(), sendData.end());
+        for(std::size_t i = 0; i < sendData.size(); ++i){
+            gather.push_back(sendData.data()[i]);
+        }
         recvDatas.push_back(&recvData);
 
 
@@ -975,7 +1009,7 @@ private:
             unsigned elementsPerEdge = data.size() / edges.size();
             std::vector<typename T::value_type> elements(elementsPerEdge);
             Cage::recv(edges[i], elements);
-            std::copy(elements.begin(), elements.end(), data.begin() + (i * elementsPerEdge));
+            std::memcpy(data.data() + (i * elementsPerEdge), elements.data(), elements.size() * sizeof(typename T::value_type));
         }
 
     }
