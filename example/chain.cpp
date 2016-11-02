@@ -83,7 +83,8 @@ int exp() {
     cage.setGraph(graybat::pattern::Chain<GP>(nChainLinks));
     
     // Distribute vertices
-    cage.distribute(graybat::mapping::Filter(cage.comm.getGlobalContext().getVAddr() % 3));
+    cage.distribute(
+        graybat::mapping::Filter(cage.comm->getGlobalContext().getVAddr() % 3));
 
     /***************************************************************************
      * Run Simulation
@@ -102,18 +103,21 @@ int exp() {
 
         if(v == entry){
             v.spread(input, events);
-            std::cout << "Input: " << input[0] << " " << cage.comm.getGlobalContext().getVAddr() << std::endl;
+            std::cout << "Input: " << input[0] << " "
+                      << cage.comm->getGlobalContext().getVAddr() << std::endl;
         }
 
         if(v == exit){
             v.collect(output);
-            std::cout << "Output: " << output[0] << " " << cage.comm.getGlobalContext().getVAddr() << std::endl;
+            std::cout << "Output: " << output[0] << " "
+                      << cage.comm->getGlobalContext().getVAddr() << std::endl;
         }
 
         if(v != entry and v != exit){
             v.collect(intermediate);
             inc(intermediate[0]);
-            std::cout << "Increment: " << intermediate[0] << " " << cage.comm.getGlobalContext().getVAddr() << std::endl;
+            std::cout << "Increment: " << intermediate[0] << " "
+                      << cage.comm->getGlobalContext().getVAddr() << std::endl;
             v.spread(intermediate, events);
 	    
         }

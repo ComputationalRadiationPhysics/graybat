@@ -45,21 +45,19 @@ namespace graybat {
                 using VAddr               = typename CommunicationPolicy::VAddr;
 
                 std::vector<VAddr> peersWithSameTag;
-                
-                CommunicationPolicy& comm = cage.comm;
-                Context context = comm.getGlobalContext();
-                
+
+                Context context = cage.comm->getGlobalContext();
 
                 // Get the information about who wants to
                 // host vertices with the same tag
                 std::array<size_t, 1> sendData{vertexTag};                
                 for(auto const &vAddr : context){
-                    comm.asyncSend(vAddr, 0, context, sendData);
+                  cage.comm->asyncSend(vAddr, 0, context, sendData);
                 }
 
                 for(auto const &vAddr : context){                    
                     std::array<size_t, 1> recvData{0};
-                    comm.recv(vAddr, 0, context, recvData);
+                    cage.comm->recv(vAddr, 0, context, recvData);
                     if(recvData[0] == vertexTag){
                         peersWithSameTag.push_back(vAddr);
                     }
