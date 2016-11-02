@@ -250,7 +250,15 @@ namespace utils {
 
 			}
 
-			while(multiKeyMap.at(keys...).empty()){
+			while([&](){
+                //The access of "multiKeyMap.at(keys...)" is a critical section
+                bool empty = true;
+                {
+                    std::lock_guard<std::mutex> accessLock(access);
+                    empty = multiKeyMap.at(keys...).empty();
+                }
+                return empty;
+            }()){
 				std::unique_lock<std::mutex> notifyLock(writeNotify);
 				//std::cout << "wait for queue to be filled." << std::endl;
 				writeCondition.wait_for(notifyLock, std::chrono::milliseconds(100));
