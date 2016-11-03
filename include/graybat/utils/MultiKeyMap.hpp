@@ -32,6 +32,7 @@
 
 // BOOST
 #include <boost/optional.hpp>
+#include <boost/core/ignore_unused.hpp>
 
 namespace utils {
 	
@@ -85,6 +86,7 @@ namespace utils {
 	template<class T1, class T2, unsigned int pos>
 	struct PrefixMatch<T1, T2, pos, pos> {
 		bool operator()(const T1& t1, const T2& t2) {
+            boost::ignore_unused(t1, t2);
 			return true;
 		}
 	};
