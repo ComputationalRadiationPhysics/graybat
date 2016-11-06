@@ -30,6 +30,7 @@
 #include <graybat/Cage.hpp>
 #include <graybat/communicationPolicy/BMPI.hpp>
 #include <graybat/communicationPolicy/ZMQ.hpp>
+#include <graybat/serializationPolicy/ByteCast.hpp>
 #include <graybat/graphPolicy/BGL.hpp>
 #include <graybat/mapping/Consecutive.hpp>
 #include <graybat/pattern/Grid.hpp>
@@ -49,8 +50,9 @@ namespace hana = boost::hana;
 using ZMQ        = graybat::communicationPolicy::ZMQ;
 using BMPI       = graybat::communicationPolicy::BMPI;
 using GP         = graybat::graphPolicy::BGL<>;
-using ZMQCage    = graybat::Cage<ZMQ, GP>;
-using BMPICage   = graybat::Cage<BMPI, GP>;
+using Serialization = graybat::serializationPolicy::ByteCast;
+using ZMQCage    = graybat::Cage<ZMQ, GP, Serialization >;
+using BMPICage   = graybat::Cage<BMPI, GP, Serialization >;
 using ZMQConfig  = ZMQ::Config;
 using BMPIConfig = BMPI::Config;
 

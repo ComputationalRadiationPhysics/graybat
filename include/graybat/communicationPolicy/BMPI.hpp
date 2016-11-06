@@ -146,7 +146,7 @@ namespace graybat {
 	    template <typename T_Send>
 	    void send(const VAddr destVAddr, const Tag tag, const Context context, const T_Send& sendData){
 	    	Uri destUri = getVAddrUri(context, destVAddr);
-		context.comm.send(destUri, tag, sendData.data(), sendData.size());
+            context.comm.send(destUri, tag, sendData.data(), sendData.size());
 	    }
 
             
@@ -164,14 +164,15 @@ namespace graybat {
 	     *
 	     * @return Event
 	     */
-	    template <typename T_Send>
-	    Event asyncSend(const VAddr destVAddr, const Tag tag, const Context context, const T_Send& sendData){
-		Uri destUri = getVAddrUri(context, destVAddr);
-		mpi::request request = context.comm.isend(destUri, tag, sendData.data(), sendData.size());
-	    	return Event(request);
-
-	    }
-	    /**
+            template <typename T_Send>
+            Event asyncSend(const VAddr destVAddr, const Tag tag,
+                            const Context context, const T_Send &sendData) {
+              Uri destUri = getVAddrUri(context, destVAddr);
+              mpi::request request = context.comm.isend(
+                  destUri, tag, sendData.data(), sendData.size());
+              return Event(request);
+            }
+            /**
 	     * @brief Blocking receive of a message recvData from peer with virtual address srcVAddr.
 	     * 
 	     * @param[in]  srcVAddr   VAddr of peer that sended the message

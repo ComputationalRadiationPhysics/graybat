@@ -84,7 +84,6 @@ namespace graybat {
                 }
 
                 bool ready(){
-                    //std::cout << "ready? size: " << size << std::endl;
                     if(done == true){
                         return true;
                     }

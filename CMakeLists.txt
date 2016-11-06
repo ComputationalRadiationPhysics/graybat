@@ -69,17 +69,17 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wpedantic")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused-parameter")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wvla-extension")
-#  #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+  #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 endif()
 
 ###############################################################################
 # CCache
 ###############################################################################
-#find_program(CCACHE_FOUND ccache)
-#if(CCACHE_FOUND)
-#  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
-#  set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
-#endif(CCACHE_FOUND)
+find_program(CCACHE_FOUND ccache)
+if(CCACHE_FOUND)
+  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+  set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+endif(CCACHE_FOUND)
 
 ###############################################################################
 # Targets
@@ -96,10 +96,9 @@ add_executable(check EXCLUDE_FROM_ALL ${TESTS})
 target_link_libraries(check ${LIBS})
 
 # Fast testing
-file(GLOB TESTSFAST test/integration/UT.cpp test/integration/CommunicationPolicyUT.cpp)
+file(GLOB TESTSFAST test/integration/main.cpp test/integration/CommunicationPolicyTests.cpp)
 add_executable(checkFast EXCLUDE_FROM_ALL ${TESTSFAST})
 target_link_libraries(checkFast ${LIBS})
-
 
 # Examples
 add_custom_target(example)
@@ -107,8 +106,8 @@ file(GLOB EXAMPLES  example/*.cpp)
 foreach(EXAMPLE ${EXAMPLES})
 	get_filename_component(DEP ${EXAMPLE} NAME_WE)
 	add_executable(${DEP} EXCLUDE_FROM_ALL ${EXAMPLE})
-	target_link_libraries(${DEP} LINK_INTERFACE_LIBRARIES graybat)	
-	target_link_libraries(${DEP} ${LIBS})	
+	target_link_libraries(${DEP} LINK_INTERFACE_LIBRARIES graybat)
+	target_link_libraries(${DEP} ${LIBS})
 	add_dependencies(example ${DEP})
 endforeach(EXAMPLE)
 
@@ -120,10 +119,10 @@ target_link_libraries(gbZMQSignaling ${LIBS})
 enable_testing()
 add_test(graybat_check_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target check)
 add_test(graybat_example_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target example)
-add_test(graybat_test_run  mpiexec -n 2 check )
+add_test(graybat_test_run_2_peers  mpiexec -n 2 check )
 add_test(graybat_gol_run  mpiexec gol 90 4 )
 add_test(graybat_pr_run  mpiexec pagerank )
-set_tests_properties(graybat_test_run PROPERTIES DEPENDS graybat_check_build)
+set_tests_properties(graybat_test_run_2_peers PROPERTIES DEPENDS graybat_check_build)
 set_tests_properties(graybat_gol_run PROPERTIES DEPENDS graybat_example_build)
 set_tests_properties(graybat_pr_run PROPERTIES DEPENDS graybat_example_build)
 

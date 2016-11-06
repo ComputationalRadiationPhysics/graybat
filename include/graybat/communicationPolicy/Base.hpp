@@ -298,7 +298,7 @@ namespace graybat {
             std::array<unsigned, 1> nElements{{(unsigned)sendData.size()}};
             recvCount.resize(context.size());
             static_cast<CommunicationPolicy*>(this)->allGather(context, nElements, recvCount);
-            recvData.resize(std::accumulate(recvCount.begin(), recvCount.end(), 0U));            
+            recvData.resize(std::accumulate(recvCount.begin(), recvCount.end(), 0U));
             
             Event e = static_cast<CommunicationPolicy*>(this)->asyncSend(rootVAddr, 0, context, sendData);
             
@@ -307,9 +307,8 @@ namespace graybat {
                 for(auto const &vAddr : context){                    
                     std::vector<RecvValueType> tmpData(recvCount.at(vAddr));
                     static_cast<CommunicationPolicy*>(this)->recv(vAddr, 0, context, tmpData);
-                    std::copy(tmpData.begin(), tmpData.end(), recvData.begin() + recvOffset);
+                    std::memcpy(recvData.data() + recvOffset, tmpData.data(), tmpData.size() * sizeof(RecvValueType));
                     recvOffset += recvCount.at(vAddr);
-                        
                 }
 
             }
@@ -338,8 +337,7 @@ namespace graybat {
                 size_t recvOffset = vAddr * sendData.size(); 
                 std::vector<RecvValueType> tmpData(sendData.size());
                 static_cast<CommunicationPolicy*>(this)->recv(vAddr, 0, context, tmpData);
-                std::copy(tmpData.begin(), tmpData.end(), recvData.begin() + recvOffset);
-                        
+                std::memcpy(recvData.data() + recvOffset, tmpData.data(), tmpData.size() * sizeof(RecvValueType));
             }
 
             for(unsigned i = 0; i < events.size(); ++i){
@@ -371,7 +369,7 @@ namespace graybat {
             for(auto const &vAddr : context){                
                 std::vector<RecvValueType> tmpData(recvCount.at(vAddr));
                 static_cast<CommunicationPolicy*>(this)->recv(vAddr, 0, context, tmpData);
-                std::copy(tmpData.begin(), tmpData.end(), recvData.begin() + recvOffset);
+                std::memcpy(recvData.data() + recvOffset, tmpData.data(), tmpData.size() * sizeof(RecvValueType));
                 recvOffset += recvCount.at(vAddr);
                         
             }
@@ -434,8 +432,7 @@ namespace graybat {
                 size_t recvOffset = vAddr * nElementsPerPeer;
                 std::vector<SendValueType> tmpData(nElementsPerPeer);
                 static_cast<CommunicationPolicy*>(this)->recv(vAddr, 0, context, tmpData);
-                std::copy(tmpData.begin(), tmpData.end(), recvData.begin() + recvOffset);
-                
+                std::memcpy(recvData.data() + recvOffset, tmpData.data(), tmpData.size() * sizeof(SendValueType));
             }
 
             for(unsigned i = 0; i < events.size(); ++i){
@@ -461,7 +458,7 @@ namespace graybat {
                     static_cast<CommunicationPolicy*>(this)->recv(vAddr, 0, context, tmpData);
 
                     for(size_t i = 0; i < recvData.size(); ++i){
-                        recvData[i] = op(recvData[i], tmpData[i]);
+                        recvData.data()[i] = op(recvData.data()[i], tmpData[i]);
                     }
                     
                 }
@@ -490,7 +487,7 @@ namespace graybat {
                 static_cast<CommunicationPolicy*>(this)->recv(vAddr, 0, context, tmpData);
 
                 for(size_t i = 0; i < recvData.size(); ++i){
-                    recvData[i] = op(recvData[i], tmpData[i]);
+                    recvData.data()[i] = op(recvData.data()[i], tmpData[i]);
                 }
                     
             }

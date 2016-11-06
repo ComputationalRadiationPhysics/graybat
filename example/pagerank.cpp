@@ -34,6 +34,7 @@
 #include <graybat/Cage.hpp>
 #include <graybat/communicationPolicy/BMPI.hpp>
 #include <graybat/graphPolicy/BGL.hpp>
+#include <graybat/serializationPolicy/ByteCast.hpp>
 
 // GRAYBAT mappings
 #include <graybat/mapping/Consecutive.hpp>
@@ -57,9 +58,12 @@ int exp() {
     
     // GraphPolicy
     typedef graybat::graphPolicy::BGL<PageRank> GP;
-    
+
+    // SerializationPolicy
+    using SP = graybat::serializationPolicy::ByteCast;
+
     // Cage
-    typedef graybat::Cage<CP, GP> Cage;
+    typedef graybat::Cage<CP, GP, SP> Cage;
     typedef typename Cage::Event  Event;
     typedef typename Cage::Vertex Vertex;
     typedef typename Cage::Edge   Edge;    
