@@ -108,7 +108,7 @@ nn     *************************************************************************
     
     using namespace std::placeholders;
     
-    for(Vertex v : cage.hostedVertices){
+    for(Vertex v : cage.getHostedVertices()){
 	if(v == entry){
 	    v.spread(input, events);
 	    std::cout << "Input: " << input[0] << std::endl;	    	    

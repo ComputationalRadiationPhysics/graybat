@@ -98,7 +98,7 @@ BOOST_AUTO_TEST_CASE( send_recv ){
 		std::vector<unsigned> recv(nElements, 0);
     
     
-		for(Vertex v : grid.hostedVertices){
+		for(Vertex v : grid.getHostedVertices()){
 		    for(Edge edge : grid.getOutEdges(v)){
 			Event e = edge << send;
 			events.push_back(e);
@@ -106,7 +106,7 @@ BOOST_AUTO_TEST_CASE( send_recv ){
         
 		}
 
-		for(Vertex v : grid.hostedVertices){
+		for(Vertex v : grid.getHostedVertices()){
 		    for(Edge edge : grid.getInEdges(v)){
 			edge >> recv;
 			for(unsigned u : recv){

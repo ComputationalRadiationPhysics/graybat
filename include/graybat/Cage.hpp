@@ -115,17 +115,6 @@ namespace graybat {
         ~Cage() { /* std::cout << "Destruct Cage" << std::endl */ }
 
 
-        /***************************************************************************
-         *
-         * MEMBER
-         *
-         ***************************************************************************/
-        std::unique_ptr<CommunicationPolicy> comm;
-        //GraphPolicy graph;
-        //Context graphContext;
-        std::vector<Vertex> hostedVertices;
-
-
         /***********************************************************************//**
          *
          * @name Graph Operations
@@ -214,20 +203,39 @@ namespace graybat {
          *        vertices that are hosted by the peer with
          *        *vAddr*
          */
-        auto getHostedVertices(const VAddr &vAddr) -> std::vector<Vertex>;
+        auto getVerticesHostedBy(const VAddr &vAddr) -> std::vector<Vertex>;
+
+        /**
+         * @brief Return the vertices that are hosted by this cage.
+         *        The cage needs to announce vertices first, otherwise
+         *        there won't be hosted vertices.
+         *
+         * @return vertices hosted by this cage
+         */
+        auto getHostedVertices() -> std::vector<Vertex>&;
 
         /**
          * @brief Returns true if the *vertex* is hosted by the
          *        calling peer otherwise false.
          *
          */
-        auto peerHostsVertex(const Vertex &vertex) -> bool;
+        auto isHosting(const Vertex &vertex) -> bool;
 
         /**
          * @brief Returns a vector with as much elements as there are peers in the current context
          *
          */
         auto getPeers() -> std::vector<Peer>;
+
+        /**
+         * @brief Returns a shared pointer to the inner communication policy object,
+         *        which allows to use communication methods without the need to
+         *        announce hosted vertices. This can be useful for mappings that
+         *        need communication in advance.
+         *
+         * @return shared pointer to the communication policy object
+         */
+        auto getCommunicationPolicy() -> std::shared_ptr<CommunicationPolicy>;
 
         /** @} */
 
@@ -364,6 +372,8 @@ namespace graybat {
          * MEMBER
          *
          ***************************************************************************/
+        std::shared_ptr<CommunicationPolicy> comm;
+        std::vector<Vertex> hostedVertices;
         GraphPolicy graph;
         Context graphContext;
 
@@ -603,7 +613,7 @@ namespace graybat {
 
     template<typename T_CommunicationPolicy, typename T_GraphPolicy>
     auto Cage<T_CommunicationPolicy, T_GraphPolicy>::
-    getHostedVertices(const VAddr &vAddr)
+    getVerticesHostedBy(const VAddr &vAddr)
     -> std::vector<Vertex> {
         return peerMap[vAddr];
 
@@ -611,11 +621,19 @@ namespace graybat {
 
     template<typename T_CommunicationPolicy, typename T_GraphPolicy>
     auto Cage<T_CommunicationPolicy, T_GraphPolicy>::
-    peerHostsVertex(const Vertex &vertex)
+    getHostedVertices()
+    -> std::vector<Vertex>& {
+        return hostedVertices;
+
+    }
+
+    template<typename T_CommunicationPolicy, typename T_GraphPolicy>
+    auto Cage<T_CommunicationPolicy, T_GraphPolicy>::
+    isHosting(const Vertex &vertex)
     -> bool {
         VAddr vaddr = graphContext.getVAddr();
 
-        for (Vertex &v : getHostedVertices(vaddr)) {
+        for (Vertex &v : getVerticesHostedBy(vaddr)) {
             if (vertex.id == v.id)
                 return true;
         }
@@ -630,6 +648,13 @@ namespace graybat {
     -> std::vector<Peer> {
         unsigned nPeers = comm->getGlobalContext().size();
         return std::vector<Peer>(nPeers);
+    }
+
+    template<typename T_CommunicationPolicy, typename T_GraphPolicy>
+    auto Cage<T_CommunicationPolicy, T_GraphPolicy>::
+    getCommunicationPolicy()
+    -> std::shared_ptr<CommunicationPolicy> {
+        return comm;
     }
 
     //!
@@ -707,7 +732,7 @@ namespace graybat {
         VAddr rootVAddr = locateVertex(rootVertex);
         VAddr srcVAddr = locateVertex(srcVertex);
         Context context = graphContext;
-        std::vector<Vertex> vertices = getHostedVertices(srcVAddr);
+        std::vector<Vertex> vertices = getVerticesHostedBy(srcVAddr);
 
         vertexCount++;
 
@@ -754,7 +779,7 @@ namespace graybat {
 
         VAddr srcVAddr = locateVertex(srcVertex);
         Context context = graphContext;
-        std::vector<Vertex> vertices = getHostedVertices(srcVAddr);
+        std::vector<Vertex> vertices = getVerticesHostedBy(srcVAddr);
 
         recvDatas.push_back(&recvData);
 
@@ -948,7 +973,7 @@ namespace graybat {
         utils::exclusivePrefixSum(recvCount.begin(), recvCount.end(), prefixsum.begin());
 
         for (auto const &vAddr : graphContext) {
-            const std::vector<Vertex> hostedVertices = getHostedVertices(vAddr);
+            const std::vector<Vertex> hostedVertices = getVerticesHostedBy(vAddr);
             const unsigned nElementsPerVertex = recvCount.at(vAddr) / static_cast<unsigned>(hostedVertices.size());
 
             for (unsigned hostVertex_i = 0; hostVertex_i < hostedVertices.size(); hostVertex_i++) {
