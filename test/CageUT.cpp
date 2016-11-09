@@ -30,6 +30,7 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/hana/tuple.hpp>
 #include <boost/hana/append.hpp>
+#include <boost/hana/for_each.hpp>
 
 // ELEGANT-PROGRESSBARS
 #include <elegant-progressbars/policyProgressbar.hpp>
@@ -48,7 +49,7 @@
 #include <graybat/pattern/Grid.hpp>
 
 
-
+namespace hana = boost::hana;
 
 
 /*******************************************************************************
