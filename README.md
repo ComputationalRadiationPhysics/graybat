@@ -122,6 +122,34 @@ Finally, the application can use graybat e.g. `#include <graybat/Cage.hpp>`.
  * Create Makefile `cmake ..`
  * Build project : `make [target]`
 
+##Benchmarks##
+There exist benchmarks for graybat:
+```
+make benchmark
+./gbZMQSignaling&
+./benchmark
+
+Run on (4 X 2493.8 MHz CPU s)
+2016-11-14 19:35:09
+Benchmark                                       Time           CPU Iterations
+-----------------------------------------------------------------------------
+meassureSingleMessageSendBmpi/1             25316 ns      25311 ns      27279
+meassureSingleMessageSendBmpi/10            25822 ns      25823 ns      27864
+meassureSingleMessageSendBmpi/100           30467 ns      30230 ns      24802
+meassureSingleMessageSendBmpi/1000          50411 ns      50008 ns      14374
+meassureSingleMessageSendBmpi/9.76562k     247629 ns     247566 ns       2933
+meassureSingleMessageSendBmpi/97.6562k    2113853 ns    2113794 ns        329
+meassureSingleMessageSendBmpi/976.562k   23066718 ns   22867737 ns         31
+meassureSingleMessageSendZmq/1             348564 ns     176029 ns       3992
+meassureSingleMessageSendZmq/10            549071 ns     184522 ns       3930
+meassureSingleMessageSendZmq/100           363852 ns     188720 ns       3640
+meassureSingleMessageSendZmq/1000          418714 ns     209411 ns       3220
+meassureSingleMessageSendZmq/9.76562k      606935 ns     394426 ns       1776
+meassureSingleMessageSendZmq/97.6562k     2511339 ns    2256736 ns        307
+meassureSingleMessageSendZmq/976.562k    23033162 ns   22561309 ns         31
+
+```
+
 
 ##Predefined Targets##
 
@@ -129,7 +157,9 @@ Finally, the application can use graybat e.g. `#include <graybat/Cage.hpp>`.
 
  * **test** : Build, unit and integration test.
 
- * **zmq_signaling** : Signaling server for zeroMQ communication policy.
+ * **benchmark** : Benchmarks
+
+ * **gbZMQSignaling** : Signaling server for zeroMQ communication policy.
 
  * **doc**: Build documentation in `doc/`.
 

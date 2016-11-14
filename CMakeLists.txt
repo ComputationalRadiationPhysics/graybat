@@ -25,11 +25,24 @@ cmake_minimum_required(VERSION 3.3.0)
 project("graybat examples and tests")
 
 ###############################################################################
+# MODULES
+###############################################################################
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_LIST_DIR}/utils/cmake/modules/")
+
+###############################################################################
+# Google Benchmark
+###############################################################################
+find_package(benchmark)
+if(${benchmark_FOUND})
+  include_directories(${benchmark_INCLUDE_DIRS})
+  set(LIBS ${LIBS} ${benchmark_LIBRARIES})
+endif(${benchmark_FOUND})
+
+###############################################################################
 # Boost
 ###############################################################################
 find_package(Boost 1.58.0 COMPONENTS unit_test_framework program_options REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/include/graybat/utils/hana/include/")
 set(LIBS ${LIBS} ${Boost_LIBRARIES})
 
 ###############################################################################
@@ -72,13 +85,18 @@ endif()
 # Targets
 ###############################################################################
 
+# Benchmark
+file(GLOB BENCHMARKS test/benchmark/*.cpp)
+add_executable(benchmark EXCLUDE_FROM_ALL ${BENCHMARKS})
+target_link_libraries(benchmark ${LIBS})
+
 # Test cases
-file(GLOB TESTS test/*.cpp)
+file(GLOB TESTS test/integration/*.cpp)
 add_executable(check EXCLUDE_FROM_ALL ${TESTS})
 target_link_libraries(check ${LIBS})
 
 # Fast testing
-file(GLOB TESTSFAST test/UT.cpp test/CommunicationPolicyUT.cpp)
+file(GLOB TESTSFAST test/integration/UT.cpp test/integration/CommunicationPolicyUT.cpp)
 add_executable(checkFast EXCLUDE_FROM_ALL ${TESTSFAST})
 target_link_libraries(checkFast ${LIBS})
 
