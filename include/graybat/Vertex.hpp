@@ -22,6 +22,7 @@
 
 #include <numeric> // std::accumulate
 #include <iostream> // std::cout
+#include <vector>
 
 namespace graybat {
 
