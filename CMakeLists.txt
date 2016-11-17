@@ -41,9 +41,16 @@ endif(${benchmark_FOUND})
 ###############################################################################
 # Boost
 ###############################################################################
-find_package(Boost 1.58.0 COMPONENTS unit_test_framework program_options REQUIRED)
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-set(LIBS ${LIBS} ${Boost_LIBRARIES})
+#find_package(Boost 1.58.0 COMPONENTS unit_test_framework program_options REQUIRED)
+#include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+#include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/include/graybat/utils/hana/include/")
+#set(LIBS ${LIBS} ${Boost_LIBRARIES})
+
+###############################################################################
+# Elegant Progressbars for a More Cililized Age
+###############################################################################
+#set(elegant-progressbars_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/elegant-progressbars/cmake")
+#find_package(elegant-progressbars 1.0.0 REQUIRED CONFIG)
 
 ###############################################################################
 # Graybat

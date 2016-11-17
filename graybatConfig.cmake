@@ -76,10 +76,7 @@ find_package(ZMQ MODULE 4.0.0 REQUIRED)
 set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${ZMQ_INCLUDE_DIRS})
 set(graybat_LIBRARIES ${graybat_LIBRARIES} ${ZMQ_LIBRARIES})
 
-message("${ZMQ_INCLUDE_DIRS}")
-message("${ZMQ_LIBRARIES}")
 
-  
 ###############################################################################
 # Boost LIB
 ###############################################################################

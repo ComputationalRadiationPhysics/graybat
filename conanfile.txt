@@ -2,7 +2,7 @@
 zmqcpp/4.1.1@memsharded/stable
 ZMQ/4.1.1@memsharded/stable
 Metis/5.1.0.p1@erikzenker/testing
-#Boost/1.62.0.beta.1@erikzenker/testing
+Boost/1.62.0.beta.1@erikzenker/testing
 
 [generators]
 cmake
