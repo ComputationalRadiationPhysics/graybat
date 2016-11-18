@@ -137,15 +137,17 @@ script:
   - if [ "$RESOLVE_DEPS_BY" == "manual" ]; then
       echo "Build with manually installed dependencies.";
     elif [ "$RESOLVE_DEPS_BY" == "conan" ]; then
+      echo "Build with conan installed dependencies.";
       cd $HOME/build;
       conan install $GRAYBAT_ROOT --build=missing -s compiler=gcc -s compiler.version=6.2 -s compiler.libcxx=libstdc++;
-      cmake $CMAKE_FLAGS -DCONAN_DISABLE_CHECK_COMPILER=TRUE $GRAYBAT_ROOT;
-      make check;
-      make gbZMQSignaling;
-     ./gbZMQSignaling&;
-     ctest --output-on-failure;
-     killall gbZMQSignaling;
     fi
+  - cmake $CMAKE_FLAGS -DCONAN_DISABLE_CHECK_COMPILER=TRUE $GRAYBAT_ROOT
+  - make check
+  - make gbZMQSignaling
+  - ./bin/gbZMQSignaling&
+  - ctest --output-on-failure
+  - killall gbZMQSignaling
+
 #- if ["$RESOLVE_DEPS_BY" = "manual"]; then
 #    cd $HOME/build;
 #    cmake $CMAKE_FLAGS $GRAYBAT_ROOT;

@@ -9,3 +9,4 @@ cmake
 
 [options]
 ZMQ:shared=True
+Boost:shared=True

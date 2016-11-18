@@ -18,6 +18,12 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+// BOOST
+#define BOOST_TEST_DYN_LINK
+#include <boost/test/unit_test.hpp>
+#include <boost/hana/tuple.hpp>
+#include <boost/hana/append.hpp>
+
 // STL
 #include <array>
 #include <vector>
@@ -25,11 +31,6 @@
 #include <functional> /* std::plus, std::ref */
 #include <cstdlib>    /* std::getenv */
 #include <string>     /* std::string, std::stoi */
-
-// BOOST
-#include <boost/test/unit_test.hpp>
-#include <boost/hana/tuple.hpp>
-#include <boost/hana/append.hpp>
 
 // GRAYBAT
 #include <graybat/Cage.hpp>

@@ -39,12 +39,23 @@ if(${benchmark_FOUND})
 endif(${benchmark_FOUND})
 
 ###############################################################################
+# Conan
+# - Resolves dependencies of ZMQ
+###############################################################################
+
+if(EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
+  include("${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
+  conan_basic_setup()
+  message("${CMAKE_INCLUDE_PATH}")
+  message("${CMAKE_LIBRARY_PATH}")
+endif()
+
+###############################################################################
 # Boost
 ###############################################################################
-#find_package(Boost 1.58.0 COMPONENTS unit_test_framework program_options REQUIRED)
-#include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-#include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/include/graybat/utils/hana/include/")
-#set(LIBS ${LIBS} ${Boost_LIBRARIES})
+find_package(Boost 1.56.0 COMPONENTS unit_test_framework program_options REQUIRED)
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+set(LIBS ${LIBS} ${Boost_LIBRARIES})
 
 ###############################################################################
 # Elegant Progressbars for a More Cililized Age
@@ -67,6 +78,7 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wpedantic")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused-parameter")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_GLIBCXX_USE_CXX11_ABI=0")
   #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 endif()
 
@@ -91,6 +103,7 @@ endif()
 ###############################################################################
 # Targets
 ###############################################################################
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Benchmark
 file(GLOB BENCHMARKS test/benchmark/*.cpp)
@@ -127,9 +140,9 @@ target_link_libraries(gbZMQSignaling ${LIBS})
 enable_testing()
 add_test(graybat_check_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target check)
 add_test(graybat_example_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target example)
-add_test(graybat_test_run  mpiexec -n 2 check )
-add_test(graybat_gol_run  mpiexec gol 90 4 )
-add_test(graybat_pr_run  mpiexec pagerank )
+add_test(graybat_test_run  mpiexec -n 2 bin/check )
+add_test(graybat_gol_run  mpiexec bin/gol 90 4 )
+add_test(graybat_pr_run  mpiexec bin/pagerank )
 set_tests_properties(graybat_test_run PROPERTIES DEPENDS graybat_check_build)
 set_tests_properties(graybat_gol_run PROPERTIES DEPENDS graybat_example_build)
 set_tests_properties(graybat_pr_run PROPERTIES DEPENDS graybat_example_build)
