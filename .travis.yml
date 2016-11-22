@@ -30,14 +30,14 @@ env:
     - BOOST_MIN: 106100 # careful: hard coded below
     - GRAYBAT_ROOT: $TRAVIS_BUILD_DIR
     - OMP_NUM_THREADS: 4 # ignored in thread layer
+    - COMPILER: gcc
   matrix:
-    - COMPILER=gcc  STRATEGY=""
-    #- COMPILER=clang STRATEGY=""
+    - RESOLVE_DEPS_BY: manual
+    - RESOLVE_DEPS_BY: conan
 
 before_install:
   - mkdir -p $HOME/build
 
-  #- export CMAKE_FLAGS="-DALPAKA_ACC_"$STRATEGY"_ENABLE=ON"
   - export CMAKE_FLAGS="-DCMAKE_CXX_FLAGS=\"-Werror\""
   - if [ "$COMPILER" == "gcc" ]; then
         echo "Using g++-6";
@@ -67,17 +67,16 @@ install:
       mv -f cmake-3.3.2-Linux-x86_64/* . &&
       rm -rf cmake-3.3.2-Linux-x86_64.tar.gz cmake-3.3.2-Linux-x86_64 &&
       cd -;
-    fi
-  - cmake --version
+   fi
+  - cmake --version;
   #############################################################################
   # BOOST                                                                     #
   #############################################################################
-  - export CMAKE_PREFIX_PATH=$BOOST_ROOT:$CMAKE_PREFIX_PATH
-  # cmake --find-package -DNAME=Boost -DCOMPILER_ID=GNU -DLANGUAGE=CXX -DMODE=EXIST
+  - export CMAKE_PREFIX_PATH=$BOOST_ROOT:$CMAKE_PREFIX_PATH;
   - echo -e "#include <boost/version.hpp>\n#include <iostream>\nint main() { std::cout << BOOST_VERSION << std::endl; return 0; }"
-        | $CXX -I$BOOST_ROOT/include -x c++ - >/dev/null || { echo 0; }
+    | $CXX -I$BOOST_ROOT/include -x c++ - >/dev/null || { echo 0; }
   - ls $BOOST_ROOT
-  - BOOST_FOUND=$([ $(./a.out) -ge $BOOST_MIN ] && { echo 0; } || { echo 1; })
+  - BOOST_FOUND=$([ $(./a.out) -ge $BOOST_MIN ] && { echo 0; } || { echo 1; });
   - if [ $BOOST_FOUND -ne 0 ]; then
       mkdir -p $BOOST_ROOT &&
       cd $BOOST_ROOT &&
@@ -91,34 +90,72 @@ install:
       ./b2 install &&
       rm -rf boost.tar.bz2 boost_1_61_0 &&
       cd $HOME;
+    fi;
+
+
+    #############################################################################
+    # Resolve missing dependencies
+    #############################################################################
+  - if [ "$RESOLVE_DEPS_BY" == "manual" ]; then
+      echo "Resolve library dependencies manually.";
+    elif [ "$RESOLVE_DEPS_BY" == "conan" ]; then
+      pip install --upgrade pip --user;
+      pip install conan --user;
     fi
+
+
   #############################################################################
   # ZMQ                                                                       #
   #############################################################################
-  - export CMAKE_PREFIX_PATH=$ZMQ_ROOT:$CMAKE_PREFIX_PATH
-  - echo $CMAKE_PREFIX_PATH
-  - ls $ZMQ_ROOT
-  - if [ ! "$(ls -A $ZMQ_ROOT)" ]; then
-      cd /tmp/ &&
-      travis_retry git clone https://github.com/zeromq/libzmq.git&&
-      travis_retry git clone https://github.com/zeromq/cppzmq.git;
-      cd /tmp/libzmq/ &&
-      ./autogen.sh &&
-      mkdir -p $ZMQ_ROOT &&
-      ./configure --prefix=$ZMQ_ROOT &&
-      make &&
-      make install &&
-      cp /tmp/cppzmq/zmq.hpp $ZMQ_ROOT/include/ &&
-      cp /tmp/cppzmq/zmq_addon.hpp $ZMQ_ROOT/include/;
-    else
-      echo "ZeroMQ directory already exists";
-    fi
+#  export CMAKE_PREFIX_PATH=$ZMQ_ROOT:$CMAKE_PREFIX_PATH;
+#  echo $CMAKE_PREFIX_PATH;
+#  ls $ZMQ_ROOT;
+#  if [ ! "$(ls -A $ZMQ_ROOT)" ]; then
+#      cd /tmp/ &&
+#      travis_retry git clone https://github.com/zeromq/libzmq.git&&
+#      travis_retry git clone https://github.com/zeromq/cppzmq.git;
+#      cd /tmp/libzmq/ &&
+#      ./autogen.sh &&
+#      mkdir -p $ZMQ_ROOT &&
+#      ./configure --prefix=$ZMQ_ROOT &&
+#      make &&
+#      make install &&
+#      cp /tmp/cppzmq/zmq.hpp $ZMQ_ROOT/include/ &&
+#      cp /tmp/cppzmq/zmq_addon.hpp $ZMQ_ROOT/include/;
+#    else
+#      echo "ZeroMQ directory already exists";
+#    fi;
+#
+  #elif [ "$RESOLVE_DEPS_BY" = "conan" ]; then
+ # else
+#    echo "Resolve library dependencies using conan.";
+
+#  fi
+# TODO Metis
 
 script:
-  - cd $HOME/build
-  - cmake $CMAKE_FLAGS $GRAYBAT_ROOT
+  - if [ "$RESOLVE_DEPS_BY" == "manual" ]; then
+      echo "Build with manually installed dependencies.";
+    elif [ "$RESOLVE_DEPS_BY" == "conan" ]; then
+      echo "Build with conan installed dependencies.";
+      cd $HOME/build;
+      conan install $GRAYBAT_ROOT --build=missing -s compiler=gcc -s compiler.version=6.2 -s compiler.libcxx=libstdc++;
+    fi
+  - cmake $CMAKE_FLAGS -DCONAN_DISABLE_CHECK_COMPILER=TRUE $GRAYBAT_ROOT
   - make check
   - make gbZMQSignaling
-  - ./gbZMQSignaling&
+  - ./bin/gbZMQSignaling&
   - ctest --output-on-failure
   - killall gbZMQSignaling
+
+#- if ["$RESOLVE_DEPS_BY" = "manual"]; then
+#    cd $HOME/build;
+#    cmake $CMAKE_FLAGS $GRAYBAT_ROOT;
+#    make check
+#  elif ["$RESOLVE_DEPS_BY" = "conan"]; then
+#    cd $HOME/build;
+#    conan install $GRAYBAT_ROOT --build=missing;
+#    cmake $CMAKE_FLAGS $GRAYBAT_ROOT;
+#    make check
+#  fi
+
