@@ -21,15 +21,14 @@
 ###############################################################################
 # Graybat examples and tests
 ###############################################################################
-cmake_minimum_required(VERSION 3.3.0)
+cmake_minimum_required(VERSION 3.3.0 FATAL_ERROR)
 project("graybat examples and tests")
 
 ###############################################################################
 # Boost
 ###############################################################################
-find_package(Boost 1.58.0 COMPONENTS unit_test_framework program_options REQUIRED)
+find_package(Boost 1.61.0 COMPONENTS unit_test_framework program_options REQUIRED)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-include_directories(SYSTEM "${CMAKE_CURRENT_SOURCE_DIR}/include/graybat/utils/hana/include/")
 set(LIBS ${LIBS} ${Boost_LIBRARIES})
 
 ###############################################################################
@@ -43,11 +42,10 @@ set(LIBS ${LIBS} ${graybat_LIBRARIES})
 # Compiler Flags
 ###############################################################################
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-  set  (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wpedantic")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused-parameter")
-  #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 endif()
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
@@ -56,7 +54,6 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wpedantic")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused-parameter")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wvla-extension")
-#  #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 endif()
 
 ###############################################################################
@@ -80,6 +77,7 @@ target_link_libraries(check ${LIBS})
 # Fast testing
 file(GLOB TESTSFAST test/UT.cpp test/CommunicationPolicyUT.cpp)
 add_executable(checkFast EXCLUDE_FROM_ALL ${TESTSFAST})
+set_property(TARGET checkFast PROPERTY CXX_STANDARD 14)
 target_link_libraries(checkFast ${LIBS})
 
 
@@ -89,13 +87,15 @@ file(GLOB EXAMPLES  example/*.cpp)
 foreach(EXAMPLE ${EXAMPLES})
 	get_filename_component(DEP ${EXAMPLE} NAME_WE)
 	add_executable(${DEP} EXCLUDE_FROM_ALL ${EXAMPLE})
-	target_link_libraries(${DEP} LINK_INTERFACE_LIBRARIES graybat)	
+    set_property(TARGET ${DEP} PROPERTY CXX_STANDARD 14)
+	target_link_libraries(${DEP} LINK_INTERFACE_LIBRARIES graybat)
 	target_link_libraries(${DEP} ${LIBS})	
 	add_dependencies(example ${DEP})
 endforeach(EXAMPLE)
 
 # ZMQ signaling server
 add_executable(gbZMQSignaling EXCLUDE_FROM_ALL utils/zmq_signaling_server.cpp )
+set_property(TARGET gbZMQSignaling PROPERTY CXX_STANDARD 11)
 target_link_libraries(gbZMQSignaling ${LIBS})
 
 # CTest
