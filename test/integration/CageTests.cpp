@@ -25,6 +25,7 @@
 #include <functional> /* std::plus, std::ref */
 #include <cstdlib>    /* std::getenv */
 #include <string>     /* std::string, std::stoi */
+#include <list>       /* std::list */
 
 // BOOST
 #include <boost/test/unit_test.hpp>
@@ -36,6 +37,8 @@
 #include <graybat/communicationPolicy/BMPI.hpp>
 #include <graybat/communicationPolicy/ZMQ.hpp>
 #include <graybat/graphPolicy/BGL.hpp>
+#include <graybat/serializationPolicy/ByteCast.hpp>
+#include <graybat/serializationPolicy/Forward.hpp>
 #include <graybat/mapping/Random.hpp>
 #include <graybat/mapping/Consecutive.hpp>
 #include <graybat/mapping/Roundrobin.hpp>
@@ -218,13 +221,13 @@ BOOST_AUTO_TEST_CASE(asyncSend_asyncRecv) {
           graybat::pattern::FullyConnected<GP>(cage.getPeers().size()));
       cage.distribute(graybat::mapping::Consecutive());
 
-      const unsigned nElements = 1000;
+      const unsigned nElements = 10;
 
       for (unsigned run_i = 0; run_i < nRuns; ++run_i) {
         std::vector<Event> sendEvents;
         std::vector<Event> recvEvents;
         std::vector<unsigned> send(nElements, 0);
-        std::vector<std::vector<unsigned>> recv(0);
+        std::list<std::vector<unsigned>> recv(0);
 
         for (unsigned i = 0; i < send.size(); ++i) {
           send.at(i) = i;
@@ -256,7 +259,7 @@ BOOST_AUTO_TEST_CASE(asyncSend_asyncRecv) {
           if (recvEvents.empty())
             break;
           for (auto it = recvEvents.begin(); it != recvEvents.end();) {
-            if ((*it).ready()) {
+            if (it->ready()) {
               it = recvEvents.erase(it);
             } else {
               it++;
@@ -277,11 +280,10 @@ BOOST_AUTO_TEST_CASE(asyncSend_asyncRecv) {
         }
       }
     }
-
   });
 }
 
-BOOST_AUTO_TEST_CASE(reduce) {
+    BOOST_AUTO_TEST_CASE(reduce) {
   hana::for_each(cages, [](auto cageRef) {
     // Test setup
     using Cage = typename decltype(cageRef)::type;
