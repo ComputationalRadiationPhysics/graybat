@@ -1,4 +1,3 @@
----
 BasedOnStyle: WebKit
 Language: Cpp
 NamespaceIndentation: None
@@ -11,4 +10,3 @@ AllowShortFunctionsOnASingleLine: false
 BinPackArguments: false
 BinPackParameters: false
 AlignAfterOpenBracket: AlwaysBreak
----

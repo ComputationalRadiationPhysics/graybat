@@ -36,6 +36,9 @@ namespace graybat {
             struct EventType;
 
             template <typename T_CommunicationPolicy>
+            struct StatusType;
+
+            template <typename T_CommunicationPolicy>
             struct ConfigType;
             
         } // namespace traits
@@ -70,9 +73,12 @@ namespace graybat {
         template <typename T_CommunicationPolicy>
         using ContextID = typename traits::ContextIDType<T_CommunicationPolicy>::type;
 
-
         template <typename T_CommunicationPolicy>
         using Event = typename traits::EventType<T_CommunicationPolicy>::type;
+
+        template <typename T_CommunicationPolicy>
+        using Status = typename traits::StatusType<T_CommunicationPolicy>::type;
+
 
         template <typename T_CommunicationPolicy>
         using Config = typename traits::ConfigType<T_CommunicationPolicy>::type;
