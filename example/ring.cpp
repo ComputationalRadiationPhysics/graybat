@@ -99,7 +99,7 @@ int exp() {
 
     const Vertex stimula = cage.getVertex(0);
 
-    for(Vertex v : cage.hostedVertices){
+    for(Vertex v : cage.getHostedVertices()){
 
     	// Entry Vertex
     	if(v == stimula){

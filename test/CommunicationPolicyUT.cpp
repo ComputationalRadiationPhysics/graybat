@@ -25,10 +25,6 @@
 // STL
 #include <iostream>   /* std::cout, std::endl */
 
-// ELEGANT-PROGRESSBARS
-#include <elegant-progressbars/policyProgressbar.hpp>
-#include <elegant-progressbars/all_policies.hpp>
-
 // GRAYBAT
 #include <graybat/Cage.hpp>
 #include <graybat/communicationPolicy/ZMQ.hpp>
@@ -43,7 +39,7 @@
  ******************************************************************************/
 namespace hana = boost::hana;
 
-size_t const nRuns = 1000;
+size_t const nRuns = 1;
 
 using ZMQ        = graybat::communicationPolicy::ZMQ;
 using BMPI       = graybat::communicationPolicy::BMPI;
@@ -62,37 +58,6 @@ BMPI bmpiCP(bmpiConfig);
 
 auto communicationPolicies = hana::make_tuple(std::ref(zmqCP),
                                               std::ref(bmpiCP) );
-
-
-/*******************************************************************************
- * Progress
- ******************************************************************************/
-using namespace ElegantProgressbars;
-struct Progress {
-
-    template<typename T_CP>
-    Progress(T_CP& cp) :
-	isMaster(false){
-	
-	isMaster = cp.getGlobalContext().getVAddr() == 0 ? true : false;
-	
-    }
-
-    ~Progress(){
-	
-    }
-
-    void print(unsigned const total, unsigned const current){
-	if(isMaster){
-	    std::cerr << policyProgressbar<Label, Spinner<>, Percentage>(total, current);
-	    
-	}
-	
-    }
-
-    bool isMaster;
-
-};
 
 
 /*******************************************************************************
@@ -118,20 +83,16 @@ BOOST_AUTO_TEST_CASE( context ){
 	    using CP      = typename decltype(cpRef)::type;
 	    using Context = typename CP::Context;	    
 	    CP& cp = cpRef.get();
-	    Progress progress(cp);
 
-	    // Test run
-	    {	
-		Context oldContext = cp.getGlobalContext();
-		for(unsigned i = 0; i < nRuns; ++i){
-                    //std::cout << "Run: " << i << std::endl;
-                    Context newContext = cp.splitContext( true, oldContext);
-                    oldContext = newContext;
-		    progress.print( nRuns, i);
-	
-		}
-		
-	    }
+            // Test run
+            {
+              Context oldContext = cp.getGlobalContext();
+              for (unsigned i = 0; i < nRuns; ++i) {
+                // std::cout << "Run: " << i << std::endl;
+                Context newContext = cp.splitContext(true, oldContext);
+                oldContext = newContext;
+              }
+            }
 
 	});
     
@@ -143,47 +104,39 @@ BOOST_AUTO_TEST_CASE( async_send_recv){
 	    // Test setup
 	    using CP      = typename decltype(cpRef)::type;
 	    using Context = typename CP::Context;
-	    using Event   = typename CP::Event;	    	    
-	    CP& cp = cpRef.get();            
-	    Progress progress(cp);
+            using Event = typename CP::Event;
+            CP &cp = cpRef.get();
 
-	    // Test run
-	    {
-    
-		const unsigned nElements = 10;
-		const unsigned tag = 99;
+            // Test run
+            {
 
-		Context context = cp.getGlobalContext();
-    
-		for(unsigned i = 0; i < nRuns; ++i){
-		    std::vector<unsigned> recv (nElements, 0);
-		    std::vector<Event> events;
+              const unsigned nElements = 10;
+              const unsigned tag = 99;
 
-		    for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
-			std::vector<unsigned> data (nElements, 0);
-			std::iota(data.begin(), data.end(), context.getVAddr());
-			events.push_back(cp.asyncSend(vAddr, tag, context, data));
-        
-		    }
+              Context context = cp.getGlobalContext();
 
-		    for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
-			cp.recv(vAddr, tag, context, recv);
+              for (unsigned i = 0; i < nRuns; ++i) {
+                std::vector<unsigned> recv(nElements, 0);
+                std::vector<Event> events;
 
-			for(unsigned i = 0; i < recv.size(); ++i){
-			    BOOST_CHECK_EQUAL(recv[i], vAddr+i);
-            
-			}
+                for (unsigned vAddr = 0; vAddr < context.size(); ++vAddr) {
+                  std::vector<unsigned> data(nElements, 0);
+                  std::iota(data.begin(), data.end(), context.getVAddr());
+                  events.push_back(cp.asyncSend(vAddr, tag, context, data));
+                }
 
-		    }
+                for (unsigned vAddr = 0; vAddr < context.size(); ++vAddr) {
+                  cp.recv(vAddr, tag, context, recv);
 
-		    for(Event &e : events){
-			e.wait();
-	    
-		    }
+                  for (unsigned i = 0; i < recv.size(); ++i) {
+                    BOOST_CHECK_EQUAL(recv[i], vAddr + i);
+                  }
+                }
 
-		    progress.print( nRuns, i);
-
-        }
+                for (Event &e : events) {
+                  e.wait();
+                }
+              }
 
         }
 
@@ -198,7 +151,6 @@ BOOST_AUTO_TEST_CASE( async_send_recv){
             using Context = typename CP::Context;
             using Event   = typename CP::Event;
             CP& cp = cpRef.get();
-            Progress progress(cp);
 
             // Test run
             {
@@ -229,9 +181,6 @@ BOOST_AUTO_TEST_CASE( async_send_recv){
                     for(Event &e : events){
                         e.wait();
                     }
-
-                    progress.print( nRuns, i);
-
                 }
 
             }
@@ -248,51 +197,41 @@ BOOST_AUTO_TEST_CASE( async_send_recv){
 	    // Test setup
 	    using CP      = typename decltype(cpRef)::type;
 	    using Context = typename CP::Context;
-	    using Event   = typename CP::Event;	    	    
-	    CP& cp = cpRef.get();            
-	    Progress progress(cp);
+            using Event = typename CP::Event;
+            CP &cp = cpRef.get();
 
-	    // Test run
-	    {
-    
-		Context context = cp.getGlobalContext();
+            // Test run
+            {
 
-		const unsigned nElements = 10;
-    
-		for(unsigned i = 0; i < nRuns; ++i){
-		    std::vector<unsigned> recv (nElements, 0);
-		    std::vector<Event> events;
+              Context context = cp.getGlobalContext();
 
-		    for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
-			std::vector<unsigned> data (nElements, 0);
-			std::iota(data.begin(), data.end(), context.getVAddr());
-			events.push_back(cp.asyncSend(vAddr, 99, context, data));
-        
-		    }
+              const unsigned nElements = 10;
 
-		    for(unsigned i = 0; i < context.size(); ++i){
-			Event e = cp.recv(context, recv);
+              for (unsigned i = 0; i < nRuns; ++i) {
+                std::vector<unsigned> recv(nElements, 0);
+                std::vector<Event> events;
 
-			unsigned vAddr = e.source();
+                for (unsigned vAddr = 0; vAddr < context.size(); ++vAddr) {
+                  std::vector<unsigned> data(nElements, 0);
+                  std::iota(data.begin(), data.end(), context.getVAddr());
+                  events.push_back(cp.asyncSend(vAddr, 99, context, data));
+                }
 
-			for(unsigned i = 0; i < recv.size(); ++i){
-			    BOOST_CHECK_EQUAL(recv[i], vAddr+i);
-            
-			}
+                for (unsigned i = 0; i < context.size(); ++i) {
+                  Event e = cp.recv(context, recv);
 
-		    }
+                  unsigned vAddr = e.source();
 
+                  for (unsigned i = 0; i < recv.size(); ++i) {
+                    BOOST_CHECK_EQUAL(recv[i], vAddr + i);
+                  }
+                }
 
-		    for(Event &e : events){
-			e.wait();
-	    
-		    }
-
-		    progress.print(nRuns, i);	
-
-		}
-		
-	    }
+                for (Event &e : events) {
+                  e.wait();
+                }
+              }
+            }
 	    
 	});
 
@@ -305,69 +244,57 @@ BOOST_AUTO_TEST_CASE( send_recv_order ){
 	    using CP      = typename decltype(cpRef)::type;
 	    using Context = typename CP::Context;
 	    using Event   = typename CP::Event;
-	    CP& cp = cpRef.get();            
-            
-	    Progress progress(cp);
+            CP &cp = cpRef.get();
 
-	    // Test run
-	    {
-    
-		Context context = cp.getGlobalContext();
+            // Test run
+            {
 
-		const unsigned nElements = 10;
-		const unsigned tag = 99;    
+              Context context = cp.getGlobalContext();
 
-		for(unsigned run_i = 0; run_i < nRuns; ++run_i){
-    
-		    std::vector<Event> events;
+              const unsigned nElements = 10;
+              const unsigned tag = 99;
 
-		    std::vector<unsigned> recv1 (nElements, 0);
-		    std::vector<unsigned> recv2 (nElements, 0);
-		    std::vector<unsigned> recv3 (nElements, 0);
+              for (unsigned run_i = 0; run_i < nRuns; ++run_i) {
 
-		    std::vector<unsigned> data1 (nElements, context.getVAddr());
-		    std::vector<unsigned> data2 (nElements, context.getVAddr() + 1);
-		    std::vector<unsigned> data3 (nElements, context.getVAddr() + 2);
+                std::vector<Event> events;
 
-		    for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
-			events.push_back( cp.asyncSend(vAddr, tag, context, data1));
-			events.push_back( cp.asyncSend(vAddr, tag, context, data2));
-			events.push_back( cp.asyncSend(vAddr, tag, context, data3));
-        
-		    }
+                std::vector<unsigned> recv1(nElements, 0);
+                std::vector<unsigned> recv2(nElements, 0);
+                std::vector<unsigned> recv3(nElements, 0);
 
-		    for(unsigned vAddr = 0; vAddr < context.size(); ++vAddr){
-			cp.recv(vAddr, tag, context, recv1);
-			cp.recv(vAddr, tag, context, recv2);
-			cp.recv(vAddr, tag, context, recv3);
+                std::vector<unsigned> data1(nElements, context.getVAddr());
+                std::vector<unsigned> data2(nElements, context.getVAddr() + 1);
+                std::vector<unsigned> data3(nElements, context.getVAddr() + 2);
 
-			for(unsigned i = 0; i < recv1.size(); ++i){
-			    BOOST_CHECK_EQUAL(recv1[i], vAddr);
-            
-			}
+                for (unsigned vAddr = 0; vAddr < context.size(); ++vAddr) {
+                  events.push_back(cp.asyncSend(vAddr, tag, context, data1));
+                  events.push_back(cp.asyncSend(vAddr, tag, context, data2));
+                  events.push_back(cp.asyncSend(vAddr, tag, context, data3));
+                }
 
-			for(unsigned i = 0; i < recv1.size(); ++i){
-			    BOOST_CHECK_EQUAL(recv2[i], vAddr + 1);
-            
-			}
+                for (unsigned vAddr = 0; vAddr < context.size(); ++vAddr) {
+                  cp.recv(vAddr, tag, context, recv1);
+                  cp.recv(vAddr, tag, context, recv2);
+                  cp.recv(vAddr, tag, context, recv3);
 
-			for(unsigned i = 0; i < recv1.size(); ++i){
-			    BOOST_CHECK_EQUAL(recv3[i], vAddr + 2);
-            
-			}
+                  for (unsigned i = 0; i < recv1.size(); ++i) {
+                    BOOST_CHECK_EQUAL(recv1[i], vAddr);
+                  }
 
-		    }
+                  for (unsigned i = 0; i < recv1.size(); ++i) {
+                    BOOST_CHECK_EQUAL(recv2[i], vAddr + 1);
+                  }
 
-		    for(Event &e : events){
-			e.wait();
-	    
-		    }
-	
-		    progress.print(nRuns, run_i);	
+                  for (unsigned i = 0; i < recv1.size(); ++i) {
+                    BOOST_CHECK_EQUAL(recv3[i], vAddr + 2);
+                  }
+                }
 
-		}
-		
-	    }
+                for (Event &e : events) {
+                  e.wait();
+                }
+              }
+            }
 	    
 	});
 
@@ -392,8 +319,7 @@ BOOST_AUTO_TEST_CASE( gather ){
 	    using CP      = typename decltype(cpRef)::type;
 	    using Context = typename CP::Context;
 	    using Event   = typename CP::Event;
-	    CP& cp = cpRef.get();            
-            Progress progress(cp);
+            CP &cp = cpRef.get();
 
             // Test run
             {
@@ -423,8 +349,6 @@ BOOST_AUTO_TEST_CASE( gather ){
                         e.wait();
 	    
                     }
-	
-                    progress.print(nRuns, run_i);	
 
                 }
 		
@@ -440,9 +364,8 @@ BOOST_AUTO_TEST_CASE( gather_var ){
 	    using CP      = typename decltype(cpRef)::type;
 	    using Context = typename CP::Context;
 	    using Event   = typename CP::Event;
-	    using VAddr   = typename CP::VAddr;            
-	    CP& cp = cpRef.get();            
-            Progress progress(cp);
+            using VAddr = typename CP::VAddr;
+            CP &cp = cpRef.get();
 
             // Test run
             {
@@ -475,8 +398,6 @@ BOOST_AUTO_TEST_CASE( gather_var ){
                         e.wait();
 	    
                     }
-	
-                    progress.print(nRuns, run_i);	
 
                 }
 		
@@ -492,9 +413,7 @@ BOOST_AUTO_TEST_CASE( all_gather ){
 	    using CP      = typename decltype(cpRef)::type;
 	    using Context = typename CP::Context;
 	    using Event   = typename CP::Event;
-	    CP& cp = cpRef.get();            
-            Progress progress(cp);
-
+            CP &cp = cpRef.get();
             // Test run
             {
     
@@ -521,8 +440,6 @@ BOOST_AUTO_TEST_CASE( all_gather ){
                         e.wait();
 	    
                     }
-	
-                    progress.print(nRuns, run_i);	
 
                 }
 		
@@ -538,10 +455,8 @@ BOOST_AUTO_TEST_CASE( all_gather_var ){
 	    using CP      = typename decltype(cpRef)::type;
 	    using Context = typename CP::Context;
 	    using Event   = typename CP::Event;
-	    using VAddr   = typename CP::VAddr;            
-	    CP& cp = cpRef.get();            
-            Progress progress(cp);
-
+            using VAddr = typename CP::VAddr;
+            CP &cp = cpRef.get();
             // Test run
             {
     
@@ -571,8 +486,6 @@ BOOST_AUTO_TEST_CASE( all_gather_var ){
                         e.wait();
 	    
                     }
-	
-                    progress.print(nRuns, run_i);	
 
                 }
 		
@@ -588,8 +501,7 @@ BOOST_AUTO_TEST_CASE( scatter ){
 	    using CP      = typename decltype(cpRef)::type;
 	    using Context = typename CP::Context;
 	    using Event   = typename CP::Event;
-	    CP& cp = cpRef.get();            
-            Progress progress(cp);
+            CP &cp = cpRef.get();
 
             // Test run
             {
@@ -619,8 +531,6 @@ BOOST_AUTO_TEST_CASE( scatter ){
                         e.wait();
 	    
                     }
-	
-                    progress.print(nRuns, run_i);	
 
                 }
 		
@@ -636,8 +546,7 @@ BOOST_AUTO_TEST_CASE( reduce ){
 	    using CP      = typename decltype(cpRef)::type;
 	    using Context = typename CP::Context;
 	    using Event   = typename CP::Event;
-	    CP& cp = cpRef.get();            
-            Progress progress(cp);
+            CP &cp = cpRef.get();
 
             // Test run
             {
@@ -667,8 +576,6 @@ BOOST_AUTO_TEST_CASE( reduce ){
                         e.wait();
 	    
                     }
-	
-                    progress.print(nRuns, run_i);	
 
                 }
 		
@@ -677,54 +584,43 @@ BOOST_AUTO_TEST_CASE( reduce ){
         });
 
 }
-
-
 
 BOOST_AUTO_TEST_CASE( broadcast ){
     hana::for_each(communicationPolicies, [](auto cpRef){
 	    // Test setup
 	    using CP      = typename decltype(cpRef)::type;
 	    using Context = typename CP::Context;
-	    using Event   = typename CP::Event;	    	    
-	    CP& cp = cpRef.get();            
-            Progress progress(cp);
+            using Event = typename CP::Event;
+            CP &cp = cpRef.get();
 
             // Test run
             {
-    
-                Context context = cp.getGlobalContext();
 
-                const unsigned nElements = 10;
-                unsigned value = 9;
+              Context context = cp.getGlobalContext();
 
-                for(unsigned run_i = 0; run_i < nRuns; ++run_i){
-    
-                    std::vector<Event> events;
+              const unsigned nElements = 10;
+              unsigned value = 9;
 
-                    std::vector<unsigned> data (nElements, value);
+              for (unsigned run_i = 0; run_i < nRuns; ++run_i) {
 
-                    cp.broadcast(0, context, data);
+                std::vector<Event> events;
 
-                    for(auto d : data){
-                        BOOST_CHECK_EQUAL(d, value);
-                    }
+                std::vector<unsigned> data(nElements, value);
 
-                    for(Event &e : events){
-                        e.wait();
-	    
-                    }
-	
-                    progress.print(nRuns, run_i);	
+                cp.broadcast(0, context, data);
 
+                for (auto d : data) {
+                  BOOST_CHECK_EQUAL(d, value);
                 }
-		
+
+                for (Event &e : events) {
+                  e.wait();
+                }
+            }
             }
 	    
         });
 
 }
-
-
-
 
 BOOST_AUTO_TEST_SUITE_END()

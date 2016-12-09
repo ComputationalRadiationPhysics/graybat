@@ -118,3 +118,7 @@ script:
   - cd $HOME/build
   - cmake $CMAKE_FLAGS $GRAYBAT_ROOT
   - make check
+  - make gbZMQSignaling
+  - ./gbZMQSignaling&
+  - ctest --output-on-failure
+  - killall gbZMQSignaling
