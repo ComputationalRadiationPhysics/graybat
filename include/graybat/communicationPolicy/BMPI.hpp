@@ -47,6 +47,7 @@ namespace mpi = boost::mpi;
 #include <graybat/utils/serialize_tuple.hpp>
 #include <graybat/communicationPolicy/bmpi/Context.hpp> /* Context */
 #include <graybat/communicationPolicy/bmpi/Event.hpp>   /* Event */
+#include <graybat/communicationPolicy/bmpi/Status.hpp>   /* Status */
 #include <graybat/communicationPolicy/bmpi/Config.hpp>   /* Config */
 #include <graybat/communicationPolicy/Base.hpp> 
 #include <graybat/communicationPolicy/Traits.hpp>
@@ -84,6 +85,11 @@ namespace graybat {
             };
 
             template<>
+            struct StatusType<BMPI> {
+                using type = graybat::communicationPolicy::bmpi::Status;
+            };
+
+            template<>
             struct ConfigType<BMPI> {
                 using type = graybat::communicationPolicy::bmpi::Config;
             };
@@ -91,26 +97,27 @@ namespace graybat {
         }
         
 	struct BMPI : Base<BMPI>{
-            
-    	    // Type defs
-            using Tag       = typename graybat::communicationPolicy::Tag<BMPI>;
-            using ContextID = typename graybat::communicationPolicy::ContextID<BMPI>;
-            using MsgType   = typename graybat::communicationPolicy::MsgType<BMPI>;
-            using VAddr     = typename graybat::communicationPolicy::VAddr<BMPI>;
-            using Context   = typename graybat::communicationPolicy::Context<BMPI>;
-            using Event     = typename graybat::communicationPolicy::Event<BMPI>;
-            using Config    = typename graybat::communicationPolicy::Config<BMPI>;                        
-            using Uri       = int;
 
-	    BMPI(Config const) :contextCount(0),
-							uriMap(0),
-							initialContext(contextCount, mpi::communicator()){
+          // Typedefs
+          using Tag = typename graybat::communicationPolicy::Tag<BMPI>;
+          using ContextID = typename graybat::communicationPolicy::ContextID<BMPI>;
+          using MsgType = typename graybat::communicationPolicy::MsgType<BMPI>;
+          using VAddr = typename graybat::communicationPolicy::VAddr<BMPI>;
+          using Context = typename graybat::communicationPolicy::Context<BMPI>;
+          using Event = typename graybat::communicationPolicy::Event<BMPI>;
+          using Status = typename graybat::communicationPolicy::Status<BMPI>;
+          using Config = typename graybat::communicationPolicy::Config<BMPI>;
+          using Uri = int;
 
-			uriMap.push_back(std::vector<Uri>());
-		
-			for(auto const &vAddr : initialContext){
-				uriMap.back().push_back(vAddr);
-			}
+          BMPI(Config const)
+              : contextCount(0), uriMap(0),
+                initialContext(contextCount, mpi::communicator()) {
+
+            uriMap.push_back(std::vector<Uri>());
+
+            for (auto const &vAddr : initialContext) {
+              uriMap.back().push_back(vAddr);
+            }
 
 	    }
 
@@ -229,8 +236,35 @@ namespace graybat {
             return Event(request);
 	    }
 
+		/** Test if message is available from peer with srcVAddr and particular tag
+         *
+         * @param[in]  srcVAddr   VAddr of peer that sended the message
+         * @param[in]  tag        Description of the message to better distinguish messages types
+         * @param[in]  context    Context in which both sender and receiver are included
+         *
+         * @return Status contains information if message is available
+         */
+	    Status probe(const VAddr srcVAddr, const Tag tag, const Context context) {
+			auto srcUri = getVAddrUri(context, srcVAddr);
+			auto status = context.comm.probe(srcUri, tag);
+			return Status(status);
+	    }
 
-	    /** @} */
+		/*
+		Status probe(const VAddr srcVAddr, const Context context) {
+			auto srcUri = getVAddrUri(context, srcVAddr);
+			auto status = context.comm.probe(srcUri);
+			return Status(status);
+		}
+
+		Status probe(const Context context) {
+			auto status = context.comm.probe();
+			return Status(status);
+		}
+		 */
+
+
+		/** @} */
     
 	    /************************************************************************//**
 	     *

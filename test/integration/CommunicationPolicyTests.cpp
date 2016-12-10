@@ -35,26 +35,27 @@
  ******************************************************************************/
 namespace hana = boost::hana;
 
+namespace {
 size_t const nRuns = 1;
 
-using ZMQ        = graybat::communicationPolicy::ZMQ;
-using BMPI       = graybat::communicationPolicy::BMPI;
-using ZMQConfig  = ZMQ::Config;
+using ZMQ = graybat::communicationPolicy::ZMQ;
+using BMPI = graybat::communicationPolicy::BMPI;
+using ZMQConfig = ZMQ::Config;
 using BMPIConfig = BMPI::Config;
 
-ZMQConfig zmqConfig = {"tcp://127.0.0.1:5000",
-                       "tcp://127.0.0.1:5001",
-                       static_cast<size_t>(std::stoi(std::getenv("OMPI_COMM_WORLD_SIZE"))),
-                       "context_cp_test"};
+ZMQConfig zmqConfig = {
+    "tcp://127.0.0.1:5000", "tcp://127.0.0.1:5001",
+    static_cast<size_t>(std::stoi(std::getenv("OMPI_COMM_WORLD_SIZE"))),
+    "context_cp_test"};
 
 BMPIConfig bmpiConfig;
 
 ZMQ zmqCP(zmqConfig);
 BMPI bmpiCP(bmpiConfig);
 
-auto communicationPolicies = hana::make_tuple(std::ref(zmqCP),
-                                              std::ref(bmpiCP) );
-
+auto communicationPolicies =
+    hana::make_tuple(std::ref(zmqCP), std::ref(bmpiCP));
+}
 
 /*******************************************************************************
  * Point to Point Test Suites
@@ -296,6 +297,40 @@ BOOST_AUTO_TEST_CASE( send_recv_order ){
 
 }
 
+BOOST_AUTO_TEST_CASE(shouldReceiveCorrectStatus) {
+  hana::for_each(communicationPolicies, [](auto cpRef) {
+    // Test setup
+    using CP = typename decltype(cpRef)::type;
+    using Context = typename CP::Context;
+    using Event = typename CP::Event;
+    CP &cp = cpRef.get();
+
+    // Test run
+    {
+
+      const unsigned nElements = 10;
+      const unsigned tag = 99;
+
+      Context context = cp.getGlobalContext();
+
+      std::vector<unsigned> recv(nElements, 0);
+      std::vector<unsigned> data(nElements, 0);
+      std::vector<Event> events;
+
+      for (unsigned vAddr = 0; vAddr < context.size(); ++vAddr) {
+        std::iota(data.begin(), data.end(), context.getVAddr());
+        events.push_back(cp.asyncSend(vAddr, tag, context, data));
+      }
+
+      for (unsigned vAddr = 0; vAddr < context.size(); ++vAddr) {
+        auto status = cp.probe(vAddr, tag, context);
+        BOOST_CHECK_EQUAL(status.tag(), tag);
+        BOOST_CHECK_EQUAL(status.source(), vAddr);
+        BOOST_CHECK_EQUAL(status.template size<unsigned>(), nElements);
+      }
+    }
+  });
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 
