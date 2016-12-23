@@ -210,9 +210,12 @@ int main(const int argc, char **argv){
 
     while (true) {
         boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::tcp::v4(), vm["port"].as<unsigned>());
+        boost::asio::ip::tcp::endpoint peerEndpoint;
         boost::asio::ip::tcp::socket socket(io_service);
         boost::asio::ip::tcp::acceptor acceptor(io_service, endpoint);
-        acceptor.accept(socket);
+        acceptor.accept(socket, peerEndpoint);
+
+        std::cout << "Accepted connection peerEndpoint.address:" << peerEndpoint.address().to_string() << std::endl;
 
         std::stringstream ss;
         recvFromSocket(socket, ss);
@@ -234,12 +237,6 @@ int main(const int argc, char **argv){
     // while(true){
     //     std::stringstream recvStream;
     //     std::stringstream sendStream;        
-
-
-
-
-        
-
 
     //     recvFromSocket(socket, recvStream);
 

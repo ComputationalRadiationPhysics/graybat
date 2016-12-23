@@ -248,9 +248,11 @@ namespace graybat {
             -> void {
 
                 // Connect to signaling process
+                std::cout << "connectToSocket masterUri:" << masterUri << std::endl;
                 static_cast<CommunicationPolicy*>(this)->connectToSocket(static_cast<CommunicationPolicy*>(this)->signalingSocket, masterUri);
 
                 // Retrieve Context id for initial context from signaling process
+                std::cout << "getContextID contextName:" << contextName << std::endl;
                 ContextID contextID = getContextID(static_cast<CommunicationPolicy*>(this)->signalingSocket, contextName);
 //                contextNames[contextID] = contextName;
 //
