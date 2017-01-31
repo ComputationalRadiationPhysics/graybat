@@ -32,6 +32,7 @@
 #include <tuple>     /* std::tie */
 #include <memory>    /* std::shared_memory */
 #include <sstream>   /* std::stringstream */
+#include <future>
 
 // GRAYBAT
 #include <graybat/utils/exclusivePrefixSum.hpp> /* exclusivePrefixSum */
@@ -47,13 +48,13 @@ namespace graybat {
      * @class Cage
      *
      * @brief The Communication And Graph Environment enables to communicate
-     *        on basis of a graph with methods provided by a communication 
+     *        on basis of a graph with methods provided by a communication
      *        policy.
      *
      * A cage is defined by its Communication and Graph policy. The communication
      * policy provides methods for point to point and collective operations.
      * The graph policy provides methods to query graph imformation of the
-     * cage graph. 
+     * cage graph.
      *
      * @remark A peer can host several vertices.
      *
@@ -118,7 +119,7 @@ namespace graybat {
         /***********************************************************************//**
          *
          * @name Graph Operations
-         * 
+         *
          * @{
          *
          ***************************************************************************/
@@ -147,11 +148,11 @@ namespace graybat {
          ***************************************************************************/
 
         /**
-         * @brief Distribution of the graph vertices to the peers of 
+         * @brief Distribution of the graph vertices to the peers of
          *        the global context. The distFunctor it the function
          *        responsible for this distribution.
          *
-         * @param distFunctor Function for vertex distribution 
+         * @param distFunctor Function for vertex distribution
          *                    with the following interface:
          *                    distFunctor(OwnVAddr, ContextSize, Graph)
          *
@@ -189,7 +190,7 @@ namespace graybat {
          * @brief Returns the VAddr of the host of *vertex* in the graph
          *
          * @bug When the location of *vertex* is not known then
-         *      the programm crashes by an exception. 
+         *      the programm crashes by an exception.
          *      This exception should be handled for better
          *      debugging behaviour.
          *
@@ -241,7 +242,7 @@ namespace graybat {
 
         /***********************************************************************//**
           *
-          * @name Point to Point Communication Operations 
+          * @name Point to Point Communication Operations
           *
           * @{
           *
@@ -282,10 +283,18 @@ namespace graybat {
          * @param[out] data Data that will be received
          *
          */
-        template<typename T>
+
+
+		template<typename T>
+		void recv(const Edge &edge, std::future<T>& data);
+
+		template<typename T>
         void recv(const Edge &edge, T &data);
 
-        template<typename T>
+		template<typename T>
+		void recv(std::future<T>& data);
+
+		template<typename T>
         Edge recv(T &data);
 
         /**
@@ -304,7 +313,7 @@ namespace graybat {
 
         /**********************************************************************//**
          *
-         * @name Collective Communication Operations 
+         * @name Collective Communication Operations
          *
          * @{
          *
@@ -683,6 +692,29 @@ namespace graybat {
     template<typename T_CommunicationPolicy, typename T_GraphPolicy>
     template<typename T>
     auto Cage<T_CommunicationPolicy, T_GraphPolicy>::
+	recv (const Edge &edge, std::future<T>& data)
+	-> void
+	{
+		VAddr srcVAddr = locateVertex(edge.source);
+		std::promise<T> dataPromise;
+		data = dataPromise.get_future();
+
+		// The reason for the std::promise and std::thread over std::async ist the destructor behaviour of std::async
+		// For std::async the destructor is waiting for the completion of the asyncThread, which may lead to a permanent lock
+		// The future from std::promise does not block on the completion of the execution thread.
+		std::thread asyncRecvThread([&](){
+			T result;
+			Event e = comm->asyncRecv(srcVAddr, edge.id, graphContext, result);
+			e.wait();
+			dataPromise.set_value(result);
+		});
+		asyncRecvThread.detach();
+	}
+
+
+    template<typename T_CommunicationPolicy, typename T_GraphPolicy>
+    template<typename T>
+    auto Cage<T_CommunicationPolicy, T_GraphPolicy>::
     recv(const Edge &edge, T &data)
     -> void {
         //std::cout << "recv cage:" << edge.source.id << " " << edge.id << std::endl;
@@ -879,7 +911,7 @@ namespace graybat {
         static unsigned nGatherCalls = 0;
         nGatherCalls++;
 
-        VAddr srcVAddr = locateVertex(srcVertex);
+        //VAddr srcVAddr = locateVertex(srcVertex);
         Context context = graphContext;
 
         // TODO get rid of sendData.begin(), sendData.end() T_Data should only use .size() and .data()
