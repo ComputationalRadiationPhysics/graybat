@@ -79,16 +79,18 @@ namespace graybat {
                 Event& operator=(const Event&) = default;
 
                 void wait(){
-					if(buf == nullptr){
-						// asyncSend Event
-						while(!done) {
-							done = comm->ready(msgID, context, vAddr, tag);
+					if(!done) {
+						if(buf == nullptr){
+							// asyncSend Event
+							while(!done) {
+								done = comm->ready(msgID, context, vAddr, tag);
+							}
 						}
-					}
-					else {
-						// asyncRecv Event
-						comm->recvImpl(MsgType::PEER, context, vAddr, tag, buf, size);
-						done = true;
+						else {
+							// asyncRecv Event
+							comm->recvImpl(MsgType::PEER, context, vAddr, tag, buf, size);
+							done = true;
+						}
 					}
                 }
 

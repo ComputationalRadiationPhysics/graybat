@@ -35,17 +35,17 @@
 #include <boost/core/ignore_unused.hpp>
 
 namespace utils {
-	
-	/** 
+
+	/**
 	 * @brief Compares two tuple types and calculates the "Difference" of both both tuples
 	 * @param[in] std::tuple<T1, ... , Tn>
 	 * @param[in] std::tuple<T1, ..., Tn, ..., Tm>
 	 * @result ValueType = std::tuple<Tn+1, ..., Tm>
-	 * 
+	 *
 	 * T1 to Tn has to be the same for both tuples. Otherwise it will not compile.
-	 * 
+	 *
 	 */
-	
+
 	template <class... Types>
 	struct Difference;
 
@@ -56,7 +56,7 @@ namespace utils {
 	>
 	struct Difference<std::tuple<T, Types...>, std::tuple<T, subTypes...>> {
 		using ValueType = typename Difference<
-			std::tuple<Types...>, 
+			std::tuple<Types...>,
 			std::tuple<subTypes...>
 		>::ValueType;
 	};
@@ -68,17 +68,17 @@ namespace utils {
 		class... Types
 	>
 	struct Difference<std::tuple<Types...>, std::tuple<>> {
-		using ValueType = std::tuple<Types...>; 
+		using ValueType = std::tuple<Types...>;
 	};
 
-	/** 
-	 * 
+	/**
+	 *
 	 * @brief Compares the nth to mth element of two tuples. If all of them are the same it will return true.
 	 * @param[in] std::tuple<T1, ... , Tn>
 	 * @param[in] std::tuple<T1, ..., Tn, ..., Tm>
 	 * @param[in] unsigned int n
 	 * @param[in] unsigned int m
-	 * 
+	 *
 	 */
 	template <class T1, class T2, unsigned int pos, unsigned int end>
 	struct PrefixMatch;
@@ -96,13 +96,13 @@ namespace utils {
 		bool operator()(const T1& t1, const T2& t2) {
 			return
 				std::get<pos>(t1) == std::get<pos>(t2) && // compare nth element of both tuples
-				PrefixMatch<T1,T2,pos+1,end>()(t1,t2); // and rest tuples	
+				PrefixMatch<T1,T2,pos+1,end>()(t1,t2); // and rest tuples
 		}
 	};
 
 	template <class... args1, class... args2>
 	bool prefixMatch(std::tuple<args1...> t1, std::tuple<args2...> t2) {
-		return 
+		return
 			PrefixMatch<
 				decltype(t1),
 				decltype(t2),
@@ -116,16 +116,16 @@ namespace utils {
 	struct MultiKeyMap {
 
 		std::map<std::tuple<T_Keys...>, T_Value> multiKeyMap;
-		
+
 		MultiKeyMap() :
 			multiKeyMap()
 		{}
-		
+
 		template <typename T_KeysTpl>
 		T_Value& operator[](const T_KeysTpl keysTuple){
 			return multiKeyMap[keysTuple];
 		}
-		
+
 		T_Value& operator()(const T_Keys... keys){
 			const auto key = std::make_tuple(keys...);
 			return operator[](key);
@@ -168,7 +168,7 @@ namespace utils {
 		/***************************************************************************
 		* values
 		***************************************************************************/
-		
+
 		/*
 		// This implementation is a special case of values with subKeys == []>, but not needed
 		template <typename T_ValuesCT, typename T_KeysCT>
@@ -180,6 +180,7 @@ namespace utils {
 		}
 		*/
 
+		/* MKM searches for all subkeys and saves all matching vales in values and the corresponding keys in keys */
 		template <typename T_ValuesCT, typename T_KeysCT, typename... T_Sub_Keys>
 		void values(T_ValuesCT &values, T_KeysCT& keys, const T_Sub_Keys... subKeys){
 			auto subKeysTuple = std::make_tuple(subKeys...);
@@ -226,6 +227,7 @@ namespace utils {
 				//std::cout << bufferSize << std::endl;
 				//std::cout << "Try to enqueue message." << std::endl;
 				std::lock_guard<std::mutex> accessLock(access);
+				//std::cout << "MessageBox enqueue" << std::endl;
 				multiKeyMap(keys...).push(std::forward<T_Value>(value));
 			}
 			//std::cout << "notify on condition variable." << std::endl;
@@ -295,7 +297,7 @@ namespace utils {
 					}
 					writeCondition.wait_for(notifyLock, std::chrono::milliseconds(100));
 				}
-
+				//std::cout << "return on waitDeque" << std::endl;
 				{
 					std::lock_guard<std::mutex> accessLock(access);
 					for(auto &keys : keysList ){
@@ -306,6 +308,7 @@ namespace utils {
 							queue.pop();
 							bufferSize -= value.size();
 							readCondition.notify_one();
+							//std::cout << "return value" << std::endl;
 							return value;
 						}
 

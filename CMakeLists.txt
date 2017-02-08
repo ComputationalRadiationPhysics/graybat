@@ -46,6 +46,8 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wpedantic")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused-parameter")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+
 endif()
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
@@ -54,6 +56,7 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wpedantic")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused-parameter")
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wvla-extension")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 endif()
 
 ###############################################################################
@@ -89,7 +92,7 @@ foreach(EXAMPLE ${EXAMPLES})
 	add_executable(${DEP} EXCLUDE_FROM_ALL ${EXAMPLE})
     set_property(TARGET ${DEP} PROPERTY CXX_STANDARD 14)
 	target_link_libraries(${DEP} LINK_INTERFACE_LIBRARIES graybat)
-	target_link_libraries(${DEP} ${LIBS})	
+	target_link_libraries(${DEP} ${LIBS})
 	add_dependencies(example ${DEP})
 endforeach(EXAMPLE)
 
@@ -130,7 +133,7 @@ install( TARGETS gbZMQSignaling
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/doxygen.conf ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-  add_custom_target(doc 
+  add_custom_target(doc
     COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
     SOURCES ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}

@@ -704,8 +704,9 @@ namespace graybat {
 				memcpy (static_cast<void*>(recvData.data()),
 						static_cast<std::int8_t*>(message.getData()),
 						sizeof(typename T_Recv::value_type) * recvData.size());
-
-				return Event(getMsgID(), context, destVAddr, tag, *(static_cast<CommunicationPolicy*>(this)));
+				Event e(getMsgID(), context, destVAddr, tag, *(static_cast<CommunicationPolicy*>(this)));
+				e.done = true;
+				return e;
 
 			}
 
@@ -727,7 +728,7 @@ namespace graybat {
                 //VAddr destVAddr;
                 //Tag tag;
 
-                Message message(std::move(inBox.waitDequeue(keys, MsgType::PEER, context.getID())));
+                Message message(std::move(inBox.waitDequeue(keys, msgType, context.getID(), srcVAddr, tag)));
 
                 memcpy (static_cast<void*>(recvData),
                         static_cast<std::int8_t*>(message.getData()),
