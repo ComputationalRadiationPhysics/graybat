@@ -34,15 +34,17 @@
 
 // HANA
 #include <boost/hana.hpp>
-namespace hana = boost::hana;
 
 // GrayBat
 #include <graybat/communicationPolicy/Base.hpp>          /* graybat::communicationPolicy::Base */
 #include <graybat/communicationPolicy/Traits.hpp>        /* cp related types */
 #include <graybat/communicationPolicy/socket/Traits.hpp> /* socket related types */
 #include <graybat/utils/MultiKeyMap.hpp>                 /* utils::MessageBox */
+#include <graybat/signaling/GrpcSignalingClient.hpp>
 
 #define PROTOCOL_HEADER_SIZE_IN_BYTES 17
+
+namespace hana = boost::hana;
 
 namespace graybat {
 
@@ -70,7 +72,6 @@ namespace graybat {
                 using ContextName         = graybat::communicationPolicy::socket::ContextName<CommunicationPolicy>;
 
                 // Members
-                const Uri masterUri;
                 const size_t contextSize;
                 const ContextName contextName;
                 unsigned maxMsgID;
@@ -92,6 +93,8 @@ namespace graybat {
                 std::thread recvHandler;
                 std::thread ctrlHandler;
 
+                graybat::signaling::GrpcSignalingClient signalingClient_;
+
                 // Constructor
                 Base(Config const config);
                 // Copy constructor
@@ -111,7 +114,7 @@ namespace graybat {
 
                 // Socket Interface
                 template <typename T_Socket>
-                void connectToSocket(T_Socket& socket, std::string const signalingUri) = delete;
+                void connectToSocket(T_Socket& socket, std::string const uri) = delete;
 
                 template <typename T_Socket>
                 void sendToSocket(T_Socket& socket, std::stringstream const ss) = delete;
@@ -208,17 +211,11 @@ namespace graybat {
 
 
                 // SIGNALING METHODS
-                template <typename T_Socket>
-                ContextID getInitialContextID(T_Socket& socket, size_t const contextSize);
+                ContextID getContextID(const ContextName& contextName);
 
-                template <typename T_Socket>
-                ContextID getContextID(T_Socket& socket, ContextName const contextName);
+                VAddr getVAddr(ContextID contextID, Uri const& uri, Uri const& ctrlUri);
 
-                template <typename T_Socket>
-                VAddr getVAddr(T_Socket &socket, ContextID const contextID, Uri const uri, Uri const ctrlUri);
-
-                template <typename T_Socket>
-                std::pair<Uri,Uri> getUri(T_Socket& socket, ContextID const contextID, VAddr const vAddr);
+                std::pair<Uri,Uri> getUri(ContextID contextID, VAddr vAddr);
 
 
                 // Auxilary
@@ -245,16 +242,17 @@ namespace graybat {
 
             };
 
-
             template <typename T_CommunicationPolicy>
-            Base<T_CommunicationPolicy>::Base(Config const config)  :
-                    masterUri(config.masterUri),
-                    contextSize(config.contextSize),
-                    contextName(config.contextName),
-                    maxMsgID(0),
-                    inBox(config.maxBufferSize),
-                    ctrlBox(config.maxBufferSize){
-
+            Base<T_CommunicationPolicy>::Base(Config const config)
+                : contextSize(config.contextSize)
+                , contextName(config.contextName)
+                , maxMsgID(0)
+                , inBox(config.maxBufferSize)
+                , ctrlBox(config.maxBufferSize)
+                , signalingClient_(config.masterUri)
+            {
+//                std::cout << "--> Base" << std::endl;
+//                std::cout << "<-- Base" << std::endl;
             }
 
 
@@ -266,16 +264,14 @@ namespace graybat {
             template <typename T_CommunicationPolicy>
             auto Base<T_CommunicationPolicy>::init()
             -> void {
-
-                // Connect to signaling process
-                static_cast<CommunicationPolicy*>(this)->connectToSocket(static_cast<CommunicationPolicy*>(this)->signalingSocket, masterUri);
+                //std::cout << "--> init" << std::endl;
 
                 // Retrieve Context id for initial context from signaling process
-                ContextID contextID = getContextID(static_cast<CommunicationPolicy*>(this)->signalingSocket, contextName);
+                ContextID contextID = getContextID(contextName);
                 contextNames[contextID] = contextName;
 
                 // Retrieve own vAddr from signaling process for initial context
-                VAddr vAddr = getVAddr(static_cast<CommunicationPolicy*>(this)->signalingSocket, contextID, static_cast<CommunicationPolicy*>(this)->peerUri, static_cast<CommunicationPolicy*>(this)->ctrlUri);
+                VAddr vAddr = getVAddr(contextID, static_cast<CommunicationPolicy*>(this)->peerUri, static_cast<CommunicationPolicy*>(this)->ctrlUri);
                 initialContext = Context(contextID, vAddr, contextSize);
                 contexts[initialContext.getID()] = initialContext;
 
@@ -283,7 +279,7 @@ namespace graybat {
                 for(auto const &vAddr : initialContext){
                     Uri remoteUri;
                     Uri ctrlUri;
-                    std::tie(remoteUri, ctrlUri) = getUri(static_cast<CommunicationPolicy*>(this)->signalingSocket, initialContext.getID(), vAddr);
+                    std::tie(remoteUri, ctrlUri) = getUri(initialContext.getID(), vAddr);
                     phoneBook[initialContext.getID()][vAddr] = remoteUri;
                     ctrlPhoneBook[initialContext.getID()][vAddr] = ctrlUri;
                     inversePhoneBook[initialContext.getID()][remoteUri] = vAddr;
@@ -307,15 +303,19 @@ namespace graybat {
                 recvHandler = std::thread(&Base<CommunicationPolicy>::handleRecv, this);
                 ctrlHandler = std::thread(&Base<CommunicationPolicy>::handleCtrl, this);
 
+                //std::cout << "<-- init" << std::endl;
             }
 
             template <typename T_CommunicationPolicy>
             auto Base<T_CommunicationPolicy>::deinit()
             -> void {
-                std::stringstream ss;
-                ss << static_cast<size_t>(MsgType::DESTRUCT) << " " << contextName;
-                static_cast<CommunicationPolicy*>(this)->sendToSocket(static_cast<CommunicationPolicy*>(this)->signalingSocket, ss);
+                // Leave context
+                LeaveRequest request;
+                LeaveReply reply;
+                request.set_context_name(contextName);
+                signalingClient_.LeaveContext(request, &reply);
 
+                // shutdown worker threads
                 std::array<unsigned, 1>  null;
                 static_cast<CommunicationPolicy*>(this)->asyncSendImpl(MsgType::DESTRUCT, 0, initialContext, initialContext.getVAddr(), 0, null);
                 recvHandler.join();
@@ -474,7 +474,7 @@ namespace graybat {
                     }
 
                     ContextName newContextName = contextName + "_" + std::to_string(std::rand());
-                    newContextID[0]   = getContextID(static_cast<CommunicationPolicy*>(this)->signalingSocket, newContextName);
+                    newContextID[0]   = getContextID(newContextName);
                     contextNames[newContextID[0]] = newContextName;
                     newContextSize[0] = newContextWhiteList.size();
 
@@ -547,109 +547,62 @@ namespace graybat {
 
             }
 
-
             template <typename T_CommunicationPolicy>
-            template <typename T_Socket>
-            auto Base<T_CommunicationPolicy>::getInitialContextID(T_Socket& socket, size_t const contextSize)
-            -> graybat::communicationPolicy::ContextID<T_CommunicationPolicy> {
-                ContextID contextID = 0;
-                // Send vAddr request
-                std::stringstream ss;
-                ss << static_cast<size_t>(MsgType::CONTEXT_INIT) << " " << contextSize;
-                static_cast<CommunicationPolicy*>(this)->sendToSocket(socket, ss);
+            auto Base<T_CommunicationPolicy>::getContextID(const ContextName& contextName)
+                -> graybat::communicationPolicy::ContextID<T_CommunicationPolicy>
+            {
+                //std::cout << "--> getContextID" << std::endl;
+                ContextRequest request;
+                ContextReply reply;
+                request.set_context_name(contextName);
 
-                // Recv vAddr
-                std::stringstream sss;
-                static_cast<CommunicationPolicy*>(this)->recvFromSocket(socket, sss);
-                sss >> contextID;
-                return contextID;
+                signalingClient_.RequestContext(request, &reply);
 
+                //std::cout << "<-- getContextID" << std::endl;
+                return reply.context_id();
             }
 
-
             template <typename T_CommunicationPolicy>
-            template <typename T_Socket>
-            auto Base<T_CommunicationPolicy>::getContextID(T_Socket& socket, ContextName const contextName)
-            -> graybat::communicationPolicy::ContextID<T_CommunicationPolicy> {
-                using ContextID = graybat::communicationPolicy::ContextID<T_CommunicationPolicy>;
-
-                ContextID contextID = 0;
-
-                // Send vAddr request
-                std::stringstream ss;
-                ss << static_cast<size_t>(MsgType::CONTEXT_REQUEST) << " " << contextName << " ";
-
-                static_cast<CommunicationPolicy*>(this)->sendToSocket(socket, ss);
-
-                // Recv vAddr
-                std::stringstream sss;
-                static_cast<CommunicationPolicy*>(this)->recvFromSocket(socket, sss);
-                sss >> contextID;
-                return contextID;
-
-            }
-
-
-            template <typename T_CommunicationPolicy>
-            template <typename T_Socket>
-            auto Base<T_CommunicationPolicy>::getVAddr(T_Socket &socket, ContextID const contextID, Uri const uri, Uri const ctrlUri)
+            auto Base<T_CommunicationPolicy>::getVAddr(ContextID contextId, Uri const& uri, Uri const& ctrlUri)
             -> graybat::communicationPolicy::VAddr<T_CommunicationPolicy> {
+                //std::cout << "--> getVAddr" << std::endl;
 
-                using VAddr = graybat::communicationPolicy::VAddr<T_CommunicationPolicy>;
+                VaddrRequest request;
+                VaddrReply reply;
 
-                VAddr vAddr(0);
-                // Send vAddr request
-                std::stringstream ss;
-                ss << static_cast<size_t>(MsgType::VADDR_REQUEST) << " " << contextID << " " << uri << " " << ctrlUri << " ";
-                static_cast<CommunicationPolicy*>(this)->sendToSocket(socket, ss);
+                request.set_context_id(contextId);
+                request.set_data_uri(uri);
+                request.set_ctrl_uri(ctrlUri);
 
-                // Recv vAddr
-                std::stringstream sss;
-                static_cast<CommunicationPolicy*>(this)->recvFromSocket(socket, sss);
-                sss >> vAddr;
+                signalingClient_.RequestVaddr(request, &reply);
 
-                return vAddr;
+                //std::cout << "<-- getVAddr" << std::endl;
+                return reply.vaddr();
 
             }
-
 
             template <typename T_CommunicationPolicy>
-            template <typename T_Socket>
-            auto Base<T_CommunicationPolicy>::getUri(T_Socket& socket,
-                                                     graybat::communicationPolicy::ContextID<T_CommunicationPolicy> const contextID,
-                                                     graybat::communicationPolicy::VAddr<T_CommunicationPolicy> const vAddr)
-            -> std::pair<graybat::communicationPolicy::socket::Uri<T_CommunicationPolicy>,
-                    graybat::communicationPolicy::socket::Uri<T_CommunicationPolicy>
-            > {
+            auto Base<T_CommunicationPolicy>::getUri(
+                graybat::communicationPolicy::ContextID<T_CommunicationPolicy> contextId,
+                graybat::communicationPolicy::VAddr<T_CommunicationPolicy> vAddr) -> std::
+                pair<graybat::communicationPolicy::socket::Uri<T_CommunicationPolicy>, graybat::communicationPolicy::socket::Uri<T_CommunicationPolicy>>
+            {
+                VaddrLookup request;
+                UriReply reply;
+                request.set_context_id(contextId);
+                request.set_vaddr(vAddr);
 
-                MsgType type = MsgType::RETRY;
+                Uri ctrlUri{ "" };
+                Uri dataUri{ "" };
 
-                while(type == MsgType::RETRY){
-                    // Send vAddr lookup
-                    std::stringstream ss;
-                    ss << static_cast<size_t>(MsgType::VADDR_LOOKUP) << " " << contextID << " " << vAddr;
-                    static_cast<CommunicationPolicy*>(this)->sendToSocket(socket, ss);
+                while (dataUri == "") {
+                    signalingClient_.LookupVaddr(request, &reply);
 
-                    // Recv uri
-                    std::string msgTypeStr;
-                    std::string remoteUri;
-                    std::string ctrlUri;
-                    std::stringstream sss;
-                    static_cast<CommunicationPolicy*>(this)->recvFromSocket(socket, sss);
-                    sss >> msgTypeStr;
-                    type = static_cast<MsgType>(std::stoi(msgTypeStr));
-                    if(type == MsgType::ACK){
-                        sss >> remoteUri;
-                        sss >> ctrlUri;
-                        return std::make_pair(remoteUri, ctrlUri);
-
-                    }
-
+                    dataUri = reply.data_uri();
+                    ctrlUri = reply.ctrl_uri();
                 }
-                return std::make_pair(std::string(""), std::string(""));
-
+                return std::make_pair(dataUri, ctrlUri);
             }
-
 
             template <typename T_CommunicationPolicy>
             template <typename T_Send>

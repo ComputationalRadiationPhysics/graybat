@@ -100,14 +100,18 @@ or by setting the `graybat_DIR`:
     set(graybat_DIR <ABSOLUTE-PATH-TO-GRAYBAT>)
 
 
-The CMAKE-Configfile of graybat provides the CMAKE variables `${graybat_INCLUDE_DIRS}` and
-`${graybat_LIBRARIES}`. Where `${graybat_INCLUDE_DIRS}` contains all header files
-included by graybat and `${graybat_LIBRARIES}` contains all libraries used by graybat.
+The CMAKE-Configfile of graybat provides the CMAKE variables `${graybat_INCLUDE_DIRS}`,
+`${graybat_LIBRARIES}`, and `${graybat_GENERATED_FILES}`. Where `${graybat_INCLUDE_DIRS}` contains all header files
+included by graybat,`${graybat_LIBRARIES}` contains all libraries used by graybat, and `${graybat_GENERATED_FILES}`
+contains all generated files that need to be compiled with the target.
 The following is a an example of how to embed graybat into your `CMakeLists.txt`
 
      find_package(graybat REQUIRED CONFIG)
      include_directories(SYSTEM ${graybat_INCLUDE_DIRS})
      set(LIBS ${LIBS} ${graybat_LIBRARIES})
+  
+     add_executable(myTarget main.cpp ${graybat_GENERATED_FILES})
+     target_link_libraries(signaling ${LIBS})
 
 Finally, the application can use graybat e.g. `#include <graybat/Cage.hpp>`.
 
@@ -126,7 +130,7 @@ Finally, the application can use graybat e.g. `#include <graybat/Cage.hpp>`.
 There exist benchmarks for graybat:
 ```
 make benchmark
-./gbZMQSignaling&
+./signaling_server&
 ./benchmark
 
 Run on (4 X 2493.8 MHz CPU s)
@@ -159,7 +163,7 @@ meassureSingleMessageSendZmq/976.562k    23033162 ns   22561309 ns         31
 
  * **benchmark** : Benchmarks
 
- * **gbZMQSignaling** : Signaling server for zeroMQ communication policy.
+ * **signaling** : Signaling server for zeroMQ communication policy.
 
  * **doc**: Build documentation in `doc/`.
 
@@ -170,14 +174,6 @@ meassureSingleMessageSendZmq/976.562k    23033162 ns   22561309 ns         31
 
  * clang 3.5
  * g++ 5.2.0
-
-
-### Current Compilation Status:
-
-| *branch* | *state* | *description* |
-| -------- | --------| ------------- |
-| **master** | [![Build Status](http://haseongpu.mooo.com/api/badge/github.com/erikzenker/GrayBat/status.svg?branch=master)](http://haseongpu.mooo.com/github.com/erikzenker/GrayBat) |  stable releases |
-| **dev**  | [![Build Status](http://haseongpu.mooo.com/api/badge/github.com/erikzenker/GrayBat/status.svg?branch=dev)](http://haseongpu.mooo.com/github.com/erikzenker/GrayBat) |development branch |
 
 
 ##Related Material##
