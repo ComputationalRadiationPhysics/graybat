@@ -1,3 +1,4 @@
+
 language: cpp
 sudo: false
 
@@ -7,37 +8,36 @@ cache:
     - $HOME/.cache/cmake
     - $HOME/.cache/boost
     - $HOME/.cache/zmq
+    - $HOME/.cache/grpc
+    - $HOME/.cache/protobuf
 
 addons:
   apt:
     sources:
         - ubuntu-toolchain-r-test
-        #- llvm-toolchain-precise-3.5
     packages:
+        - tree
         - gcc-6
         - g++-6 # also possible: g++5.2 or g++-6
         - clang-3.5
         - openmpi-bin
         - libopenmpi-dev
-        #      - clang-3.5
 
 env:
   global:
     - CMAKE_ROOT: $HOME/.cache/cmake
     - BOOST_ROOT: $HOME/.cache/boost
     - ZMQ_ROOT: $HOME/.cache/zmq
+    - GRPC_ROOT: $HOME/.cache/grpc
+    - PROTOBUF_ROOT: $HOME/.cache/protobuf
     - BOOST_LIBRARY_DIR: $HOME/.cache/boost
     - BOOST_MIN: 106100 # careful: hard coded below
     - GRAYBAT_ROOT: $TRAVIS_BUILD_DIR
-    - OMP_NUM_THREADS: 4 # ignored in thread layer
   matrix:
     - COMPILER=gcc  STRATEGY=""
-    #- COMPILER=clang STRATEGY=""
 
 before_install:
   - mkdir -p $HOME/build
-
-  #- export CMAKE_FLAGS="-DALPAKA_ACC_"$STRATEGY"_ENABLE=ON"
   - export CMAKE_FLAGS="-DCMAKE_CXX_FLAGS=\"-Werror\""
   - if [ "$COMPILER" == "gcc" ]; then
         echo "Using g++-6";
@@ -113,12 +113,46 @@ install:
     else
       echo "ZeroMQ directory already exists";
     fi
+  #############################################################################
+  # PROTOBUF
+  #############################################################################
+  - export CMAKE_PREFIX_PATH=$PROTOBUF_ROOT:$CMAKE_PREFIX_PATH
+  - echo $CMAKE_PREFIX_PATH
+  - tree $PROTOBUF_ROOT
+  - if [ ! "$(ls -A $PROTOBUF_ROOT)" ]; then
+      cd /tmp/;
+      travis_retry git clone https://github.com/google/protobuf.git;
+      cd /tmp/protobuf/;
+      ./autogen.sh;
+      mkdir -p $PROTOBUF_ROOT;
+      ./configure --prefix=$PROTOBUF_ROOT;
+      make check;
+      make install;
+    else
+      echo "Protobuf directory already exists";
+    fi
+  #############################################################################
+  # GRPC                                                                      #
+  #############################################################################
+  - export CMAKE_PREFIX_PATH=$GRPC_ROOT:$CMAKE_PREFIX_PATH
+  - echo $CMAKE_PREFIX_PATH
+  - tree $GRPC_ROOT
+  - if [ ! "$(ls -A $GRPC_ROOT)" ]; then
+      cd /tmp/;
+      travis_retry git clone -b $(curl -L http://grpc.io/release) https://github.com/grpc/grpc;
+      cd /tmp/grpc/;
+      git submodule update --init;
+      mkdir -p $GRPC_ROOT;
+      make prefix=$GRPC_ROOT install;
+    else
+      echo "Grpc directory already exists";
+    fi
 
 script:
   - cd $HOME/build
   - cmake $CMAKE_FLAGS $GRAYBAT_ROOT
   - make check
-  - make gbZMQSignaling
-  - ./gbZMQSignaling&
+  - make signaling
+  - ./signaling&
   - ctest --output-on-failure
-  - killall gbZMQSignaling
+  - killall signaling

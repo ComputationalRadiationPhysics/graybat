@@ -113,7 +113,6 @@ struct ZMQ : public graybat::communicationPolicy::socket::Base<ZMQ> {
   ::zmq::context_t zmqContext;
   Socket recvSocket;
   Socket ctrlSocket;
-  Socket signalingSocket;
   std::vector<Socket> sendSockets;
   std::vector<Socket> ctrlSendSockets;
 
@@ -123,13 +122,17 @@ struct ZMQ : public graybat::communicationPolicy::socket::Base<ZMQ> {
 
   // Construct
   ZMQ(Config const config)
-      : SocketBase(config), zmqContext(1), recvSocket(zmqContext, ZMQ_PULL),
-        ctrlSocket(zmqContext, ZMQ_PULL), signalingSocket(zmqContext, ZMQ_REQ),
-        peerUri(bindToNextFreePort(recvSocket, config.peerUri)),
-        ctrlUri(bindToNextFreePort(ctrlSocket, config.peerUri)) {
+      : SocketBase(config)
+      , zmqContext(1)
+      , recvSocket(zmqContext, ZMQ_PULL)
+      , ctrlSocket(zmqContext, ZMQ_PULL)
+      , peerUri(bindToNextFreePort(recvSocket, config.peerUri))
+      , ctrlUri(bindToNextFreePort(ctrlSocket, config.peerUri))
+  {
 
-    // std::cout << "PeerUri: " << peerUri << std::endl;
-    SocketBase::init();
+      //std::cout << "--> ZMQ" << std::endl;
+      SocketBase::init();
+      //std::cout << "<-- ZMQ" << std::endl;
   }
 
   // Copy constructor
@@ -161,8 +164,8 @@ struct ZMQ : public graybat::communicationPolicy::socket::Base<ZMQ> {
   }
 
   template <typename T_Socket>
-  void connectToSocket(T_Socket &socket, std::string const signalingUri) {
-    socket.connect(signalingUri.c_str());
+  void connectToSocket(T_Socket &socket, std::string const uri) {
+    socket.connect(uri.c_str());
   }
 
   template <typename T_Socket>
@@ -191,25 +194,26 @@ struct ZMQ : public graybat::communicationPolicy::socket::Base<ZMQ> {
     socket.send(data);
   }
 
-  Uri bindToNextFreePort(Socket &socket, const std::string peerUri) {
-    std::string peerBaseUri = peerUri.substr(0, peerUri.rfind(":"));
-    unsigned peerBasePort = std::stoi(peerUri.substr(peerUri.rfind(":") + 1));
-    bool connected = false;
+  Uri bindToNextFreePort(Socket& socket, const std::string peerUri)
+  {
+      std::string peerBaseUri = peerUri.substr(0, peerUri.rfind(":"));
+      unsigned peerBasePort = std::stoi(peerUri.substr(peerUri.rfind(":") + 1));
+      bool connected = false;
 
-    std::string uri;
-    while (!connected) {
-      try {
-        uri = peerBaseUri + ":" + std::to_string(peerBasePort);
-        socket.bind(uri.c_str());
-        connected = true;
-      } catch (::zmq::error_t e) {
-        // std::cout << e.what() << ". PeerUri \"" << uri << "\". Try to
-        // increment port and rebind." << std::endl;
-        peerBasePort++;
+      std::string uri;
+      while (!connected) {
+          try {
+              uri = peerBaseUri + ":" + std::to_string(peerBasePort);
+              socket.bind(uri.c_str());
+              connected = true;
+          } catch (::zmq::error_t e) {
+              // std::cout << e.what() << ". PeerUri \"" << uri << "\". Try to
+              // increment port and rebind." << std::endl;
+              peerBasePort++;
+          }
       }
-    }
 
-    return uri;
+      return uri;
   }
 
 }; // class ZMQ

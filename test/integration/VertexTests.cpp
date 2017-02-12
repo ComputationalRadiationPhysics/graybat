@@ -56,7 +56,7 @@ using BMPICage   = graybat::Cage<BMPI, GP, Serialization >;
 using ZMQConfig  = ZMQ::Config;
 using BMPIConfig = BMPI::Config;
 
-ZMQConfig zmqConfig = {"tcp://127.0.0.1:5000",
+ZMQConfig zmqConfig = {"localhost:5000",
                        "tcp://127.0.0.1:5001",
                        static_cast<size_t>(std::stoi(std::getenv("OMPI_COMM_WORLD_SIZE"))),
 					   "context_vertex_test"};

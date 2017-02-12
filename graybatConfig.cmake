@@ -1,5 +1,5 @@
 #
-# Copyright 2016 Erik Zenker
+# Copyright 2016-2017 Erik Zenker
 #
 # This file is part of Graybat.
 #
@@ -20,8 +20,9 @@
 
 # - Config file for the graybat package
 # It defines the following variables
-#  graybat_INCLUDE_DIRS - include directories for FooBar
-#  graybat_LIBRARIES    - libraries to link against
+#  graybat_INCLUDE_DIRS    - include directories for Graybat
+#  graybat_LIBRARIES       - libraries to link against
+#  graybat_GENERATED_FILES - files to add to targets using Graybat
 
 ###############################################################################
 # graybat
@@ -75,3 +76,26 @@ set(graybat_LIBRARIES ${graybat_LIBRARIES} ${MPI_CXX_LIBRARIES})
 ################################################################################
 find_package(Threads MODULE)
 set(graybat_LIBRARIES ${graybat_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+
+################################################################################
+# Find Protobuf
+################################################################################
+find_package(Protobuf REQUIRED)
+set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${PROTOBUF_INCLUDE_DIRS})
+set(graybat_LIBRARIES ${graybat_LIBRARIES} ${PROTOBUF_LIBRARIES})
+
+################################################################################
+# Find GRPC
+################################################################################
+find_package(GRPC REQUIRED)
+set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${GRPC_INCLUDE_DIRS})
+set(graybat_LIBRARIES ${graybat_LIBRARIES} ${GRPC_LIBRARIES})
+
+###############################################################################
+# Generate files
+###############################################################################
+set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
+file(GLOB ProtoFiles "${CMAKE_CURRENT_SOURCE_DIR}/utils/protos/*.proto")
+PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS ${ProtoFiles})
+PROTOBUF_GENERATE_GRPC_CPP(GRPC_SRCS GRPC_HDRS ${ProtoFiles})
+set(graybat_GENERATED_FILES ${GRPC_SRCS} ${PROTO_SRCS})

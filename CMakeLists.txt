@@ -79,6 +79,7 @@ if(CCACHE_FOUND)
   set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
 endif(CCACHE_FOUND)
 
+
 ###############################################################################
 # Targets
 ###############################################################################
@@ -90,12 +91,12 @@ target_link_libraries(benchmark ${LIBS})
 
 # Test cases
 file(GLOB TESTS test/integration/*.cpp)
-add_executable(check EXCLUDE_FROM_ALL ${TESTS})
+add_executable(check EXCLUDE_FROM_ALL ${TESTS} ${graybat_GENERATED_FILES})
 target_link_libraries(check ${LIBS})
 
 # Fast testing
 file(GLOB TESTSFAST test/integration/main.cpp test/integration/CommunicationPolicyTests.cpp)
-add_executable(checkFast EXCLUDE_FROM_ALL ${TESTSFAST})
+add_executable(checkFast EXCLUDE_FROM_ALL ${TESTSFAST} ${graybat_GENERATED_FILES})
 set_property(TARGET checkFast PROPERTY CXX_STANDARD 14)
 target_link_libraries(checkFast ${LIBS})
 
@@ -104,17 +105,17 @@ add_custom_target(example)
 file(GLOB EXAMPLES  example/*.cpp)
 foreach(EXAMPLE ${EXAMPLES})
 	get_filename_component(DEP ${EXAMPLE} NAME_WE)
-	add_executable(${DEP} EXCLUDE_FROM_ALL ${EXAMPLE})
+	add_executable(${DEP} EXCLUDE_FROM_ALL ${EXAMPLE} ${graybat_GENERATED_FILES})
     set_property(TARGET ${DEP} PROPERTY CXX_STANDARD 14)
 	target_link_libraries(${DEP} LINK_INTERFACE_LIBRARIES graybat)
-	target_link_libraries(${DEP} ${LIBS})	
+	target_link_libraries(${DEP} ${LIBS})
 	add_dependencies(example ${DEP})
 endforeach(EXAMPLE)
 
-# ZMQ signaling server
-add_executable(gbZMQSignaling EXCLUDE_FROM_ALL utils/zmq_signaling_server.cpp )
-set_property(TARGET gbZMQSignaling PROPERTY CXX_STANDARD 11)
-target_link_libraries(gbZMQSignaling ${LIBS})
+# GRPC signaling server
+add_executable( signaling EXCLUDE_FROM_ALL utils/signaling_server.cpp ${graybat_GENERATED_FILES})
+set_property(TARGET signaling PROPERTY CXX_STANDARD 11)
+target_link_libraries(signaling ${LIBS})
 
 # CTest
 enable_testing()
@@ -140,7 +141,7 @@ install(
   DESTINATION "lib/graybat"
 )
 
-install( TARGETS gbZMQSignaling
+install( TARGETS signaling
           RUNTIME DESTINATION "bin"
         )
 
