@@ -81,7 +81,7 @@ BOOST_AUTO_TEST_CASE( context ){
     hana::for_each(communicationPolicies, [](auto cpRef){
 	    // Test setup
 	    using CP      = typename decltype(cpRef)::type;
-	    using Context = typename CP::Context;	    
+	    using Context = typename CP::Context;
 	    CP& cp = cpRef.get();
 
             // Test run
@@ -95,7 +95,7 @@ BOOST_AUTO_TEST_CASE( context ){
             }
 
 	});
-    
+
 }
 
 
@@ -232,7 +232,7 @@ BOOST_AUTO_TEST_CASE( async_send_recv){
                 }
               }
             }
-	    
+
 	});
 
 }
@@ -295,7 +295,7 @@ BOOST_AUTO_TEST_CASE( send_recv_order ){
                 }
               }
             }
-	    
+
 	});
 
 }
@@ -323,14 +323,14 @@ BOOST_AUTO_TEST_CASE( gather ){
 
             // Test run
             {
-    
+
                 Context context = cp.getGlobalContext();
 
                 const unsigned nElements = 10;
                 unsigned value = 9;
 
                 for(unsigned run_i = 0; run_i < nRuns; ++run_i){
-    
+
                     std::vector<Event> events;
 
                     std::vector<unsigned> send (nElements, value);
@@ -347,13 +347,13 @@ BOOST_AUTO_TEST_CASE( gather ){
 
                     for(Event &e : events){
                         e.wait();
-	    
+
                     }
 
                 }
-		
+
             }
-	    
+
         });
 
 }
@@ -369,12 +369,12 @@ BOOST_AUTO_TEST_CASE( gather_var ){
 
             // Test run
             {
-    
+
                 Context context = cp.getGlobalContext();
                 std::vector<unsigned> recvCount;
-                
+
                 for(unsigned run_i = 0; run_i < nRuns; ++run_i){
-    
+
                     std::vector<Event> events;
 
                     std::vector<unsigned> send (context.getVAddr() + 1, context.getVAddr());
@@ -389,20 +389,20 @@ BOOST_AUTO_TEST_CASE( gather_var ){
                                 BOOST_CHECK_EQUAL(recv.at(i), vAddr);
                                 i++;
                             }
-                            
+
                         }
 
                     }
 
                     for(Event &e : events){
                         e.wait();
-	    
+
                     }
 
                 }
-		
+
             }
-	    
+
         });
 
 }
@@ -416,14 +416,14 @@ BOOST_AUTO_TEST_CASE( all_gather ){
             CP &cp = cpRef.get();
             // Test run
             {
-    
+
                 Context context = cp.getGlobalContext();
 
                 const unsigned nElements = 10;
                 unsigned value = 9;
 
                 for(unsigned run_i = 0; run_i < nRuns; ++run_i){
-    
+
                     std::vector<Event> events;
 
                     std::vector<unsigned> send (nElements, value);
@@ -438,13 +438,13 @@ BOOST_AUTO_TEST_CASE( all_gather ){
 
                     for(Event &e : events){
                         e.wait();
-	    
+
                     }
 
                 }
-		
+
             }
-	    
+
         });
 
 }
@@ -459,12 +459,12 @@ BOOST_AUTO_TEST_CASE( all_gather_var ){
             CP &cp = cpRef.get();
             // Test run
             {
-    
+
                 Context context = cp.getGlobalContext();
                 std::vector<unsigned> recvCount;
-                
+
                 for(unsigned run_i = 0; run_i < nRuns; ++run_i){
-    
+
                     std::vector<Event> events;
 
                     std::vector<unsigned> send (context.getVAddr() + 1, context.getVAddr());
@@ -478,19 +478,19 @@ BOOST_AUTO_TEST_CASE( all_gather_var ){
                             BOOST_CHECK_EQUAL(recv.at(i), vAddr);
                             i++;
                         }
-                            
+
                     }
 
 
                     for(Event &e : events){
                         e.wait();
-	    
+
                     }
 
                 }
-		
+
             }
-	    
+
         });
 
 }
@@ -505,19 +505,19 @@ BOOST_AUTO_TEST_CASE( scatter ){
 
             // Test run
             {
-    
+
                 Context context = cp.getGlobalContext();
 
                 const unsigned nElements = 10;
                 unsigned value = 9;
 
                 for(unsigned run_i = 0; run_i < nRuns; ++run_i){
-    
+
                     std::vector<Event> events;
 
                     std::vector<unsigned> send (nElements * context.size(), value);
                     std::vector<unsigned> recv (nElements, 0);
-                    
+
                     cp.scatter(0, context, send, recv);
 
                     if(context.getVAddr() == 0){
@@ -529,13 +529,13 @@ BOOST_AUTO_TEST_CASE( scatter ){
 
                     for(Event &e : events){
                         e.wait();
-	    
+
                     }
 
                 }
-		
+
             }
-	    
+
         });
 
 }
@@ -550,19 +550,19 @@ BOOST_AUTO_TEST_CASE( reduce ){
 
             // Test run
             {
-    
+
                 Context context = cp.getGlobalContext();
 
                 const unsigned nElements = 10;
                 unsigned value = 9;
 
                 for(unsigned run_i = 0; run_i < nRuns; ++run_i){
-    
+
                     std::vector<Event> events;
 
                     std::vector<unsigned> send (nElements, value);
                     std::vector<unsigned> recv (nElements, 0);
-                    
+
                     cp.reduce(0, context, std::plus<unsigned>(), send, recv);
 
                     if(context.getVAddr() == 0){
@@ -574,13 +574,13 @@ BOOST_AUTO_TEST_CASE( reduce ){
 
                     for(Event &e : events){
                         e.wait();
-	    
+
                     }
 
                 }
-		
+
             }
-	    
+
         });
 
 }
@@ -618,7 +618,7 @@ BOOST_AUTO_TEST_CASE( broadcast ){
                 }
             }
             }
-	    
+
         });
 
 }
