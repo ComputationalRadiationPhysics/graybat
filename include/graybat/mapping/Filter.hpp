@@ -19,82 +19,79 @@
  */
 
 #pragma once
-#include <boost/core/ignore_unused.hpp> /* boost::ignore_unused */
 #include <algorithm> /* std::sort*/
-#include <vector>    /* std::vector */
-#include <memory>    /* std::shared_memory */
+#include <boost/core/ignore_unused.hpp> /* boost::ignore_unused */
+#include <memory> /* std::shared_memory */
+#include <vector> /* std::vector */
 
 namespace graybat {
-    
-    namespace mapping {
-    
-	struct Filter {
 
-            const size_t vertexTag;
-            
-            Filter(size_t vertexTag):
-                vertexTag(vertexTag){
+namespace mapping {
 
+struct Filter {
+
+    const size_t vertexTag;
+
+    Filter(size_t vertexTag)
+        : vertexTag(vertexTag)
+    {
+    }
+
+    template <typename T_Cage>
+    std::vector<typename T_Cage::Vertex>
+    operator()(const unsigned processID, const unsigned processCount, T_Cage& cage)
+    {
+
+        using CommunicationPolicy = typename T_Cage::CommunicationPolicy;
+        using Vertex = typename T_Cage::Vertex;
+        using Context = typename CommunicationPolicy::Context;
+        using VAddr = typename CommunicationPolicy::VAddr;
+
+        boost::ignore_unused(processID);
+        boost::ignore_unused(processCount);
+
+        std::vector<VAddr> peersWithSameTag;
+
+        std::shared_ptr<CommunicationPolicy> comm = cage.getCommunicationPolicy();
+        Context context = comm->getGlobalContext();
+
+        // Get the information about who wants to
+        // host vertices with the same tag
+        std::array<size_t, 1> sendData{ vertexTag };
+        for (auto const& vAddr : context) {
+            comm->asyncSend(vAddr, 0, context, sendData);
+        }
+
+        for (auto const& vAddr : context) {
+            std::array<size_t, 1> recvData{ 0 };
+            comm->recv(vAddr, 0, context, recvData);
+            if (recvData[0] == vertexTag) {
+                peersWithSameTag.push_back(vAddr);
             }
-        
-	    template<typename T_Cage>
-	    std::vector<typename T_Cage::Vertex> operator()(const unsigned processID, const unsigned processCount, T_Cage &cage){
+        }
 
-                using CommunicationPolicy = typename T_Cage::CommunicationPolicy;
-                using Vertex              = typename T_Cage::Vertex;
-                using Context             = typename CommunicationPolicy::Context;
-                using VAddr               = typename CommunicationPolicy::VAddr;
+        // Distribute vertices to peers with same tag
+        std::sort(peersWithSameTag.begin(), peersWithSameTag.end());
 
-                boost::ignore_unused(processID);
-                boost::ignore_unused(processCount);
+        const size_t nPeers = peersWithSameTag.size();
+        size_t peer_i = 0;
 
-                std::vector<VAddr> peersWithSameTag;
-                
-                std::shared_ptr<CommunicationPolicy> comm = cage.getCommunicationPolicy();
-                Context context = comm->getGlobalContext();
+        std::vector<Vertex> vertices = cage.getVertices();
+        std::vector<Vertex> myVertices;
 
-                // Get the information about who wants to
-                // host vertices with the same tag
-                std::array<size_t, 1> sendData{vertexTag};                
-                for(auto const &vAddr : context){
-                    comm->asyncSend(vAddr, 0, context, sendData);
+        for (size_t i = 0; i < vertices.size(); ++i) {
+            if (vertices[i]().tag == vertexTag) {
+                if (peersWithSameTag.at(peer_i) == context.getVAddr()) {
+                    myVertices.push_back(vertices[i]);
                 }
+                peer_i = (peer_i + 1 % nPeers);
+            }
+        }
 
-                for(auto const &vAddr : context){                    
-                    std::array<size_t, 1> recvData{0};
-                    comm->recv(vAddr, 0, context, recvData);
-                    if(recvData[0] == vertexTag){
-                        peersWithSameTag.push_back(vAddr);
-                    }
-                }
+        return myVertices;
+    }
+};
 
-                // Distribute vertices to peers with same tag
-                std::sort(peersWithSameTag.begin(), peersWithSameTag.end());
+} /* mapping */
 
-                const size_t nPeers = peersWithSameTag.size();
-                size_t peer_i = 0;
-                
-                std::vector<Vertex> vertices = cage.getVertices();
-                std::vector<Vertex> myVertices;
-                
-                for(size_t i = 0; i < vertices.size(); ++i){
-                    if(vertices[i]().tag == vertexTag){
-                        if(peersWithSameTag.at(peer_i) == context.getVAddr()){
-                            myVertices.push_back(vertices[i]);
-                            
-                        }
-                        peer_i = (peer_i + 1 % nPeers);
-                        
-                    }
-
-                }
-                
- 		return myVertices;
-
-	    }
-
-	};
-
-    } /* mapping */
-    
 } /* graybat */

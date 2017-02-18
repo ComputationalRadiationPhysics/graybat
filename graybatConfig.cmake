@@ -95,7 +95,7 @@ set(graybat_LIBRARIES ${graybat_LIBRARIES} ${GRPC_LIBRARIES})
 # Generate files
 ###############################################################################
 set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
-file(GLOB ProtoFiles "${CMAKE_CURRENT_SOURCE_DIR}/utils/protos/*.proto")
+file(GLOB ProtoFiles "include/graybat/utils/protos/*.proto")
 PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS ${ProtoFiles})
 PROTOBUF_GENERATE_GRPC_CPP(GRPC_SRCS GRPC_HDRS ${ProtoFiles})
 set(graybat_GENERATED_FILES ${GRPC_SRCS} ${PROTO_SRCS})

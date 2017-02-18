@@ -45,7 +45,8 @@ using grpc::Status;
 class GrpcSignalingClient {
   public:
     GrpcSignalingClient(const Uri& serverUri)
-        : stub_(Signaling::NewStub(grpc::CreateChannel(serverUri, grpc::InsecureChannelCredentials())))
+        : stub_(Signaling::NewStub(
+              grpc::CreateChannel(serverUri, grpc::InsecureChannelCredentials())))
     {
     }
 
@@ -93,15 +94,14 @@ inline bool GrpcSignalingClient::LeaveContext(const LeaveRequest& request, Leave
     ClientContext context;
     auto status = stub_->LeaveContext(&context, request, reply);
 
-
     return checkStatus(status);
 }
 
 inline bool GrpcSignalingClient::checkStatus(const Status& status)
 {
     if (!status.ok()) {
-        std::cout << "rpc failed: " << status.error_code() << " "
-                  << status.error_message() << std::endl;
+        std::cout << "rpc failed: " << status.error_code() << " " << status.error_message()
+                  << std::endl;
         return false;
     }
     return true;

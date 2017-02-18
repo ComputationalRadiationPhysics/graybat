@@ -30,51 +30,66 @@ namespace serializationPolicy {
 namespace {
 /// models concept::ResizeableContainer
 class BytePack {
-public:
-  using value_type = uint8_t;
+  public:
+    using value_type = uint8_t;
 
-  BytePack(const std::shared_ptr<std::vector<value_type>> &ptr) : ptr(ptr) {}
+    BytePack(const std::shared_ptr<std::vector<value_type>>& ptr)
+        : ptr(ptr)
+    {
+    }
 
-  value_type *data() const { return ptr->data(); }
+    value_type* data() const
+    {
+        return ptr->data();
+    }
 
-  std::size_t size() const { return ptr->size(); }
+    std::size_t size() const
+    {
+        return ptr->size();
+    }
 
-  void resize(std::size_t newSize) { ptr->resize(newSize); }
+    void resize(std::size_t newSize)
+    {
+        ptr->resize(newSize);
+    }
 
-private:
-  std::shared_ptr<std::vector<value_type>> ptr;
+  private:
+    std::shared_ptr<std::vector<value_type>> ptr;
 };
 }
 
 /// models concept::SerializationPolicy
 class ByteCast {
-public:
-  using SerializationType = BytePack;
+  public:
+    using SerializationType = BytePack;
 
-  /// requires concept::ContiguousContainer<T>
-  template <typename T> auto static serialize(T const &data) -> BytePack {
-    BytePack bytes{std::make_shared<std::vector<uint8_t>>(sizeInBytes(data))};
-    std::memcpy(bytes.data(), data.data(), sizeInBytes(data));
-    return bytes;
-  }
+    /// requires concept::ContiguousContainer<T>
+    template <typename T> auto static serialize(T const& data) -> BytePack
+    {
+        BytePack bytes{ std::make_shared<std::vector<uint8_t>>(sizeInBytes(data)) };
+        std::memcpy(bytes.data(), data.data(), sizeInBytes(data));
+        return bytes;
+    }
 
-  /// requires concept::ContiguousContainer<T>
-  template <typename T> auto static prepare(T const &data) -> BytePack {
-    return BytePack(std::make_shared<std::vector<uint8_t>>(sizeInBytes(data)));
-  }
+    /// requires concept::ContiguousContainer<T>
+    template <typename T> auto static prepare(T const& data) -> BytePack
+    {
+        return BytePack(std::make_shared<std::vector<uint8_t>>(sizeInBytes(data)));
+    }
 
-  /// requires concept::ContiguousContainer<T>
-  template <typename T>
-  auto static restore(T &data, BytePack const &serialized) -> void {
-    assert(sizeInBytes(data) == sizeInBytes(serialized));
-    std::memcpy(data.data(), serialized.data(), sizeInBytes(serialized));
-  }
+    /// requires concept::ContiguousContainer<T>
+    template <typename T> auto static restore(T& data, BytePack const& serialized) -> void
+    {
+        assert(sizeInBytes(data) == sizeInBytes(serialized));
+        std::memcpy(data.data(), serialized.data(), sizeInBytes(serialized));
+    }
 
-private:
-  /// requires concept::ContiguousContainer<T>
-  template <typename T> auto static sizeInBytes(T const &t) -> std::size_t {
-    return (t.size() * sizeof(typename T::value_type));
-  }
+  private:
+    /// requires concept::ContiguousContainer<T>
+    template <typename T> auto static sizeInBytes(T const& t) -> std::size_t
+    {
+        return (t.size() * sizeof(typename T::value_type));
+    }
 };
 }
 }

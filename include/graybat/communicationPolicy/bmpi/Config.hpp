@@ -21,17 +21,16 @@
 #pragma once
 
 namespace graybat {
-    
-    namespace communicationPolicy {
-    
-        namespace bmpi {
 
-            struct Config {
+namespace communicationPolicy {
 
-            };
+namespace bmpi {
 
-        } // bmpi
-        
-    } // namespace communicationPolicy
-	
+struct Config {
+};
+
+} // bmpi
+
+} // namespace communicationPolicy
+
 } // namespace graybat
