@@ -26,9 +26,9 @@
 #include <condition_variable> /* std::condition_variable */
 #include <functional> /* std::function */
 #include <map> /* std::map */
-#include <mutex>              /* std::mutex, std::lock_guard, std::unique_lock*/
-#include <queue>              /* std::queue */
-#include <utility>            /* std::forward */
+#include <mutex> /* std::mutex, std::lock_guard, std::unique_lock*/
+#include <queue> /* std::queue */
+#include <utility> /* std::forward */
 
 // BOOST
 #include <boost/optional.hpp>

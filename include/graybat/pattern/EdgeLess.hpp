@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-# pragma once
+#pragma once
 
 // STL
 #include <utility> /* std::make_pair */
@@ -28,33 +28,31 @@
 
 namespace graybat {
 
-  namespace pattern {
+namespace pattern {
 
+template <typename T_GraphPolicy> struct EdgeLess {
 
-      template<typename T_GraphPolicy>
-      struct EdgeLess {
+    using GraphPolicy = T_GraphPolicy;
+    using VertexDescription = graybat::graphPolicy::VertexDescription<GraphPolicy>;
+    using EdgeDescription = graybat::graphPolicy::EdgeDescription<GraphPolicy>;
+    using GraphDescription = graybat::graphPolicy::GraphDescription<GraphPolicy>;
 
-          using GraphPolicy       = T_GraphPolicy;
-          using VertexDescription = graybat::graphPolicy::VertexDescription<GraphPolicy>;
-          using EdgeDescription   = graybat::graphPolicy::EdgeDescription<GraphPolicy>;
-          using GraphDescription  = graybat::graphPolicy::GraphDescription<GraphPolicy>;
+    const unsigned verticesCount;
 
-          const unsigned verticesCount;
+    EdgeLess(const unsigned verticesCount)
+        : verticesCount(verticesCount)
+    {
+    }
 
-          EdgeLess(const unsigned verticesCount) :
-              verticesCount(verticesCount){
+    GraphDescription operator()()
+    {
+        std::vector<VertexDescription> vertices(verticesCount);
+        assert(vertices.size() == verticesCount);
+        std::vector<EdgeDescription> edges;
+        return std::make_pair(vertices, edges);
+    }
+};
 
-          }
-      
-          GraphDescription operator()(){
-              std::vector<VertexDescription> vertices(verticesCount);
-              assert(vertices.size() == verticesCount);
-              std::vector<EdgeDescription> edges;
-              return std::make_pair(vertices,edges);
-          }
-
-      };
-      
-  } /* pattern */
+} /* pattern */
 
 } /* graybat */

@@ -18,7 +18,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-# pragma once
+#pragma once
 
 // STL
 #include <utility> /* std::make_pair */
@@ -28,55 +28,55 @@
 
 namespace graybat {
 
-    namespace pattern {
+namespace pattern {
 
-        template<typename T_GraphPolicy>    
-        struct HyperCube {
+template <typename T_GraphPolicy> struct HyperCube {
 
-            using GraphPolicy       = T_GraphPolicy;
-            using VertexDescription = graybat::graphPolicy::VertexDescription<GraphPolicy>;
-            using EdgeDescription   = graybat::graphPolicy::EdgeDescription<GraphPolicy>;
-            using GraphDescription  = graybat::graphPolicy::GraphDescription<GraphPolicy>;
-            using EdgeProperty      = graybat::graphPolicy::EdgeProperty<GraphPolicy>;
-            using VertexProperty    = graybat::graphPolicy::VertexProperty<GraphPolicy>;  
-            
-            const unsigned dimension;
+    using GraphPolicy = T_GraphPolicy;
+    using VertexDescription = graybat::graphPolicy::VertexDescription<GraphPolicy>;
+    using EdgeDescription = graybat::graphPolicy::EdgeDescription<GraphPolicy>;
+    using GraphDescription = graybat::graphPolicy::GraphDescription<GraphPolicy>;
+    using EdgeProperty = graybat::graphPolicy::EdgeProperty<GraphPolicy>;
+    using VertexProperty = graybat::graphPolicy::VertexProperty<GraphPolicy>;
 
-            HyperCube(const unsigned dimension) :
-                dimension(dimension){
+    const unsigned dimension;
 
-            }
-      
-            unsigned hammingDistance(unsigned a, unsigned b){
-                unsigned abXor = a xor b;
-                return (unsigned) __builtin_popcount(abXor);
-            }
+    HyperCube(const unsigned dimension)
+        : dimension(dimension)
+    {
+    }
 
-            GraphDescription operator()(){
-                assert(dimension >= 1);
-                std::vector<EdgeDescription> edges;
+    unsigned hammingDistance(unsigned a, unsigned b)
+    {
+        unsigned abXor = a xor b;
+        return (unsigned)__builtin_popcount(abXor);
+    }
 
-                unsigned verticesCount = pow(2, dimension);
-                std::vector<VertexDescription> vertices(verticesCount);
+    GraphDescription operator()()
+    {
+        assert(dimension >= 1);
+        std::vector<EdgeDescription> edges;
 
-                for(unsigned i = 0; i < vertices.size(); ++i){
-                    vertices.at(i) = std::make_pair(i, VertexProperty());
+        unsigned verticesCount = pow(2, dimension);
+        std::vector<VertexDescription> vertices(verticesCount);
+
+        for (unsigned i = 0; i < vertices.size(); ++i) {
+            vertices.at(i) = std::make_pair(i, VertexProperty());
+        }
+
+        for (unsigned i = 0; i < vertices.size(); ++i) {
+            for (unsigned j = 0; j < vertices.size(); ++j) {
+                if (hammingDistance(i, j) == 1) {
+                    edges.push_back(std::make_pair(
+                        std::make_pair(vertices[i].first, vertices[j].first), EdgeProperty()));
                 }
-                
-                for(unsigned i = 0; i < vertices.size(); ++i){
-                    for(unsigned j = 0; j < vertices.size(); ++j){
-                        if(hammingDistance(i, j) == 1){
-                            edges.push_back(std::make_pair(std::make_pair(vertices[i].first, vertices[j].first), EdgeProperty()));
-                        }
-
-                    }
-                }
-    
-                return std::make_pair(vertices,edges);
             }
+        }
 
-        };
+        return std::make_pair(vertices, edges);
+    }
+};
 
-    } /* pattern */
+} /* pattern */
 
 } /* graybat */

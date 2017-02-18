@@ -21,7 +21,7 @@
 #pragma once
 
 namespace graybat {
-namespace concepts {
+namespace concept {
 // //
 // // Cage concepts
 // //
@@ -39,8 +39,10 @@ namespace concepts {
 //    }
 //
 //
-//    template <T> concept bool DistributionFunctor = requires(T t, unsigned peerID, unsigned contextSize, concept::CommunicationPolicy comm) {
-//      { t(peerID, contextSize, comm) } -> std::vector<concept::CommunicationPolicy::Vertex>
+//    template <T> concept bool DistributionFunctor = requires(T t, unsigned
+//    peerID, unsigned contextSize, concept::CommunicationPolicy comm) {
+//      { t(peerID, contextSize, comm) } ->
+//      std::vector<concept::CommunicationPolicy::Vertex>
 //    }
 //
 //

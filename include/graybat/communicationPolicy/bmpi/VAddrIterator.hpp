@@ -20,58 +20,57 @@
 
 #pragma once
 
-// GRAYBAT
+// Graybat
 #include <graybat/communicationPolicy/Traits.hpp>
 
 namespace graybat {
-    
-    namespace communicationPolicy {
 
-        namespace bmpi {
+namespace communicationPolicy {
 
-            template <typename T_CP>
-            struct VAddrIterator {
+namespace bmpi {
 
-                using VAddr = typename graybat::communicationPolicy::VAddr<T_CP>;
-                using CP    = T_CP;
-                
-                VAddr current;
+template <typename T_CP> struct VAddrIterator {
 
-                VAddrIterator(VAddr current) :
-                    current(current){
-                }
+    using VAddr = typename graybat::communicationPolicy::VAddr<T_CP>;
+    using CP = T_CP;
 
-                auto operator++()
-                    -> VAddrIterator<CP>& {
-                    current++;
-                    return *this;
-                }
+    VAddr current;
 
-                auto operator--()
-                    -> VAddrIterator<CP>& {
-                    current--;
-                    return *this;
-                }
+    VAddrIterator(VAddr current)
+        : current(current)
+    {
+    }
 
-                auto operator==(VAddrIterator<CP> &otherIter) const 
-                    -> bool {
-                    return otherIter.current == current;
-                }
+    auto operator++() -> VAddrIterator<CP>&
+    {
+        current++;
+        return *this;
+    }
 
-                auto operator!=(VAddrIterator<CP> &otherIter) const 
-                    -> bool {
-                    return otherIter.current != current;
-                }
+    auto operator--() -> VAddrIterator<CP>&
+    {
+        current--;
+        return *this;
+    }
 
-                auto operator*() const
-                -> VAddr {
-                    return current;
-                }
-                
-            };
+    auto operator==(VAddrIterator<CP>& otherIter) const -> bool
+    {
+        return otherIter.current == current;
+    }
 
-        } // namespace bmpi
+    auto operator!=(VAddrIterator<CP>& otherIter) const -> bool
+    {
+        return otherIter.current != current;
+    }
 
-    } // namespace communicationPolicy
+    auto operator*() const -> VAddr
+    {
+        return current;
+    }
+};
+
+} // namespace bmpi
+
+} // namespace communicationPolicy
 
 } // namespace graybat

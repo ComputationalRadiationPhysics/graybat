@@ -39,7 +39,7 @@ function(PROTOBUF_GENERATE_GRPC_CPP SRCS HDRS)
             endif()
         endforeach()
     else()
-        set(_protobuf_include_path -I ${CMAKE_CURRENT_SOURCE_DIR})
+        set(_protobuf_include_path -I ../../../../../utils/cmake/modules)
     endif()
 
     if(DEFINED PROTOBUF_IMPORT_DIRS)

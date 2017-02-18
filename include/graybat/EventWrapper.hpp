@@ -37,33 +37,43 @@ namespace graybat {
  */
 // models graybat::concept::Event
 template <typename T_Event> class EventWrapper {
-  using Tag = unsigned;
-  using VAddr = unsigned;
+    using Tag = unsigned;
+    using VAddr = unsigned;
 
-public:
-  EventWrapper(T_Event event, std::function<void()> const &onReady)
-      : event(event), onReady(onReady) {}
-
-  void wait() {
-    event.wait();
-    onReady();
-  }
-
-  bool ready() {
-    auto isReady = event.ready();
-    if (isReady) {
-      onReady();
+  public:
+    EventWrapper(T_Event event, std::function<void()> const& onReady)
+        : event(event)
+        , onReady(onReady)
+    {
     }
-    return isReady;
-  }
 
-  VAddr source() { return event.source(); }
+    void wait()
+    {
+        event.wait();
+        onReady();
+    }
 
-  Tag getTag() { return event.getTag; }
+    bool ready()
+    {
+        auto isReady = event.ready();
+        if (isReady) {
+            onReady();
+        }
+        return isReady;
+    }
 
+    VAddr source()
+    {
+        return event.source();
+    }
 
-private:
-  T_Event event;
-  std::function<void()> onReady;
+    Tag getTag()
+    {
+        return event.getTag;
+    }
+
+  private:
+    T_Event event;
+    std::function<void()> onReady;
 };
 }

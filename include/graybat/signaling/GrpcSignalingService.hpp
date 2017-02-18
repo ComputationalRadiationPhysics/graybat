@@ -28,12 +28,11 @@
 #include <boost/core/ignore_unused.hpp>
 
 // Grpc
-#include <grpc++/grpc++.h>
 #include "signaling.grpc.pb.h"
+#include <grpc++/grpc++.h>
 
 // Graybat
 #include <graybat/signaling/GrpcSignalingTypes.hpp>
-
 
 namespace graybat {
 
@@ -55,19 +54,13 @@ struct GrpcSignalingService final : public Signaling::Service {
         ContextReply* contextReply) override;
 
     grpc::Status RequestVaddr(
-        grpc::ServerContext* context,
-        const VaddrRequest* request,
-        VaddrReply* response) override;
+        grpc::ServerContext* context, const VaddrRequest* request, VaddrReply* response) override;
 
     grpc::Status LookupVaddr(
-        grpc::ServerContext* context,
-        const VaddrLookup* request,
-        UriReply* response) override;
+        grpc::ServerContext* context, const VaddrLookup* request, UriReply* response) override;
 
     grpc::Status LeaveContext(
-        grpc::ServerContext* context,
-        const LeaveRequest* request,
-        LeaveReply* response) override;
+        grpc::ServerContext* context, const LeaveRequest* request, LeaveReply* response) override;
 
   private:
     std::mutex mtx_;
@@ -138,21 +131,20 @@ inline grpc::Status GrpcSignalingService::LookupVaddr(
         response->set_ctrl_uri(ctrlPhoneBook_[contextId][vaddr]);
 
         std::cout << "VADDR LOOKUP [contextID:" << contextId << "][remoteVAddr:" << vaddr
-                  << "]: " << phoneBook_[contextId][vaddr] << " " << ctrlPhoneBook_[contextId][vaddr]
-                  << std::endl;
+                  << "]: " << phoneBook_[contextId][vaddr] << " "
+                  << ctrlPhoneBook_[contextId][vaddr] << std::endl;
     }
 
     return grpc::Status::OK;
 }
 
-inline grpc::Status GrpcSignalingService::LeaveContext(
-    grpc::ServerContext*, const LeaveRequest* request, LeaveReply*)
+inline grpc::Status
+GrpcSignalingService::LeaveContext(grpc::ServerContext*, const LeaveRequest* request, LeaveReply*)
 {
     std::lock_guard<std::mutex> lock(mtx_);
     std::string contextName = request->context_name();
 
     auto it = contextIds_.find(contextName);
-
 
     if (it != contextIds_.end()) {
         contextIds_.erase(it);

@@ -26,12 +26,20 @@ namespace serializationPolicy {
 /// models concept::SerializationPolicy
 class Forward {
 
-public:
-  template <typename T> auto static serialize(T &data) -> T & { return data; }
+  public:
+    template <typename T> auto static serialize(T& data) -> T&
+    {
+        return data;
+    }
 
-  template <typename T> auto static prepare(T &data) -> T & { return data; }
+    template <typename T> auto static prepare(T& data) -> T&
+    {
+        return data;
+    }
 
-  template <typename T> auto static restore(T const &, T const &) -> void {}
+    template <typename T> auto static restore(T const&, T const&) -> void
+    {
+    }
 };
 }
 }

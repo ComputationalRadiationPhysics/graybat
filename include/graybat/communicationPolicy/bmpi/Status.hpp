@@ -28,25 +28,33 @@ namespace communicationPolicy {
 namespace bmpi {
 
 class Status {
-  using Tag = unsigned;
-  using VAddr = unsigned;
+    using Tag = unsigned;
+    using VAddr = unsigned;
 
-public:
-  Status(boost::mpi::status status) : status(status){};
-  VAddr source() { return status.source(); }
-  Tag tag() { return status.tag(); }
-  template <typename T> std::size_t size() {
-    auto count = status.count<T>();
-    if (count) {
-      return *count;
-    } else {
-      assert(false);
+  public:
+    Status(boost::mpi::status status)
+        : status(status){};
+    VAddr source()
+    {
+        return status.source();
     }
-    return 0;
-  }
+    Tag tag()
+    {
+        return status.tag();
+    }
+    template <typename T> std::size_t size()
+    {
+        auto count = status.count<T>();
+        if (count) {
+            return *count;
+        } else {
+            assert(false);
+        }
+        return 0;
+    }
 
-private:
-  boost::mpi::status status;
+  private:
+    boost::mpi::status status;
 };
 
 } // namespace bmpi
