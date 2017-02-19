@@ -200,6 +200,25 @@ struct Base : graybat::communicationPolicy::Base<T_CommunicationPolicy> {
         return Status{ srcVAddr, tag, result - PROTOCOL_HEADER_SIZE_IN_BYTES };
     }
 
+    /** If a message for srcVAddr and tag is available, a status object is returned.
+     *   Otherwise an empty optional is returned immediatly.
+     *
+     * @param[in]  srcVAddr   VAddr of peer that sended the message
+     * @param[in]  tag        Description of the message to better distinguish
+     *                        messages types
+     * @param[in]  context    Context in which both sender and receiver are included
+     *
+     * @return optional Status contains information if message is available
+     */
+    boost::optional<Status> asyncProbe(const VAddr srcVAddr, const Tag tag, const Context context){
+        auto result = inBox.tryProbe(MsgType::PEER, context.getID(), srcVAddr, tag);
+        if (result) {
+            return Status{ srcVAddr, tag, result - PROTOCOL_HEADER_SIZE_IN_BYTES };
+        } else {
+            return boost::none;
+        }
+    }
+
     // EVENT INTERFACE
     bool ready(const MsgID msgID, const Context context, const VAddr vAddr, const Tag tag);
 

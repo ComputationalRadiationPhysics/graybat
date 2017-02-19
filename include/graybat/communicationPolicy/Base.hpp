@@ -33,6 +33,7 @@ template <typename T_CommunicationPolicy> struct Base {
     using Tag = typename graybat::communicationPolicy::Tag<CommunicationPolicy>;
     using Context = typename graybat::communicationPolicy::Context<CommunicationPolicy>;
     using Event = typename graybat::communicationPolicy::Event<CommunicationPolicy>;
+    using Status = typename graybat::communicationPolicy::Status<CommunicationPolicy>;
 
     /***********************************************************************
      * Interface
@@ -63,6 +64,30 @@ template <typename T_CommunicationPolicy> struct Base {
     template <typename T_Recv>
     Event asyncRecv(const VAddr srcVAddr, const Tag tag, const Context context, T_Recv& recvData)
         = delete;
+
+    /** Test if message is available from peer with srcVAddr and particular tag.
+     *
+     * @param[in]  srcVAddr   VAddr of peer that sended the message
+     * @param[in]  tag        Description of the message to better distinguish messages types
+     * @param[in]  context    Context in which both sender and receiver are included
+     *
+     * @return optional Status contains information if message is available
+     */
+    Status probe(const VAddr srcVAddr, const Tag tag, const Context context) = delete;
+
+    /** Test if message is available from peer with srcVAddr and particular tag
+     *  Returns immediately.
+     *
+     * @param[in]  srcVAddr   VAddr of peer that sended the message
+     * @param[in]  tag        Description of the message to better distinguish messages types
+     * @param[in]  context    Context in which both sender and receiver are included
+     *
+     * @return optional Status contains information if message is available
+     */
+    boost::optional<Status> asyncProbe(const VAddr srcVAddr, const Tag tag, const Context context)
+        = delete;
+
+
     /** @} */
 
     /************************************************************************/ /**

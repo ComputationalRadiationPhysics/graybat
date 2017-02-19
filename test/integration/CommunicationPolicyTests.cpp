@@ -328,8 +328,33 @@ BOOST_AUTO_TEST_CASE(shouldReceiveCorrectStatus) {
         BOOST_CHECK_EQUAL(status.source(), vAddr);
         BOOST_CHECK_EQUAL(status.template size<unsigned>(), nElements);
       }
+
+      for (unsigned vAddr = 0; vAddr < context.size(); ++vAddr) {
+          cp.recv(vAddr, tag, context, data);
+      }
     }
   });
+}
+
+BOOST_AUTO_TEST_CASE(shouldReturnNegativeStatus)
+{
+    hana::for_each(communicationPolicies, [](auto cpRef) {
+        // Test setup
+        using CP = typename decltype(cpRef)::type;
+        using Context = typename CP::Context;
+        CP& cp = cpRef.get();
+
+        // Test run
+        {
+            const unsigned tag = 99;
+            Context context = cp.getGlobalContext();
+
+            for (unsigned vAddr = 0; vAddr < context.size(); ++vAddr) {
+                auto status = cp.asyncProbe(vAddr, tag, context);
+                BOOST_REQUIRE(!status);
+            }
+        }
+    });
 }
 
 BOOST_AUTO_TEST_SUITE_END()
