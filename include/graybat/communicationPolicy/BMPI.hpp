@@ -235,13 +235,13 @@ struct BMPI : Base<BMPI> {
     }
 
     /** Test if message is available from peer with srcVAddr and particular tag
-*
-* @param[in]  srcVAddr   VAddr of peer that sended the message
-* @param[in]  tag        Description of the message to better distinguish messages types
-* @param[in]  context    Context in which both sender and receiver are included
-*
-* @return Status contains information if message is available
-*/
+     *
+     * @param[in]  srcVAddr   VAddr of peer that sended the message
+     * @param[in]  tag        Description of the message to better distinguish messages types
+     * @param[in]  context    Context in which both sender and receiver are included
+     *
+     * @return Status contains information if message is available
+     */
     Status probe(const VAddr srcVAddr, const Tag tag, const Context context)
     {
         auto srcUri = getVAddrUri(context, srcVAddr);
@@ -261,6 +261,17 @@ struct BMPI : Base<BMPI> {
             return Status(status);
     }
      */
+
+    boost::optional<Status> asyncProbe(const VAddr srcVAddr, const Tag tag, const Context context){
+        auto srcUri = getVAddrUri(context, srcVAddr);
+        auto status = context.comm.iprobe(srcUri, tag);
+        if(status){
+            return Status(status.get());
+        }
+        else {
+            return boost::none;
+        }
+    }
 
     /** @} */
 
