@@ -86,7 +86,7 @@ endif(CCACHE_FOUND)
 
 # Benchmark
 file(GLOB BENCHMARKS test/benchmark/*.cpp)
-add_executable(benchmark EXCLUDE_FROM_ALL ${BENCHMARKS})
+add_executable(benchmark EXCLUDE_FROM_ALL ${BENCHMARKS} ${graybat_GENERATED_FILES})
 target_link_libraries(benchmark ${LIBS})
 
 # Test cases
@@ -94,7 +94,7 @@ file(GLOB INTEGRATION_TESTS test/integration/*.cpp)
 add_executable(check EXCLUDE_FROM_ALL ${INTEGRATION_TESTS} ${graybat_GENERATED_FILES})
 target_link_libraries(check ${LIBS})
 
-file(GLOB UNIT_TESTS test/unit/*.cpp)
+file(GLOB UNIT_TESTS test/unit/main.cpp test/unit/*Tests.cpp)
 add_executable(unit_tests EXCLUDE_FROM_ALL ${UNIT_TESTS} ${graybat_GENERATED_FILES})
 target_link_libraries(unit_tests ${LIBS})
 

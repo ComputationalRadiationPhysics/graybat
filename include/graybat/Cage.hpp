@@ -33,11 +33,12 @@
 #include <sstream>
 #include <stdexcept>
 #include <tuple>
+#include <future>
 
 // Boost
 #include <boost/core/ignore_unused.hpp>
 
-// GRAYBAT
+// Graybat
 #include <graybat/Concept.hpp>
 #include <graybat/Edge.hpp>
 #include <graybat/EventWrapper.hpp>
@@ -47,6 +48,7 @@
 #include <graybat/pattern/None.hpp>
 #include <graybat/serializationPolicy/Forward.hpp>
 #include <graybat/utils/exclusivePrefixSum.hpp>
+#include <graybat/threading/AsioThreadPool.hpp>
 
 namespace graybat {
 
@@ -98,18 +100,21 @@ struct Cage {
     Cage(CPConfig const cpConfig, T_Functor graphFunctor)
         : communicator(new CommunicationPolicy(cpConfig))
         , graph(GraphPolicy(graphFunctor()))
+        , threadPool(std::make_shared<threading::AsioThreadPool<1>>())
     {
     }
 
     Cage(CPConfig const cpConfig)
         : communicator(new CommunicationPolicy(cpConfig))
         , graph(GraphPolicy(graybat::pattern::None<GraphPolicy>()()))
+        , threadPool(std::make_shared<threading::AsioThreadPool<1>>())
     {
     }
 
     Cage()
         : communicator(new CommunicationPolicy(CPConfig()))
         , graph(GraphPolicy(graybat::pattern::None<GraphPolicy>()()))
+        , threadPool(std::make_shared<threading::AsioThreadPool<1>>())
     {
     }
 
@@ -324,6 +329,17 @@ struct Cage {
     /// requires concept::ContiguousContainer<T>
     void recv(const Edge& edge, T& data, std::vector<Event>& events);
 
+    /**
+     * @brief Asynchron receive of data from the edge.
+     *
+     * @param[in]  edge Edge from which data will be received
+     *
+     * @return future which carries the received data
+     */
+    template <typename T>
+    /// requires concept::ContiguousContainer<T>
+    std::future<void> asyncRecv(const Edge& edge,  T& data);
+
     /** @} */
 
     /**********************************************************************/ /**
@@ -404,6 +420,16 @@ struct Cage {
 
   private:
     /***************************************************************************
+    *
+    * Methods
+    *
+    ***************************************************************************/
+    template <typename T>
+    /// requires concept::ContiguousContainer<T>
+    void asyncRecv_(const Edge& edge,  T& data, const std::shared_ptr<std::promise<void>>& dataReceived);
+
+
+    /***************************************************************************
      *
      * MEMBER
      *
@@ -412,8 +438,11 @@ struct Cage {
     GraphPolicy graph;
     SerializationPolicy serializer;
     std::vector<Vertex> hostedVertices;
-
     Context graphContext;
+    std::shared_ptr<threading::AsioThreadPool<1>> threadPool;
+
+
+
 
     /***************************************************************************
      *
@@ -759,6 +788,38 @@ auto Cage<T_CommunicationPolicy, T_GraphPolicy, SerializationPolicy>::recv(
     CPEvent e = communicator->asyncRecv(srcVAddr, edge.id, graphContext, skeleton);
 
     events.push_back({ e, [&data, skeleton]() { SerializationPolicy::restore(data, skeleton); } });
+}
+
+//!
+//! P2P Future Based Operations
+//!
+
+
+template <typename T_CommunicationPolicy, typename T_GraphPolicy, typename SerializationPolicy>
+template <typename T>
+auto Cage<T_CommunicationPolicy, T_GraphPolicy, SerializationPolicy>::asyncRecv(
+    const Edge& edge, T& data) -> std::future<void>
+{
+    auto dataReceived = std::make_shared<std::promise<void>>();
+    threadPool->post([this, edge, &data, dataReceived]() { asyncRecv_(edge, data, dataReceived); });
+    return dataReceived->get_future();
+}
+
+template <typename T_CommunicationPolicy, typename T_GraphPolicy, typename SerializationPolicy>
+template <typename T>
+auto Cage<T_CommunicationPolicy, T_GraphPolicy, SerializationPolicy>::asyncRecv_(
+    const Edge& edge, T& data, const std::shared_ptr<std::promise<void>>& dataReceived) -> void
+{
+    VAddr srcVAddr = locateVertex(edge.source);
+    auto result = communicator->asyncProbe(srcVAddr, edge.id, graphContext);
+    if (result) {
+        decltype(auto) skeleton = SerializationPolicy::prepare(data);
+        communicator->recv(srcVAddr, edge.id, graphContext, skeleton);
+        SerializationPolicy::restore(data, skeleton);
+        dataReceived->set_value();
+    } else {
+        threadPool->post([this, edge, &data, dataReceived]() { asyncRecv_(edge, data, dataReceived); });
+    }
 }
 
 //!
