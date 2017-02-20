@@ -59,7 +59,7 @@ set(graybat_LIBRARIES ${graybat_LIBRARIES} ${ZMQ_LIBRARIES})
 ###############################################################################
 # Boost LIB
 ###############################################################################
-find_package(Boost 1.56.0 MODULE COMPONENTS mpi serialization REQUIRED)
+find_package(Boost 1.56.0 MODULE COMPONENTS mpi serialization system REQUIRED)
 set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 set(graybat_LIBRARIES ${graybat_LIBRARIES} ${Boost_LIBRARIES})
 
