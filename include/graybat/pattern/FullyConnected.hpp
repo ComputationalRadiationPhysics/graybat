@@ -60,12 +60,8 @@ template <typename T_GraphPolicy> struct FullyConnected {
 
         for (unsigned i = 0; i < vertices.size(); ++i) {
             for (unsigned j = 0; j < vertices.size(); ++j) {
-                if (i == j) {
-                    continue;
-                } else {
-                    edges.push_back(std::make_pair(
-                        std::make_pair(vertices[i].first, vertices[j].first), EdgeProperty()));
-                }
+                edges.push_back(std::make_pair(
+                    std::make_pair(vertices[i].first, vertices[j].first), EdgeProperty()));
             }
         }
 

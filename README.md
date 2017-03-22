@@ -131,7 +131,7 @@ There exist benchmarks for graybat:
 ```
 make benchmark
 ./signaling_server&
-./benchmark
+mpiexec -n 1 ./benchmark
 
 Run on (4 X 2493.8 MHz CPU s)
 2016-11-14 19:35:09

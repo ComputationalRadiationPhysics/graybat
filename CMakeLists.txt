@@ -86,16 +86,20 @@ endif(CCACHE_FOUND)
 
 # Benchmark
 file(GLOB BENCHMARKS test/benchmark/*.cpp)
-add_executable(benchmark EXCLUDE_FROM_ALL ${BENCHMARKS})
+add_executable(benchmark EXCLUDE_FROM_ALL ${BENCHMARKS} ${graybat_GENERATED_FILES})
 target_link_libraries(benchmark ${LIBS})
 
 # Test cases
-file(GLOB TESTS test/integration/*.cpp)
-add_executable(check EXCLUDE_FROM_ALL ${TESTS} ${graybat_GENERATED_FILES})
+file(GLOB INTEGRATION_TESTS test/integration/*.cpp)
+add_executable(check EXCLUDE_FROM_ALL ${INTEGRATION_TESTS} ${graybat_GENERATED_FILES})
 target_link_libraries(check ${LIBS})
 
+file(GLOB UNIT_TESTS test/unit/main.cpp test/unit/*Tests.cpp)
+add_executable(unit_tests EXCLUDE_FROM_ALL ${UNIT_TESTS} ${graybat_GENERATED_FILES})
+target_link_libraries(unit_tests ${LIBS})
+
 # Fast testing
-file(GLOB TESTSFAST test/integration/main.cpp test/integration/CommunicationPolicyTests.cpp)
+file(GLOB TESTSFAST test/integration/main.cpp test/unit/ThreadPoolTests.cpp)
 add_executable(checkFast EXCLUDE_FROM_ALL ${TESTSFAST} ${graybat_GENERATED_FILES})
 set_property(TARGET checkFast PROPERTY CXX_STANDARD 14)
 target_link_libraries(checkFast ${LIBS})
@@ -119,14 +123,17 @@ target_link_libraries(signaling ${LIBS})
 
 # CTest
 enable_testing()
+add_test(graybat_unit_tests_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target unit_tests)
 add_test(graybat_check_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target check)
 add_test(graybat_example_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target example)
 add_test(graybat_test_run_2_peers  mpiexec -n 2 check )
 add_test(graybat_gol_run  mpiexec gol 90 4 )
 add_test(graybat_pr_run  mpiexec pagerank )
+add_test(graybat_unit_tests_run unit_tests )
 set_tests_properties(graybat_test_run_2_peers PROPERTIES DEPENDS graybat_check_build)
 set_tests_properties(graybat_gol_run PROPERTIES DEPENDS graybat_example_build)
 set_tests_properties(graybat_pr_run PROPERTIES DEPENDS graybat_example_build)
+set_tests_properties(graybat_unit_tests_run PROPERTIES DEPENDS graybat_unit_tests_build)
 
 # Install
 file(GLOB CMAKE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cmake")

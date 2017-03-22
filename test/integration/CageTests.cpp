@@ -203,7 +203,7 @@ BOOST_AUTO_TEST_CASE(asyncSend_recv) {
   });
 }
 
-BOOST_AUTO_TEST_CASE(asyncSend_asyncRecv) {
+BOOST_AUTO_TEST_CASE(shouldAsyncSendAndAsyncRecv) {
   hana::for_each(cages, [](auto cageRef) {
     // Test setup
     using Cage = typename decltype(cageRef)::type;
@@ -283,39 +283,99 @@ BOOST_AUTO_TEST_CASE(asyncSend_asyncRecv) {
   });
 }
 
-    BOOST_AUTO_TEST_CASE(reduce) {
-  hana::for_each(cages, [](auto cageRef) {
-    // Test setup
-    using Cage = typename decltype(cageRef)::type;
-    using GP = typename Cage::GraphPolicy;
-    using Vertex = typename Cage::Vertex;
+BOOST_AUTO_TEST_CASE(shouldAsyncReceiveWithFuture)
+{
+    hana::for_each(cages, [](auto cageRef) {
+        // Test setup
+        using Cage = typename decltype(cageRef)::type;
+        using GP = typename Cage::GraphPolicy;
+        using Event = typename Cage::Event;
+        using Vertex = typename Cage::Vertex;
+        using Edge = typename Cage::Edge;
 
-    // Test run
-    {
+        // Test run
+        {
 
-      auto &cage = cageRef.get();
+            auto& cage = cageRef.get();
 
-      cage.setGraph(graybat::pattern::Grid<GP>(3, 3));
-      cage.distribute(graybat::mapping::Consecutive());
+            cage.setGraph(graybat::pattern::FullyConnected<GP>(cage.getPeers().size()));
+            cage.distribute(graybat::mapping::Consecutive());
 
-      const unsigned nElements = 10;
+            const unsigned nElements = 1000000;
 
-      std::vector<unsigned> send(nElements, 1);
-      std::vector<unsigned> recv(nElements, 0);
+            std::chrono::milliseconds timeout(1000);
+            std::vector<Event> sendEvents;
+            std::vector<std::future<void>> recvFutures;
+            std::vector<unsigned> send(nElements, 0);
+            std::list<std::vector<unsigned>> recv(0);
 
-      Vertex rootVertex = cage.getVertex(0);
+            for (unsigned i = 0; i < send.size(); ++i) {
+                send.at(i) = i;
+            }
 
-      for (Vertex v : cage.getHostedVertices()) {
-        cage.reduce(rootVertex, v, std::plus<unsigned>(), send, recv);
-      }
+            // Send state to neighbor cells
+            for (Vertex& v : cage.getHostedVertices()) {
+                for (Edge edge : cage.getOutEdges(v)) {
+                    cage.send(edge, send, sendEvents);
+                }
+            }
 
-      if (cage.isHosting(rootVertex)) {
-        for (unsigned receivedElement : recv) {
-          BOOST_CHECK_EQUAL(receivedElement, cage.getVertices().size());
+            // Recv state from neighbor cells
+            for (Vertex& v : cage.getHostedVertices()) {
+                for (Edge edge : cage.getInEdges(v)) {
+                    recv.push_back(std::vector<unsigned>(nElements, 0));
+                    recvFutures.emplace_back(cage.asyncRecv(edge, recv.back()));
+                }
+            }
+
+            for (unsigned i = 0; i < recvFutures.size(); ++i) {
+                BOOST_CHECK(recvFutures.back().wait_for(timeout) == std::future_status::ready);
+            }
+
+            // Check values of async received data
+            for (auto v : recv) {
+                for (unsigned i = 0; i < v.size(); ++i) {
+                    BOOST_CHECK_EQUAL(v.at(i), i);
+                }
+            }
         }
-      }
-    }
-  });
+    });
+}
+
+BOOST_AUTO_TEST_CASE(reduce)
+{
+    hana::for_each(cages, [](auto cageRef) {
+        // Test setup
+        using Cage = typename decltype(cageRef)::type;
+        using GP = typename Cage::GraphPolicy;
+        using Vertex = typename Cage::Vertex;
+
+        // Test run
+        {
+
+            auto& cage = cageRef.get();
+
+            cage.setGraph(graybat::pattern::Grid<GP>(3, 3));
+            cage.distribute(graybat::mapping::Consecutive());
+
+            const unsigned nElements = 10;
+
+            std::vector<unsigned> send(nElements, 1);
+            std::vector<unsigned> recv(nElements, 0);
+
+            Vertex rootVertex = cage.getVertex(0);
+
+            for (Vertex v : cage.getHostedVertices()) {
+                cage.reduce(rootVertex, v, std::plus<unsigned>(), send, recv);
+            }
+
+            if (cage.isHosting(rootVertex)) {
+                for (unsigned receivedElement : recv) {
+                    BOOST_CHECK_EQUAL(receivedElement, cage.getVertices().size());
+                }
+            }
+        }
+    });
 }
 
 BOOST_AUTO_TEST_CASE(allReduce) {
