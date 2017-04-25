@@ -316,6 +316,9 @@ struct Cage {
     /// requires concept::ContiguousContainer<T>
     Edge recv(T& data);
 
+	template <typename T>
+	std::future<Edge> asyncRecv(T& data);
+
     /**
      * @brief Asynchron receive of *data* from the *srcVertex* on *edge*.
      *
@@ -428,6 +431,8 @@ struct Cage {
     /// requires concept::ContiguousContainer<T>
     void asyncRecv_(const Edge& edge,  T& data, const std::shared_ptr<std::promise<void>>& dataReceived);
 
+	template <typename T>
+	void asyncRecv_(T& data, const std::shared_ptr<std::promise<Edge>>& dataReceived);
 
     /***************************************************************************
      *
@@ -820,6 +825,39 @@ auto Cage<T_CommunicationPolicy, T_GraphPolicy, SerializationPolicy>::asyncRecv_
     } else {
         threadPool->post([this, edge, &data, dataReceived]() { asyncRecv_(edge, data, dataReceived); });
     }
+}
+
+
+template <typename T_CommunicationPolicy, typename T_GraphPolicy, typename SerializationPolicy>
+template <typename T>
+auto Cage<T_CommunicationPolicy, T_GraphPolicy, SerializationPolicy>::asyncRecv(
+    T& data) -> std::future<Edge>
+{
+    auto dataReceived = std::make_shared<std::promise<Edge>>();
+    threadPool->post([this, &data, dataReceived]() { asyncRecv_(data, dataReceived); });
+    return dataReceived->get_future();
+}
+
+
+template <typename T_CommunicationPolicy, typename T_GraphPolicy, typename SerializationPolicy>
+template <typename T>
+auto Cage<T_CommunicationPolicy, T_GraphPolicy, SerializationPolicy>::asyncRecv_(
+    T& data, const std::shared_ptr<std::promise<Edge>>& dataReceived) -> void
+{
+	for(const auto& vertex : getHostedVertices()) {
+		for(const auto& edge : getInEdges(vertex)) {
+			VAddr srcVAddr = locateVertex(edge.source);
+			auto result = communicator->asyncProbe(srcVAddr, edge.id, graphContext);
+			if (result) {
+				decltype(auto) skeleton = SerializationPolicy::prepare(data);
+				communicator->recv(srcVAddr, edge.id, graphContext, skeleton);
+				SerializationPolicy::restore(data, skeleton);
+				dataReceived->set_value(edge);
+				return;
+			}
+		}
+	}
+	threadPool->post([this, &data, dataReceived]() { asyncRecv_(data, dataReceived); });
 }
 
 //!
