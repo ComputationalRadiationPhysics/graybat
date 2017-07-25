@@ -32,16 +32,8 @@
 #include <array>      /* std::array */
 
 // GRAYBAT
-#include <graybat/Cage.hpp>
+#include <graybat/graybat.hpp>
 #include <graybat/communicationPolicy/BMPI.hpp>
-#include <graybat/graphPolicy/BGL.hpp>
-#include <graybat/serializationPolicy/ByteCast.hpp>
-// GRAYBAT mappings
-#include <graybat/mapping/Consecutive.hpp>
-#include <graybat/mapping/Random.hpp>
-#include <graybat/mapping/Roundrobin.hpp>
-// GRAYBAT patterns
-#include <graybat/pattern/Ring.hpp>
 
 struct Function {
 

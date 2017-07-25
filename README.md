@@ -5,7 +5,7 @@ Graybat
 Schemes <b>B</b>ased on <b>A</b>daptive <b>T</b>opologies
 
 
-##Description##
+##Descriptio
 
 **Graybat** is a C++ library that presents a graph-based communication
 approach, which enables a mapping of algorithms to communication
@@ -19,23 +19,23 @@ adptable during run-time.
 The graybat API is currently unstable.
 
 
-##Documentation##
+##Documentation
 
 Have a look at the documentation that is available [here](https://ComputationalRadiationPhysics.github.io/graybat) or
 skim through the [examples](example) or [test cases](test) to have a quick start into graybat.
 
 
-##Referencing##
+##Referencing
 
 Graybat is a scientific project. If you **present and/or publish** scientific
 results that used graybat, you should set this as a **reference**.
 
-##Software License##
+##Software License
 
 Graybat is licensed under the <b>LGPLv3+</b>. Please refer to our [LICENSE.md](LICENSE.md)
 
 
-##Project Organization##
+##Project Organization
 
 The project is organized in a couple of subdirectories.
 
@@ -45,29 +45,29 @@ The project is organized in a couple of subdirectories.
  * The [utils](utils) directory contains cmake modules and doxygen files.
 
 
-##Dependencies##
+##Dependencies
 
-###Mandatory###
+###Mandatory
  * cmake 3.0.2
  * Boost 1.61.0
  * g++ 6.0.0 or clang 3.5
  * c++14
 
-###Optional###
+###Optional
  * OpenMPI 1.8.0 (mpi communication policy)
  * zeromq 4.1.3 (zeromq communication policy) 
  * metis 5.1 (graph partitioning mapping)
 
 
-##Roadmap##
+##Roadmap
  * [Dynamic context](https://github.com/ComputationalRadiationPhysics/graybat/milestones/Dynamic%20Context)
  * [Boost::Asio communication policy](https://github.com/ComputationalRadiationPhysics/graybat/milestones/Boost::Asio%20Communication%20Policy)
  * [C++11 thread communication policy](https://github.com/ComputationalRadiationPhysics/graybat/milestones/C++11%20Threads%20Communication%20Policy)
 
 
-##Installation##
+##Installation
 
-###System Installion###
+###System Installion
 
 Installation into the operating system libery path e.g.
 to `/usr/lib/graybat`:
@@ -77,14 +77,14 @@ to `/usr/lib/graybat`:
 	cmake -DCMAKE_INSTALL_DIR=/usr ..
 	sudo make install
 	
-###Package Install###
+###Package Install
 
 * Graybat [AUR package](https://aur.archlinux.org/packages/graybat-git/)
 
-##Usage as Library##
+##Usage as Library
 
 
-###CMAKE-Configfile###
+###CMAKE-Configfile
 Graybat is a header only library so nothing has to be build.  The most
 easy way to include graybat into your application is to use the shiped
 [CMAKE-Configfile](https://cmake.org/cmake/help/v3.4/manual/cmake-packages.7.html#config-file-packages),
@@ -101,9 +101,10 @@ or by setting the `graybat_DIR`:
 
 
 The CMAKE-Configfile of graybat provides the CMAKE variables `${graybat_INCLUDE_DIRS}`,
-`${graybat_LIBRARIES}`, and `${graybat_GENERATED_FILES}`. Where `${graybat_INCLUDE_DIRS}` contains all header files
-included by graybat,`${graybat_LIBRARIES}` contains all libraries used by graybat, and `${graybat_GENERATED_FILES}`
-contains all generated files that need to be compiled with the target.
+`${graybat_LIBRARIES}`, `${graybat_GENERATED_FILES}`, and `${graybat_DEFINITIONS}`. Where `${graybat_INCLUDE_DIRS}` contains all header files
+included by graybat,`${graybat_LIBRARIES}` contains all libraries used by graybat, `${graybat_GENERATED_FILES}`
+contains all generated files that need to be compiled with the target, and `${graybat_DEFINITIONS}` contains compile time definitions which can be
+used to toggle policies.
 The following is a an example of how to embed graybat into your `CMakeLists.txt`
 
      find_package(graybat REQUIRED CONFIG)
@@ -111,12 +112,13 @@ The following is a an example of how to embed graybat into your `CMakeLists.txt`
      set(LIBS ${LIBS} ${graybat_LIBRARIES})
   
      add_executable(myTarget main.cpp ${graybat_GENERATED_FILES})
+     target_compile_definitions(myTarget PRIVATE ${graybat_DEFINITIONS})
      target_link_libraries(signaling ${LIBS})
 
-Finally, the application can use graybat e.g. `#include <graybat/Cage.hpp>`.
+Finally, the application can use graybat e.g. `#include <graybat/graybat.hpp>`.
 
 
-##Compiling Tests/Examples##
+##Compiling Tests/Examples
 
  * Clone the repository: `git clone https://github.com/computationalradiationphysics/graybat.git`
  * Change directory: `cd graybat`
@@ -126,7 +128,7 @@ Finally, the application can use graybat e.g. `#include <graybat/Cage.hpp>`.
  * Create Makefile `cmake ..`
  * Build project : `make [target]`
 
-##Benchmarks##
+##Benchmarks
 There exist benchmarks for graybat:
 ```
 make benchmark
@@ -155,7 +157,7 @@ meassureSingleMessageSendZmq/976.562k    23033162 ns   22561309 ns         31
 ```
 
 
-##Predefined Targets##
+##Predefined Targets
 
  * **example**: All example applications.
 
@@ -170,17 +172,17 @@ meassureSingleMessageSendZmq/976.562k    23033162 ns   22561309 ns         31
  * **clean**: Cleanup build directory.
 
 
-##Tested Compilers##
+##Tested Compilers
 
  * clang 3.5
  * g++ 5.2.0
 
 
-##Related Material##
+##Related Material
  * Talk by Erik Zenker of his diploma defence [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.16306.svg)](http://dx.doi.org/10.5281/zenodo.16306)
 
 
-##Authors##
+##Authors
 
  * Erik Zenker (erikzenker@posteo.de)
 

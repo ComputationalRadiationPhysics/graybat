@@ -23,6 +23,8 @@
 #  graybat_INCLUDE_DIRS    - include directories for Graybat
 #  graybat_LIBRARIES       - libraries to link against
 #  graybat_GENERATED_FILES - files to add to targets using Graybat
+#  graybat_DEFINTIONS      - compile definitions provided by graybat
+#                            (graybat_ZMQ_CP_ENABLED, graybat_BMPI_CP_ENABLED)
 
 ###############################################################################
 # graybat
@@ -46,30 +48,35 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${graybat_DIR}/include/graybat/utils
 # METIS LIB
 ###############################################################################
 find_package(METIS MODULE 5.1.0)
-set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${METIS_INCLUDE_DIRS})
-set(graybat_LIBRARIES ${graybat_LIBRARIES} ${METIS_LIBRARIES})
-
-###############################################################################
-# ZMQ LIB
-###############################################################################
-find_package(ZMQ MODULE 4.0.0)
-set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${ZMQ_INCLUDE_DIRS})
-set(graybat_LIBRARIES ${graybat_LIBRARIES} ${ZMQ_LIBRARIES})
+if(METIS_FOUND)
+  set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${METIS_INCLUDE_DIRS})
+  set(graybat_LIBRARIES ${graybat_LIBRARIES} ${METIS_LIBRARIES})
+endif(METIS_FOUND)
 
 ###############################################################################
 # Boost LIB
 ###############################################################################
-find_package(Boost 1.56.0 MODULE COMPONENTS mpi serialization system REQUIRED)
-set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
-set(graybat_LIBRARIES ${graybat_LIBRARIES} ${Boost_LIBRARIES})
+find_package(Boost 1.56.0 COMPONENTS mpi)
+if(Boost_MPI_FOUND)
+    set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
+    set(graybat_LIBRARIES ${graybat_LIBRARIES} ${Boost_LIBRARIES})
+endif()
+
+find_package(Boost 1.56.0 REQUIRED system serialization)
+if(Boost_SYSTEM_FOUND AND Boost_SERIALIZATION_FOUND)
+    set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
+    set(graybat_LIBRARIES ${graybat_LIBRARIES} ${Boost_LIBRARIES})
+endif()
 
 ################################################################################
 # MPI LIB
 ################################################################################
 find_package(MPI MODULE)
-set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${MPI_C_INCLUDE_PATH})
-set(graybat_LIBRARIES ${graybat_LIBRARIES} ${MPI_C_LIBRARIES})
-set(graybat_LIBRARIES ${graybat_LIBRARIES} ${MPI_CXX_LIBRARIES})
+if(MPI_FOUND)
+    set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${MPI_C_INCLUDE_PATH})
+    set(graybat_LIBRARIES ${graybat_LIBRARIES} ${MPI_C_LIBRARIES})
+    set(graybat_LIBRARIES ${graybat_LIBRARIES} ${MPI_CXX_LIBRARIES})
+endif()
 
 ################################################################################
 # Find PThreads
@@ -77,25 +84,63 @@ set(graybat_LIBRARIES ${graybat_LIBRARIES} ${MPI_CXX_LIBRARIES})
 find_package(Threads MODULE)
 set(graybat_LIBRARIES ${graybat_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
+###############################################################################
+# ZMQ LIB
+###############################################################################
+find_package(ZMQ MODULE 4.0.0)
+if(ZMQ_FOUND)
+    set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${ZMQ_INCLUDE_DIRS})
+    set(graybat_LIBRARIES ${graybat_LIBRARIES} ${ZMQ_LIBRARIES})
+endif(ZMQ_FOUND)
+
 ################################################################################
 # Find Protobuf
 ################################################################################
-find_package(Protobuf REQUIRED)
-set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${PROTOBUF_INCLUDE_DIRS})
-set(graybat_LIBRARIES ${graybat_LIBRARIES} ${PROTOBUF_LIBRARIES})
+find_package(Protobuf)
+if(Protobuf_FOUND)
+    set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${PROTOBUF_INCLUDE_DIRS})
+    set(graybat_LIBRARIES ${graybat_LIBRARIES} ${PROTOBUF_LIBRARIES})
+endif(Protobuf_FOUND)
 
 ################################################################################
 # Find GRPC
 ################################################################################
-find_package(GRPC REQUIRED)
-set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${GRPC_INCLUDE_DIRS})
-set(graybat_LIBRARIES ${graybat_LIBRARIES} ${GRPC_LIBRARIES})
+find_package(GRPC)
+if(GRPC_FOUND)
+    set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${GRPC_INCLUDE_DIRS})
+    set(graybat_LIBRARIES ${graybat_LIBRARIES} ${GRPC_LIBRARIES})
+endif(GRPC_FOUND)
+
 
 ###############################################################################
 # Generate files
 ###############################################################################
-set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
-file(GLOB ProtoFiles "${graybat_DIR}/include/graybat/utils/protos/*.proto")
-PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS ${ProtoFiles})
-PROTOBUF_GENERATE_GRPC_CPP(GRPC_SRCS GRPC_HDRS ${ProtoFiles})
-set(graybat_GENERATED_FILES ${GRPC_SRCS} ${PROTO_SRCS})
+if(Protobuf_FOUND AND GRPC_FOUND)
+    set(graybat_INCLUDE_DIRS ${graybat_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
+    file(GLOB ProtoFiles "${graybat_DIR}/include/graybat/utils/protos/*.proto")
+    PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS ${ProtoFiles})
+    PROTOBUF_GENERATE_GRPC_CPP(GRPC_SRCS GRPC_HDRS ${ProtoFiles})
+    set(graybat_GENERATED_FILES ${GRPC_SRCS} ${PROTO_SRCS})
+endif()
+
+###############################################################################
+# Set Compile Definitions
+###############################################################################
+if(MPI_FOUND AND Boost_MPI_FOUND)
+    LIST(APPEND graybat_DEFINITIONS "graybat_BMPI_CP_ENABLED")
+    SET(graybat_BMPI_CP_ENABLED TRUE)
+endif()
+
+if(ZMQ_FOUND AND GRPC_FOUND AND Protobuf_FOUND)
+    LIST(APPEND graybat_DEFINITIONS "graybat_ZMQ_CP_ENABLED")
+    SET(graybat_ZMQ_CP_ENABLED TRUE)
+endif()
+
+###############################################################################
+# FindPackage options
+###############################################################################
+INCLUDE(FindPackageHandleStandardArgs)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(
+    "graybat"
+    FOUND_VAR graybat_FOUND
+    REQUIRED_VARS graybat_INCLUDE_DIRS)
