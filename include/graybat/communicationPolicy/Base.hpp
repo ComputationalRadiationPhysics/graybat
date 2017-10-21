@@ -61,6 +61,8 @@ template <typename T_CommunicationPolicy> struct Base {
 
     template <typename T_Recv> Event recv(const Context context, T_Recv& recvData) = delete;
 
+	template <typename T_Recv> Event asncRecv(const Context context, T_Recv& recvData) = delete;
+
     template <typename T_Recv>
     Event asyncRecv(const VAddr srcVAddr, const Tag tag, const Context context, T_Recv& recvData)
         = delete;
