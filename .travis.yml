@@ -37,7 +37,6 @@ env:
     - COMPILER=gcc  STRATEGY=""
 
 before_install:
-  - mkdir -p $HOME/build
   - export CMAKE_FLAGS="-DCMAKE_CXX_FLAGS=\"-Werror\""
   - if [ "$COMPILER" == "gcc" ]; then
         echo "Using g++-6";
@@ -54,105 +53,15 @@ before_install:
   - $CC --version
 
 install:
+  - echo "Install stage"
   #############################################################################
-  # CMAKE                                                                     #
+  # SPACK                                                                     #
   #############################################################################
-  - export PATH=$CMAKE_ROOT/bin:$PATH
-  - CMAKE_33_FOUND=$(cmake --version | grep " 3\.3\." >/dev/null && { echo 0; } || { echo 1; })
-  - if [ $CMAKE_33_FOUND -ne 0 ]; then
-      mkdir -p $CMAKE_ROOT &&
-      cd $CMAKE_ROOT &&
-      travis_retry wget --no-check-certificate http://www.cmake.org/files/v3.3/cmake-3.3.2-Linux-x86_64.tar.gz &&
-      tar -xzf cmake-3.3.2-Linux-x86_64.tar.gz --overwrite &&
-      mv -f cmake-3.3.2-Linux-x86_64/* . &&
-      rm -rf cmake-3.3.2-Linux-x86_64.tar.gz cmake-3.3.2-Linux-x86_64 &&
-      cd -;
-    fi
-  - cmake --version
-  #############################################################################
-  # BOOST                                                                     #
-  #############################################################################
-  - export CMAKE_PREFIX_PATH=$BOOST_ROOT:$CMAKE_PREFIX_PATH
-  # cmake --find-package -DNAME=Boost -DCOMPILER_ID=GNU -DLANGUAGE=CXX -DMODE=EXIST
-  - echo -e "#include <boost/version.hpp>\n#include <iostream>\nint main() { std::cout << BOOST_VERSION << std::endl; return 0; }"
-        | $CXX -I$BOOST_ROOT/include -x c++ - >/dev/null || { echo 0; }
-  - ls $BOOST_ROOT
-  - BOOST_FOUND=$([ $(./a.out) -ge $BOOST_MIN ] && { echo 0; } || { echo 1; })
-  - if [ $BOOST_FOUND -ne 0 ]; then
-      mkdir -p $BOOST_ROOT &&
-      cd $BOOST_ROOT &&
-      travis_retry wget --no-check-certificate -O boost.tar.bz2 http://sourceforge.net/projects/boost/files/boost/1.61.0/boost_1_61_0.tar.bz2/download &&
-      tar -xjf boost.tar.bz2 --overwrite &&
-      cd boost_1_61_0 &&
-      echo "using gcc "":"" 6 "":"" /usr/bin/g++-6 ; " >> tools/build/src/user-config.jam &&
-      ./bootstrap.sh toolset=gcc-6 --with-libraries=filesystem,mpi,program_options,system,test,serialization --prefix=$BOOST_ROOT &&
-      echo "using mpi ;" >> tools/build/src/user-config.jam &&
-      ./b2 -j2 -target=shared,static &&
-      ./b2 install &&
-      rm -rf boost.tar.bz2 boost_1_61_0 &&
-      cd $HOME;
-    fi
-  #############################################################################
-  # ZMQ                                                                       #
-  #############################################################################
-  - export CMAKE_PREFIX_PATH=$ZMQ_ROOT:$CMAKE_PREFIX_PATH
-  - echo $CMAKE_PREFIX_PATH
-  - ls $ZMQ_ROOT
-  - if [ ! "$(ls -A $ZMQ_ROOT)" ]; then
-      cd /tmp/ &&
-      travis_retry git clone https://github.com/zeromq/libzmq.git&&
-      travis_retry git clone https://github.com/zeromq/cppzmq.git;
-      cd /tmp/libzmq/ &&
-      ./autogen.sh &&
-      mkdir -p $ZMQ_ROOT &&
-      ./configure --prefix=$ZMQ_ROOT &&
-      make &&
-      make install &&
-      cp /tmp/cppzmq/zmq.hpp $ZMQ_ROOT/include/ &&
-      cp /tmp/cppzmq/zmq_addon.hpp $ZMQ_ROOT/include/;
-    else
-      echo "ZeroMQ directory already exists";
-    fi
-  #############################################################################
-  # PROTOBUF
-  #############################################################################
-  - export CMAKE_PREFIX_PATH=$PROTOBUF_ROOT:$CMAKE_PREFIX_PATH
-  - echo $CMAKE_PREFIX_PATH
-  - tree $PROTOBUF_ROOT
-  - if [ ! "$(ls -A $PROTOBUF_ROOT)" ]; then
-      cd /tmp/;
-      travis_retry git clone https://github.com/google/protobuf.git;
-      cd /tmp/protobuf/;
-      ./autogen.sh;
-      mkdir -p $PROTOBUF_ROOT;
-      ./configure --prefix=$PROTOBUF_ROOT;
-      make check;
-      make install;
-    else
-      echo "Protobuf directory already exists";
-    fi
-  #############################################################################
-  # GRPC                                                                      #
-  #############################################################################
-  - export CMAKE_PREFIX_PATH=$GRPC_ROOT:$CMAKE_PREFIX_PATH
-  - echo $CMAKE_PREFIX_PATH
-  - tree $GRPC_ROOT
-  - if [ ! "$(ls -A $GRPC_ROOT)" ]; then
-      cd /tmp/;
-      travis_retry git clone -b $(curl -L http://grpc.io/release) https://github.com/grpc/grpc;
-      cd /tmp/grpc/;
-      git submodule update --init;
-      mkdir -p $GRPC_ROOT;
-      make prefix=$GRPC_ROOT install;
-    else
-      echo "Grpc directory already exists";
-    fi
+  - git clone https://github.com/LLNL/spack.git
+  - git clone https://github.com/ComputationalRadiationPhysics/spack-repo.git
+  - ./spack/bin/spack repo add ./spack-repo
+  - ./spack/bin/spack install graybat@develop +mpi +zeromq
+
 
 script:
-  - cd $HOME/build
-  - cmake $CMAKE_FLAGS $GRAYBAT_ROOT
-  - make check
-  - make signaling
-  - ./signaling&
-  - ctest --output-on-failure
-  - killall signaling
+  - echo "Script state"
