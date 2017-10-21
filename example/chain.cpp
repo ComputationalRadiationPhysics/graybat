@@ -36,18 +36,8 @@
 #include <numeric>    /* std::accumulate */
 
 // GRAYBAT
-#include <graybat/Cage.hpp>
+#include <graybat/graybat.hpp>
 #include <graybat/communicationPolicy/BMPI.hpp>
-#include <graybat/graphPolicy/BGL.hpp>
-#include <graybat/serializationPolicy/ByteCast.hpp>
-// GRAYBAT mappings
-#include <graybat/mapping/Consecutive.hpp>
-#include <graybat/mapping/Random.hpp>
-#include <graybat/mapping/Roundrobin.hpp>
-#include <graybat/mapping/Filter.hpp>
-// GRAYBAT pattern
-#include <graybat/pattern/Chain.hpp>
-
 
 struct Tag {
     std::size_t tag;
@@ -80,7 +70,6 @@ int exp() {
     const unsigned nChainLinks = 6;
     auto inc = [](unsigned &a){a++;};
 
-    // Create GoL Graph
     Config config;
     Cage cage(config);
 

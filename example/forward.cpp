@@ -33,17 +33,8 @@
 #include <functional> /* std::bind */
 
 // GRAYBAT
-#include <graybat/Cage.hpp>
+#include <graybat/graybat.hpp>
 #include <graybat/communicationPolicy/BMPI.hpp>
-#include <graybat/graphPolicy/BGL.hpp>
-#include <graybat/serializationPolicy/ByteCast.hpp>
-// GRAYBAT mappings
-#include <graybat/mapping/Consecutive.hpp>
-#include <graybat/mapping/Random.hpp>
-#include <graybat/mapping/Roundrobin.hpp>
-// GRAYBAT pattern
-#include <graybat/pattern/GridDiagonal.hpp>
-#include <graybat/pattern/Chain.hpp>
 
 struct Function {
     
@@ -82,7 +73,6 @@ int exp() {
 nn     ****************************************************************************/
     const unsigned nChainLinks = 1000;
     
-    // Create GoL Graph
     Config config;
     Cage cage(config);
 

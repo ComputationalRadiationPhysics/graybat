@@ -86,54 +86,60 @@ endif(CCACHE_FOUND)
 
 # Benchmark
 file(GLOB BENCHMARKS test/benchmark/*.cpp)
-add_executable(benchmark EXCLUDE_FROM_ALL ${BENCHMARKS} ${graybat_GENERATED_FILES})
+add_executable(benchmark ${BENCHMARKS} ${graybat_GENERATED_FILES})
 target_link_libraries(benchmark ${LIBS})
 
 # Test cases
 file(GLOB INTEGRATION_TESTS test/integration/*.cpp)
-add_executable(check EXCLUDE_FROM_ALL ${INTEGRATION_TESTS} ${graybat_GENERATED_FILES})
+add_executable(check ${INTEGRATION_TESTS} ${graybat_GENERATED_FILES})
+target_compile_definitions(check PRIVATE ${graybat_DEFINITIONS})
 target_link_libraries(check ${LIBS})
+add_test(graybat_check_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target check)
+add_test(graybat_test_run_2_peers  mpiexec -n 2 check )
+set_tests_properties(graybat_test_run_2_peers PROPERTIES DEPENDS graybat_check_build)
 
 file(GLOB UNIT_TESTS test/unit/main.cpp test/unit/*Tests.cpp)
-add_executable(unit_tests EXCLUDE_FROM_ALL ${UNIT_TESTS} ${graybat_GENERATED_FILES})
+add_executable(unit_tests ${UNIT_TESTS} ${graybat_GENERATED_FILES})
 target_link_libraries(unit_tests ${LIBS})
+add_test(graybat_unit_tests_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target unit_tests)
+add_test(graybat_unit_tests_run unit_tests )
+set_tests_properties(graybat_unit_tests_run PROPERTIES DEPENDS graybat_unit_tests_build)
 
 # Fast testing
-file(GLOB TESTSFAST test/integration/main.cpp test/unit/ThreadPoolTests.cpp)
-add_executable(checkFast EXCLUDE_FROM_ALL ${TESTSFAST} ${graybat_GENERATED_FILES})
-set_property(TARGET checkFast PROPERTY CXX_STANDARD 14)
-target_link_libraries(checkFast ${LIBS})
+#file(GLOB TESTSFAST test/integration/main.cpp test/unit/ThreadPoolTests.cpp)
+#add_executable(checkFast EXCLUDE_FROM_ALL ${TESTSFAST} ${graybat_GENERATED_FILES})
+#set_property(TARGET checkFast PROPERTY CXX_STANDARD 14)
+#target_link_libraries(checkFast ${LIBS})
 
 # Examples
-add_custom_target(example)
-file(GLOB EXAMPLES  example/*.cpp)
-foreach(EXAMPLE ${EXAMPLES})
+if(graybat_BMPI_CP_ENABLED)
+  add_custom_target(example)
+  file(GLOB EXAMPLES  example/*.cpp)
+  foreach(EXAMPLE ${EXAMPLES})
 	get_filename_component(DEP ${EXAMPLE} NAME_WE)
-	add_executable(${DEP} EXCLUDE_FROM_ALL ${EXAMPLE} ${graybat_GENERATED_FILES})
+	add_executable(${DEP} ${EXAMPLE} ${graybat_GENERATED_FILES})
     set_property(TARGET ${DEP} PROPERTY CXX_STANDARD 14)
 	target_link_libraries(${DEP} LINK_INTERFACE_LIBRARIES graybat)
 	target_link_libraries(${DEP} ${LIBS})
 	add_dependencies(example ${DEP})
-endforeach(EXAMPLE)
+  endforeach(EXAMPLE)
+
+  add_test(graybat_example_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target example)
+  add_test(graybat_gol_run  mpiexec gol 90 4 )
+  add_test(graybat_pr_run  mpiexec pagerank )
+  set_tests_properties(graybat_gol_run PROPERTIES DEPENDS graybat_example_build)
+  set_tests_properties(graybat_pr_run PROPERTIES DEPENDS graybat_example_build)
+endif()
 
 # GRPC signaling server
-add_executable( signaling EXCLUDE_FROM_ALL utils/signaling_server.cpp ${graybat_GENERATED_FILES})
-set_property(TARGET signaling PROPERTY CXX_STANDARD 11)
-target_link_libraries(signaling ${LIBS})
+if(graybat_ZMQ_CP_ENABLED)
+  add_executable( signaling utils/signaling_server.cpp ${graybat_GENERATED_FILES})
+  set_property(TARGET signaling PROPERTY CXX_STANDARD 11)
+  target_link_libraries(signaling ${LIBS})
+endif()
 
 # CTest
 enable_testing()
-add_test(graybat_unit_tests_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target unit_tests)
-add_test(graybat_check_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target check)
-add_test(graybat_example_build "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target example)
-add_test(graybat_test_run_2_peers  mpiexec -n 2 check )
-add_test(graybat_gol_run  mpiexec gol 90 4 )
-add_test(graybat_pr_run  mpiexec pagerank )
-add_test(graybat_unit_tests_run unit_tests )
-set_tests_properties(graybat_test_run_2_peers PROPERTIES DEPENDS graybat_check_build)
-set_tests_properties(graybat_gol_run PROPERTIES DEPENDS graybat_example_build)
-set_tests_properties(graybat_pr_run PROPERTIES DEPENDS graybat_example_build)
-set_tests_properties(graybat_unit_tests_run PROPERTIES DEPENDS graybat_unit_tests_build)
 
 # Install
 file(GLOB CMAKE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cmake")
@@ -148,15 +154,17 @@ install(
   DESTINATION "lib/graybat"
 )
 
+if(graybat_ZMQ_CP_ENABLED)
 install( TARGETS signaling
           RUNTIME DESTINATION "bin"
         )
+endif()
 
 # Doxygen
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/doxygen.conf ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-  add_custom_target(doc 
+  add_custom_target(doc
     COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
     SOURCES ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}

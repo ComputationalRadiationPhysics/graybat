@@ -35,16 +35,8 @@
 #include <numeric>    /* std::accumulate */
 
 // GRAYBAT
-#include <graybat/Cage.hpp>
+#include <graybat/graybat.hpp>
 #include <graybat/communicationPolicy/BMPI.hpp>
-#include <graybat/graphPolicy/BGL.hpp>
-#include <graybat/serializationPolicy/ByteCast.hpp>
-// GRAYBAT mappings
-#include <graybat/mapping/Consecutive.hpp>
-#include <graybat/mapping/Random.hpp>
-#include <graybat/mapping/Roundrobin.hpp>
-// GRAYBAT patterns
-#include <graybat/pattern/GridDiagonal.hpp>
 
 struct Cell {
     Cell() : isAlive{{0}}, aliveNeighbors(0){
@@ -118,7 +110,7 @@ int gol(const unsigned nCells, const unsigned nTimeSteps ) {
 
     // CommunicationPolicy
     typedef graybat::communicationPolicy::BMPI CP;
-    
+
     // GraphPolicy
     typedef graybat::graphPolicy::BGL<Cell>    GP;
 

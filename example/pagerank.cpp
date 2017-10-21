@@ -37,10 +37,7 @@
 #include <graybat/serializationPolicy/ByteCast.hpp>
 
 // GRAYBAT mappings
-#include <graybat/mapping/Consecutive.hpp>
-
-// GRAYBAT pattern
-#include <graybat/pattern/Random.hpp>
+#include <graybat/graybat.hpp>
 
 struct PageRank {
     PageRank() : pageRank({1}){ }

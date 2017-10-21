@@ -25,20 +25,19 @@
 #include <benchmark/benchmark.h>
 
 // Graybat
-#include <graybat/Cage.hpp>
-#include <graybat/communicationPolicy/BMPI.hpp>
-#include <graybat/communicationPolicy/ZMQ.hpp>
-#include <graybat/graphPolicy/BGL.hpp>
-#include <graybat/mapping/Roundrobin.hpp>
-#include <graybat/mapping/Consecutive.hpp>
-#include <graybat/pattern/FullyConnected.hpp>
+#include <graybat/graybat.hpp>
 
 using GP = graybat::graphPolicy::BGL<>;
 
+#ifdef graybat_BMPI_CP_ENABLED
 using BMPI = graybat::communicationPolicy::BMPI;
 using BMPICage = graybat::Cage<BMPI, GP>;
 using BMPIConfig = BMPI::Config;
+BMPIConfig bmpiConfig;
+BMPICage bmpiCage(bmpiConfig);
+#endif
 
+#ifdef graybat_ZMQ_CP_ENABLED
 using ZMQ = graybat::communicationPolicy::ZMQ;
 using ZMQCage = graybat::Cage<ZMQ, GP>;
 using ZMQConfig = ZMQ::Config;
@@ -48,12 +47,12 @@ ZMQConfig zmqConfig = {
     static_cast<size_t>(std::stoi(std::getenv("OMPI_COMM_WORLD_SIZE"))),
     "context_cage_test"};
 ZMQCage zmqCage(zmqConfig);
+#endif
 
-BMPIConfig bmpiConfig;
-BMPICage bmpiCage(bmpiConfig);
 
 
 ////////////////////////////////////////////////////////////////////////////////
+#ifdef graybat_BMPI_CP_ENABLED
 static void meassureSingleMessageSendBmpi(benchmark::State &state) {
   while (state.KeepRunning()) {
 
@@ -97,7 +96,12 @@ static void meassureSingleMessageSendBmpi(benchmark::State &state) {
     }
   }
 }
+
+BENCHMARK(meassureSingleMessageSendBmpi)->RangeMultiplier(10)->Range(1, 1000000);
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
+#ifdef graybat_ZMQ_CP_ENABLED
 static void meassureSingleMessageSendZmq(benchmark::State &state) {
     while (state.KeepRunning()) {
 
@@ -257,10 +261,10 @@ static void meassureAsyncReceiveEventZmq(benchmark::State& state)
     }
 }
 
-BENCHMARK(meassureSingleMessageSendBmpi)->RangeMultiplier(10)->Range(1, 1000000);
+
 BENCHMARK(meassureSingleMessageSendZmq)->RangeMultiplier(10)->Range(1, 1000000);
 BENCHMARK(meassureAsyncReceiveEventZmq)->RangeMultiplier(10)->Range(1, 1000000);
 BENCHMARK(meassureAsyncReceiveFutureZmq)->RangeMultiplier(10)->Range(1, 1000000);
-
+#endif
 
 BENCHMARK_MAIN()
