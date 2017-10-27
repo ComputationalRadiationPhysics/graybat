@@ -5,11 +5,8 @@ sudo: false
 cache:
   apt: true
   directories:
-    - $HOME/.cache/cmake
-    - $HOME/.cache/boost
-    - $HOME/.cache/zmq
-    - $HOME/.cache/grpc
-    - $HOME/.cache/protobuf
+    - $HOME/.cache/spack
+    - $HOME/.cache/spack-hzdr
 
 addons:
   apt:
@@ -24,6 +21,8 @@ addons:
 env:
   global:
     - GRAYBAT_ROOT: $TRAVIS_BUILD_DIR
+    - SPACK_DIR: $HOME/.cache/spack
+    - SPACK_HZDR_DIR: $HOME/.cache/spack-repo
   matrix:
     - COMPILER=gcc  STRATEGY=""
 
@@ -48,11 +47,10 @@ install:
   #############################################################################
   # SPACK                                                                     #
   #############################################################################
-  - git clone https://github.com/LLNL/spack.git
-  - git clone https://github.com/ComputationalRadiationPhysics/spack-repo.git
-  - ./spack/bin/spack repo add ./spack-repo
-  - ./spack/bin/spack install graybat@develop +mpi +zeromq
-
+  - git clone https://github.com/LLNL/spack.git $SPACK_DIR
+  - git clone https://github.com/ComputationalRadiationPhysics/spack-repo.git $SPACK_HZDR_DIR
+  - $SPACK_DIR/bin/spack repo add $SPACK_HZDR_DIR
+  - travis_wait $SPACK_DIR/bin/spack install graybat@develop +mpi +zeromq
 
 script:
   - echo "Script state"
