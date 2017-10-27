@@ -19,19 +19,10 @@ addons:
         - tree
         - gcc-6
         - g++-6 # also possible: g++5.2 or g++-6
-        - clang-3.5
-        - openmpi-bin
-        - libopenmpi-dev
+        - gfortran-6
 
 env:
   global:
-    - CMAKE_ROOT: $HOME/.cache/cmake
-    - BOOST_ROOT: $HOME/.cache/boost
-    - ZMQ_ROOT: $HOME/.cache/zmq
-    - GRPC_ROOT: $HOME/.cache/grpc
-    - PROTOBUF_ROOT: $HOME/.cache/protobuf
-    - BOOST_LIBRARY_DIR: $HOME/.cache/boost
-    - BOOST_MIN: 106100 # careful: hard coded below
     - GRAYBAT_ROOT: $TRAVIS_BUILD_DIR
   matrix:
     - COMPILER=gcc  STRATEGY=""
