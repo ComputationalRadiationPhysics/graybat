@@ -48,13 +48,13 @@ install:
   # SPACK                                                                     #
   #############################################################################
   - if [ ! -d "$SPACK_DIR" ] ; then
-      git clone https://github.com/LLNL/spack.git $SPACK_DIR
+      git clone https://github.com/LLNL/spack.git $SPACK_DIR;
     fi
   - if [ ! -d "$SPACK_HZDR_DIR" ] ; then
-      git clone https://github.com/ComputationalRadiationPhysics/spack-repo.git $SPACK_HZDR_DIR
+      git clone https://github.com/ComputationalRadiationPhysics/spack-repo.git $SPACK_HZDR_DIR;
     fi
   - $SPACK_DIR/bin/spack repo add $SPACK_HZDR_DIR || true
-  - travis_wait $SPACK_DIR/bin/spack install graybat@develop +mpi +zeromq
+  - travis_wait 50 $SPACK_DIR/bin/spack install graybat@develop +mpi +zeromq
 
 script:
   - echo "Script state"
