@@ -6,7 +6,6 @@ cache:
   apt: true
   directories:
     - $HOME/.cache/spack
-    - $HOME/.cache/spack-hzdr
 
 addons:
   apt:
@@ -22,7 +21,7 @@ env:
   global:
     - GRAYBAT_ROOT: $TRAVIS_BUILD_DIR
     - SPACK_DIR: $HOME/.cache/spack
-    - SPACK_HZDR_DIR: $HOME/.cache/spack-repo
+    - SPACK_HZDR_DIR: $HOME/spack-repo
   matrix:
     - COMPILER=gcc  STRATEGY=""
 
@@ -45,9 +44,7 @@ before_install:
 install:
   - echo "Install stage"
   - tree -L 3 $SPACK_DIR
-  - tree -L 3 $SPACK_HZDR_DIR
-  - rm -r $SPACK_DIR
-  - rm -r $SPACK_HZDR_DIR
+  - rm -fr $SPACK_DIR
   #############################################################################
   # SPACK                                                                     #
   #############################################################################
