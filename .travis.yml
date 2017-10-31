@@ -46,6 +46,8 @@ install:
   - echo "Install stage"
   - tree -L 3 $SPACK_DIR
   - tree -L 3 $SPACK_HZDR_DIR
+  - rm -r $SPACK_DIR
+  - rm -r $SPACK_HZDR_DIR
   #############################################################################
   # SPACK                                                                     #
   #############################################################################
@@ -57,6 +59,8 @@ install:
     fi
   - $SPACK_DIR/bin/spack repo add $SPACK_HZDR_DIR || true
   - travis_wait 50 $SPACK_DIR/bin/spack install graybat@develop +mpi +zeromq
+  - tree -L 3 $SPACK_DIR
+  - tree -L 3 $SPACK_HZDR_DIR
 
 script:
   - echo "Script state"
